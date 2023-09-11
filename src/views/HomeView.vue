@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { getCarList } from '@/api/list'
-import { ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 const carSettingDrawerVisible = ref(false)
-const carList = ref([])
+const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
+const currentCarName = computed(() => {
+  return carList.value.find((item) => item.code === currentCar.value)?.name
+})
+const currentCarStatus = computed(() => {
+  return carList.value.find((item) => item.code === currentCar.value)?.status === '1' ? '✅' : '🚫'
+})
 async function getList() {
   const { data } = await getCarList('patroling')
   carList.value = data || []
@@ -15,9 +21,12 @@ getList()
   <el-container class="h-full">
     <el-header class="bg-[#072232]">
       <div class="h-full flex items-center justify-between">
-        <el-button link class="!text-orange-400" @click="carSettingDrawerVisible = true"
-          >未选择车辆</el-button
-        >
+        <div>
+          <el-button link class="!text-orange-400" @click="carSettingDrawerVisible = true">{{
+            currentCarName || '未选择车辆'
+          }}</el-button>
+          <span>{{ currentCarStatus }}</span>
+        </div>
         <el-button link class="!text-orange-400">外设操控</el-button>
       </div>
     </el-header>
@@ -27,9 +36,18 @@ getList()
     </el-container>
     <el-footer class="bg-red-500">Footer</el-footer>
   </el-container>
-  <el-drawer class="!bg-[#072232]" v-model="carSettingDrawerVisible" direction="ltr">
-    <el-select v-model="currentCar" class="m-2" placeholder="Select" size="large">
-      <el-option v-for="item in carList" :key="item.code" :label="item.name" :value="item.code" />
+  <el-drawer class="!bg-[#072232] select-none" v-model="carSettingDrawerVisible" direction="ltr">
+    <el-select
+      v-model="currentCar"
+      class="mr-2"
+      placeholder="选择车辆"
+      @visible-change="(visible: boolean) => visible && getList()"
+    >
+      <el-option v-for="item in carList" :key="item.id" :value="item.code">
+        <span>{{ item.name }}</span
+        ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
+      </el-option>
     </el-select>
+    <span>{{ currentCarStatus }}</span>
   </el-drawer>
 </template>
