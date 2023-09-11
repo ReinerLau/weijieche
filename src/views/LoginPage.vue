@@ -33,12 +33,12 @@
         />
       </el-form-item>
 
-      <!-- <el-checkbox
+      <el-checkbox
         v-model="ifRememberPassword"
-        class="text-white block"
+        class="!text-white block"
         label="记住密码"
         @change="handleRememberPassword"
-      ></el-checkbox> -->
+      ></el-checkbox>
 
       <el-button class="w-full" :loading="loading" type="primary" @click.prevent="handleLogin">
         登录
@@ -48,14 +48,13 @@
 </template>
 
 <script setup lang="ts">
+import { login } from '@/api/user'
+import { useRememberPassword } from '@/composables'
+import { getCookie, setCookie, setToken } from '@/utils'
 import type { FormInstance } from 'element-plus'
 import { reactive, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-// import { useRememberPassword } from "../composables/useRememberPassword";
-// import { useUserStore } from "../store/user";
-// import { getCookie, setCookie } from "../utils/support";
-// const { ifRememberPassword, handleRememberPassword, getRememberPassword } =
-//   useRememberPassword();
+const { ifRememberPassword, handleRememberPassword, getRememberPassword } = useRememberPassword()
 
 const loginForm = reactive({
   username: '',
@@ -66,26 +65,27 @@ const loginRules = {
   password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
 }
 
-// loginForm.username = getCookie("username") || "";
-// loginForm.password = getRememberPassword();
+loginForm.username = getCookie('username') || ''
+loginForm.password = getRememberPassword()
 
 const loading = ref(false)
 const loginFormRef: Ref<FormInstance | undefined> = ref()
-// const userStore = useUserStore();
 const router = useRouter()
 function handleLogin() {
   loginFormRef.value &&
     loginFormRef.value.validate(async (valid) => {
       if (valid) {
         loading.value = true
-        // const { login } = userStore
         try {
-          // await login(loginForm)
-          // loading.value = false
-          // setCookie('username', loginForm.username, 15)
-          // if (ifRememberPassword.value) {
-          //   setCookie('password', loginForm.password, 15)
-          // }
+          const { data } = await login({
+            username: loginForm.username.trim(),
+            password: loginForm.password
+          })
+          setCookie('username', loginForm.username, 15)
+          setToken(data.tokenHead + data.token)
+          if (ifRememberPassword.value) {
+            setCookie('password', loginForm.password, 15)
+          }
           router.push('/')
         } finally {
           loading.value = false
