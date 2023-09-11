@@ -36,18 +36,37 @@ getList()
     </el-container>
     <el-footer class="bg-red-500">Footer</el-footer>
   </el-container>
-  <el-drawer class="!bg-[#072232] select-none" v-model="carSettingDrawerVisible" direction="ltr">
-    <el-select
-      v-model="currentCar"
-      class="mr-2"
-      placeholder="选择车辆"
-      @visible-change="(visible: boolean) => visible && getList()"
-    >
-      <el-option v-for="item in carList" :key="item.id" :value="item.code">
-        <span>{{ item.name }}</span
-        ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
-      </el-option>
-    </el-select>
-    <span>{{ currentCarStatus }}</span>
+  <el-drawer
+    class="!bg-[#072232] select-none"
+    v-model="carSettingDrawerVisible"
+    direction="ltr"
+    size="20%"
+  >
+    <div>
+      <div class="flex justify-center">
+        <el-select
+          v-model="currentCar"
+          class="mr-2 mb-5"
+          placeholder="选择车辆"
+          @visible-change="(visible: boolean) => visible && getList()"
+        >
+          <el-option v-for="item in carList" :key="item.id" :value="item.code">
+            <span>{{ item.name }}</span
+            ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
+          </el-option>
+        </el-select>
+        <span>{{ currentCarStatus }}</span>
+      </div>
+      <div
+        class="text-center py-5 text-orange-400 hover:bg-orange-400 hover:text-white cursor-pointer"
+      >
+        配置监控
+      </div>
+      <div
+        class="text-center py-5 text-orange-400 hover:bg-orange-400 hover:text-white cursor-pointer"
+      >
+        配置外设
+      </div>
+    </div>
   </el-drawer>
 </template>
