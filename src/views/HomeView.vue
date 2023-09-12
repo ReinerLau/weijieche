@@ -38,9 +38,12 @@ const toggleDark = useToggle(isDark)
     </el-header>
     <el-container>
       <el-aside width="300px">
-        <el-menu default-active="2">
+        <el-menu default-active="2" :collapse="true">
           <el-sub-menu index="1">
             <template #title>
+              <el-icon>
+                <i-carbon-accessibility />
+              </el-icon>
               <span>Navigator One</span>
             </template>
             <el-sub-menu index="1-4">
