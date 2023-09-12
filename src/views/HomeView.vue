@@ -19,8 +19,8 @@ async function getList() {
 getList()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
-const frontLight = ref(false)
-const { Template, Auto } = useControlSection()
+
+const { AsideControl } = useControlSection()
 </script>
 
 <template>
@@ -40,18 +40,9 @@ const { Template, Auto } = useControlSection()
       </div>
     </el-header>
     <el-container>
-      <el-aside width="200px">
-        <el-menu default-active="2">
-          <Template></Template>
-          <Auto></Auto>
-          <el-menu-item index="2">
-            <div class="flex justify-between items-center w-full">
-              <span>前灯</span>
-              <el-switch v-model="frontLight" />
-            </div>
-          </el-menu-item>
-        </el-menu>
-      </el-aside>
+      <el-header>
+        <AsideControl />
+      </el-header>
       <el-main class="bg-zinc-400">Main</el-main>
     </el-container>
     <el-footer class="bg-red-500">Footer</el-footer>

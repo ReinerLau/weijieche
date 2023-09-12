@@ -1,58 +1,125 @@
-import { ElMenu, ElMenuItem, ElPopover } from 'element-plus'
+import { ElMenu, ElMenuItem, ElSubMenu, ElSwitch } from 'element-plus'
+import { Fragment, ref } from 'vue'
 export const useControlSection = () => {
-  const Template = () => (
-    <ElPopover placement="left-end" trigger="hover">
-      {{
-        reference: () => (
-          <ElMenuItem index="4">
-            <span class="text-white">模板</span>
-          </ElMenuItem>
-        ),
-        default: () => (
-          <ElMenu default-active="2">
-            <ElMenuItem index="4">
-              <span class="text-white">新建模板</span>
-            </ElMenuItem>
-            <ElMenuItem index="4">
-              <span class="text-white">保存模板</span>
-            </ElMenuItem>
-            <ElMenuItem index="4">
-              <span class="text-white">搜索模板</span>
-            </ElMenuItem>
-            <ElMenuItem index="4">
-              <span class="text-white">取消模板</span>
-            </ElMenuItem>
-          </ElMenu>
-        )
-      }}
-    </ElPopover>
+  const AsideControl = () => (
+    <ElMenu mode="horizontal">
+      {menuItems.map((menuItem) => (
+        <ElSubMenu index={menuItem.title}>
+          {{
+            title: () => menuItem.title,
+            default: () => (
+              <Fragment>
+                {menuItem.subItems.map((item) => (
+                  <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
+                ))}
+              </Fragment>
+            )
+          }}
+        </ElSubMenu>
+      ))}
+      <Switchs />
+    </ElMenu>
   )
-  const Auto = () => (
-    <ElPopover placement="left-end" trigger="hover">
-      {{
-        reference: () => (
-          <ElMenuItem index="4">
-            <span class="text-white">自主规划</span>
-          </ElMenuItem>
-        ),
-        default: () => (
-          <ElMenu default-active="2">
-            <ElMenuItem index="4">
-              <span class="text-white">创建路径</span>
-            </ElMenuItem>
-            <ElMenuItem index="4">
-              <span class="text-white">下发任务</span>
-            </ElMenuItem>
-            <ElMenuItem index="4">
-              <span class="text-white">取消路径</span>
-            </ElMenuItem>
-          </ElMenu>
-        )
-      }}
-    </ElPopover>
+
+  interface MenuItem {
+    title: string
+    subItems: { title: string }[]
+  }
+
+  const menuItems: MenuItem[] = [
+    {
+      title: '模式',
+      subItems: [
+        {
+          title: '手动模式'
+        },
+        {
+          title: '自主模式'
+        }
+      ]
+    },
+    {
+      title: '模板',
+      subItems: [
+        {
+          title: '新建模板'
+        },
+        {
+          title: '保存模板'
+        },
+        {
+          title: '搜索模板'
+        },
+        {
+          title: '取消模板'
+        }
+      ]
+    },
+    {
+      title: '自主规划',
+      subItems: [
+        {
+          title: '创建路径'
+        },
+        {
+          title: '下发任务'
+        },
+        {
+          title: '取消路径'
+        }
+      ]
+    },
+    {
+      title: '定时任务',
+      subItems: [
+        {
+          title: '新建定时任务'
+        },
+        {
+          title: '搜索定时任务'
+        }
+      ]
+    }
+  ]
+
+  const frontLight = ref(false)
+  const switchGroup = [
+    {
+      title: '前灯',
+      ref: frontLight
+    },
+    {
+      title: '后灯',
+      ref: frontLight
+    },
+    {
+      title: '语音',
+      ref: frontLight
+    },
+    {
+      title: '停止',
+      ref: frontLight
+    },
+    {
+      title: '激光发散器',
+      ref: frontLight
+    }
+  ]
+
+  const Switchs = () => (
+    <Fragment>
+      {switchGroup.map((item) => (
+        <ElMenuItem>
+          <div class="flex items-center w-full justify-between">
+            <span class="mr-2">{item.title}</span>
+            <ElSwitch v-model={item.ref.value} />
+          </div>
+        </ElMenuItem>
+      ))}
+    </Fragment>
   )
+
   return {
-    Template,
-    Auto
+    AsideControl
   }
 }
