@@ -2,6 +2,7 @@
 import { getCarList } from '@/api/list'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed, ref, type Ref } from 'vue'
+import { useControlSection } from '../composables/useControlSection'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -18,6 +19,8 @@ async function getList() {
 getList()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+const frontLight = ref(false)
+const { Template, Auto } = useControlSection()
 </script>
 
 <template>
@@ -37,25 +40,15 @@ const toggleDark = useToggle(isDark)
       </div>
     </el-header>
     <el-container>
-      <el-aside width="300px">
-        <el-menu default-active="2" :collapse="true">
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon>
-                <i-carbon-accessibility />
-              </el-icon>
-              <span>Navigator One</span>
-            </template>
-            <el-sub-menu index="1-4">
-              <template #title>item four</template>
-              <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
+      <el-aside width="200px">
+        <el-menu default-active="2">
+          <Template></Template>
+          <Auto></Auto>
           <el-menu-item index="2">
-            <span>Navigator Two</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <span>Navigator Four</span>
+            <div class="flex justify-between items-center w-full">
+              <span>前灯</span>
+              <el-switch v-model="frontLight" />
+            </div>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -70,6 +63,7 @@ const toggleDark = useToggle(isDark)
           v-model="currentCar"
           class="mr-2 mb-5"
           placeholder="选择车辆"
+          size="large"
           @visible-change="(visible: boolean) => visible && getList()"
         >
           <el-option v-for="item in carList" :key="item.id" :value="item.code">
@@ -77,7 +71,6 @@ const toggleDark = useToggle(isDark)
             ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
           </el-option>
         </el-select>
-        <span>{{ currentCarStatus }}</span>
       </div>
       <div class="text-center py-5 hover:text-white cursor-pointer">配置监控</div>
       <div class="text-center py-5 hover:text-white cursor-pointer">配置外设</div>
