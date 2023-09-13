@@ -34,12 +34,24 @@ dependencies:
     version: 4.2.4(vue@3.3.4)
 
 devDependencies:
+  '@iconify-json/bxs':
+    specifier: ^1.1.7
+    version: 1.1.7
   '@iconify-json/carbon':
     specifier: ^1.1.21
     version: 1.1.21
   '@iconify-json/clarity':
     specifier: ^1.1.9
     version: 1.1.9
+  '@iconify-json/icomoon-free':
+    specifier: ^1.1.5
+    version: 1.1.5
+  '@iconify-json/solar':
+    specifier: ^1.1.3
+    version: 1.1.3
+  '@iconify-json/vaadin':
+    specifier: ^1.1.6
+    version: 1.1.6
   '@rushstack/eslint-patch':
     specifier: ^1.3.2
     version: 1.3.2
@@ -724,6 +736,12 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
+  /@iconify-json/bxs@1.1.7:
+    resolution: {integrity: sha512-oZlJtaJYnPYVF9MZyz9NQ80tLx23AE2Cni+Fxj+qv3THNewAaHob5Q64Auslxm3+fTDZxdz6mwxT6z+/jeOC4g==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
   /@iconify-json/carbon@1.1.21:
     resolution: {integrity: sha512-bK2cMVM4noBU+FGlay433flpXLRzQu0ED095iAnoO6ka3yb4uz0lvb8acpN5gthyGLJ89C4HpfIbQZLQnMKQww==}
     dependencies:
@@ -732,6 +750,24 @@ packages:
 
   /@iconify-json/clarity@1.1.9:
     resolution: {integrity: sha512-U9Pj2YKZ1zVp2pikA1EOstEPmv7NuXRZR8wc31VXrZUrlMjvSWMwvcr8/VIcMBVK6smb7z/Ab3iZLvCs3mtyBw==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/icomoon-free@1.1.5:
+    resolution: {integrity: sha512-suD+JQtFjUsWmT3EwqitvOCaC2DA9O4JmXXvsbN6uSyiGe+vW67BuLZGDgp+TFIJRpzGYSXlw2L9CzH0GwAg2Q==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/solar@1.1.3:
+    resolution: {integrity: sha512-mtZFMD2DH8g1s21NS/qOWlsdIYcvYPOjGz1sdWAX+J6s5qCRv9yjmLB5PLmLfaKwI1Zqe9y8T7Z5Kx2yi2AKOQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/vaadin@1.1.6:
+    resolution: {integrity: sha512-4ZfoyUwOeUF/a3SPkAMW4h3J138u6H/4lqyYn2q9lJtSU/xWCD2c0mpUSp/QJCX15C++ZrF0iiayA9+YrUHixw==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

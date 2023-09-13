@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { getCarList } from '@/api/list'
+import BirdAwayControl from '@/components/BirdAwayControl.vue'
+import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
+import PantiltControl from '@/components/PantiltControl.vue'
+import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed, ref, type Ref } from 'vue'
-import { useControlSection } from '../composables/useControlSection'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -88,6 +91,8 @@ const status = [
     value: '-0.1℃'
   }
 ]
+
+const deviceSettingDrawerVisible = ref(false)
 </script>
 
 <template>
@@ -101,7 +106,7 @@ const status = [
           <span>{{ currentCarStatus }}</span>
         </div>
         <el-button link @click="toggleDark()">{{ isDark ? '☀️' : '🌙' }}</el-button>
-        <el-button link>外设操控</el-button>
+        <el-button link @click="deviceSettingDrawerVisible = true">外设操控</el-button>
       </div>
     </el-header>
     <el-container>
@@ -152,5 +157,12 @@ const status = [
       <div class="text-center py-5 hover:text-white cursor-pointer">配置监控</div>
       <div class="text-center py-5 hover:text-white cursor-pointer">配置外设</div>
     </div>
+  </el-drawer>
+  <el-drawer class="select-none" v-model="deviceSettingDrawerVisible" direction="rtl" size="50%">
+    <FrameSwitchOver />
+    <el-divider></el-divider>
+    <BirdAwayControl />
+    <el-divider></el-divider>
+    <PantiltControl />
   </el-drawer>
 </template>
