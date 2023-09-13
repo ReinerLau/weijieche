@@ -5,7 +5,7 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
-import { computed, reactive, ref, type Ref } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -182,6 +182,13 @@ const configColumns = computed(() => {
     return []
   }
 })
+
+const cameraWidth = ref(8)
+onMounted(() => {
+  if (screen.width < 1920) {
+    cameraWidth.value = 24
+  }
+})
 </script>
 
 <template>
@@ -219,17 +226,33 @@ const configColumns = computed(() => {
       <el-header>
         <TopControl />
       </el-header>
-      <el-main id="main" class="h-0">
-        <div>
-          <p v-for="item in 50" :key="item">{{ item }}</p>
-          <div>test</div>
+      <el-main>
+        <div class="h-[80vh] overflow-y-auto">
+          <div class="bg-slate-500 h-[50vh]">1</div>
+          <div>
+            <el-row>
+              <el-col :span="cameraWidth">
+                <div class="bg-black h-80">1</div>
+              </el-col>
+              <el-col :span="cameraWidth">
+                <div class="bg-black h-80">2</div>
+              </el-col>
+              <el-col :span="cameraWidth">
+                <div class="bg-black h-80">3</div>
+              </el-col>
+              <!-- <el-col :span="cameraWidth">
+                <div class="bg-black h-80">4</div>
+              </el-col> -->
+            </el-row>
+          </div>
+          <!-- <p v-for="item in 50" :key="item">{{ item }}</p> -->
         </div>
       </el-main>
     </el-container>
   </el-container>
-  <el-popover placement="top-start" trigger="click" width="80%">
+  <el-popover placement="bottom-start" trigger="click" width="70%">
     <template #reference>
-      <el-button type="primary" size="large" circle class="absolute right-10 bottom-20 z-10">
+      <el-button type="primary" size="large" circle class="fixed right-14 top-40 z-10">
         <template #icon>
           <i-clarity-list-line />
         </template>
