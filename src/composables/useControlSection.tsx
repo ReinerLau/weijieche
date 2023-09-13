@@ -1,7 +1,7 @@
 import { ElMenu, ElMenuItem, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, ref } from 'vue'
 export const useControlSection = () => {
-  const AsideControl = () => (
+  const TopControl = () => (
     <ElMenu mode="horizontal">
       {menuItems.map((menuItem) => (
         <ElSubMenu index={menuItem.title}>
@@ -120,6 +120,6 @@ export const useControlSection = () => {
   )
 
   return {
-    AsideControl
+    TopControl
   }
 }

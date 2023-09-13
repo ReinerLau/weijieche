@@ -23,7 +23,7 @@ getList()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const { AsideControl } = useControlSection()
+const { TopControl } = useControlSection()
 
 const status = [
   {
@@ -118,6 +118,70 @@ function notificationType(type: string) {
       return 'bg-[#4d99f9] text-[#fff]'
   }
 }
+
+const configTypes = {
+  CAMERA: 'CAMERA',
+  DEVICE: 'DEVICE'
+}
+
+const isConfig = ref(false)
+const configType = ref('')
+const configData: Ref<any[]> = ref([])
+const configColumns = computed(() => {
+  if (configType.value === configTypes.CAMERA) {
+    return [
+      {
+        label: '编号',
+        prop: 'id'
+      },
+      {
+        label: '摄像头名称',
+        prop: 'name'
+      },
+      {
+        label: '品牌',
+        prop: 'brand'
+      },
+      {
+        label: 'ip地址',
+        prop: 'ip'
+      },
+      {
+        label: '端口',
+        prop: 'port'
+      },
+      {
+        label: '关联车辆',
+        prop: 'rid'
+      }
+    ]
+  } else if (configType.value === configTypes.DEVICE) {
+    return [
+      {
+        label: '设备编号',
+        prop: 'id'
+      },
+      {
+        label: '外设名称',
+        prop: 'name'
+      },
+      {
+        label: '外设类型',
+        prop: 'type'
+      },
+      {
+        label: '外设状态',
+        prop: 'status'
+      },
+      {
+        label: '操作',
+        prop: 'action'
+      }
+    ]
+  } else {
+    return []
+  }
+})
 </script>
 
 <template>
@@ -138,9 +202,22 @@ function notificationType(type: string) {
         </el-button>
       </div>
     </el-header>
-    <el-container>
+    <el-main v-if="isConfig" id="main" class="h-0">
+      <el-page-header @back="isConfig = false" />
+      <el-divider></el-divider>
+      <el-button size="large">添加</el-button>
+      <el-table :data="configData" class="">
+        <el-table-column
+          v-for="item in configColumns"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+        />
+      </el-table>
+    </el-main>
+    <el-container v-else>
       <el-header>
-        <AsideControl />
+        <TopControl />
       </el-header>
       <el-main id="main" class="h-0">
         <div>
@@ -152,7 +229,7 @@ function notificationType(type: string) {
   </el-container>
   <el-popover placement="top-start" trigger="click" width="80%">
     <template #reference>
-      <el-button type="primary" size="large" circle class="absolute right-10 bottom-20">
+      <el-button type="primary" size="large" circle class="absolute right-10 bottom-20 z-10">
         <template #icon>
           <i-clarity-list-line />
         </template>
@@ -185,9 +262,27 @@ function notificationType(type: string) {
         ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
       </el-option>
     </el-select>
-    <el-button class="w-full">配置监控</el-button>
+    <el-button
+      class="w-full"
+      @click="
+        () => {
+          isConfig = true
+          configType = configTypes.CAMERA
+        }
+      "
+      >配置监控</el-button
+    >
     <el-divider></el-divider>
-    <el-button class="w-full">配置外设</el-button>
+    <el-button
+      class="w-full"
+      @click="
+        () => {
+          isConfig = true
+          configType = configTypes.DEVICE
+        }
+      "
+      >配置外设</el-button
+    >
     <el-divider></el-divider>
     <FrameSwitchOver />
     <el-divider></el-divider>
