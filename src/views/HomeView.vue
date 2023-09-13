@@ -158,7 +158,7 @@ const deviceSettingDrawerVisible = ref(false)
       <div class="text-center py-5 hover:text-white cursor-pointer">配置外设</div>
     </div>
   </el-drawer>
-  <el-drawer class="select-none" v-model="deviceSettingDrawerVisible" direction="rtl" size="50%">
+  <el-drawer class="select-none" v-model="deviceSettingDrawerVisible" direction="rtl" size="80%">
     <FrameSwitchOver />
     <el-divider></el-divider>
     <BirdAwayControl />
