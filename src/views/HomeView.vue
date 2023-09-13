@@ -44,6 +44,10 @@ const status = [
     value: 1000
   },
   {
+    title: '电量',
+    value: '100%'
+  },
+  {
     title: '温度',
     value: '-0.1℃'
   },
