@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -44,6 +44,12 @@ devDependencies:
     specifier: ^1.1.9
     version: 1.1.9
   '@iconify-json/icomoon-free':
+    specifier: ^1.1.5
+    version: 1.1.5
+  '@iconify-json/mdi':
+    specifier: ^1.1.54
+    version: 1.1.54
+  '@iconify-json/mi':
     specifier: ^1.1.5
     version: 1.1.5
   '@iconify-json/solar':
@@ -756,6 +762,18 @@ packages:
 
   /@iconify-json/icomoon-free@1.1.5:
     resolution: {integrity: sha512-suD+JQtFjUsWmT3EwqitvOCaC2DA9O4JmXXvsbN6uSyiGe+vW67BuLZGDgp+TFIJRpzGYSXlw2L9CzH0GwAg2Q==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/mdi@1.1.54:
+    resolution: {integrity: sha512-3QAsxte90EalbN2e8J30OqSSZz9qN2x+kmykQwsPahoW2dOtSvj+BR9YdiUd9A5XKk2nuU4UH5Gj/cq6WZ6CzQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/mi@1.1.5:
+    resolution: {integrity: sha512-b50nma0KOXcF3WzD4Y0xgzW6HGjD/iTyVK0j6ggVj09tIJ5vPirDzDvJEPLzU9edguH9mPIiz0p+6LQrEZzLyA==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

@@ -5,7 +5,7 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
-import { computed, ref, type Ref } from 'vue'
+import { computed, reactive, ref, type Ref } from 'vue'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -92,7 +92,32 @@ const status = [
   }
 ]
 
-const deviceSettingDrawerVisible = ref(false)
+interface websocketData {
+  id: string
+  type: string
+  message: string
+  time?: string
+}
+
+const notificationDrawerVisible = ref(false)
+const notifications: websocketData[] = reactive([
+  {
+    id: '1',
+    type: 'warning',
+    message: 'test',
+    time: '2023-09-13'
+  }
+])
+function notificationType(type: string) {
+  switch (type) {
+    case 'warning':
+      return 'bg-[#fbde47] text-[#000]'
+    case 'error':
+      return 'bg-[#dd0612] text-[#fff]'
+    default:
+      return 'bg-[#4d99f9] text-[#fff]'
+  }
+}
 </script>
 
 <template>
@@ -106,7 +131,11 @@ const deviceSettingDrawerVisible = ref(false)
           <span>{{ currentCarStatus }}</span>
         </div>
         <el-button link @click="toggleDark()">{{ isDark ? '☀️' : '🌙' }}</el-button>
-        <el-button link @click="deviceSettingDrawerVisible = true">外设操控</el-button>
+        <el-button link @click="notificationDrawerVisible = true">
+          <el-badge :value="notifications.length" :hidden="notifications.length === 0">
+            <i-mdi-bell-outline />
+          </el-badge>
+        </el-button>
       </div>
     </el-header>
     <el-container>
@@ -120,7 +149,6 @@ const deviceSettingDrawerVisible = ref(false)
         </div>
       </el-main>
     </el-container>
-    <el-footer>Footer</el-footer>
   </el-container>
   <el-popover placement="top-start" trigger="click" width="80%">
     <template #reference>
@@ -138,31 +166,51 @@ const deviceSettingDrawerVisible = ref(false)
       </el-descriptions>
     </template>
   </el-popover>
-  <el-drawer class="select-none" v-model="carSettingDrawerVisible" direction="ltr" size="20%">
-    <div>
-      <div class="flex justify-center">
-        <el-select
-          v-model="currentCar"
-          class="mr-2 mb-5"
-          placeholder="选择车辆"
-          size="large"
-          @visible-change="(visible: boolean) => visible && getList()"
-        >
-          <el-option v-for="item in carList" :key="item.id" :value="item.code">
-            <span>{{ item.name }}</span
-            ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
-          </el-option>
-        </el-select>
-      </div>
-      <div class="text-center py-5 hover:text-white cursor-pointer">配置监控</div>
-      <div class="text-center py-5 hover:text-white cursor-pointer">配置外设</div>
-    </div>
-  </el-drawer>
-  <el-drawer class="select-none" v-model="deviceSettingDrawerVisible" direction="rtl" size="80%">
+  <el-drawer
+    title="车"
+    class="select-none"
+    v-model="carSettingDrawerVisible"
+    direction="ltr"
+    size="80%"
+  >
+    <el-select
+      v-model="currentCar"
+      class="mb-5 w-full"
+      placeholder="选择车辆"
+      size="large"
+      @visible-change="(visible: boolean) => visible && getList()"
+    >
+      <el-option v-for="item in carList" :key="item.id" :value="item.code">
+        <span>{{ item.name }}</span
+        ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
+      </el-option>
+    </el-select>
+    <el-button class="w-full">配置监控</el-button>
+    <el-divider></el-divider>
+    <el-button class="w-full">配置外设</el-button>
+    <el-divider></el-divider>
     <FrameSwitchOver />
     <el-divider></el-divider>
     <BirdAwayControl />
     <el-divider></el-divider>
     <PantiltControl />
+  </el-drawer>
+  <el-drawer
+    title="通知"
+    class="select-none"
+    v-model="notificationDrawerVisible"
+    direction="rtl"
+    size="80%"
+  >
+    <div
+      v-for="item in notifications"
+      :key="item.time"
+      class="p-5 shadow-md mb-5 font-bold relative"
+      :class="notificationType(item.type)"
+    >
+      <div class="text-3xl absolute right-2 top-0 cursor-pointer">×</div>
+      <div class="mb-5">{{ item.time }}</div>
+      <div>{{ item.id }} {{ item.message }}</div>
+    </div>
   </el-drawer>
 </template>
