@@ -21,6 +21,69 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
 const { AsideControl } = useControlSection()
+
+const status = [
+  {
+    title: '模式',
+    value: '手动模式'
+  },
+  {
+    title: '底盘',
+    value: '锁定'
+  },
+  {
+    title: '控制',
+    value: '未知'
+  },
+  {
+    title: '速度',
+    value: 1000
+  },
+  {
+    title: '转向',
+    value: 1000
+  },
+  {
+    title: '温度',
+    value: '-0.1℃'
+  },
+  {
+    title: '湿度',
+    value: '-0.1℃'
+  },
+  {
+    title: '火焰',
+    value: '-0.1℃'
+  },
+  {
+    title: '噪音',
+    value: '-0.1℃'
+  },
+  {
+    title: '烟雾',
+    value: '-0.1℃'
+  },
+  {
+    title: 'PM2.5',
+    value: '-0.1℃'
+  },
+  {
+    title: 'PM10',
+    value: '-0.1℃'
+  },
+  {
+    title: '硫化氢',
+    value: '-0.1℃'
+  },
+  {
+    title: '甲烷',
+    value: '-0.1℃'
+  },
+  {
+    title: '一氧化碳',
+    value: '-0.1℃'
+  }
+]
 </script>
 
 <template>
@@ -33,20 +96,39 @@ const { AsideControl } = useControlSection()
           }}</el-button>
           <span>{{ currentCarStatus }}</span>
         </div>
-        <div>
-          <el-button link @click="toggleDark()">{{ isDark ? '☀️' : '🌙' }}</el-button>
-          <el-button link>外设操控</el-button>
-        </div>
+        <el-button link @click="toggleDark()">{{ isDark ? '☀️' : '🌙' }}</el-button>
+        <el-button link>外设操控</el-button>
       </div>
     </el-header>
     <el-container>
       <el-header>
         <AsideControl />
       </el-header>
-      <el-main class="bg-zinc-400">Main</el-main>
+      <el-main id="main" class="h-0">
+        <div>
+          <p v-for="item in 50" :key="item">{{ item }}</p>
+          <div>test</div>
+        </div>
+      </el-main>
     </el-container>
-    <el-footer class="bg-red-500">Footer</el-footer>
+    <el-footer>Footer</el-footer>
   </el-container>
+  <el-popover placement="top-start" trigger="click" width="80%">
+    <template #reference>
+      <el-button type="primary" size="large" circle class="absolute right-10 bottom-20">
+        <template #icon>
+          <i-clarity-list-line />
+        </template>
+      </el-button>
+    </template>
+    <template #default>
+      <el-descriptions :border="true">
+        <el-descriptions-item v-for="item in status" :key="item.title" :label="item.title">{{
+          item.value
+        }}</el-descriptions-item>
+      </el-descriptions>
+    </template>
+  </el-popover>
   <el-drawer class="select-none" v-model="carSettingDrawerVisible" direction="ltr" size="20%">
     <div>
       <div class="flex justify-center">
