@@ -3,12 +3,12 @@
     <div class="text-white">云台控制</div>
     <div class="flex justify-center">
       <div class="w-48">
-        <div class="flex justify-center">
+        <div class="flex justify-center mb-3">
           <el-button size="large">
             <i-bxs-up-arrow />
           </el-button>
         </div>
-        <div class="flex justify-between">
+        <div class="flex justify-between mb-3">
           <el-button size="large">
             <i-bxs-left-arrow />
           </el-button>
