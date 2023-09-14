@@ -208,6 +208,8 @@ function checkIsMobile() {
     }
   }
 }
+
+const statusDrawerVisible = ref(false)
 </script>
 
 <template>
@@ -252,32 +254,34 @@ function checkIsMobile() {
             <div class="flex-1">2</div>
             <div class="flex-1">3</div>
           </div>
-          <div ref="mapRef" class="bg-slate-500 h-full flex-1">1</div>
-          <!-- <div v-if="isMobile">
-            <div class="bg-black h-72">1</div>
-            <div class="bg-black h-72">2</div>
-            <div class="bg-black h-72">3</div>
-          </div> -->
+          <div class="h-full flex-1 flex flex-col">
+            <div class="bg-slate-500 h-full">1</div>
+            <el-button class="w-full" size="large" @click="statusDrawerVisible = true">
+              <i-mdi-arrow-drop-up class="text-3xl" />
+            </el-button>
+          </div>
         </div>
       </el-main>
     </el-container>
   </el-container>
-  <el-popover placement="bottom-start" trigger="click" width="30%">
-    <template #reference>
-      <el-button type="primary" size="large" circle class="fixed right-14 top-40 z-10">
-        <template #icon>
-          <i-clarity-list-line />
-        </template>
-      </el-button>
-    </template>
-    <template #default>
-      <el-descriptions :border="true">
-        <el-descriptions-item v-for="item in status" :key="item.title" :label="item.title">{{
-          item.value
-        }}</el-descriptions-item>
-      </el-descriptions>
-    </template>
-  </el-popover>
+  <el-drawer
+    title="详情"
+    class="select-none"
+    v-model="statusDrawerVisible"
+    direction="btt"
+    size="65%"
+  >
+    <el-descriptions :border="true" direction="vertical">
+      <el-descriptions-item v-for="item in status" :key="item.title" :label="item.title">{{
+        item.value
+      }}</el-descriptions-item>
+    </el-descriptions>
+    <div v-if="isMobile">
+      <div class="bg-black h-60 mt-2">1</div>
+      <div class="bg-black h-60 mt-2">2</div>
+      <div class="bg-black h-60 mt-2">3</div>
+    </div>
+  </el-drawer>
   <el-drawer
     title="车"
     class="select-none"
