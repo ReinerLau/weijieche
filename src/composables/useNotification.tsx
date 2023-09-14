@@ -1,0 +1,48 @@
+import { ElCard, ElDrawer } from 'element-plus'
+import { reactive, ref } from 'vue'
+interface websocketData {
+  id: string
+  type: string
+  message: string
+  time?: string
+}
+export const useNotification = () => {
+  const notificationDrawerVisible = ref(false)
+  const notifications: websocketData[] = reactive([
+    {
+      id: '1',
+      type: 'warning',
+      message: 'test',
+      time: '2023-09-13'
+    }
+  ])
+
+  const NotificationDrawer = () => (
+    <ElDrawer
+      title="通知"
+      class="select-none"
+      v-model={notificationDrawerVisible.value}
+      direction="rtl"
+      size="80%"
+    >
+      {notifications.map((item) => (
+        <ElCard>
+          {{
+            header: () => (
+              <div class="flex justify-between">
+                <span>{item.time}</span>
+                <span>×</span>
+              </div>
+            ),
+            default: () => <div>{item.message}</div>
+          }}
+        </ElCard>
+      ))}
+    </ElDrawer>
+  )
+  return {
+    NotificationDrawer,
+    notificationDrawerVisible,
+    notifications
+  }
+}

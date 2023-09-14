@@ -5,7 +5,8 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
-import { computed, onMounted, reactive, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
+import { useNotification } from '../composables/useNotification'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -91,33 +92,6 @@ const status = [
     value: '-0.1℃'
   }
 ]
-
-interface websocketData {
-  id: string
-  type: string
-  message: string
-  time?: string
-}
-
-const notificationDrawerVisible = ref(false)
-const notifications: websocketData[] = reactive([
-  {
-    id: '1',
-    type: 'warning',
-    message: 'test',
-    time: '2023-09-13'
-  }
-])
-function notificationType(type: string) {
-  switch (type) {
-    case 'warning':
-      return 'bg-[#fbde47] text-[#000]'
-    case 'error':
-      return 'bg-[#dd0612] text-[#fff]'
-    default:
-      return 'bg-[#4d99f9] text-[#fff]'
-  }
-}
 
 const configTypes = {
   CAMERA: 'CAMERA',
@@ -210,6 +184,7 @@ function checkIsMobile() {
 }
 
 const statusDrawerVisible = ref(false)
+const { NotificationDrawer, notificationDrawerVisible, notifications } = useNotification()
 </script>
 
 <template>
@@ -331,22 +306,5 @@ const statusDrawerVisible = ref(false)
     <el-divider></el-divider>
     <PantiltControl />
   </el-drawer>
-  <el-drawer
-    title="通知"
-    class="select-none"
-    v-model="notificationDrawerVisible"
-    direction="rtl"
-    size="80%"
-  >
-    <div
-      v-for="item in notifications"
-      :key="item.time"
-      class="p-5 shadow-md mb-5 font-bold relative"
-      :class="notificationType(item.type)"
-    >
-      <div class="text-3xl absolute right-2 top-0 cursor-pointer">×</div>
-      <div class="mb-5">{{ item.time }}</div>
-      <div>{{ item.id }} {{ item.message }}</div>
-    </div>
-  </el-drawer>
+  <NotificationDrawer />
 </template>
