@@ -303,6 +303,7 @@ const statusDrawerVisible = ref(false)
     </el-select>
     <el-button
       class="w-full"
+      size="large"
       @click="
         () => {
           isConfig = true
@@ -314,6 +315,7 @@ const statusDrawerVisible = ref(false)
     <el-divider></el-divider>
     <el-button
       class="w-full"
+      size="large"
       @click="
         () => {
           isConfig = true
