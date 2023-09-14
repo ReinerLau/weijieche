@@ -5,7 +5,7 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
-import { computed, onMounted, reactive, ref, type Ref } from 'vue'
+import { computed, reactive, ref, type Ref } from 'vue'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -183,12 +183,14 @@ const configColumns = computed(() => {
   }
 })
 
-const cameraWidth = ref(8)
-onMounted(() => {
+const cameraWidth = ref(12)
+window.onresize = () => {
   if (screen.width < 1920) {
     cameraWidth.value = 24
+  } else {
+    cameraWidth.value = 12
   }
-})
+}
 </script>
 
 <template>
@@ -227,24 +229,16 @@ onMounted(() => {
         <TopControl />
       </el-header>
       <el-main>
-        <div class="h-[80vh] overflow-y-auto">
-          <div class="bg-slate-500 h-[50vh]">1</div>
-          <div>
-            <el-row>
-              <el-col :span="cameraWidth">
-                <div class="bg-black h-80">1</div>
-              </el-col>
-              <el-col :span="cameraWidth">
-                <div class="bg-black h-80">2</div>
-              </el-col>
-              <el-col :span="cameraWidth">
-                <div class="bg-black h-80">3</div>
-              </el-col>
-              <!-- <el-col :span="cameraWidth">
-                <div class="bg-black h-80">4</div>
-              </el-col> -->
-            </el-row>
-          </div>
+        <div class="h-[calc(100vh-160px)] overflow-y-auto">
+          <div class="bg-slate-500 h-[calc(100vh-160px)]">1</div>
+          <el-row>
+            <el-col :span="cameraWidth">
+              <div class="bg-black h-96">1</div>
+            </el-col>
+            <el-col :span="cameraWidth">
+              <div class="bg-black h-96">2</div>
+            </el-col>
+          </el-row>
           <!-- <p v-for="item in 50" :key="item">{{ item }}</p> -->
         </div>
       </el-main>
