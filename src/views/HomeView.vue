@@ -5,7 +5,7 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
-import { computed, reactive, ref, type Ref } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
@@ -183,12 +183,29 @@ const configColumns = computed(() => {
   }
 })
 
-const cameraWidth = ref(12)
+const cameraWidth = ref(8)
 window.onresize = () => {
-  if (screen.width < 1920) {
+  checkIsMobile()
+}
+onMounted(() => {
+  checkIsMobile()
+})
+
+const isMobile = ref(false)
+const mainRef: Ref<HTMLElement | undefined> = ref()
+function checkIsMobile() {
+  if (screen.width < 1280) {
     cameraWidth.value = 24
+    isMobile.value = true
+    if (mainRef.value) {
+      mainRef.value.style.flexDirection = 'column'
+    }
   } else {
     cameraWidth.value = 12
+    isMobile.value = false
+    if (mainRef.value) {
+      mainRef.value.style.flexDirection = 'row'
+    }
   }
 }
 </script>
@@ -229,22 +246,23 @@ window.onresize = () => {
         <TopControl />
       </el-header>
       <el-main>
-        <div class="h-[calc(100vh-160px)] overflow-y-auto">
-          <div class="bg-slate-500 h-[calc(100vh-160px)]">1</div>
-          <el-row>
-            <el-col :span="cameraWidth">
-              <div class="bg-black h-96">1</div>
-            </el-col>
-            <el-col :span="cameraWidth">
-              <div class="bg-black h-96">2</div>
-            </el-col>
-          </el-row>
-          <!-- <p v-for="item in 50" :key="item">{{ item }}</p> -->
+        <div ref="mainRef" class="h-[calc(100vh-160px)] overflow-y-auto flex">
+          <div v-if="!isMobile" class="bg-black w-96 flex flex-col">
+            <div class="flex-1">1</div>
+            <div class="flex-1">2</div>
+            <div class="flex-1">3</div>
+          </div>
+          <div ref="mapRef" class="bg-slate-500 h-full flex-1">1</div>
+          <!-- <div v-if="isMobile">
+            <div class="bg-black h-72">1</div>
+            <div class="bg-black h-72">2</div>
+            <div class="bg-black h-72">3</div>
+          </div> -->
         </div>
       </el-main>
     </el-container>
   </el-container>
-  <el-popover placement="bottom-start" trigger="click" width="70%">
+  <el-popover placement="bottom-start" trigger="click" width="30%">
     <template #reference>
       <el-button type="primary" size="large" circle class="fixed right-14 top-40 z-10">
         <template #icon>
