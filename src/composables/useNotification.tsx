@@ -1,5 +1,6 @@
 import { ElCard, ElDrawer } from 'element-plus'
 import { reactive, ref } from 'vue'
+import IconCloseFill from '~icons/mingcute/close-fill'
 interface websocketData {
   id: string
   type: string
@@ -31,7 +32,7 @@ export const useNotification = () => {
             header: () => (
               <div class="flex justify-between">
                 <span>{item.time}</span>
-                <span>×</span>
+                <IconCloseFill class="cursor-pointer" />
               </div>
             ),
             default: () => <div>{item.message}</div>

@@ -3,10 +3,9 @@ import { getCarList } from '@/api/list'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { useControlSection } from '@/composables'
+import { useControlSection, useNotification } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed, onMounted, ref, type Ref } from 'vue'
-import { useNotification } from '../composables/useNotification'
 const carSettingDrawerVisible = ref(false)
 const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
 const currentCar = ref('')
