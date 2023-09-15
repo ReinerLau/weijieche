@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { getCarList } from '@/api/list'
-import BirdAwayControl from '@/components/BirdAwayControl.vue'
-import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
-import PantiltControl from '@/components/PantiltControl.vue'
 import { useControlSection, useNotification } from '@/composables'
 import { useDark, useToggle } from '@vueuse/core'
 import { computed, onMounted, ref, type Ref } from 'vue'
-const carSettingDrawerVisible = ref(false)
-const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
-const currentCar = ref('')
+import { useCarRelevant } from '../composables/useCarRelevant'
+import { useConfig } from '../composables/useConfig'
+
 const currentCarName = computed(() => {
   return carList.value.find((item) => item.code === currentCar.value)?.name
 })
 const currentCarStatus = computed(() => {
   return carList.value.find((item) => item.code === currentCar.value)?.status === '1' ? '✅' : '🚫'
 })
-async function getList() {
-  const { data } = await getCarList('patroling')
-  carList.value = data || []
-}
-getList()
+
+const { ConfigSection, isConfig, configType, configTypes } = useConfig()
+
+const { CarRelevantDrawer, carSettingDrawerVisible, carList, currentCar } = useCarRelevant({
+  isConfig,
+  configType,
+  configTypes
+})
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
@@ -92,70 +91,6 @@ const status = [
   }
 ]
 
-const configTypes = {
-  CAMERA: 'CAMERA',
-  DEVICE: 'DEVICE'
-}
-
-const isConfig = ref(false)
-const configType = ref('')
-const configData: Ref<any[]> = ref([])
-const configColumns = computed(() => {
-  if (configType.value === configTypes.CAMERA) {
-    return [
-      {
-        label: '编号',
-        prop: 'id'
-      },
-      {
-        label: '摄像头名称',
-        prop: 'name'
-      },
-      {
-        label: '品牌',
-        prop: 'brand'
-      },
-      {
-        label: 'ip地址',
-        prop: 'ip'
-      },
-      {
-        label: '端口',
-        prop: 'port'
-      },
-      {
-        label: '关联车辆',
-        prop: 'rid'
-      }
-    ]
-  } else if (configType.value === configTypes.DEVICE) {
-    return [
-      {
-        label: '设备编号',
-        prop: 'id'
-      },
-      {
-        label: '外设名称',
-        prop: 'name'
-      },
-      {
-        label: '外设类型',
-        prop: 'type'
-      },
-      {
-        label: '外设状态',
-        prop: 'status'
-      },
-      {
-        label: '操作',
-        prop: 'action'
-      }
-    ]
-  } else {
-    return []
-  }
-})
-
 const cameraWidth = ref(8)
 window.onresize = () => {
   checkIsMobile()
@@ -205,17 +140,7 @@ const { NotificationDrawer, notificationDrawerVisible, notifications } = useNoti
       </div>
     </el-header>
     <el-main v-if="isConfig" id="main" class="h-0">
-      <el-page-header @back="isConfig = false" />
-      <el-divider></el-divider>
-      <el-button size="large">添加</el-button>
-      <el-table :data="configData" class="">
-        <el-table-column
-          v-for="item in configColumns"
-          :key="item.prop"
-          :prop="item.prop"
-          :label="item.label"
-        />
-      </el-table>
+      <ConfigSection />
     </el-main>
     <el-container v-else>
       <el-header>
@@ -256,54 +181,6 @@ const { NotificationDrawer, notificationDrawerVisible, notifications } = useNoti
       <div class="bg-black h-60 mt-2">3</div>
     </div>
   </el-drawer>
-  <el-drawer
-    title="车"
-    class="select-none"
-    v-model="carSettingDrawerVisible"
-    direction="ltr"
-    size="80%"
-  >
-    <el-select
-      v-model="currentCar"
-      class="mb-5 w-full"
-      placeholder="选择车辆"
-      size="large"
-      @visible-change="(visible: boolean) => visible && getList()"
-    >
-      <el-option v-for="item in carList" :key="item.id" :value="item.code">
-        <span>{{ item.name }}</span
-        ><span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
-      </el-option>
-    </el-select>
-    <el-button
-      class="w-full"
-      size="large"
-      @click="
-        () => {
-          isConfig = true
-          configType = configTypes.CAMERA
-        }
-      "
-      >配置监控</el-button
-    >
-    <el-divider></el-divider>
-    <el-button
-      class="w-full"
-      size="large"
-      @click="
-        () => {
-          isConfig = true
-          configType = configTypes.DEVICE
-        }
-      "
-      >配置外设</el-button
-    >
-    <el-divider></el-divider>
-    <FrameSwitchOver />
-    <el-divider></el-divider>
-    <BirdAwayControl />
-    <el-divider></el-divider>
-    <PantiltControl />
-  </el-drawer>
+  <CarRelevantDrawer />
   <NotificationDrawer />
 </template>
