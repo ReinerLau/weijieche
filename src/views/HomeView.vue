@@ -1,27 +1,22 @@
 <script setup lang="ts">
-import { useControlSection, useNotification } from '@/composables'
-import { useDark, useToggle } from '@vueuse/core'
-import { computed, onMounted, ref, type Ref } from 'vue'
-import { useCarRelevant } from '../composables/useCarRelevant'
-import { useConfig } from '../composables/useConfig'
-import { useDetail } from '../composables/useDetail'
+import {
+  useCarRelevant,
+  useConfig,
+  useControlSection,
+  useDetail,
+  useNotification,
+  useTheme
+} from '@/composables'
 
-const currentCarName = computed(() => {
-  return carList.value.find((item) => item.code === currentCar.value)?.name
-})
-const currentCarStatus = computed(() => {
-  return carList.value.find((item) => item.code === currentCar.value)?.status === '1' ? '✅' : '🚫'
-})
+import { onMounted, ref, type Ref } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
-const { CarRelevantDrawer, carSettingDrawerVisible, carList, currentCar } = useCarRelevant({
+const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
   isConfig,
   configType,
   configTypes
 })
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 
 const { TopControl } = useControlSection()
 
@@ -51,25 +46,17 @@ function checkIsMobile() {
   }
 }
 const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
-const { NotificationDrawer, notificationDrawerVisible, notifications } = useNotification()
+const { NotificationDrawer, NotificationController } = useNotification()
+const { ThemeController } = useTheme()
 </script>
 
 <template>
   <el-container class="h-full">
     <el-header>
       <div class="h-full flex items-center justify-between">
-        <div>
-          <el-button link c @click="carSettingDrawerVisible = true">{{
-            currentCarName || '未选择车辆'
-          }}</el-button>
-          <span>{{ currentCarStatus }}</span>
-        </div>
-        <el-button link @click="toggleDark()">{{ isDark ? '☀️' : '🌙' }}</el-button>
-        <el-button link @click="notificationDrawerVisible = true">
-          <el-badge :value="notifications.length" :hidden="notifications.length === 0">
-            <i-mdi-bell-outline />
-          </el-badge>
-        </el-button>
+        <CarRelevantController />
+        <ThemeController />
+        <NotificationController />
       </div>
     </el-header>
     <el-main v-if="isConfig" id="main" class="h-0">

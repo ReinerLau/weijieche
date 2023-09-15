@@ -3,7 +3,7 @@ import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { ElButton, ElDivider, ElDrawer, ElOption, ElSelect } from 'element-plus'
-import { ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 export const useCarRelevant = ({
   isConfig,
   configType,
@@ -23,6 +23,15 @@ export const useCarRelevant = ({
     const { data } = await getCarList('patroling')
     carList.value = data || []
   }
+
+  const currentCarName = computed(() => {
+    return carList.value.find((item) => item.code === currentCar.value)?.name
+  })
+  const currentCarStatus = computed(() => {
+    return carList.value.find((item) => item.code === currentCar.value)?.status === '1'
+      ? '✅'
+      : '🚫'
+  })
 
   const CarRelevantDrawer = () => (
     <ElDrawer
@@ -75,13 +84,18 @@ export const useCarRelevant = ({
       <PantiltControl />
     </ElDrawer>
   )
+
+  const CarRelevantController = () => (
+    <div>
+      <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
+        {currentCarName.value || '未选择车辆'}
+      </ElButton>
+      <span>{currentCarStatus.value}</span>
+    </div>
+  )
+
   return {
     CarRelevantDrawer,
-    carSettingDrawerVisible,
-    carList,
-    currentCar,
-    isConfig,
-    configType,
-    configTypes
+    CarRelevantController
   }
 }

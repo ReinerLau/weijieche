@@ -1,5 +1,6 @@
-import { ElCard, ElDrawer } from 'element-plus'
+import { ElBadge, ElButton, ElCard, ElDrawer } from 'element-plus'
 import { reactive, ref } from 'vue'
+import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
 interface websocketData {
   id: string
@@ -41,9 +42,16 @@ export const useNotification = () => {
       ))}
     </ElDrawer>
   )
+
+  const NotificationController = () => (
+    <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
+      <ElBadge value={notifications.length} hidden={notifications.length === 0}>
+        <IconMdiBellOutline />
+      </ElBadge>
+    </ElButton>
+  )
   return {
     NotificationDrawer,
-    notificationDrawerVisible,
-    notifications
+    NotificationController
   }
 }
