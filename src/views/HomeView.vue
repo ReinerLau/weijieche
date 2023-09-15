@@ -5,10 +5,11 @@ import {
   useControlSection,
   useDetail,
   useNotification,
+  useResponsive,
   useTheme
 } from '@/composables'
 
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -19,8 +20,8 @@ const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
 })
 
 const { TopControl } = useControlSection()
+const { checkIsMobile, isMobile, mainRef } = useResponsive()
 
-const cameraWidth = ref(8)
 window.onresize = () => {
   checkIsMobile()
 }
@@ -28,23 +29,6 @@ onMounted(() => {
   checkIsMobile()
 })
 
-const isMobile = ref(false)
-const mainRef: Ref<HTMLElement | undefined> = ref()
-function checkIsMobile() {
-  if (screen.width < 1280) {
-    cameraWidth.value = 24
-    isMobile.value = true
-    if (mainRef.value) {
-      mainRef.value.style.flexDirection = 'column'
-    }
-  } else {
-    cameraWidth.value = 12
-    isMobile.value = false
-    if (mainRef.value) {
-      mainRef.value.style.flexDirection = 'row'
-    }
-  }
-}
 const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
