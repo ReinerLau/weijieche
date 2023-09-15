@@ -58,7 +58,7 @@ const { ThemeController } = useTheme()
             <div class="flex-1">3</div>
           </div>
           <div class="h-full flex-1 flex flex-col">
-            <div class="bg-slate-500 h-full">1</div>
+            <div class="bg-slate-500 h-full">测试</div>
             <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
               <i-mdi-arrow-drop-up class="text-3xl" />
             </el-button>

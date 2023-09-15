@@ -1,6 +1,8 @@
 import { ElMenu, ElMenuItem, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 export const useControlSection = () => {
+  const { t } = useI18n()
   const TopControl = () => (
     <ElMenu mode="horizontal">
       {menuItems.map((menuItem) => (
@@ -28,7 +30,7 @@ export const useControlSection = () => {
 
   const menuItems: MenuItem[] = [
     {
-      title: '模式',
+      title: t('mode'),
       subItems: [
         {
           title: '手动模式'
