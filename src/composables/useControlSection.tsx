@@ -1,26 +1,28 @@
-import { ElMenu, ElMenuItem, ElSubMenu, ElSwitch } from 'element-plus'
+import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 export const useControlSection = () => {
   const { t } = useI18n()
   const TopControl = () => (
-    <ElMenu mode="horizontal">
-      {menuItems.value.map((menuItem) => (
-        <ElSubMenu index={menuItem.title}>
-          {{
-            title: () => menuItem.title,
-            default: () => (
-              <Fragment>
-                {menuItem.subItems.map((item) => (
-                  <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
-                ))}
-              </Fragment>
-            )
-          }}
-        </ElSubMenu>
-      ))}
-      <Switchs />
-    </ElMenu>
+    <ElScrollbar always={true}>
+      <ElMenu mode="horizontal" ellipsis={false}>
+        {menuItems.value.map((menuItem) => (
+          <ElSubMenu index={menuItem.title}>
+            {{
+              title: () => menuItem.title,
+              default: () => (
+                <Fragment>
+                  {menuItem.subItems.map((item) => (
+                    <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
+                  ))}
+                </Fragment>
+              )
+            }}
+          </ElSubMenu>
+        ))}
+        <Switchs />
+      </ElMenu>
+    </ElScrollbar>
   )
 
   interface MenuItem {
