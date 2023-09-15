@@ -1,3 +1,18 @@
 {
-  "mode": "模式"
+  "mo-shi": "模式",
+  "shou-dong": "手动",
+  "zi-zhu": "自主",
+  "mo-ban": "模板",
+  "xin-jian": "新建",
+  "bao-cun": "保存",
+  "sou-suo": "搜索",
+  "qu-xiao": "取消",
+  "lu-jing-gui-hua": "路径规划",
+  "xia-fa": "下发",
+  "ding-shi-ren-wu": "定时任务",
+  "qian-deng": "前灯",
+  "hou-deng": "后灯",
+  "yu-yin": "语音",
+  "ting-zhi": "停止",
+  "ji-guang-fa-san-qi": "激光发散器"
 }

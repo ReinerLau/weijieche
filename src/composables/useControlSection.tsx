@@ -30,55 +30,55 @@ export const useControlSection = () => {
 
   const menuItems: MenuItem[] = [
     {
-      title: t('mode'),
+      title: t('mo-shi'),
       subItems: [
         {
-          title: '手动模式'
+          title: t('shou-dong')
         },
         {
-          title: '自主模式'
+          title: t('zi-zhu')
         }
       ]
     },
     {
-      title: '模板',
+      title: t('mo-ban'),
       subItems: [
         {
-          title: '新建模板'
+          title: t('xin-jian')
         },
         {
-          title: '保存模板'
+          title: t('bao-cun')
         },
         {
-          title: '搜索模板'
+          title: t('sou-suo')
         },
         {
-          title: '取消模板'
+          title: t('qu-xiao')
         }
       ]
     },
     {
-      title: '自主规划',
+      title: t('lu-jing-gui-hua'),
       subItems: [
         {
-          title: '创建路径'
+          title: t('xin-jian')
         },
         {
-          title: '下发任务'
+          title: t('xia-fa')
         },
         {
-          title: '取消路径'
+          title: t('qu-xiao')
         }
       ]
     },
     {
-      title: '定时任务',
+      title: t('ding-shi-ren-wu'),
       subItems: [
         {
-          title: '新建定时任务'
+          title: t('xin-jian')
         },
         {
-          title: '搜索定时任务'
+          title: t('sou-suo')
         }
       ]
     }
@@ -87,23 +87,23 @@ export const useControlSection = () => {
   const frontLight = ref(false)
   const switchGroup = [
     {
-      title: '前灯',
+      title: t('qian-deng'),
       ref: frontLight
     },
     {
-      title: '后灯',
+      title: t('hou-deng'),
       ref: frontLight
     },
     {
-      title: '语音',
+      title: t('yu-yin'),
       ref: frontLight
     },
     {
-      title: '停止',
+      title: t('ting-zhi'),
       ref: frontLight
     },
     {
-      title: '激光发散器',
+      title: t('ji-guang-fa-san-qi'),
       ref: frontLight
     }
   ]

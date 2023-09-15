@@ -45,7 +45,7 @@ export const useNotification = () => {
 
   const NotificationController = () => (
     <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
-      <ElBadge value={notifications.length} hidden={notifications.length === 0}>
+      <ElBadge value={notifications.length} hidden={notifications.length === 0} isDot={true}>
         <IconMdiBellOutline />
       </ElBadge>
     </ElButton>

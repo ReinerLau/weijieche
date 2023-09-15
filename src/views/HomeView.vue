@@ -4,12 +4,14 @@ import {
   useConfig,
   useControlSection,
   useDetail,
+  useInternational,
   useNotification,
   useResponsive,
   useTheme
 } from '@/composables'
 
 import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -32,6 +34,8 @@ onMounted(() => {
 const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
+const { InternationalController } = useInternational()
+const { locale } = useI18n()
 </script>
 
 <template>
@@ -39,8 +43,12 @@ const { ThemeController } = useTheme()
     <el-header>
       <div class="h-full flex items-center justify-between">
         <CarRelevantController />
-        <ThemeController />
-        <NotificationController />
+        <div class="flex items-center">
+          <div>{{ locale }}</div>
+          <NotificationController />
+          <ThemeController />
+          <InternationalController class="ml-2" />
+        </div>
       </div>
     </el-header>
     <el-main v-if="isConfig" id="main" class="h-0">

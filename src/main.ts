@@ -9,22 +9,9 @@ import router from './router'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-import en from '@/locales/en.json'
-import fr from '@/locales/fr.json'
-import zh from '@/locales/zh.json'
-import { createI18n } from 'vue-i18n'
+import i18n from './utils/international'
 
 const app = createApp(App)
-
-const i18n = createI18n({
-  legacy: false,
-  locale: 'zh',
-  messages: {
-    en,
-    zh,
-    fr
-  }
-})
 
 app.use(createPinia())
 app.use(router)
