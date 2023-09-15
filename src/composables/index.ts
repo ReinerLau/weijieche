@@ -1,5 +1,6 @@
 export * from './useCarRelevant'
 export * from './useConfig'
 export * from './useControlSection'
+export * from './useDetail'
 export * from './useNotification'
 export * from './useRememberPassword'

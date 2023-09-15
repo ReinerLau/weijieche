@@ -4,6 +4,7 @@ import { useDark, useToggle } from '@vueuse/core'
 import { computed, onMounted, ref, type Ref } from 'vue'
 import { useCarRelevant } from '../composables/useCarRelevant'
 import { useConfig } from '../composables/useConfig'
+import { useDetail } from '../composables/useDetail'
 
 const currentCarName = computed(() => {
   return carList.value.find((item) => item.code === currentCar.value)?.name
@@ -23,73 +24,6 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
 const { TopControl } = useControlSection()
-
-const status = [
-  {
-    title: '模式',
-    value: '手动模式'
-  },
-  {
-    title: '底盘',
-    value: '锁定'
-  },
-  {
-    title: '控制',
-    value: '未知'
-  },
-  {
-    title: '速度',
-    value: 1000
-  },
-  {
-    title: '转向',
-    value: 1000
-  },
-  {
-    title: '电量',
-    value: '100%'
-  },
-  {
-    title: '温度',
-    value: '-0.1℃'
-  },
-  {
-    title: '湿度',
-    value: '-0.1℃'
-  },
-  {
-    title: '火焰',
-    value: '-0.1℃'
-  },
-  {
-    title: '噪音',
-    value: '-0.1℃'
-  },
-  {
-    title: '烟雾',
-    value: '-0.1℃'
-  },
-  {
-    title: 'PM2.5',
-    value: '-0.1℃'
-  },
-  {
-    title: 'PM10',
-    value: '-0.1℃'
-  },
-  {
-    title: '硫化氢',
-    value: '-0.1℃'
-  },
-  {
-    title: '甲烷',
-    value: '-0.1℃'
-  },
-  {
-    title: '一氧化碳',
-    value: '-0.1℃'
-  }
-]
 
 const cameraWidth = ref(8)
 window.onresize = () => {
@@ -116,8 +50,7 @@ function checkIsMobile() {
     }
   }
 }
-
-const statusDrawerVisible = ref(false)
+const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, notificationDrawerVisible, notifications } = useNotification()
 </script>
 
@@ -155,7 +88,7 @@ const { NotificationDrawer, notificationDrawerVisible, notifications } = useNoti
           </div>
           <div class="h-full flex-1 flex flex-col">
             <div class="bg-slate-500 h-full">1</div>
-            <el-button class="w-full" size="large" @click="statusDrawerVisible = true">
+            <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
               <i-mdi-arrow-drop-up class="text-3xl" />
             </el-button>
           </div>
@@ -163,24 +96,7 @@ const { NotificationDrawer, notificationDrawerVisible, notifications } = useNoti
       </el-main>
     </el-container>
   </el-container>
-  <el-drawer
-    title="详情"
-    class="select-none"
-    v-model="statusDrawerVisible"
-    direction="btt"
-    size="65%"
-  >
-    <el-descriptions :border="true" direction="vertical">
-      <el-descriptions-item v-for="item in status" :key="item.title" :label="item.title">{{
-        item.value
-      }}</el-descriptions-item>
-    </el-descriptions>
-    <div v-if="isMobile">
-      <div class="bg-black h-60 mt-2">1</div>
-      <div class="bg-black h-60 mt-2">2</div>
-      <div class="bg-black h-60 mt-2">3</div>
-    </div>
-  </el-drawer>
+  <DetailSection />
   <CarRelevantDrawer />
   <NotificationDrawer />
 </template>
