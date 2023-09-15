@@ -1,4 +1,5 @@
 export * from './cookie'
+export { default as i18n } from './international'
 export * from './request'
 export * from './token'
 export * from './viewGuard'

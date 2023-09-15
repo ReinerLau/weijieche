@@ -1,11 +1,11 @@
 import { ElMenu, ElMenuItem, ElSubMenu, ElSwitch } from 'element-plus'
-import { Fragment, ref } from 'vue'
+import { Fragment, computed, ref, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 export const useControlSection = () => {
   const { t } = useI18n()
   const TopControl = () => (
     <ElMenu mode="horizontal">
-      {menuItems.map((menuItem) => (
+      {menuItems.value.map((menuItem) => (
         <ElSubMenu index={menuItem.title}>
           {{
             title: () => menuItem.title,
@@ -28,7 +28,7 @@ export const useControlSection = () => {
     subItems: { title: string }[]
   }
 
-  const menuItems: MenuItem[] = [
+  const menuItems: ComputedRef<MenuItem[]> = computed(() => [
     {
       title: t('mo-shi'),
       subItems: [
@@ -82,7 +82,7 @@ export const useControlSection = () => {
         }
       ]
     }
-  ]
+  ])
 
   const frontLight = ref(false)
   const switchGroup = [

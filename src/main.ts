@@ -9,7 +9,7 @@ import router from './router'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-import i18n from './utils/international'
+import { i18n } from '@/utils'
 
 const app = createApp(App)
 

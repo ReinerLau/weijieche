@@ -11,7 +11,6 @@ import {
 } from '@/composables'
 
 import { onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -35,7 +34,6 @@ const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
-const { locale } = useI18n()
 </script>
 
 <template>
@@ -44,7 +42,6 @@ const { locale } = useI18n()
       <div class="h-full flex items-center justify-between">
         <CarRelevantController />
         <div class="flex items-center">
-          <div>{{ locale }}</div>
           <NotificationController />
           <ThemeController />
           <InternationalController class="ml-2" />

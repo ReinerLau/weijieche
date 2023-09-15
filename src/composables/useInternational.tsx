@@ -1,7 +1,8 @@
-import i18n from '@/utils/international'
 import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import IconHeroiconsLanguage from '~icons/heroicons/language'
 export const useInternational = () => {
+  const { locale } = useI18n()
   const InternationalController = () => (
     <ElDropdown>
       {{
@@ -10,19 +11,25 @@ export const useInternational = () => {
           <ElDropdownMenu>
             <ElDropdownItem
               onClick={() => {
-                i18n.global.locale.value = 'zh'
+                locale.value = 'zh'
               }}
             >
               中文
             </ElDropdownItem>
             <ElDropdownItem
               onClick={() => {
-                i18n.global.locale.value = 'en'
+                locale.value = 'en'
               }}
             >
               English
             </ElDropdownItem>
-            <ElDropdownItem>Français</ElDropdownItem>
+            <ElDropdownItem
+              onClick={() => {
+                locale.value = 'fr'
+              }}
+            >
+              Français
+            </ElDropdownItem>
           </ElDropdownMenu>
         )
       }}
