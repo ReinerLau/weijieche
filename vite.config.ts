@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
+import ElementPlus from 'unplugin-element-plus/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -18,15 +19,23 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver(), IconsResolver()]
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' }), IconsResolver()]
     }),
     Icons({
       autoInstall: true
-    })
+    }),
+    ElementPlus({})
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/element/index.scss" as *;`
+      }
     }
   },
   server: {

@@ -8,43 +8,35 @@
       <el-button size="large" circle>返回</el-button>
     </div>
     <div class="flex justify-center mb-7">
-      <div
-        :class="[
-          'border',
-          'border-solid',
-          ' border-white',
-          'rounded-full',
-          'flex',
-          'flex-col',
-          'justify-center',
-          'w-24',
-          'h-24',
-          'items-center',
-          'text-white',
-          'cursor-pointer',
-          'select-none',
-          'active:bg-sky-700',
-          'focus:bg-sky-500'
-        ]"
-      >
-        <div class="flex-1 flex items-center justify-center">
-          <i-bxs-up-arrow />
-        </div>
-        <div class="flex-1 flex items-center w-full">
-          <div class="flex-1 flex justify-center">
-            <i-bxs-left-arrow />
-          </div>
-          <div class="flex-1 h-full">
-            <el-button size="large" circle>确认</el-button>
-          </div>
-          <div class="flex-1 flex justify-center">
-            <i-bxs-right-arrow />
-          </div>
-        </div>
-        <div class="flex-1 flex items-center justify-center">
-          <i-bxs-down-arrow />
-        </div>
-      </div>
+      <el-row class="w-48">
+        <el-col :span="8" :offset="8">
+          <el-button size="large" class="w-full">
+            <i-bxs-up-arrow />
+          </el-button>
+        </el-col>
+        <el-row class="w-full">
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-bxs-left-arrow />
+            </el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-icomoon-free-switch />
+            </el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-bxs-right-arrow />
+            </el-button>
+          </el-col>
+        </el-row>
+        <el-col :span="8" :offset="8">
+          <el-button size="large" class="w-full">
+            <i-bxs-down-arrow />
+          </el-button>
+        </el-col>
+      </el-row>
     </div>
     <div class="flex justify-between mb-7">
       <el-button size="large" circle>

@@ -2,29 +2,35 @@
   <div>
     <div class="text-white">云台控制</div>
     <div class="flex justify-center">
-      <div class="w-48">
-        <div class="flex justify-center mb-3">
-          <el-button size="large">
+      <el-row class="w-48">
+        <el-col :span="8" :offset="8">
+          <el-button size="large" class="w-full">
             <i-bxs-up-arrow />
           </el-button>
-        </div>
-        <div class="flex justify-between mb-3">
-          <el-button size="large">
-            <i-bxs-left-arrow />
-          </el-button>
-          <el-button size="large">
-            <i-icomoon-free-switch />
-          </el-button>
-          <el-button size="large">
-            <i-bxs-right-arrow />
-          </el-button>
-        </div>
-        <div class="flex justify-center">
-          <el-button size="large">
+        </el-col>
+        <el-row class="w-full">
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-bxs-left-arrow />
+            </el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-icomoon-free-switch />
+            </el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-button size="large" class="w-full">
+              <i-bxs-right-arrow />
+            </el-button>
+          </el-col>
+        </el-row>
+        <el-col :span="8" :offset="8">
+          <el-button size="large" class="w-full">
             <i-bxs-down-arrow />
           </el-button>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </div>
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex text-white items-center">

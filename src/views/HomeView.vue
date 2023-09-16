@@ -37,14 +37,14 @@ const { InternationalController } = useInternational()
 </script>
 
 <template>
-  <el-container class="h-full">
+  <el-container id="container" class="h-full">
     <el-header>
       <div class="h-full flex items-center justify-between">
         <CarRelevantController />
         <div class="flex items-center">
           <NotificationController />
           <ThemeController />
-          <InternationalController class="ml-2" />
+          <InternationalController class="ml-3" />
         </div>
       </div>
     </el-header>
@@ -76,3 +76,9 @@ const { InternationalController } = useInternational()
   <CarRelevantDrawer />
   <NotificationDrawer />
 </template>
+
+<style scoped lang="scss">
+.dark #container {
+  background-color: #072232;
+}
+</style>
