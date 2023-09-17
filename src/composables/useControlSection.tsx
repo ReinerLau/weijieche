@@ -1,7 +1,9 @@
+import { patrolingCruise } from '@/api'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
-import { Fragment, computed, ref, type ComputedRef } from 'vue'
+import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-export const useControlSection = () => {
+
+export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) => {
   const { t } = useI18n()
   const TopControl = () => (
     <ElScrollbar always={true}>
@@ -86,11 +88,34 @@ export const useControlSection = () => {
     }
   ])
 
+  interface SwitchGroup {
+    title: string
+    ref: Ref<boolean>
+    event?: (value: any) => any
+  }
+
   const frontLight = ref(false)
-  const switchGroup = [
+  const lightModes = {
+    FRONT: '01',
+    BACK: '02'
+  }
+  function toggleLight(value: boolean, mode: string) {
+    const data = {
+      code: currentCar.value,
+      param1: '07',
+      param2: value ? '01' : '00',
+      param3: mode,
+      param4: '00'
+    }
+    patrolingCruise(data)
+  }
+  const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
       title: t('qian-deng'),
-      ref: frontLight
+      ref: frontLight,
+      event: (value: boolean) => {
+        toggleLight(value, lightModes.FRONT)
+      }
     },
     {
       title: t('hou-deng'),
@@ -108,15 +133,15 @@ export const useControlSection = () => {
       title: t('ji-guang-fa-san-qi'),
       ref: frontLight
     }
-  ]
+  ])
 
   const Switchs = () => (
     <Fragment>
-      {switchGroup.map((item) => (
-        <ElMenuItem>
+      {switchGroup.value.map((item) => (
+        <ElMenuItem index={item.title}>
           <div class="flex items-center w-full justify-between">
             <span class="mr-2">{item.title}</span>
-            <ElSwitch v-model={item.ref.value} />
+            <ElSwitch v-model={item.ref.value} onChange={item.event} />
           </div>
         </ElMenuItem>
       ))}

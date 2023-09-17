@@ -97,6 +97,7 @@ export const useCarRelevant = ({
 
   return {
     CarRelevantDrawer,
-    CarRelevantController
+    CarRelevantController,
+    currentCar
   }
 }

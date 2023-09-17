@@ -14,13 +14,13 @@ import { onMounted } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
-const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
+const { CarRelevantDrawer, CarRelevantController, currentCar } = useCarRelevant({
   isConfig,
   configType,
   configTypes
 })
 
-const { TopControl } = useControlSection()
+const { TopControl } = useControlSection({ currentCar })
 const { checkIsMobile, isMobile, mainRef } = useResponsive()
 
 window.onresize = () => {
