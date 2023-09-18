@@ -67,8 +67,7 @@ export const useCarRelevant = ({
         >
           配置监控
         </ElButton>
-        <ElDivider />
-        <ElButton
+        {/* <ElButton
           class="w-full"
           size="large"
           onClick={() => {
@@ -78,7 +77,7 @@ export const useCarRelevant = ({
           }}
         >
           配置外设
-        </ElButton>
+        </ElButton> */}
         <ElDivider />
         <FrameSwitchOver />
         <ElDivider />

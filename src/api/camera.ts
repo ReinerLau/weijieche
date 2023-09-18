@@ -39,10 +39,10 @@ export function bindCamera(params: any) {
   })
 }
 
-export function unbindCamera(data: any) {
+export function unbindCamera(params: any) {
   return request({
     url: '/camera/v1/unbindToRid',
     method: 'delete',
-    data
+    params
   })
 }
