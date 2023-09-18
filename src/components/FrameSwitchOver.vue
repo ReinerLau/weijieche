@@ -1,57 +1,90 @@
+import { haveCurrentCar } from '../shared/index';
 <template>
   <div>
     <div class="text-white mb-7">全屏画面切换</div>
     <div class="flex justify-between">
-      <el-button size="large" circle>
+      <el-button size="large" circle @click="onClick(keyMap.SWITCH)">
         <i-icomoon-free-switch />
       </el-button>
-      <el-button size="large" circle>返回</el-button>
+      <el-button size="large" circle @click="onClick(keyMap.BACK)">返回</el-button>
     </div>
     <div class="flex justify-center mb-7">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full">
+          <el-button size="large" class="w-full" @click="onClick(keyMap.UP)">
             <i-bxs-up-arrow />
           </el-button>
         </el-col>
         <el-row class="w-full">
           <el-col :span="8">
-            <el-button size="large" class="w-full">
+            <el-button size="large" class="w-full" @click="onClick(keyMap.LEFT)">
               <i-bxs-left-arrow />
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full">
+            <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
               <i-icomoon-free-switch />
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full">
+            <el-button size="large" class="w-full" @click="onClick(keyMap.RIGHT)">
               <i-bxs-right-arrow />
             </el-button>
           </el-col>
         </el-row>
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full">
+          <el-button size="large" class="w-full" @click="onClick(keyMap.DOWN)">
             <i-bxs-down-arrow />
           </el-button>
         </el-col>
       </el-row>
     </div>
     <div class="flex justify-between mb-7">
-      <el-button size="large" circle>
+      <el-button size="large" circle @click="onClick(keyMap.PREV)">
         <i-vaadin-time-backward />
       </el-button>
-      <el-button size="large" circle>AV1</el-button>
-      <el-button size="large" circle>AV2</el-button>
+      <el-button size="large" circle @click="onClick(keyMap.AV1)">AV1</el-button>
+      <el-button size="large" circle @click="onClick(keyMap.AV2)">AV2</el-button>
     </div>
     <div class="flex justify-center">
       <div class="flex-1 flex justify-center">
-        <el-button size="large" circle>AV3</el-button>
+        <el-button size="large" circle @click="onClick(keyMap.AV3)">AV3</el-button>
       </div>
       <div class="flex-1 flex justify-center">
-        <el-button size="large" circle>AV4</el-button>
+        <el-button size="large" circle @click="onClick(keyMap.AV4)">AV4</el-button>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { patrolingCruise } from '@/api'
+import { currentCar, haveCurrentCar } from '@/shared'
+
+const keyMap = {
+  SWITCH: '01',
+  BACK: '02',
+  UP: '03',
+  LEFT: '06',
+  CONFIRM: '07',
+  RIGHT: '04',
+  DOWN: '05',
+  PREV: '12',
+  AV1: '08',
+  AV2: '09',
+  AV3: '10',
+  AV4: '11'
+}
+async function onClick(value: string) {
+  if (haveCurrentCar()) {
+    const data = {
+      code: currentCar.value,
+      param1: '08',
+      param2: value,
+      param3: '0',
+      param4: '0'
+    }
+    patrolingCruise(data)
+  }
+}
+</script>

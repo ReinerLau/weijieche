@@ -2,8 +2,10 @@ import { getCarList } from '@/api/list'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
+import { currentCar } from '@/shared'
 import { ElButton, ElDivider, ElDrawer, ElOption, ElScrollbar, ElSelect } from 'element-plus'
 import { computed, ref, type Ref } from 'vue'
+
 export const useCarRelevant = ({
   isConfig,
   configType,
@@ -17,7 +19,6 @@ export const useCarRelevant = ({
   }
 }) => {
   const carSettingDrawerVisible = ref(false)
-  const currentCar = ref('')
   const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
   async function getList() {
     const { data } = await getCarList('patroling')
@@ -97,7 +98,6 @@ export const useCarRelevant = ({
 
   return {
     CarRelevantDrawer,
-    CarRelevantController,
-    currentCar
+    CarRelevantController
   }
 }

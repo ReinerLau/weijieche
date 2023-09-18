@@ -1,9 +1,10 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
-import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
+import { currentCar, haveCurrentCar } from '@/shared'
+import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) => {
+export const useControlSection = () => {
   const { t } = useI18n()
   const TopControl = () => (
     <ElScrollbar always={true}>
@@ -176,15 +177,6 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
       event: controlLaser
     }
   ])
-
-  function haveCurrentCar() {
-    if (currentCar.value) {
-      return true
-    } else {
-      ElMessage({ type: 'error', message: '请选择车' })
-      return false
-    }
-  }
 
   const Menus = () => (
     <Fragment>
