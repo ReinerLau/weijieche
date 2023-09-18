@@ -1,5 +1,5 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
-import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
+import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -99,16 +99,20 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
   }
   const voice = ref(false)
   function toggleVoice(value: boolean) {
-    const data = {
-      rid: currentCar.value,
-      type: value ? '0' : '1'
+    if (haveCurrentCar()) {
+      const data = {
+        rid: currentCar.value,
+        type: value ? '0' : '1'
+      }
+      patrolingVoice(data)
     }
-    patrolingVoice(data)
   }
 
   const stopMode = ref(false)
   function controlStopMode(value: boolean) {
-    value ? setMode('STOP') : setMode('AUTO')
+    if (haveCurrentCar()) {
+      value ? setMode('STOP') : setMode('AUTO')
+    }
   }
   const baseModes = {
     AUTO: 129,
@@ -126,25 +130,35 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
   }
   const disperseMode = ref(false)
   function controlLaser() {
-    const data = {
-      code: currentCar.value,
-      param1: '09',
-      param2: disperseMode.value ? '1' : '0',
-      param3: '0',
-      param4: '0'
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: '09',
+        param2: disperseMode.value ? '1' : '0',
+        param3: '0',
+        param4: '0'
+      }
+      patrolingCruise(data)
     }
-    patrolingCruise(data)
   }
   const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
       title: t('qian-deng'),
       ref: frontLight,
-      event: (value: boolean) => toggleLight(value, lightModes.FRONT)
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.FRONT)
+        }
+      }
     },
     {
       title: t('hou-deng'),
       ref: backLight,
-      event: (value: boolean) => toggleLight(value, lightModes.BACK)
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.BACK)
+        }
+      }
     },
     {
       title: t('yu-yin'),
@@ -162,6 +176,15 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
       event: controlLaser
     }
   ])
+
+  function haveCurrentCar() {
+    if (currentCar.value) {
+      return true
+    } else {
+      ElMessage({ type: 'error', message: '请选择车' })
+      return false
+    }
+  }
 
   const Menus = () => (
     <Fragment>
