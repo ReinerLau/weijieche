@@ -1,4 +1,4 @@
-import { patrolingCruise, patrolingVoice } from '@/api'
+import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -105,20 +105,46 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
     }
     patrolingVoice(data)
   }
+
+  const stopMode = ref(false)
+  function controlStopMode(value: boolean) {
+    value ? setMode('STOP') : setMode('AUTO')
+  }
+  const baseModes = {
+    AUTO: 129,
+    MANUAL: 1,
+    STOP: 0
+  }
+  const modes = {
+    STOP: 1,
+    AUTO: 4,
+    MANUAL: 3
+  }
+  async function setMode(type: keyof typeof baseModes) {
+    const data = { baseMode: baseModes[type], customMode: modes[type] }
+    await patrolingSetMode(currentCar.value, data)
+  }
+  const disperseMode = ref(false)
+  function controlLaser() {
+    const data = {
+      code: currentCar.value,
+      param1: '09',
+      param2: disperseMode.value ? '1' : '0',
+      param3: '0',
+      param4: '0'
+    }
+    patrolingCruise(data)
+  }
   const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
       title: t('qian-deng'),
       ref: frontLight,
-      event: (value: boolean) => {
-        toggleLight(value, lightModes.FRONT)
-      }
+      event: (value: boolean) => toggleLight(value, lightModes.FRONT)
     },
     {
       title: t('hou-deng'),
       ref: backLight,
-      event: (value: boolean) => {
-        toggleLight(value, lightModes.BACK)
-      }
+      event: (value: boolean) => toggleLight(value, lightModes.BACK)
     },
     {
       title: t('yu-yin'),
@@ -127,11 +153,13 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
     },
     {
       title: t('ting-zhi'),
-      ref: frontLight
+      ref: stopMode,
+      event: controlStopMode
     },
     {
       title: t('ji-guang-fa-san-qi'),
-      ref: frontLight
+      ref: disperseMode,
+      event: controlLaser
     }
   ])
 
