@@ -8,20 +8,7 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
   const TopControl = () => (
     <ElScrollbar always={true}>
       <ElMenu mode="horizontal" ellipsis={false}>
-        {menuItems.value.map((menuItem) => (
-          <ElSubMenu index={menuItem.title}>
-            {{
-              title: () => menuItem.title,
-              default: () => (
-                <Fragment>
-                  {menuItem.subItems.map((item) => (
-                    <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
-                  ))}
-                </Fragment>
-              )
-            }}
-          </ElSubMenu>
-        ))}
+        <Menus />
         <Switchs />
       </ElMenu>
     </ElScrollbar>
@@ -147,6 +134,25 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
       ref: frontLight
     }
   ])
+
+  const Menus = () => (
+    <Fragment>
+      {menuItems.value.map((menuItem) => (
+        <ElSubMenu index={menuItem.title}>
+          {{
+            title: () => menuItem.title,
+            default: () => (
+              <Fragment>
+                {menuItem.subItems.map((item) => (
+                  <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
+                ))}
+              </Fragment>
+            )
+          }}
+        </ElSubMenu>
+      ))}
+    </Fragment>
+  )
 
   const Switchs = () => (
     <Fragment>
