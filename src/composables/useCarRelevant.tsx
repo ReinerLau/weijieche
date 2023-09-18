@@ -62,6 +62,7 @@ export const useCarRelevant = ({
           onClick={() => {
             isConfig.value = true
             configType.value = configTypes.CAMERA
+            carSettingDrawerVisible.value = false
           }}
         >
           配置监控
@@ -73,6 +74,7 @@ export const useCarRelevant = ({
           onClick={() => {
             isConfig.value = true
             configType.value = configTypes.DEVICE
+            carSettingDrawerVisible.value = false
           }}
         >
           配置外设
