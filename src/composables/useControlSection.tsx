@@ -1,4 +1,4 @@
-import { patrolingCruise } from '@/api'
+import { patrolingCruise, patrolingVoice } from '@/api'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -95,6 +95,7 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
   }
 
   const frontLight = ref(false)
+  const backLight = ref(false)
   const lightModes = {
     FRONT: '01',
     BACK: '02'
@@ -109,6 +110,14 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
     }
     patrolingCruise(data)
   }
+  const voice = ref(false)
+  function toggleVoice(value: boolean) {
+    const data = {
+      rid: currentCar.value,
+      type: value ? '0' : '1'
+    }
+    patrolingVoice(data)
+  }
   const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
       title: t('qian-deng'),
@@ -119,11 +128,15 @@ export const useControlSection = ({ currentCar }: { currentCar: Ref<string> }) =
     },
     {
       title: t('hou-deng'),
-      ref: frontLight
+      ref: backLight,
+      event: (value: boolean) => {
+        toggleLight(value, lightModes.BACK)
+      }
     },
     {
       title: t('yu-yin'),
-      ref: frontLight
+      ref: voice,
+      event: toggleVoice
     },
     {
       title: t('ting-zhi'),
