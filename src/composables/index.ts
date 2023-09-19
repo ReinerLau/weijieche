@@ -1,6 +1,7 @@
 export * from './useCarRelevant'
 export * from './useConfig'
 export * from './useControlSection'
+export * from './useController'
 export * from './useDetail'
 export * from './useInternational'
 export * from './useNotification'

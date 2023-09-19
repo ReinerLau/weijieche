@@ -3,6 +3,7 @@ import CameraPlayer from '@/components/CameraPlayer.vue'
 import { baseModes, cameraList, currentCar, haveCurrentCar, modes } from '@/shared'
 import { ElDescriptions, ElDescriptionsItem, ElDrawer } from 'element-plus'
 import { Fragment, computed, ref, watch, type Ref } from 'vue'
+import { useController } from './useController'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const detailDrawerVisible = ref(false)
   const modeText = {
@@ -22,6 +23,8 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     return baseModeText[statusData.value.baseMode] || '未知'
   })
 
+  const { controllers } = useController()
+
   const status = computed(() => [
     {
       title: '模式',
@@ -33,7 +36,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: '控制',
-      value: '未知'
+      value: controllers.value.join(',')
     },
     {
       title: '速度',
