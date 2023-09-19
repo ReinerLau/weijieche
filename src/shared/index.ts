@@ -1,5 +1,6 @@
+import { getCameraListByCode } from '@/api'
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 
 export const currentCar = ref('')
 
@@ -11,6 +12,12 @@ export function haveCurrentCar() {
     return false
   }
 }
+
+export const cameraList: Ref<any[]> = ref([])
+watch(currentCar, async () => {
+  const res = await getCameraListByCode(currentCar.value, 'patroling')
+  cameraList.value = res.data
+})
 
 export const modes = {
   STOP: 1,

@@ -29,6 +29,9 @@ dependencies:
   qs:
     specifier: ^6.11.2
     version: 6.11.2
+  rtc-streamer:
+    specifier: ^0.2.2
+    version: 0.2.2
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -3723,6 +3726,10 @@ packages:
   /rrweb-cssom@0.6.0:
     resolution: {integrity: sha512-APM0Gt1KoXBz0iIkkdB/kfvGOwC4UuJFeG/c+yV7wSc7q96cG/kJ0HiYCnzivD9SB53cLV1MlHFNfOuPaadYSw==}
     dev: true
+
+  /rtc-streamer@0.2.2:
+    resolution: {integrity: sha512-nlq65HKEt/oxOM4CCxmk/vzV44XKyJcaVIyWzuIwW5kusuxtCQ3OSjkxrzWYavm2ak1jbkkF9fUW6bEdapI1kg==}
+    dev: false
 
   /run-applescript@5.0.0:
     resolution: {integrity: sha512-XcT5rBksx1QdIhlFOCtgZkB99ZEouFZ1E2Kc2LHqNW13U3/74YGdkQRmThTwxy4QIyookibDKYZOPqX//6BlAg==}

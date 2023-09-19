@@ -1,7 +1,8 @@
+import { getCarInfo } from '@/api'
+import CameraPlayer from '@/components/CameraPlayer.vue'
+import { baseModes, cameraList, currentCar, haveCurrentCar, modes } from '@/shared'
 import { ElDescriptions, ElDescriptionsItem, ElDrawer } from 'element-plus'
 import { Fragment, computed, ref, watch, type Ref } from 'vue'
-import { getCarInfo } from '../api/index'
-import { baseModes, currentCar, haveCurrentCar, modes } from '../shared/index'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const detailDrawerVisible = ref(false)
   const modeText = {
@@ -20,6 +21,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const baseMode = computed(() => {
     return baseModeText[statusData.value.baseMode] || '未知'
   })
+
   const status = computed(() => [
     {
       title: '模式',
@@ -98,9 +100,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
 
   const CameraSection = () => (
     <Fragment>
-      <div class="bg-black h-60 mt-2">1</div>
-      <div class="bg-black h-60 mt-2">2</div>
-      <div class="bg-black h-60 mt-2">3</div>
+      {cameraList.value.map((item) => (
+        <div class="bg-black h-60" key={item.id}>
+          <CameraPlayer url={item.rtsp} />
+        </div>
+      ))}
     </Fragment>
   )
 

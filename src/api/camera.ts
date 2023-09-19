@@ -46,3 +46,10 @@ export function unbindCamera(params: any) {
     params
   })
 }
+
+export function getCameraListByCode(code: string, type: string) {
+  return request({
+    url: `/camera/v1/getbyrid/${code}&${type}`,
+    method: 'get'
+  })
+}

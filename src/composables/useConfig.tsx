@@ -12,18 +12,12 @@ import {
   ElPageHeader,
   ElTable,
   ElTableColumn,
+  type FormInstance,
   type FormRules
 } from 'element-plus'
 import { computed, ref, toRaw, watch, type ComputedRef, type Ref } from 'vue'
 import { Fragment } from 'vue/jsx-runtime'
-import {
-  bindCamera,
-  createCamera,
-  deleteCamera,
-  getCameraList,
-  unbindCamera,
-  updateCamera
-} from '../api/camera'
+import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '../api/camera'
 import { currentCar, haveCurrentCar } from '../shared/index'
 
 export const useConfig = () => {
@@ -144,7 +138,7 @@ export const useConfig = () => {
     slot?: (form: Ref<any>) => JSX.Element
   }
 
-  const formRef: Ref<any> = ref()
+  const formRef: Ref<FormInstance | undefined> = ref()
   const form: Ref<Record<string, any>> = ref({})
   const formRules: ComputedRef<FormRules> = computed(() => {
     if (configType.value === configTypes.CAMERA) {
@@ -173,13 +167,13 @@ export const useConfig = () => {
     }
   })
   function handleCancel() {
-    formRef.value.resetFields()
+    formRef.value?.resetFields()
     form.value = {}
     dialogVisible.value = false
   }
 
   async function handleSubmit() {
-    await formRef.value.validate(async (valid: boolean) => {
+    await formRef.value?.validate(async (valid: boolean) => {
       if (valid) {
         loading.value = true
         try {
@@ -208,10 +202,10 @@ export const useConfig = () => {
     if (haveCurrentCar()) {
       const data = {
         id,
-        rid: currentCar.value,
+        rid: rid === currentCar.value ? '' : currentCar.value,
         rtype: 'patroling'
       }
-      const res: any = rid === currentCar.value ? await unbindCamera(data) : await bindCamera(data)
+      const res: any = await bindCamera(data)
       ElMessage({ type: 'success', message: res.message })
       getList()
     }

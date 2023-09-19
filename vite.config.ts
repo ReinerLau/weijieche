@@ -44,6 +44,10 @@ export default defineConfig({
         target: 'http://119.91.145.64:8081',
         // target: 'http://127.0.0.1:4523/m1/885092-0-default',
         changeOrigin: true
+      },
+      '/rtc': {
+        target: 'http://localhost:1985',
+        changeOrigin: true
       }
     }
   }

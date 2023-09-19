@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
   useCarRelevant,
   useConfig,
@@ -10,6 +11,7 @@ import {
   useTheme
 } from '@/composables'
 
+import { cameraList } from '@/shared'
 import { onMounted } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
@@ -57,10 +59,10 @@ const { InternationalController } = useInternational()
       </el-header>
       <el-main>
         <div ref="mainRef" class="h-[calc(100vh-160px)] overflow-y-auto flex">
-          <div v-if="!isMobile" class="bg-black w-96 flex flex-col">
-            <div class="flex-1">1</div>
-            <div class="flex-1">2</div>
-            <div class="flex-1">3</div>
+          <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
+            <div class="flex-1" v-for="item in cameraList" :key="item.id">
+              <CameraPlayer :url="item.rtsp" />
+            </div>
           </div>
           <div class="h-full flex-1 flex flex-col">
             <div class="bg-slate-500 h-full">测试</div>
