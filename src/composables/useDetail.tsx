@@ -1,7 +1,7 @@
 import { ElDescriptions, ElDescriptionsItem, ElDrawer } from 'element-plus'
 import { Fragment, computed, ref, watch, type Ref } from 'vue'
 import { getCarInfo } from '../api/index'
-import { currentCar, haveCurrentCar, modes } from '../shared/index'
+import { baseModes, currentCar, haveCurrentCar, modes } from '../shared/index'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const detailDrawerVisible = ref(false)
   const modeText = {
@@ -12,6 +12,14 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const mode = computed(() => {
     return modeText[statusData.value.customMode] || '未知'
   })
+  const baseModeText = {
+    [baseModes.AUTO]: '解锁',
+    [baseModes.MANUAL]: '解锁',
+    [baseModes.STOP]: '锁定'
+  }
+  const baseMode = computed(() => {
+    return baseModeText[statusData.value.baseMode] || '未知'
+  })
   const status = computed(() => [
     {
       title: '模式',
@@ -19,7 +27,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: '底盘',
-      value: '锁定'
+      value: baseMode.value
     },
     {
       title: '控制',

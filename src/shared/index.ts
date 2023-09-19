@@ -17,3 +17,9 @@ export const modes = {
   AUTO: 4,
   MANUAL: 3
 }
+
+export const baseModes = {
+  AUTO: 129,
+  MANUAL: 1,
+  STOP: 0
+}

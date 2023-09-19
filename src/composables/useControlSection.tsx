@@ -1,5 +1,5 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
-import { currentCar, haveCurrentCar, modes } from '@/shared'
+import { baseModes, currentCar, haveCurrentCar, modes } from '@/shared'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -116,11 +116,6 @@ export const useControlSection = () => {
     if (haveCurrentCar()) {
       value ? setMode(modeKey.STOP) : setMode(modeKey.AUTO)
     }
-  }
-  const baseModes = {
-    AUTO: 129,
-    MANUAL: 1,
-    STOP: 0
   }
 
   const modeKey = {
