@@ -1,5 +1,5 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar, haveCurrentCar, modes } from '@/shared'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -17,7 +17,7 @@ export const useControlSection = () => {
 
   interface MenuItem {
     title: string
-    subItems: { title: string }[]
+    subItems: { title: string; event?: () => void }[]
   }
 
   const menuItems: ComputedRef<MenuItem[]> = computed(() => [
@@ -25,10 +25,12 @@ export const useControlSection = () => {
       title: t('mo-shi'),
       subItems: [
         {
-          title: t('shou-dong')
+          title: t('shou-dong'),
+          event: () => setMode(modeKey.MANUAL)
         },
         {
-          title: t('zi-zhu')
+          title: t('zi-zhu'),
+          event: () => setMode(modeKey.AUTO)
         }
       ]
     },
@@ -112,7 +114,7 @@ export const useControlSection = () => {
   const stopMode = ref(false)
   function controlStopMode(value: boolean) {
     if (haveCurrentCar()) {
-      value ? setMode('STOP') : setMode('AUTO')
+      value ? setMode(modeKey.STOP) : setMode(modeKey.AUTO)
     }
   }
   const baseModes = {
@@ -120,14 +122,17 @@ export const useControlSection = () => {
     MANUAL: 1,
     STOP: 0
   }
-  const modes = {
-    STOP: 1,
-    AUTO: 4,
-    MANUAL: 3
+
+  const modeKey = {
+    STOP: 'STOP' as const,
+    AUTO: 'AUTO' as const,
+    MANUAL: 'MANUAL' as const
   }
-  async function setMode(type: keyof typeof baseModes) {
-    const data = { baseMode: baseModes[type], customMode: modes[type] }
-    await patrolingSetMode(currentCar.value, data)
+  function setMode(type: keyof typeof baseModes) {
+    if (haveCurrentCar()) {
+      const data = { baseMode: baseModes[type], customMode: modes[type] }
+      patrolingSetMode(currentCar.value, data)
+    }
   }
   const disperseMode = ref(false)
   function controlLaser() {
@@ -187,7 +192,9 @@ export const useControlSection = () => {
             default: () => (
               <Fragment>
                 {menuItem.subItems.map((item) => (
-                  <ElMenuItem index={item.title}>{item.title}</ElMenuItem>
+                  <ElMenuItem index={item.title} onClick={item.event}>
+                    {item.title}
+                  </ElMenuItem>
                 ))}
               </Fragment>
             )

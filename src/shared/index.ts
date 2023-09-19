@@ -11,3 +11,9 @@ export function haveCurrentCar() {
     return false
   }
 }
+
+export const modes = {
+  STOP: 1,
+  AUTO: 4,
+  MANUAL: 3
+}
