@@ -27,7 +27,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: '电量',
-      value: '100%'
+      value: `${statusData.value.battery || 0}%`
     },
     {
       title: '温度',
