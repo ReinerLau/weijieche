@@ -31,6 +31,10 @@ export const useControlSection = () => {
         {
           title: t('zi-zhu'),
           event: () => setMode(modeKey.AUTO)
+        },
+        {
+          title: t('ting-zhi'),
+          event: () => setMode(modeKey.STOP)
         }
       ]
     },
@@ -111,13 +115,6 @@ export const useControlSection = () => {
     }
   }
 
-  const stopMode = ref(false)
-  function controlStopMode(value: boolean) {
-    if (haveCurrentCar()) {
-      value ? setMode(modeKey.STOP) : setMode(modeKey.AUTO)
-    }
-  }
-
   const modeKey = {
     STOP: 'STOP' as const,
     AUTO: 'AUTO' as const,
@@ -166,11 +163,7 @@ export const useControlSection = () => {
       ref: voice,
       event: toggleVoice
     },
-    {
-      title: t('ting-zhi'),
-      ref: stopMode,
-      event: controlStopMode
-    },
+
     {
       title: t('ji-guang-fa-san-qi'),
       ref: disperseMode,
