@@ -30,3 +30,6 @@ export const baseModes = {
   MANUAL: 1,
   STOP: 0
 }
+
+export const currentController = ref('')
+export const currentControllerType = ref('')

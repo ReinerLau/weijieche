@@ -1,7 +1,23 @@
 import { getCarInfo } from '@/api'
 import CameraPlayer from '@/components/CameraPlayer.vue'
-import { baseModes, cameraList, currentCar, haveCurrentCar, modes } from '@/shared'
-import { ElDescriptions, ElDescriptionsItem, ElDrawer } from 'element-plus'
+import {
+  baseModes,
+  cameraList,
+  currentCar,
+  currentController,
+  currentControllerType,
+  haveCurrentCar,
+  modes
+} from '@/shared'
+import {
+  ElButton,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElDrawer,
+  ElOption,
+  ElScrollbar,
+  ElSelect
+} from 'element-plus'
 import { Fragment, computed, ref, watch, type Ref } from 'vue'
 import { useController } from './useController'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
@@ -23,7 +39,15 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     return baseModeText[statusData.value.baseMode] || '未知'
   })
 
-  const { controllers } = useController()
+  const {
+    controllers,
+    controllerTypes,
+    speed,
+    gear,
+    ControllerMapDialog,
+    controllerMapDialogVisible,
+    direction
+  } = useController()
 
   const status = computed(() => [
     {
@@ -35,16 +59,30 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       value: baseMode.value
     },
     {
-      title: '控制',
-      value: controllers.value.join(',')
+      title: '控制器',
+      slot: () => (
+        <div class="flex flex-col">
+          <ElSelect v-model={currentController.value}>
+            {controllers.value.map((item) => (
+              <ElOption key={item.id} label={item.id} value={item.id}></ElOption>
+            ))}
+          </ElSelect>
+          <ElSelect v-model={currentControllerType.value}>
+            {Object.entries(controllerTypes.value).map(([key, value]) => (
+              <ElOption key={key} label={value} value={value}></ElOption>
+            ))}
+          </ElSelect>
+          <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>设置映射</ElButton>
+        </div>
+      )
     },
     {
-      title: '速度',
-      value: 1000
+      title: `速度：${gear.value ? '前进' : '后退'}`,
+      value: speed.value
     },
     {
       title: '转向',
-      value: 1000
+      value: direction.value
     },
     {
       title: '电量',
@@ -119,14 +157,17 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       direction="btt"
       size="65%"
     >
-      <ElDescriptions border={true} direction="vertical">
-        {status.value.map((item) => (
-          <ElDescriptionsItem key={item.title} label={item.title}>
-            {item.value}
-          </ElDescriptionsItem>
-        ))}
-      </ElDescriptions>
-      {isMobile.value ? <CameraSection /> : null}
+      <ElScrollbar>
+        <ElDescriptions border={true} direction="vertical">
+          {status.value.map((item) => (
+            <ElDescriptionsItem key={item.title} label={item.title}>
+              {(item.slot && item.slot()) || item.value}
+            </ElDescriptionsItem>
+          ))}
+        </ElDescriptions>
+        {isMobile.value ? <CameraSection /> : null}
+      </ElScrollbar>
+      <ControllerMapDialog />
     </ElDrawer>
   )
   return {
