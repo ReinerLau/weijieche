@@ -38,8 +38,19 @@ export const useController = () => {
     wheelMap.DIRECTION = res.DIRECTION || 0
   }
 
+  let rAF: number
+
   onControllerOperation()
   initControllerMap()
+
+  const { onConnected, onDisconnected } = useGamepad()
+
+  onConnected(onControllerOperation)
+  onDisconnected(() => {
+    cancelAnimationFrame(rAF)
+    currentController.value = ''
+    currentControllerType.value = ''
+  })
 
   function onControllerOperation() {
     const { gamepads } = useGamepad()
@@ -55,7 +66,7 @@ export const useController = () => {
         pressedButtons.value = setButtons(buttons)
       }
     }
-    requestAnimationFrame(onControllerOperation)
+    rAF = requestAnimationFrame(onControllerOperation)
   }
 
   function setButtons(buttons: ReadonlyArray<GamepadButton>) {
