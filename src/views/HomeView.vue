@@ -4,7 +4,6 @@ import {
   useCarRelevant,
   useConfig,
   useControlSection,
-  useController,
   useDetail,
   useInternational,
   useNotification,
@@ -37,7 +36,6 @@ const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
-useController()
 </script>
 
 <template>

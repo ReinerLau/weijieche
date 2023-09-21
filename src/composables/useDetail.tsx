@@ -19,6 +19,7 @@ import {
   ElSelect
 } from 'element-plus'
 import { Fragment, computed, ref, watch, type Ref } from 'vue'
+import { pressedButtons } from '../shared/index'
 import { useController } from './useController'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   const detailDrawerVisible = ref(false)
@@ -48,6 +49,18 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     controllerMapDialogVisible,
     direction
   } = useController()
+
+  watch(pressedButtons, (val) => {
+    if (currentControllerType.value === controllerTypes.value.WHEEL) {
+      if (val === 6) {
+        gear.value = !gear.value
+      }
+    } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
+      if (val === 5) {
+        gear.value = !gear.value
+      }
+    }
+  })
 
   const status = computed(() => [
     {

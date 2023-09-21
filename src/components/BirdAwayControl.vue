@@ -25,9 +25,10 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
-import { ref } from 'vue'
+import { computed, ref, watch, type ComputedRef } from 'vue'
+import { pressedButtons } from '../shared/index'
 
 const buttonList = [
   {
@@ -78,6 +79,51 @@ const changeVolumn = debounce(async () => {
     patrolingCruise(data)
   }
 }, 500)
+
+const playBirdAway = ref(false)
+const playPersonAway = ref(false)
+
+const switchEvent = {
+  PERSON: () => {
+    playPersonAway.value = !playPersonAway.value
+    if (playPersonAway.value) {
+      onClick('02')
+    } else {
+      onClick('03')
+    }
+  },
+  BIRD: () => {
+    playBirdAway.value = !playBirdAway.value
+    if (playPersonAway.value) {
+      onClick('01')
+    } else {
+      onClick('03')
+    }
+  }
+}
+
+const actionMap: ComputedRef<any[]> = computed(() => {
+  const actions = new Array(20)
+  if (currentControllerType.value === controllerTypes.value.WHEEL) {
+    actions[0] = switchEvent.PERSON
+    actions[2] = switchEvent.BIRD
+    return actions
+  } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
+    actions[1] = switchEvent.BIRD
+    actions[2] = switchEvent.PERSON
+    return actions
+  } else {
+    return actions
+  }
+})
+
+watch(pressedButtons, (val) => {
+  if (val !== -1) {
+    console.log(val)
+    const actionGetter = actionMap.value[val]
+    actionGetter && actionGetter()
+  }
+})
 
 function handleChange() {
   changeVolumn()

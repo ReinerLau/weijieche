@@ -1,4 +1,4 @@
-import { currentController, currentControllerType } from '@/shared'
+import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -23,16 +23,11 @@ export const useController = () => {
     DIRECTION: 0
   })
   const direction = ref(0)
-  const controllerTypes = ref({
-    WHEEL: '方向盘',
-    GAMEPAD: '手柄'
-  })
+
   const stroageKeys = {
     GAMEPAD: 'gamepad-key-map',
     WHEEL: 'wheel-key-map'
   }
-
-  const pressedButtons: Ref<number> = ref(-1)
 
   function initControllerMap() {
     let res: any = JSON.parse(localStorage.getItem(stroageKeys.GAMEPAD) || '{}')

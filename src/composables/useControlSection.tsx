@@ -1,7 +1,15 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
-import { baseModes, currentCar, haveCurrentCar, modes } from '@/shared'
+import {
+  baseModes,
+  controllerTypes,
+  currentCar,
+  currentControllerType,
+  haveCurrentCar,
+  modes,
+  pressedButtons
+} from '@/shared'
 import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
-import { Fragment, computed, ref, type ComputedRef, type Ref } from 'vue'
+import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 export const useControlSection = () => {
@@ -95,14 +103,16 @@ export const useControlSection = () => {
     BACK: '02'
   }
   function toggleLight(value: boolean, mode: string) {
-    const data = {
-      code: currentCar.value,
-      param1: '07',
-      param2: value ? '01' : '00',
-      param3: mode,
-      param4: '00'
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: '07',
+        param2: value ? '01' : '00',
+        param3: mode,
+        param4: '00'
+      }
+      patrolingCruise(data)
     }
-    patrolingCruise(data)
   }
   const voice = ref(false)
   function toggleVoice(value: boolean) {
@@ -127,12 +137,12 @@ export const useControlSection = () => {
     }
   }
   const disperseMode = ref(false)
-  function controlLaser() {
+  function controlLaser(value: boolean) {
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
         param1: '09',
-        param2: disperseMode.value ? '1' : '0',
+        param2: value ? '1' : '0',
         param3: '0',
         param4: '0'
       }
@@ -204,6 +214,48 @@ export const useControlSection = () => {
       ))}
     </Fragment>
   )
+
+  const switchEvent = {
+    FRONT_LIGHT: () => {
+      frontLight.value = !frontLight.value
+      toggleLight(frontLight.value, lightModes.FRONT)
+    },
+    BACK_LIGHT: () => {
+      backLight.value = !backLight.value
+      toggleLight(frontLight.value, lightModes.BACK)
+    },
+    LASER: () => {
+      disperseMode.value = !disperseMode.value
+      controlLaser(disperseMode.value)
+    },
+    STOP: () => setMode(modeKey.STOP)
+  }
+
+  const actionMap: ComputedRef<any[]> = computed(() => {
+    const actions = new Array(20)
+    if (currentControllerType.value === controllerTypes.value.WHEEL) {
+      actions[1] = switchEvent.LASER
+      actions[4] = switchEvent.STOP
+      actions[7] = switchEvent.FRONT_LIGHT
+      actions[11] = switchEvent.BACK_LIGHT
+      return actions
+    } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
+      actions[3] = switchEvent.LASER
+      actions[4] = switchEvent.STOP
+      actions[6] = switchEvent.FRONT_LIGHT
+      actions[7] = switchEvent.BACK_LIGHT
+      return actions
+    } else {
+      return actions
+    }
+  })
+
+  watch(pressedButtons, (val) => {
+    if (val !== -1) {
+      const actionGetter = actionMap.value[val]
+      actionGetter && actionGetter()
+    }
+  })
 
   return {
     TopControl

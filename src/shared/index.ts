@@ -33,3 +33,8 @@ export const baseModes = {
 
 export const currentController = ref('')
 export const currentControllerType = ref('')
+export const pressedButtons = ref(-1)
+export const controllerTypes = ref({
+  WHEEL: '方向盘',
+  GAMEPAD: '手柄'
+})
