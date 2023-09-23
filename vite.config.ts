@@ -48,6 +48,10 @@ export default defineConfig({
       '/rtc': {
         target: 'http://localhost:1985',
         changeOrigin: true
+      },
+      '/websocket': {
+        target: 'ws://localhost:8080',
+        ws: true
       }
     }
   }

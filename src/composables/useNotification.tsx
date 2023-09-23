@@ -1,5 +1,6 @@
-import { ElBadge, ElButton, ElCard, ElDrawer } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { getToken } from '@/utils'
+import { ElAlert, ElBadge, ElButton, ElCard, ElDrawer, ElNotification } from 'element-plus'
+import { Fragment, onBeforeUnmount, onMounted, reactive, ref, type Ref } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
 interface websocketData {
@@ -10,14 +11,49 @@ interface websocketData {
 }
 export const useNotification = () => {
   const notificationDrawerVisible = ref(false)
-  const notifications: websocketData[] = reactive([
-    {
-      id: '1',
-      type: 'warning',
-      message: 'test',
-      time: '2023-09-13'
+  const notifications: websocketData[] = reactive([])
+
+  function initWebsocket() {
+    const token = getToken()
+    if (token) {
+      const websocket = new WebSocket(`ws://${window.location.host}/websocket`, [token])
+      websocket.onmessage = onMessage
+      websocket.onopen = () => {
+        isOpen.value = true
+      }
+      websocket.onclose = () => {
+        isOpen.value = false
+      }
+      websocket.onerror = () => {
+        isOpen.value = false
+      }
+      return websocket
     }
-  ])
+  }
+  const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
+
+  function onMessage(e: any) {
+    const data: websocketData = JSON.parse(e.data)
+    const { type, message } = data
+    ElNotification({
+      type: type as 'warning' | 'error',
+      message,
+      position: 'bottom-right'
+    })
+    notifications.push(data)
+    alarmRef.value && alarmRef.value.play()
+  }
+
+  let websocket: WebSocket | undefined
+  const isOpen = ref(false)
+
+  onMounted(() => {
+    websocket = initWebsocket()
+  })
+
+  onBeforeUnmount(() => {
+    websocket?.close()
+  })
 
   const NotificationDrawer = () => (
     <ElDrawer
@@ -27,13 +63,16 @@ export const useNotification = () => {
       direction="rtl"
       size="80%"
     >
-      {notifications.map((item) => (
-        <ElCard>
+      {!isOpen.value && <ElAlert title="websocket 连接已断开" type="error" class="!mb-5" />}
+      {notifications.map((item, index) => (
+        <ElCard key={item.id} class="mb-5">
           {{
             header: () => (
               <div class="flex justify-between">
                 <span>{item.time}</span>
-                <IconCloseFill class="cursor-pointer" />
+                <ElButton link onClick={() => notifications.splice(index, 1)}>
+                  <IconCloseFill />
+                </ElButton>
               </div>
             ),
             default: () => <div>{item.message}</div>
@@ -44,11 +83,14 @@ export const useNotification = () => {
   )
 
   const NotificationController = () => (
-    <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
-      <ElBadge value={notifications.length} hidden={notifications.length === 0} isDot={true}>
-        <IconMdiBellOutline />
-      </ElBadge>
-    </ElButton>
+    <Fragment>
+      <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
+        <ElBadge value={notifications.length} hidden={notifications.length === 0} isDot={true}>
+          <IconMdiBellOutline />
+        </ElBadge>
+      </ElButton>
+      <audio ref={alarmRef} src="/unionAlarm.wav" hidden></audio>
+    </Fragment>
   )
   return {
     NotificationDrawer,
