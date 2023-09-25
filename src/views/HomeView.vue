@@ -6,6 +6,7 @@ import {
   useControlSection,
   useDetail,
   useInternational,
+  useMap,
   useNotification,
   useResponsive,
   useTheme
@@ -36,6 +37,7 @@ const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
+const { MapContainer } = useMap()
 </script>
 
 <template>
@@ -65,7 +67,9 @@ const { InternationalController } = useInternational()
             </div>
           </div>
           <div class="h-full flex-1 flex flex-col">
-            <div class="bg-slate-500 h-full">测试</div>
+            <div class="h-full">
+              <MapContainer />
+            </div>
             <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
               <i-mdi-arrow-drop-up class="text-3xl" />
             </el-button>

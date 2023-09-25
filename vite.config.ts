@@ -52,6 +52,10 @@ export default defineConfig({
       '/websocket': {
         target: 'ws://localhost:8080',
         ws: true
+      },
+      '/tiles': {
+        target: 'ws://localhost:3000',
+        changeOrigin: true
       }
     }
   }
