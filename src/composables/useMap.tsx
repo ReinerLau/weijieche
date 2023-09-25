@@ -1,18 +1,19 @@
-import { getCarInfo, sendMavlinkMission } from '@/api'
-import { currentCar } from '@/shared'
+import { createMissionTemplate, getCarInfo, sendMavlinkMission } from '@/api'
+import { currentCar, haveCurrentCar } from '@/shared'
 import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { haveCurrentCar } from '../shared/index'
+import { useTemplate } from './useTemplate'
 export const useMap = () => {
   const { t } = useI18n()
+  const { TemplateDialog, handleSaveTemplate } = useTemplate()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
   let drawTool: maptalks.DrawTool
   let lineLayer: maptalks.VectorLayer
-  let line: maptalks.LineString
+  let line: maptalks.LineString | undefined
 
   function initMap() {
     const tileLayer = new maptalks.TileLayer('base', {
@@ -60,11 +61,13 @@ export const useMap = () => {
     drawTool.addTo(map).disable()
     drawTool.on('drawend', (e) => {
       line = e.geometry
-      line.config({
-        arrowStyle: 'classic'
-      })
-      lineLayer.addGeometry(line)
-      line.startEdit()
+      if (line) {
+        line.config({
+          arrowStyle: 'classic'
+        })
+        lineLayer.addGeometry(line)
+        line.startEdit()
+      }
       drawTool.disable()
     })
   }
@@ -73,15 +76,13 @@ export const useMap = () => {
     {
       title: '新建路径',
       event: () => {
-        lineLayer.clear()
+        clearLine()
         drawTool.enable()
       }
     },
     {
       title: '清空路径',
-      event: () => {
-        lineLayer.clear()
-      }
+      event: clearLine
     },
     {
       title: '下发',
@@ -92,7 +93,16 @@ export const useMap = () => {
       subItems: [
         {
           title: t('bao-cun'),
-          event: () => {}
+          event: () => {
+            if (line && line.getCoordinates().length > 0) {
+              handleSaveTemplate()
+            } else {
+              ElMessage({
+                type: 'error',
+                message: '先新建路径'
+              })
+            }
+          }
         },
         {
           title: t('sou-suo')
@@ -114,14 +124,42 @@ export const useMap = () => {
 
   async function handleCreatePlan() {
     if (haveCurrentCar()) {
-      const data = line
-        .getCoordinates()
-        .map((item) => ({ x: (item as maptalks.Coordinate).y, y: (item as maptalks.Coordinate).x }))
-      const res: any = await sendMavlinkMission(data, currentCar.value)
+      if (line) {
+        const data = line.getCoordinates().map((item) => ({
+          x: (item as maptalks.Coordinate).y,
+          y: (item as maptalks.Coordinate).x
+        }))
+        const res: any = await sendMavlinkMission(data, currentCar.value)
+        ElMessage.success({
+          message: res.message
+        })
+        clearLine()
+      }
+    }
+  }
+
+  function clearLine() {
+    lineLayer.clear()
+    line = undefined
+  }
+
+  async function handleConfirm(formData: { name?: string; memo?: string }) {
+    if (line) {
+      const coordinates = line.getCoordinates().map((item) => ({
+        x: (item as maptalks.Coordinate).y,
+        y: (item as maptalks.Coordinate).x
+      }))
+      const data = {
+        mission: JSON.stringify(coordinates),
+        name: formData.name,
+        memo: formData.memo,
+        rtype: 'patroling'
+      }
+      const res: any = await createMissionTemplate(data)
       ElMessage.success({
         message: res.message
       })
-      lineLayer.clear()
+      clearLine()
     }
   }
 
@@ -160,7 +198,8 @@ export const useMap = () => {
           }
         })}
       </div>
-      <div class="h-full" ref={mapRef}></div>
+      <div class="h-full" ref={mapRef} />
+      <TemplateDialog onConfirm={handleConfirm} />
     </div>
   )
   return {

@@ -17,3 +17,11 @@ export function sendMavlinkMission(data: { x: number; y: number }[], id: string)
     data
   })
 }
+
+export function createMissionTemplate(data: any) {
+  return request({
+    url: '/robot-mission-template/v1/',
+    method: 'post',
+    data
+  })
+}
