@@ -47,7 +47,7 @@ const { MapContainer } = useMap()
         <CarRelevantController />
         <div class="flex items-center">
           <NotificationController />
-          <ThemeController />
+          <ThemeController class="ml-3" />
           <InternationalController class="ml-3" />
         </div>
       </div>
