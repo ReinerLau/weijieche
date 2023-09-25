@@ -1,9 +1,11 @@
+import { getCarInfo } from '@/api'
+import { currentCar } from '@/shared'
 import * as maptalks from 'maptalks'
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, watch, type Ref } from 'vue'
 export const useMap = () => {
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
-  let layer: maptalks.VectorLayer
+  let markerLayer: maptalks.VectorLayer
 
   function initMap() {
     const tileLayer = new maptalks.TileLayer('base', {
@@ -19,8 +21,23 @@ export const useMap = () => {
         minZoom: 11,
         baseLayer: tileLayer
       })
-      layer = new maptalks.VectorLayer('vector')
-      layer.addTo(map)
+      markerLayer = new maptalks.VectorLayer('vector')
+      markerLayer.addTo(map)
+    }
+  }
+
+  watch(currentCar, (val: string) => {
+    addMarker(val)
+  })
+
+  async function addMarker(val: string) {
+    markerLayer.clear()
+    const res: any = await getCarInfo(val)
+    if (res.data.longitude && res.data.latitude) {
+      // const coordinates = [res.data.longitude, res.data.latitude]
+      const coordinates = [25.97905635, -10.66232601]
+      const point = new maptalks.Marker(coordinates)
+      markerLayer.addGeometry(point)
     }
   }
 

@@ -18,7 +18,7 @@ export function patrolingVoice(params: any) {
 
 export function patrolingSetMode(code: string, data: any) {
   return request({
-    url: '/robot-cruise/PatrolingControl/' + code,
+    url: `/robot-cruise/PatrolingControl/${code}`,
     method: 'post',
     data: data
   })
