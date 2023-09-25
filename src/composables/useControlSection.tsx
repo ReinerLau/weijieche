@@ -45,48 +45,6 @@ export const useControlSection = () => {
           event: () => setMode(modeKey.STOP)
         }
       ]
-    },
-    {
-      title: t('mo-ban'),
-      subItems: [
-        {
-          title: t('xin-jian')
-        },
-        {
-          title: t('bao-cun')
-        },
-        {
-          title: t('sou-suo')
-        },
-        {
-          title: t('qu-xiao')
-        }
-      ]
-    },
-    {
-      title: t('lu-jing-gui-hua'),
-      subItems: [
-        {
-          title: t('xin-jian')
-        },
-        {
-          title: t('xia-fa')
-        },
-        {
-          title: t('qu-xiao')
-        }
-      ]
-    },
-    {
-      title: t('ding-shi-ren-wu'),
-      subItems: [
-        {
-          title: t('xin-jian')
-        },
-        {
-          title: t('sou-suo')
-        }
-      ]
     }
   ])
 

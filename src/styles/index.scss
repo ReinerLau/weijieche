@@ -1,1 +1,5 @@
 @use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
+
+.el-button + .el-button {
+  margin-left: 0 !important;
+}
