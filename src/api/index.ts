@@ -9,3 +9,11 @@ export function getCarInfo(code: string) {
     method: 'get'
   })
 }
+
+export function sendMavlinkMission(data: { x: number; y: number }[], id: string) {
+  return request({
+    url: `/robot-cruise/patrolingCruise/v2/${id}`,
+    method: 'post',
+    data
+  })
+}

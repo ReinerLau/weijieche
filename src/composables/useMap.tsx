@@ -1,17 +1,18 @@
-import { getCarInfo } from '@/api'
+import { getCarInfo, sendMavlinkMission } from '@/api'
 import { currentCar } from '@/shared'
-import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
+import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { haveCurrentCar } from '../shared/index'
 export const useMap = () => {
   const { t } = useI18n()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
-  let toolbar: maptalks.control.Toolbar
   let drawTool: maptalks.DrawTool
   let lineLayer: maptalks.VectorLayer
+  let line: maptalks.LineString
 
   function initMap() {
     const tileLayer = new maptalks.TileLayer('base', {
@@ -49,34 +50,6 @@ export const useMap = () => {
     }
   }
 
-  function initToolbar() {
-    toolbar = new maptalks.control.Toolbar({
-      vertical: true,
-      // position: 'top-right',
-      items: [
-        {
-          item: 'test',
-          children: [
-            {
-              item: 'new',
-              click() {
-                lineLayer.clear()
-                drawTool.enable()
-              }
-            }
-          ]
-        },
-        {
-          item: 'test1',
-          click() {
-            lineLayer.clear()
-          }
-        }
-      ]
-    })
-    toolbar.addTo(map)
-  }
-
   function initDrawTool() {
     drawTool = new maptalks.DrawTool({
       mode: 'LineString',
@@ -86,7 +59,7 @@ export const useMap = () => {
     })
     drawTool.addTo(map).disable()
     drawTool.on('drawend', (e) => {
-      const line: maptalks.LineString = e.geometry
+      line = e.geometry
       line.config({
         arrowStyle: 'classic'
       })
@@ -112,9 +85,7 @@ export const useMap = () => {
     },
     {
       title: '下发',
-      event: () => {
-        lineLayer.clear()
-      }
+      event: handleCreatePlan
     },
     {
       title: t('mo-ban'),
@@ -140,6 +111,19 @@ export const useMap = () => {
       ]
     }
   ])
+
+  async function handleCreatePlan() {
+    if (haveCurrentCar()) {
+      const data = line
+        .getCoordinates()
+        .map((item) => ({ x: (item as maptalks.Coordinate).y, y: (item as maptalks.Coordinate).x }))
+      const res: any = await sendMavlinkMission(data, currentCar.value)
+      ElMessage.success({
+        message: res.message
+      })
+      lineLayer.clear()
+    }
+  }
 
   onMounted(() => {
     initMap()
