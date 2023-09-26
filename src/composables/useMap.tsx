@@ -14,7 +14,12 @@ export const useMap = () => {
     searchDialogVisible: templateSearchDialogVisible,
     TemplateSearchDialog
   } = useTemplate()
-  const { dialogVisible: scheduleDialogVisible, ScheduleDialog } = useSchedule()
+  const {
+    dialogVisible: scheduleDialogVisible,
+    ScheduleDialog,
+    searchDialogVisible: scheduleSearchDialogVisible,
+    ScheduleSearchDialog
+  } = useSchedule()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
@@ -125,7 +130,9 @@ export const useMap = () => {
         },
         {
           title: t('sou-suo'),
-          event: () => {}
+          event: () => {
+            scheduleSearchDialogVisible.value = true
+          }
         }
       ]
     }
@@ -240,6 +247,7 @@ export const useMap = () => {
       <TemplateDialog onConfirm={handleConfirm} />
       <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
       <ScheduleDialog />
+      <ScheduleSearchDialog />
     </div>
   )
   return {

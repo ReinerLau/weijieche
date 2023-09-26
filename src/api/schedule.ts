@@ -1,10 +1,9 @@
 import { request } from '@/utils'
 
-export function getTimingTaskList(data: any) {
+export function getTimingTaskList() {
   return request({
     url: '/vehicle-mission-timer/v1/list',
-    method: 'get',
-    data
+    method: 'get'
   })
 }
 

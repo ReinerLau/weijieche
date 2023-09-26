@@ -67,11 +67,11 @@ export const useTemplate = () => {
       }
 
       return () => (
-        <ElDialog v-model={searchDialogVisible.value} title="模板">
+        <ElDialog v-model={searchDialogVisible.value} title="模板" width="80%">
           {{
             default: () => (
               <ElTable
-                height={200}
+                height="50vh"
                 data={list.value}
                 highlight-current-row
                 onCurrent-change={(val) => {

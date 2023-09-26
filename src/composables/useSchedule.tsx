@@ -1,4 +1,4 @@
-import { createTimingTask, getTemplateList } from '@/api'
+import { createTimingTask, deleteTimingTask, getTemplateList, getTimingTaskList } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import {
   ElButton,
@@ -11,9 +11,11 @@ import {
   ElMessage,
   ElOption,
   ElSelect,
-  ElSwitch
+  ElSwitch,
+  ElTable,
+  ElTableColumn
 } from 'element-plus'
-import { computed, defineComponent, onMounted, ref, toRaw, type Ref } from 'vue'
+import { computed, defineComponent, onMounted, ref, toRaw, watch, type Ref } from 'vue'
 
 export const useSchedule = () => {
   const dialogVisible = ref(false)
@@ -104,7 +106,7 @@ export const useSchedule = () => {
       })
 
       return () => (
-        <ElDialog v-model={dialogVisible.value} title="定时任务">
+        <ElDialog v-model={dialogVisible.value} title="定时任务" width="80%">
           {{
             default: () => (
               <ElForm label-width={100} model={formData.value}>
@@ -167,8 +169,87 @@ export const useSchedule = () => {
       )
     }
   })
+
+  const searchDialogVisible = ref(false)
+
+  const ScheduleSearchDialog = defineComponent({
+    setup() {
+      const list: Ref<any[]> = ref([])
+      async function handleDelete(id: number) {
+        await deleteTimingTask(id)
+        getList()
+      }
+      watch(searchDialogVisible, async (val) => {
+        if (val) {
+          getList()
+        }
+      })
+
+      async function getList() {
+        const res = await getTimingTaskList()
+        list.value = res.data?.list || []
+      }
+
+      const columns = [
+        {
+          label: '机器人编码',
+          prop: 'code'
+        },
+        {
+          label: '路径模板',
+          prop: 'missionId'
+        },
+        {
+          label: '循环条件',
+          prop: 'loopConditions'
+        },
+        {
+          label: '循环时间',
+          prop: 'conditions'
+        },
+        {
+          label: '充电任务',
+          prop: 'changeMission'
+        },
+        {
+          label: '返回结果',
+          prop: 'result'
+        },
+        {
+          label: '下发时间',
+          prop: 'time'
+        }
+      ]
+
+      return () => (
+        <ElDialog v-model={searchDialogVisible.value} title="定时任务" width="80%">
+          {{
+            default: () => (
+              <ElTable height="50vh" data={list.value} highlight-current-row>
+                {columns.map((item) => (
+                  <ElTableColumn property={item.prop} label={item.label} />
+                ))}
+                <ElTableColumn label="操作">
+                  {{
+                    default: ({ row }: { row: any }) => (
+                      <ElButton link onClick={() => handleDelete(row.id)}>
+                        删除
+                      </ElButton>
+                    )
+                  }}
+                </ElTableColumn>
+              </ElTable>
+            )
+          }}
+        </ElDialog>
+      )
+    }
+  })
+
   return {
     ScheduleDialog,
-    dialogVisible
+    dialogVisible,
+    ScheduleSearchDialog,
+    searchDialogVisible
   }
 }
