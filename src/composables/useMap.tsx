@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n'
 import { useTemplate } from './useTemplate'
 export const useMap = () => {
   const { t } = useI18n()
-  const { TemplateDialog, handleSaveTemplate } = useTemplate()
+  const { TemplateDialog, handleSaveTemplate, dialogVisible: templateDialogVisible } = useTemplate()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
@@ -144,23 +144,27 @@ export const useMap = () => {
   }
 
   async function handleConfirm(formData: { name?: string; memo?: string }) {
-    if (line) {
-      const coordinates = line.getCoordinates().map((item) => ({
-        x: (item as maptalks.Coordinate).y,
-        y: (item as maptalks.Coordinate).x
-      }))
-      const data = {
-        mission: JSON.stringify(coordinates),
-        name: formData.name,
-        memo: formData.memo,
-        rtype: 'patroling'
-      }
-      const res: any = await createMissionTemplate(data)
-      ElMessage.success({
-        message: res.message
-      })
-      clearLine()
+    const data = {
+      mission: JSON.stringify(getLineCoordinates()),
+      name: formData.name,
+      memo: formData.memo,
+      rtype: 'patroling'
     }
+    const res: any = await createMissionTemplate(data)
+    ElMessage.success({
+      message: res.message
+    })
+    templateDialogVisible.value = false
+    clearLine()
+  }
+
+  function getLineCoordinates() {
+    return line
+      ? line.getCoordinates().map((item) => ({
+          x: (item as maptalks.Coordinate).y,
+          y: (item as maptalks.Coordinate).x
+        }))
+      : []
   }
 
   onMounted(() => {

@@ -12,7 +12,7 @@ export const useTemplate = () => {
   const TemplateDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
-      return (
+      return () => (
         <ElDialog v-model={dialogVisible.value} title="模板">
           {{
             default: () => (
@@ -43,6 +43,7 @@ export const useTemplate = () => {
   })
   return {
     TemplateDialog,
-    handleSaveTemplate
+    handleSaveTemplate,
+    dialogVisible
   }
 }
