@@ -26,6 +26,7 @@ export const useMap = () => {
   let drawTool: maptalks.DrawTool
   let lineLayer: maptalks.VectorLayer
   let line: maptalks.LineString | undefined
+  let homePointLayer: maptalks.VectorLayer
 
   function initMap() {
     const tileLayer = new maptalks.TileLayer('base', {
@@ -45,6 +46,8 @@ export const useMap = () => {
       markerLayer.addTo(map)
       lineLayer = new maptalks.VectorLayer('line')
       lineLayer.addTo(map)
+      homePointLayer = new maptalks.VectorLayer('home-point')
+      homePointLayer.addTo(map)
     }
   }
 
@@ -56,41 +59,30 @@ export const useMap = () => {
     markerLayer.clear()
     const res: any = await getCarInfo(val)
     if (res.data.longitude && res.data.latitude) {
-      const coordinates = [res.data.longitude, res.data.latitude]
-      // const coordinates = [25.97905635, -10.66232601]
-      const point = new maptalks.Marker(coordinates)
+      // const coordinates = [res.data.longitude, res.data.latitude]
+      const coordinates = [25.97905635, -10.66232601]
+      const point = new maptalks.Marker(coordinates, {
+        symbol: {
+          markerType: 'triangle',
+          markerFill: 'red',
+          markerWidth: 15,
+          markerHeight: 20,
+          markerRotation: -res.data.heading
+        }
+      })
       markerLayer.addGeometry(point)
     }
   }
 
   function initDrawTool() {
-    drawTool = new maptalks.DrawTool({
-      mode: 'LineString',
-      symbol: {
-        lineColor: '#ff931e'
-      }
-    })
+    drawTool = new maptalks.DrawTool({ mode: 'Point' })
     drawTool.addTo(map).disable()
-    drawTool.on('drawend', (e) => {
-      line = e.geometry
-      if (line) {
-        line.config({
-          arrowStyle: 'classic'
-        })
-        lineLayer.addGeometry(line)
-        line.startEdit()
-      }
-      drawTool.disable()
-    })
   }
 
   const toolbarItems = reactive([
     {
       title: '新建路径',
-      event: () => {
-        clearLine()
-        drawTool.enable()
-      }
+      event: handleCreateLine
     },
     {
       title: '清空路径',
@@ -99,6 +91,19 @@ export const useMap = () => {
     {
       title: '下发',
       event: handleCreatePlan
+    },
+    {
+      title: '返航',
+      subItems: [
+        {
+          title: '新建',
+          event: handleCreateHomePoint
+        },
+        {
+          title: '开始',
+          event: () => {}
+        }
+      ]
     },
     {
       title: t('mo-ban'),
@@ -202,6 +207,41 @@ export const useMap = () => {
       })
       return false
     }
+  }
+
+  function createLineEvent(e: any) {
+    line = e.geometry
+    if (line) {
+      line.config({
+        arrowStyle: 'classic'
+      })
+      lineLayer.addGeometry(line)
+      line.startEdit()
+    }
+    drawTool.disable()
+    drawTool.off('drawend', createLineEvent)
+  }
+
+  function createHomePointEvent(e: any) {
+    homePointLayer.addGeometry(e.geometry)
+    drawTool.disable()
+    drawTool.off('drawend', createHomePointEvent)
+  }
+
+  function handleCreateLine() {
+    clearLine()
+    drawTool.setMode('LineString')
+    drawTool.setSymbol({
+      lineColor: '#ff931e'
+    })
+    drawTool.enable()
+    drawTool.on('drawend', createLineEvent)
+  }
+
+  function handleCreateHomePoint() {
+    drawTool.setMode('Point')
+    drawTool.enable()
+    drawTool.on('drawend', createHomePointEvent)
   }
 
   onMounted(() => {
