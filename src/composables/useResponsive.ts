@@ -5,14 +5,14 @@ export const useResponsive = () => {
   function checkIsMobile() {
     if (innerWidth < 1280 || innerHeight < 820) {
       isMobile.value = true
-      if (mainRef.value) {
-        mainRef.value.style.flexDirection = 'column'
-      }
+      // if (mainRef.value) {
+      //   mainRef.value.style.flexDirection = 'column'
+      // }
     } else {
       isMobile.value = false
-      if (mainRef.value) {
-        mainRef.value.style.flexDirection = 'row'
-      }
+      // if (mainRef.value) {
+      //   mainRef.value.style.flexDirection = 'row'
+      // }
     }
   }
   return {

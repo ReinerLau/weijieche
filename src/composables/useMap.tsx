@@ -200,13 +200,17 @@ export const useMap = () => {
 
   const MapContainer = () => (
     <div class="h-full relative">
-      <div class="absolute top-5 right-5 z-10">
+      <div class="absolute top-5 right-5 z-10 flex flex-col">
         {toolbarItems.map((item) => {
           if (item.subItems) {
             return (
-              <ElDropdown key={item.title} class="mr-1">
+              <ElDropdown key={item.title} class="mb-1">
                 {{
-                  default: () => <ElButton type="primary">{item.title}</ElButton>,
+                  default: () => (
+                    <ElButton class="w-full" type="primary">
+                      {item.title}
+                    </ElButton>
+                  ),
                   dropdown: () => (
                     <ElDropdownMenu>
                       {item.subItems.map((subItem) => (
@@ -221,7 +225,7 @@ export const useMap = () => {
             )
           } else {
             return (
-              <ElButton class="mr-1" type="primary" onClick={item.event}>
+              <ElButton class="mb-1 w-full" type="primary" onClick={item.event}>
                 {item.title}
               </ElButton>
             )
