@@ -7,3 +7,10 @@ export function getTemplateList(data: any) {
     data
   })
 }
+
+export function deleteTemplate(id: number) {
+  return request({
+    url: `/robot-mission-template/v1/${id}`,
+    method: 'delete'
+  })
+}

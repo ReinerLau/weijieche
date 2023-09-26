@@ -1,4 +1,4 @@
-import { getTemplateList } from '@/api'
+import { deleteTemplate, getTemplateList } from '@/api'
 import {
   ElButton,
   ElDialog,
@@ -53,12 +53,20 @@ export const useTemplate = () => {
     setup(props, { emit }) {
       const list: Ref<any[]> = ref([])
       const currentTemplate = ref()
+      async function handleDelete(id: number) {
+        await deleteTemplate(id)
+        getList()
+      }
       watch(searchDialogVisible, async (val) => {
         if (val) {
-          const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
-          list.value = res.data || []
+          getList()
         }
       })
+
+      async function getList() {
+        const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
+        list.value = res.data || []
+      }
 
       return () => (
         <ElDialog v-model={searchDialogVisible.value} title="模板">
@@ -75,6 +83,15 @@ export const useTemplate = () => {
                 <ElTableColumn property="name" label="名称" />
                 <ElTableColumn property="memo" label="备注" />
                 <ElTableColumn property="createTime" label="创建时间" />
+                <ElTableColumn label="操作">
+                  {{
+                    default: ({ row }: { row: any }) => (
+                      <ElButton link onClick={() => handleDelete(row.id)}>
+                        删除
+                      </ElButton>
+                    )
+                  }}
+                </ElTableColumn>
               </ElTable>
             ),
             footer: () => (
