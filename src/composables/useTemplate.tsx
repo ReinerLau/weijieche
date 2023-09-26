@@ -1,13 +1,20 @@
-import { ElButton, ElDialog, ElForm, ElFormItem, ElInput, type FormInstance } from 'element-plus'
-import { defineComponent, ref, type Ref } from 'vue'
+import { getTemplateList } from '@/api'
+import {
+  ElButton,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElTable,
+  ElTableColumn,
+  type FormInstance
+} from 'element-plus'
+import { defineComponent, ref, watch, type Ref } from 'vue'
 export const useTemplate = () => {
   const dialogVisible = ref(false)
-  const loading = ref(false)
   const formRef: Ref<FormInstance | undefined> = ref()
   const formData: Ref<{ name?: string; memo?: string }> = ref({})
-  async function handleSaveTemplate() {
-    dialogVisible.value = true
-  }
+  const searchDialogVisible = ref(false)
 
   const TemplateDialog = defineComponent({
     emits: ['confirm'],
@@ -20,14 +27,13 @@ export const useTemplate = () => {
                 <ElFormItem prop="name" label="模板名称">
                   <ElInput v-model={formData.value.name} clearable></ElInput>
                 </ElFormItem>
-                <ElFormItem prop="memo" label="任务描述">
+                <ElFormItem prop="memo" label="备注">
                   <ElInput v-model={formData.value.memo} clearable></ElInput>
                 </ElFormItem>
               </ElForm>
             ),
             footer: () => (
               <ElButton
-                loading={loading.value}
                 size="large"
                 type="primary"
                 class="w-full"
@@ -41,9 +47,56 @@ export const useTemplate = () => {
       )
     }
   })
+
+  const TemplateSearchDialog = defineComponent({
+    emits: ['confirm'],
+    setup(props, { emit }) {
+      const list: Ref<any[]> = ref([])
+      const currentTemplate = ref()
+      watch(searchDialogVisible, async (val) => {
+        if (val) {
+          const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
+          list.value = res.data || []
+        }
+      })
+
+      return () => (
+        <ElDialog v-model={searchDialogVisible.value} title="模板">
+          {{
+            default: () => (
+              <ElTable
+                height={200}
+                data={list.value}
+                highlight-current-row
+                onCurrent-change={(val) => {
+                  currentTemplate.value = val
+                }}
+              >
+                <ElTableColumn property="name" label="名称" />
+                <ElTableColumn property="memo" label="备注" />
+                <ElTableColumn property="createTime" label="创建时间" />
+              </ElTable>
+            ),
+            footer: () => (
+              <ElButton
+                size="large"
+                type="primary"
+                class="w-full"
+                onClick={() => emit('confirm', currentTemplate.value)}
+              >
+                确定
+              </ElButton>
+            )
+          }}
+        </ElDialog>
+      )
+    }
+  })
+
   return {
     TemplateDialog,
-    handleSaveTemplate,
-    dialogVisible
+    dialogVisible,
+    TemplateSearchDialog,
+    searchDialogVisible
   }
 }

@@ -7,7 +7,12 @@ import { useI18n } from 'vue-i18n'
 import { useTemplate } from './useTemplate'
 export const useMap = () => {
   const { t } = useI18n()
-  const { TemplateDialog, handleSaveTemplate, dialogVisible: templateDialogVisible } = useTemplate()
+  const {
+    TemplateDialog,
+    dialogVisible: templateDialogVisible,
+    searchDialogVisible: templateSearchDialogVisible,
+    TemplateSearchDialog
+  } = useTemplate()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
@@ -94,18 +99,16 @@ export const useMap = () => {
         {
           title: t('bao-cun'),
           event: () => {
-            if (line && line.getCoordinates().length > 0) {
-              handleSaveTemplate()
-            } else {
-              ElMessage({
-                type: 'error',
-                message: '先新建路径'
-              })
+            if (haveLine()) {
+              templateDialogVisible.value = true
             }
           }
         },
         {
-          title: t('sou-suo')
+          title: t('sou-suo'),
+          event: () => {
+            templateSearchDialogVisible.value = true
+          }
         }
       ]
     },
@@ -113,28 +116,25 @@ export const useMap = () => {
       title: t('ding-shi-ren-wu'),
       subItems: [
         {
-          title: t('xin-jian')
+          title: t('xin-jian'),
+          event: () => {}
         },
         {
-          title: t('sou-suo')
+          title: t('sou-suo'),
+          event: () => {}
         }
       ]
     }
   ])
 
   async function handleCreatePlan() {
-    if (haveCurrentCar()) {
-      if (line) {
-        const data = line.getCoordinates().map((item) => ({
-          x: (item as maptalks.Coordinate).y,
-          y: (item as maptalks.Coordinate).x
-        }))
-        const res: any = await sendMavlinkMission(data, currentCar.value)
-        ElMessage.success({
-          message: res.message
-        })
-        clearLine()
-      }
+    if (haveCurrentCar() && haveLine()) {
+      const data = getLineCoordinates()
+      const res: any = await sendMavlinkMission(data, currentCar.value)
+      ElMessage.success({
+        message: res.message
+      })
+      clearLine()
     }
   }
 
@@ -158,6 +158,20 @@ export const useMap = () => {
     clearLine()
   }
 
+  function handleConfirmTemplate(template: any) {
+    templateSearchDialogVisible.value = false
+    lineLayer.clear()
+    const coordinates = JSON.parse(template.mission).map((item: any) => [item.y, item.x])
+    line = new maptalks.LineString(coordinates, {
+      arrowStyle: 'classic',
+      symbol: {
+        lineColor: '#ff931e'
+      }
+    })
+    lineLayer.addGeometry(line)
+    line.startEdit()
+  }
+
   function getLineCoordinates() {
     return line
       ? line.getCoordinates().map((item) => ({
@@ -165,6 +179,18 @@ export const useMap = () => {
           y: (item as maptalks.Coordinate).x
         }))
       : []
+  }
+
+  function haveLine() {
+    if (line && line.getCoordinates().length > 0) {
+      return true
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '先新建路径'
+      })
+      return false
+    }
   }
 
   onMounted(() => {
@@ -204,6 +230,7 @@ export const useMap = () => {
       </div>
       <div class="h-full" ref={mapRef} />
       <TemplateDialog onConfirm={handleConfirm} />
+      <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
     </div>
   )
   return {

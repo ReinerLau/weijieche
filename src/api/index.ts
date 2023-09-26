@@ -2,6 +2,7 @@ import { request } from '@/utils'
 
 export * from './camera'
 export * from './control'
+export * from './template'
 
 export function getCarInfo(code: string) {
   return request({
