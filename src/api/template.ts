@@ -14,3 +14,11 @@ export function deleteTemplate(id: number) {
     method: 'delete'
   })
 }
+
+export function createMissionTemplate(data: any) {
+  return request({
+    url: '/robot-mission-template/v1/',
+    method: 'post',
+    data
+  })
+}

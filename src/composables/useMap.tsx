@@ -1,10 +1,11 @@
 import { createMissionTemplate, getCarInfo, sendMavlinkMission } from '@/api'
+import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useTemplate } from './useTemplate'
+import { useSchedule } from './useSchedule'
 export const useMap = () => {
   const { t } = useI18n()
   const {
@@ -13,6 +14,7 @@ export const useMap = () => {
     searchDialogVisible: templateSearchDialogVisible,
     TemplateSearchDialog
   } = useTemplate()
+  const { dialogVisible: scheduleDialogVisible, ScheduleDialog } = useSchedule()
   const mapRef: Ref<HTMLElement | undefined> = ref()
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
@@ -49,8 +51,8 @@ export const useMap = () => {
     markerLayer.clear()
     const res: any = await getCarInfo(val)
     if (res.data.longitude && res.data.latitude) {
-      // const coordinates = [res.data.longitude, res.data.latitude]
-      const coordinates = [25.97905635, -10.66232601]
+      const coordinates = [res.data.longitude, res.data.latitude]
+      // const coordinates = [25.97905635, -10.66232601]
       const point = new maptalks.Marker(coordinates)
       markerLayer.addGeometry(point)
     }
@@ -117,7 +119,9 @@ export const useMap = () => {
       subItems: [
         {
           title: t('xin-jian'),
-          event: () => {}
+          event: () => {
+            scheduleDialogVisible.value = true
+          }
         },
         {
           title: t('sou-suo'),
@@ -235,6 +239,7 @@ export const useMap = () => {
       <div class="h-full" ref={mapRef} />
       <TemplateDialog onConfirm={handleConfirm} />
       <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
+      <ScheduleDialog />
     </div>
   )
   return {

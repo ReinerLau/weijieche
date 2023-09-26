@@ -6,13 +6,11 @@ import {
   ElFormItem,
   ElInput,
   ElTable,
-  ElTableColumn,
-  type FormInstance
+  ElTableColumn
 } from 'element-plus'
 import { defineComponent, ref, watch, type Ref } from 'vue'
 export const useTemplate = () => {
   const dialogVisible = ref(false)
-  const formRef: Ref<FormInstance | undefined> = ref()
   const formData: Ref<{ name?: string; memo?: string }> = ref({})
   const searchDialogVisible = ref(false)
 
@@ -23,7 +21,7 @@ export const useTemplate = () => {
         <ElDialog v-model={dialogVisible.value} title="模板">
           {{
             default: () => (
-              <ElForm ref={formRef} label-width={100} model={formData.value}>
+              <ElForm label-width={100} model={formData.value}>
                 <ElFormItem prop="name" label="模板名称">
                   <ElInput v-model={formData.value.name} clearable></ElInput>
                 </ElFormItem>
