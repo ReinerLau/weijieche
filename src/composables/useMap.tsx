@@ -66,10 +66,10 @@ export const useMap = () => {
       })
       markerLayer = new maptalks.VectorLayer('marker')
       markerLayer.addTo(map)
-      pathLayer = new maptalks.VectorLayer('line')
-      pathLayer.addTo(map)
       homePointLayer = new maptalks.VectorLayer('home-point')
       homePointLayer.addTo(map)
+      pathLayer = new maptalks.VectorLayer('line')
+      pathLayer.addTo(map)
     }
   }
 
@@ -81,8 +81,8 @@ export const useMap = () => {
     markerLayer.clear()
     const res: any = await getCarInfo(val)
     if (res.data.longitude && res.data.latitude) {
-      const coordinates = [res.data.longitude, res.data.latitude]
-      // const coordinates = [25.97905635, -10.66232601]
+      // const coordinates = [res.data.longitude, res.data.latitude]
+      const coordinates = [25.97905635, -10.66232601]
       const point = new maptalks.Marker(coordinates, {
         symbol: {
           markerType: 'triangle',
@@ -232,6 +232,12 @@ export const useMap = () => {
 
   function addPathPointToLayer(pathPoint: maptalks.Marker) {
     pathLayer.addGeometry(pathPoint)
+    if (entryPoint) {
+      console.log(entryPoint.getCenter())
+      pathPoint.setCoordinates(entryPoint.getCenter())
+      console.log(pathPoint.getCenter())
+      entryPoint = undefined
+    }
     pathPoints.push(pathPoint)
     if (pathPoints.length >= 2) {
       const lastTwoPoints = pathPoints.slice(-2)
@@ -314,10 +320,28 @@ export const useMap = () => {
     }
   }
 
+  let entryPoint: maptalks.Marker | undefined
+
+  function test() {
+    const point = new maptalks.Marker([25.97905635, -10.66232601], {
+      symbol: {
+        markerType: 'ellipse',
+        markerWidth: 40,
+        markerHeight: 40,
+        markerFillOpacity: 0.5
+      }
+    })
+    point.on('click', (e: any) => {
+      entryPoint = e.target
+    })
+    homePointLayer.addGeometry(point)
+  }
+
   onMounted(() => {
     initMap()
     initDrawTool()
     initMenu()
+    test()
   })
 
   const MapContainer = () => (
