@@ -24,9 +24,31 @@ export const useMap = () => {
   let map: maptalks.Map
   let markerLayer: maptalks.VectorLayer
   let drawTool: maptalks.DrawTool
-  let lineLayer: maptalks.VectorLayer
-  let line: maptalks.LineString | undefined
+  let pathLayer: maptalks.VectorLayer
   let homePointLayer: maptalks.VectorLayer
+  const pathPoints: maptalks.Marker[] = []
+
+  function patchPointDrawendEvent(e: any) {
+    const pathPoint = e.geometry as maptalks.Marker
+    pathPoint.config({
+      draggable: true
+    })
+    pathPoint.setSymbol({
+      textName: pathPoints.length + 1,
+      markerType: 'ellipse',
+      markerFill: '#ff930e',
+      markerWidth: 20,
+      markerHeight: 20
+    })
+    addPathPointToLayer(pathPoint)
+  }
+
+  const drawToolEvents = {
+    PATH_POINT_DRAW_END: {
+      type: 'drawend',
+      event: patchPointDrawendEvent
+    }
+  }
 
   function initMap() {
     const tileLayer = new maptalks.TileLayer('base', {
@@ -44,8 +66,8 @@ export const useMap = () => {
       })
       markerLayer = new maptalks.VectorLayer('marker')
       markerLayer.addTo(map)
-      lineLayer = new maptalks.VectorLayer('line')
-      lineLayer.addTo(map)
+      pathLayer = new maptalks.VectorLayer('line')
+      pathLayer.addTo(map)
       homePointLayer = new maptalks.VectorLayer('home-point')
       homePointLayer.addTo(map)
     }
@@ -59,8 +81,8 @@ export const useMap = () => {
     markerLayer.clear()
     const res: any = await getCarInfo(val)
     if (res.data.longitude && res.data.latitude) {
-      // const coordinates = [res.data.longitude, res.data.latitude]
-      const coordinates = [25.97905635, -10.66232601]
+      const coordinates = [res.data.longitude, res.data.latitude]
+      // const coordinates = [25.97905635, -10.66232601]
       const point = new maptalks.Marker(coordinates, {
         symbol: {
           markerType: 'triangle',
@@ -86,7 +108,10 @@ export const useMap = () => {
     },
     {
       title: '清空路径',
-      event: clearLine
+      event: () => {
+        clearLine()
+        clearDrawTool()
+      }
     },
     {
       title: '下发',
@@ -112,6 +137,7 @@ export const useMap = () => {
           title: t('bao-cun'),
           event: () => {
             if (haveLine()) {
+              clearDrawTool()
               templateDialogVisible.value = true
             }
           }
@@ -119,6 +145,7 @@ export const useMap = () => {
         {
           title: t('sou-suo'),
           event: () => {
+            clearDrawTool()
             templateSearchDialogVisible.value = true
           }
         }
@@ -130,12 +157,14 @@ export const useMap = () => {
         {
           title: t('xin-jian'),
           event: () => {
+            clearDrawTool()
             scheduleDialogVisible.value = true
           }
         },
         {
           title: t('sou-suo'),
           event: () => {
+            clearDrawTool()
             scheduleSearchDialogVisible.value = true
           }
         }
@@ -151,12 +180,13 @@ export const useMap = () => {
         message: res.message
       })
       clearLine()
+      clearDrawTool()
     }
   }
 
   function clearLine() {
-    lineLayer.clear()
-    line = undefined
+    pathLayer.clear()
+    pathPoints.length = 0
   }
 
   async function handleConfirm(formData: { name?: string; memo?: string }) {
@@ -172,33 +202,57 @@ export const useMap = () => {
     })
     templateDialogVisible.value = false
     clearLine()
+    clearDrawTool()
   }
 
   function handleConfirmTemplate(template: any) {
+    clearLine()
+    clearDrawTool()
     templateSearchDialogVisible.value = false
-    lineLayer.clear()
-    const coordinates = JSON.parse(template.mission).map((item: any) => [item.y, item.x])
-    line = new maptalks.LineString(coordinates, {
-      arrowStyle: 'classic',
-      symbol: {
-        lineColor: '#ff931e'
-      }
+    const coordinates: number[][] = JSON.parse(template.mission).map((item: any) => [
+      item.y,
+      item.x
+    ])
+
+    coordinates.forEach((coodrinate, index) => {
+      const pathPoint = new maptalks.Marker(coodrinate, {
+        symbol: {
+          textName: index + 1,
+          markerType: 'ellipse',
+          markerFill: '#ff930e',
+          markerWidth: 20,
+          markerHeight: 20
+        }
+      })
+      addPathPointToLayer(pathPoint)
     })
-    lineLayer.addGeometry(line)
-    line.startEdit()
+  }
+
+  function addPathPointToLayer(pathPoint: maptalks.Marker) {
+    pathLayer.addGeometry(pathPoint)
+    pathPoints.push(pathPoint)
+    if (pathPoints.length >= 2) {
+      const lastTwoPoints = pathPoints.slice(-2)
+      const connectLine = new maptalks.ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+        showOn: 'always',
+        symbol: {
+          lineColor: '#ff930e'
+        },
+        zIndex: -1
+      })
+      pathLayer.addGeometry(connectLine)
+    }
   }
 
   function getLineCoordinates() {
-    return line
-      ? line.getCoordinates().map((item) => ({
-          x: (item as maptalks.Coordinate).y,
-          y: (item as maptalks.Coordinate).x
-        }))
-      : []
+    return pathPoints.map((item) => ({
+      x: item.getCoordinates().y,
+      y: item.getCoordinates().x
+    }))
   }
 
   function haveLine() {
-    if (line && line.getCoordinates().length > 0) {
+    if (pathPoints.length > 0) {
       return true
     } else {
       ElMessage({
@@ -209,22 +263,9 @@ export const useMap = () => {
     }
   }
 
-  function createLineEvent(e: any) {
-    line = e.geometry
-    if (line) {
-      line.config({
-        arrowStyle: 'classic'
-      })
-      lineLayer.addGeometry(line)
-      line.startEdit()
-    }
-    drawTool.disable()
-    drawTool.off('drawend', createLineEvent)
-  }
-
   function createHomePointEvent(e: any) {
     e.geometry.config({
-        arrowStyle: 'classic'
+      arrowStyle: 'classic'
     })
     homePointLayer.addGeometry(e.geometry)
     e.geometry.startEdit()
@@ -233,27 +274,50 @@ export const useMap = () => {
   }
 
   function handleCreateLine() {
+    clearDrawTool()
     clearLine()
-    drawTool.setMode('LineString')
+    drawTool.setMode('Point')
     drawTool.setSymbol({
-      lineColor: '#ff931e'
+      markerType: 'ellipse',
+      markerFill: '#ff931e'
     })
     drawTool.enable()
-    drawTool.on('drawend', createLineEvent)
+    drawTool.on('drawend', drawToolEvents.PATH_POINT_DRAW_END.event)
   }
 
   function handleCreateHomePoint() {
     drawTool.setMode('LineString')
     drawTool.setSymbol({
-      lineColor:'#1c91c7'
+      lineColor: '#1c91c7'
     })
     drawTool.enable()
     drawTool.on('drawend', createHomePointEvent)
   }
 
+  function initMenu() {
+    map.setMenu({
+      items: [
+        {
+          item: '结束',
+          click: clearDrawTool
+        }
+      ]
+    })
+  }
+
+  function clearDrawTool() {
+    drawTool.disable()
+    for (const key in drawToolEvents) {
+      const event = drawToolEvents[key as keyof typeof drawToolEvents].event
+      const type = drawToolEvents[key as keyof typeof drawToolEvents].type
+      drawTool.off(type, event)
+    }
+  }
+
   onMounted(() => {
     initMap()
     initDrawTool()
+    initMenu()
   })
 
   const MapContainer = () => (
