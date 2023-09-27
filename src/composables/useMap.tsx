@@ -223,7 +223,11 @@ export const useMap = () => {
   }
 
   function createHomePointEvent(e: any) {
+    e.geometry.config({
+        arrowStyle: 'classic'
+    })
     homePointLayer.addGeometry(e.geometry)
+    e.geometry.startEdit()
     drawTool.disable()
     drawTool.off('drawend', createHomePointEvent)
   }
@@ -239,7 +243,10 @@ export const useMap = () => {
   }
 
   function handleCreateHomePoint() {
-    drawTool.setMode('Point')
+    drawTool.setMode('LineString')
+    drawTool.setSymbol({
+      lineColor:'#1c91c7'
+    })
     drawTool.enable()
     drawTool.on('drawend', createHomePointEvent)
   }
