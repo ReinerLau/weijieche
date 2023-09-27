@@ -104,7 +104,11 @@ export const useMap = () => {
   const toolbarItems = reactive([
     {
       title: '新建路径',
-      event: handleCreateLine
+      event: () => {
+        clearLine()
+        clearDrawTool()
+        handleCreateLine()
+      }
     },
     {
       title: '清空路径',
@@ -206,8 +210,6 @@ export const useMap = () => {
   }
 
   function handleConfirmTemplate(template: any) {
-    clearLine()
-    clearDrawTool()
     templateSearchDialogVisible.value = false
     const coordinates: number[][] = JSON.parse(template.mission).map((item: any) => [
       item.y,
@@ -274,8 +276,6 @@ export const useMap = () => {
   }
 
   function handleCreateLine() {
-    clearDrawTool()
-    clearLine()
     drawTool.setMode('Point')
     drawTool.setSymbol({
       markerType: 'ellipse',
