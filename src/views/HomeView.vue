@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import CameraPlayer from '@/components/CameraPlayer.vue'
+import CameraPlayer from '@/components/CameraPlayer.vue';
 import {
-  useCarRelevant,
-  useConfig,
-  useControlSection,
-  useDetail,
-  useInternational,
-  useMap,
-  useNotification,
-  useResponsive,
-  useTheme
-} from '@/composables'
+useCarRelevant,
+useConfig,
+useControlSection,
+useDetail,
+useInternational,
+useMap,
+useNotification,
+useResponsive,
+useTheme
+} from '@/composables';
 
-import { cameraList } from '@/shared'
-import { onMounted } from 'vue'
+import { cameraList } from '@/shared';
+import { onMounted } from 'vue';
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -60,7 +60,7 @@ const { MapContainer } = useMap()
         <TopControl />
       </el-header>
       <el-main>
-        <div ref="mainRef" class="h-[calc(100vh-160px)] overflow-y-auto flex">
+        <div ref="mainRef" class="h-full overflow-y-auto flex">
           <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
             <div class="flex-1" v-for="item in cameraList" :key="item.id">
               <CameraPlayer :url="item.rtsp" />
