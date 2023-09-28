@@ -1,10 +1,11 @@
-import { createMissionTemplate, getCarInfo, sendMavlinkMission } from '@/api'
+import { createHomePath, createMissionTemplate, getCarInfo, sendMavlinkMission } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getHomePath } from '../api/home'
 import { useSchedule } from './useSchedule'
 export const useMap = () => {
   const { t } = useI18n()
@@ -25,8 +26,9 @@ export const useMap = () => {
   let markerLayer: maptalks.VectorLayer
   let drawTool: maptalks.DrawTool
   let pathLayer: maptalks.VectorLayer
-  let homePointLayer: maptalks.VectorLayer
+  let homePathLayer: maptalks.VectorLayer
   const pathPoints: maptalks.Marker[] = []
+  let creatingHomePath: maptalks.LineString | undefined
 
   function patchPointDrawendEvent(e: any) {
     const pathPoint = e.geometry as maptalks.Marker
@@ -47,6 +49,10 @@ export const useMap = () => {
     PATH_POINT_DRAW_END: {
       type: 'drawend',
       event: patchPointDrawendEvent
+    },
+    HOME_PATH_DRAW_END: {
+      type: 'drawend',
+      event: homePathDrawEndEvent
     }
   }
 
@@ -66,8 +72,8 @@ export const useMap = () => {
       })
       markerLayer = new maptalks.VectorLayer('marker')
       markerLayer.addTo(map)
-      homePointLayer = new maptalks.VectorLayer('home-point')
-      homePointLayer.addTo(map)
+      homePathLayer = new maptalks.VectorLayer('home-point')
+      homePathLayer.addTo(map)
       pathLayer = new maptalks.VectorLayer('line')
       pathLayer.addTo(map)
     }
@@ -107,7 +113,7 @@ export const useMap = () => {
       event: () => {
         clearLine()
         clearDrawTool()
-        handleCreateLine()
+        handleCreatePath()
       }
     },
     {
@@ -126,7 +132,20 @@ export const useMap = () => {
       subItems: [
         {
           title: '新建',
-          event: handleCreateHomePoint
+          event: () => {
+            clearDrawTool()
+            clearLine()
+            handleCreateHomePath()
+          }
+        },
+        {
+          title: t('bao-cun'),
+          event: () => {
+            if (haveHomePath()) {
+              clearDrawTool()
+              handleSaveHomePath()
+            }
+          }
         },
         {
           title: '开始',
@@ -140,7 +159,7 @@ export const useMap = () => {
         {
           title: t('bao-cun'),
           event: () => {
-            if (haveLine()) {
+            if (havePath()) {
               clearDrawTool()
               templateDialogVisible.value = true
             }
@@ -177,7 +196,7 @@ export const useMap = () => {
   ])
 
   async function handleCreatePlan() {
-    if (haveCurrentCar() && haveLine()) {
+    if (haveCurrentCar() && havePath()) {
       const data = getLineCoordinates()
       const res: any = await sendMavlinkMission(data, currentCar.value)
       ElMessage.success({
@@ -191,6 +210,7 @@ export const useMap = () => {
   function clearLine() {
     pathLayer.clear()
     pathPoints.length = 0
+    creatingHomePath = undefined
   }
 
   async function handleConfirm(formData: { name?: string; memo?: string }) {
@@ -233,9 +253,7 @@ export const useMap = () => {
   function addPathPointToLayer(pathPoint: maptalks.Marker) {
     pathLayer.addGeometry(pathPoint)
     if (entryPoint) {
-      console.log(entryPoint.getCenter())
       pathPoint.setCoordinates(entryPoint.getCenter())
-      console.log(pathPoint.getCenter())
       entryPoint = undefined
     }
     pathPoints.push(pathPoint)
@@ -259,7 +277,7 @@ export const useMap = () => {
     }))
   }
 
-  function haveLine() {
+  function havePath() {
     if (pathPoints.length > 0) {
       return true
     } else {
@@ -271,17 +289,30 @@ export const useMap = () => {
     }
   }
 
-  function createHomePointEvent(e: any) {
+  function haveHomePath() {
+    if (creatingHomePath && creatingHomePath.getCoordinates().length > 0) {
+      return true
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '先新建返航路径'
+      })
+      return false
+    }
+  }
+
+  function homePathDrawEndEvent(e: any) {
     e.geometry.config({
       arrowStyle: 'classic'
     })
-    homePointLayer.addGeometry(e.geometry)
+    pathLayer.addGeometry(e.geometry)
     e.geometry.startEdit()
     drawTool.disable()
-    drawTool.off('drawend', createHomePointEvent)
+    drawTool.off('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
+    creatingHomePath = e.geometry
   }
 
-  function handleCreateLine() {
+  function handleCreatePath() {
     drawTool.setMode('Point')
     drawTool.setSymbol({
       markerType: 'ellipse',
@@ -291,13 +322,13 @@ export const useMap = () => {
     drawTool.on('drawend', drawToolEvents.PATH_POINT_DRAW_END.event)
   }
 
-  function handleCreateHomePoint() {
+  function handleCreateHomePath() {
     drawTool.setMode('LineString')
     drawTool.setSymbol({
-      lineColor: '#1c91c7'
+      lineColor: '#ff931e'
     })
     drawTool.enable()
-    drawTool.on('drawend', createHomePointEvent)
+    drawTool.on('drawend', homePathDrawEndEvent)
   }
 
   function initMenu() {
@@ -322,26 +353,56 @@ export const useMap = () => {
 
   let entryPoint: maptalks.Marker | undefined
 
-  function test() {
-    const point = new maptalks.Marker([25.97905635, -10.66232601], {
-      symbol: {
-        markerType: 'ellipse',
-        markerWidth: 40,
-        markerHeight: 40,
-        markerFillOpacity: 0.5
+  async function handleSaveHomePath() {
+    if (creatingHomePath) {
+      const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
+      const entryPoint = coordinates[0]
+      const homePoint = coordinates.slice(-1)[0]
+      const data = {
+        enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
+        gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
+        mission: JSON.stringify(coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))),
+        name: new Date().toString(),
+        carStop: 1
       }
+      const res: any = await createHomePath(data)
+      ElMessage({
+        type: 'success',
+        message: res.message
+      })
+      clearLine()
+      initHomePath()
+    }
+  }
+
+  async function initHomePath() {
+    homePathLayer.clear()
+    const res = await getHomePath({ limit: 99999 })
+    const homePaths = res.data.list || []
+    homePaths.forEach((item: any) => {
+      const entryPointCoord = JSON.parse(item.enterGps)
+      new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
+        symbol: {
+          markerType: 'ellipse',
+          markerWidth: 40,
+          markerHeight: 40,
+          markerFillOpacity: 0.5
+        }
+      })
+        .on('click', (e: any) => {
+          entryPoint = e.target
+        })
+        .addTo(homePathLayer)
+      const homePointCoord = JSON.parse(item.gps)
+      new maptalks.Marker([homePointCoord.y, homePointCoord.x]).addTo(homePathLayer)
     })
-    point.on('click', (e: any) => {
-      entryPoint = e.target
-    })
-    homePointLayer.addGeometry(point)
   }
 
   onMounted(() => {
     initMap()
     initDrawTool()
     initMenu()
-    test()
+    initHomePath()
   })
 
   const MapContainer = () => (

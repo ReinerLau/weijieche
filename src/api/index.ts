@@ -2,6 +2,7 @@ import { request } from '@/utils'
 
 export * from './camera'
 export * from './control'
+export * from './home'
 export * from './schedule'
 export * from './template'
 
