@@ -397,11 +397,24 @@ export const useMap = () => {
     }
   }
 
+  let previewHomePath: maptalks.LineString | undefined
+
   async function initHomePath() {
     homePathLayer.clear()
     const res = await getHomePath({ limit: 99999 })
     const homePaths = res.data.list || []
     homePaths.forEach((item: any) => {
+      const menuOptions = {
+        items: [
+          {
+            item: '删除',
+            click: async () => {
+              await deleteHomePath(item.id)
+              initHomePath()
+            }
+          }
+        ]
+      }
       const entryPointCoord = JSON.parse(item.enterGps)
       new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
         symbol: {
@@ -414,19 +427,27 @@ export const useMap = () => {
         .on('click', (e: any) => {
           entryPoint = e.target
         })
+        .on('mouseenter', () => {
+          const coordinates = [
+            [entryPointCoord.y, entryPointCoord.x],
+            ...JSON.parse(item.mission).map((i: any) => [i.y, i.x])
+          ]
+          const line = new maptalks.LineString(coordinates, {
+            symbol: {
+              lineColor: '#ff931e',
+              lineDasharray: [5, 5, 5]
+            }
+          })
+          previewHomePath = line
+          homePathLayer.addGeometry(previewHomePath)
+        })
+        .on('mouseout', () => {
+          previewHomePath?.remove()
+          previewHomePath = undefined
+        })
+        .setMenu(menuOptions)
         .addTo(homePathLayer)
       const homePointCoord = JSON.parse(item.gps)
-      const menuOptions = {
-        items: [
-          {
-            item: '删除',
-            click: async () => {
-              await deleteHomePath(item.id)
-              initHomePath()
-            }
-          }
-        ]
-      }
       new maptalks.Marker([homePointCoord.y, homePointCoord.x])
         .setMenu(menuOptions)
         .addTo(homePathLayer)
