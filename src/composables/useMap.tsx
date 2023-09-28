@@ -9,9 +9,16 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 'element-plus'
+import {
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElMessage,
+  ElScrollbar
+} from 'element-plus'
 import * as maptalks from 'maptalks'
-import { onMounted, reactive, ref, watch, type Ref } from 'vue'
+import { Fragment, onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
 export const useMap = () => {
@@ -435,37 +442,40 @@ export const useMap = () => {
 
   const MapContainer = () => (
     <div class="h-full relative">
-      <div class="absolute top-5 right-5 z-10 flex flex-col">
-        {toolbarItems.map((item) => {
-          if (item.subItems) {
-            return (
-              <ElDropdown key={item.title} class="mb-1">
-                {{
-                  default: () => (
-                    <ElButton class="w-full" type="primary">
-                      {item.title}
-                    </ElButton>
-                  ),
-                  dropdown: () => (
-                    <ElDropdownMenu>
-                      {item.subItems.map((subItem) => (
-                        <ElDropdownItem key={subItem.title} onClick={subItem.event}>
-                          {subItem.title}
-                        </ElDropdownItem>
-                      ))}
-                    </ElDropdownMenu>
-                  )
-                }}
-              </ElDropdown>
-            )
-          } else {
-            return (
-              <ElButton class="mb-1 w-full" type="primary" onClick={item.event}>
-                {item.title}
-              </ElButton>
-            )
-          }
-        })}
+      <div class="absolute top-5 right-5 z-10 w-3/4 bg-[#0c2d46] border border-[#1c91c7] rounded p-2">
+        <ElScrollbar>
+          <div class="flex">
+            {toolbarItems.map((item, index) => (
+              <Fragment>
+                {item.subItems ? (
+                  <ElDropdown key={item.title} class="flex-1">
+                    {{
+                      default: () => (
+                        <ElButton link class="w-full" type="primary">
+                          {item.title}
+                        </ElButton>
+                      ),
+                      dropdown: () => (
+                        <ElDropdownMenu>
+                          {item.subItems.map((subItem) => (
+                            <ElDropdownItem key={subItem.title} onClick={subItem.event}>
+                              {subItem.title}
+                            </ElDropdownItem>
+                          ))}
+                        </ElDropdownMenu>
+                      )
+                    }}
+                  </ElDropdown>
+                ) : (
+                  <ElButton class="flex-1" link type="primary" onClick={item.event}>
+                    {item.title}
+                  </ElButton>
+                )}
+                {index !== toolbarItems.length - 1 && <span class="px-2 text-[#1c91c7]">|</span>}
+              </Fragment>
+            ))}
+          </div>
+        </ElScrollbar>
       </div>
       <div class="h-full" ref={mapRef} />
       <TemplateDialog onConfirm={handleConfirm} />
