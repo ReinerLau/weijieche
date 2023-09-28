@@ -5,7 +5,7 @@ import { ElButton, ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage } from 
 import * as maptalks from 'maptalks'
 import { onMounted, reactive, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getHomePath } from '../api/home'
+import { deleteHomePath, getHomePath } from '../api/home'
 import { useSchedule } from './useSchedule'
 export const useMap = () => {
   const { t } = useI18n()
@@ -394,7 +394,20 @@ export const useMap = () => {
         })
         .addTo(homePathLayer)
       const homePointCoord = JSON.parse(item.gps)
-      new maptalks.Marker([homePointCoord.y, homePointCoord.x]).addTo(homePathLayer)
+      const menuOptions = {
+        items: [
+          {
+            item: '删除',
+            click: async () => {
+              await deleteHomePath(item.id)
+              initHomePath()
+            }
+          }
+        ]
+      }
+      new maptalks.Marker([homePointCoord.y, homePointCoord.x])
+        .setMenu(menuOptions)
+        .addTo(homePathLayer)
     })
   }
 

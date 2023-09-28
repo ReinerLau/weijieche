@@ -15,3 +15,10 @@ export function getHomePath(params:any) {
     params
   })
 }
+
+export function deleteHomePath(id:number) {
+  return request({
+    url:`/vehicle-home/v1/delete/${id}`,
+    method: 'delete',
+  })
+}
