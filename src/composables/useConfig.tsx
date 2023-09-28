@@ -218,6 +218,7 @@ export const useConfig = () => {
       close-on-click-modal={false}
       close-on-press-escape={false}
       onClose={handleCancel}
+      width="80%"
     >
       {{
         default: () => (
@@ -234,7 +235,6 @@ export const useConfig = () => {
             <ElButton loading={loading.value} type="primary" onClick={handleSubmit}>
               确定
             </ElButton>
-            <ElButton onClick={handleCancel}>取消</ElButton>
           </Fragment>
         )
       }}
