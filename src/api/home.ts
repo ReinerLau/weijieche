@@ -22,3 +22,9 @@ export function deleteHomePath(id:number) {
     method: 'delete',
   })
 }
+export function goHome(code:string) {
+  return request({
+    url:`/vehicle-home/v1/goHome/${code}`,
+    method: 'get',
+  })
+}
