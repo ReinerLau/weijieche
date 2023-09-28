@@ -15,7 +15,8 @@ import {
   ElDropdownItem,
   ElDropdownMenu,
   ElMessage,
-  ElScrollbar
+  ElScrollbar,
+  ElSwitch
 } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { Fragment, defineComponent, onMounted, reactive, ref, watch, type Ref } from 'vue'
@@ -45,6 +46,7 @@ export const useMap = () => {
       let homePathLayer: maptalks.VectorLayer
       const pathPoints: maptalks.Marker[] = []
       let creatingHomePath: maptalks.LineString | undefined
+      let tileLayer: maptalks.TileLayer
 
       function patchPointDrawendEvent(e: any) {
         const pathPoint = e.geometry as maptalks.Marker
@@ -73,9 +75,8 @@ export const useMap = () => {
       }
 
       function initMap() {
-        const tileLayer = new maptalks.TileLayer('base', {
+        tileLayer = new maptalks.TileLayer('base', {
           urlTemplate: '/tiles/{z}/{x}/{y}.jpg',
-          debug: true,
           tileSystem: [1, 1, -20037508.34, -20037508.34]
         })
         if (mapRef.value) {
@@ -456,6 +457,11 @@ export const useMap = () => {
         })
       }
 
+      const debugMode = ref(false)
+      watch(debugMode, (val: boolean) => {
+        tileLayer.config('debug', val)
+      })
+
       onMounted(() => {
         initMap()
         initDrawTool()
@@ -500,6 +506,9 @@ export const useMap = () => {
                 ))}
               </div>
             </ElScrollbar>
+          </div>
+          <div class="absolute bottom-5 right-5 z-10">
+            <ElSwitch v-model={debugMode.value} activeText="调试" inactiveText="正常" />
           </div>
           <div class="h-full" ref={mapRef} />
           <TemplateDialog onConfirm={handleConfirm} />
