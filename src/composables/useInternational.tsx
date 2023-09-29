@@ -7,6 +7,7 @@ export const useInternational = () => {
 
   function handleChange() {
     setCookie('locale', locale.value)
+    location.reload()
   }
 
   const InternationalController = () => (
