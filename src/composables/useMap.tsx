@@ -19,9 +19,11 @@ import {
   ElSwitch
 } from 'element-plus'
 import * as maptalks from 'maptalks'
-import { Fragment, defineComponent, onMounted, reactive, ref, watch, type Ref } from 'vue'
+import { Fragment, defineComponent, onMounted, ref, watch } from 'vue'
+import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
+
 export const useMap = () => {
   const MapContainer = defineComponent({
     setup() {
@@ -124,9 +126,9 @@ export const useMap = () => {
         drawTool.addTo(map).disable()
       }
 
-      const toolbarItems = reactive([
+      const toolbarItems = [
         {
-          title: '新建路径',
+          title: t('xin-jian'),
           event: () => {
             clearLine()
             clearDrawTool()
@@ -134,21 +136,21 @@ export const useMap = () => {
           }
         },
         {
-          title: '清空路径',
+          title: t('qing-kong'),
           event: () => {
             clearLine()
             clearDrawTool()
           }
         },
         {
-          title: '下发',
+          title: t('xia-fa'),
           event: handleCreatePlan
         },
         {
-          title: '返航',
+          title: t('fan-hang'),
           subItems: [
             {
-              title: '新建',
+              title: t('xin-jian'),
               event: () => {
                 clearDrawTool()
                 clearLine()
@@ -165,7 +167,7 @@ export const useMap = () => {
               }
             },
             {
-              title: '开始',
+              title: t('kai-shi'),
               event: async () => {
                 if (haveCurrentCar()) {
                   const res: any = await goHome(currentCar.value)
@@ -218,7 +220,7 @@ export const useMap = () => {
             }
           ]
         }
-      ])
+      ]
 
       async function handleCreatePlan() {
         if (haveCurrentCar() && havePath()) {
@@ -308,7 +310,7 @@ export const useMap = () => {
         } else {
           ElMessage({
             type: 'error',
-            message: '先新建路径'
+            message: t('xian-xin-jian-lu-jing')
           })
           return false
         }
@@ -320,7 +322,7 @@ export const useMap = () => {
         } else {
           ElMessage({
             type: 'error',
-            message: '先新建返航路径'
+            message: t('xian-xin-jian-fan-hang-lu-jing')
           })
           return false
         }
@@ -360,7 +362,7 @@ export const useMap = () => {
         map.setMenu({
           items: [
             {
-              item: '结束',
+              item: t('jie-shu'),
               click: clearDrawTool
             }
           ]
@@ -410,7 +412,7 @@ export const useMap = () => {
           const menuOptions = {
             items: [
               {
-                item: '删除',
+                item: t('shan-chu'),
                 click: async () => {
                   await deleteHomePath(item.id)
                   initHomePath()
@@ -508,7 +510,11 @@ export const useMap = () => {
             </ElScrollbar>
           </div>
           <div class="absolute bottom-5 right-5 z-10">
-            <ElSwitch v-model={debugMode.value} activeText="调试" inactiveText="正常" />
+            <ElSwitch
+              v-model={debugMode.value}
+              activeText={t('tiao-shi')}
+              inactiveText={t('zheng-chang')}
+            />
           </div>
           <div class="h-full" ref={mapRef} />
           <TemplateDialog onConfirm={handleConfirm} />
