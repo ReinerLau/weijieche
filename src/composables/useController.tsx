@@ -8,9 +8,12 @@ import {
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { reactive, ref, watch, type Ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export const useController = () => {
+  const { t } = useI18n()
   const controllers: Ref<Gamepad[]> = ref([])
   const speed = ref(0)
   const gear = ref(true)
@@ -108,12 +111,12 @@ export const useController = () => {
     localStorage.setItem(stroageKeys.WHEEL, JSON.stringify(val))
   })
   const ControllerMapDialog = () => (
-    <ElDialog v-model={controllerMapDialogVisible.value} title="控制器映射">
+    <ElDialog v-model={controllerMapDialogVisible.value} title={t('kong-zhi-qi-ying-she')}>
       {{
         default: () => (
           <ElScrollbar>
             <ElDescriptions border={true} direction="vertical">
-              <ElDescriptionsItem label="遥杆">
+              <ElDescriptionsItem label={t('yao-gan')}>
                 {axeMap.value.map((axe, index) => (
                   <div>
                     {index}：{axe}
@@ -122,9 +125,9 @@ export const useController = () => {
               </ElDescriptionsItem>
             </ElDescriptions>
             <ElDescriptions border={true} direction="vertical">
-              <ElDescriptionsItem label="手柄">
+              <ElDescriptionsItem label={t('shou-bing')}>
                 <div>
-                  <div>速度：</div>
+                  <div>{t('su-du')}</div>
                   <ElSelect class="w-full" v-model={gamepadMap.SPEED}>
                     {axeMap.value.map((axe, index) => (
                       <ElOption key={index} value={index} label={index}></ElOption>
@@ -132,7 +135,7 @@ export const useController = () => {
                   </ElSelect>
                 </div>
                 <div>
-                  <div>转向：</div>
+                  <div>{t('zhuan-xiang')}</div>
                   <ElSelect class="w-full" v-model={gamepadMap.DIRECTION}>
                     {axeMap.value.map((axe, index) => (
                       <ElOption key={index} value={index} label={index}></ElOption>
@@ -140,9 +143,9 @@ export const useController = () => {
                   </ElSelect>
                 </div>
               </ElDescriptionsItem>
-              <ElDescriptionsItem label="方向盘">
+              <ElDescriptionsItem label={t('fang-xiang-pan')}>
                 <div>
-                  <div>速度：</div>
+                  <div>{t('su-du')}</div>
                   <ElSelect class="w-full" v-model={wheelMap.SPEED}>
                     {axeMap.value.map((axe, index) => (
                       <ElOption key={index} value={index} label={index}></ElOption>
@@ -150,7 +153,7 @@ export const useController = () => {
                   </ElSelect>
                 </div>
                 <div>
-                  <div>转向：</div>
+                  <div>{t('zhuan-xiang')}</div>
                   <ElSelect class="w-full" v-model={wheelMap.DIRECTION}>
                     {axeMap.value.map((axe, index) => (
                       <ElOption key={index} value={index} label={index}></ElOption>

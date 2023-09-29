@@ -1,8 +1,10 @@
 import { getToken } from '@/utils'
 import { ElAlert, ElBadge, ElButton, ElCard, ElDrawer, ElNotification } from 'element-plus'
-import { Fragment, onBeforeUnmount, onMounted, reactive, ref, type Ref } from 'vue'
+import { Fragment, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 interface websocketData {
   id: string
   type: string
@@ -12,6 +14,8 @@ interface websocketData {
 export const useNotification = () => {
   const notificationDrawerVisible = ref(false)
   const notifications: websocketData[] = reactive([])
+
+  const { t } = useI18n()
 
   function initWebsocket() {
     const token = getToken()
@@ -57,13 +61,15 @@ export const useNotification = () => {
 
   const NotificationDrawer = () => (
     <ElDrawer
-      title="通知"
+      title={t('tong-zhi')}
       class="select-none"
       v-model={notificationDrawerVisible.value}
       direction="rtl"
       size="80%"
     >
-      {!isOpen.value && <ElAlert title="websocket 连接已断开" type="error" class="!mb-5" />}
+      {!isOpen.value && (
+        <ElAlert title={t('websocket-lian-jie-yi-duan-kai')} type="error" class="!mb-5" />
+      )}
       {notifications.map((item, index) => (
         <ElCard key={item.id} class="mb-5">
           {{

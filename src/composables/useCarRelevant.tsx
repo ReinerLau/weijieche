@@ -4,7 +4,9 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { currentCar } from '@/shared'
 import { ElButton, ElDivider, ElDrawer, ElOption, ElScrollbar, ElSelect } from 'element-plus'
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export const useCarRelevant = ({
   isConfig,
@@ -18,6 +20,7 @@ export const useCarRelevant = ({
     DEVICE: string
   }
 }) => {
+  const { t } = useI18n()
   const carSettingDrawerVisible = ref(false)
   const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
   async function getList() {
@@ -45,7 +48,7 @@ export const useCarRelevant = ({
         <ElSelect
           v-model={currentCar.value}
           class="mb-5 w-full"
-          placeholder="选择车辆"
+          placeholder={t('xuan-ze-che-liang')}
           size="large"
           onVisible-change={(visible: boolean) => visible && getList()}
         >
@@ -65,7 +68,7 @@ export const useCarRelevant = ({
             carSettingDrawerVisible.value = false
           }}
         >
-          配置监控
+          {t('pei-zhi-jian-kong')}
         </ElButton>
         {/* <ElButton
           class="w-full"
@@ -91,7 +94,7 @@ export const useCarRelevant = ({
   const CarRelevantController = () => (
     <div>
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
-        {currentCarName.value || '未选择车辆'}
+        {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton>
       <span>{currentCarStatus.value}</span>
     </div>

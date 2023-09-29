@@ -11,16 +11,18 @@ import {
   ElMessage,
   ElPageHeader,
   ElTable,
-  ElTableColumn,
-  type FormInstance,
-  type FormRules
+  ElTableColumn
 } from 'element-plus'
-import { computed, ref, toRaw, watch, type ComputedRef, type Ref } from 'vue'
+import { computed, ref, toRaw, watch } from 'vue'
 import { Fragment } from 'vue/jsx-runtime'
 import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '../api/camera'
-import { currentCar, haveCurrentCar } from '../shared/index'
+import { currentCar, haveCurrentCar } from '@/shared'
+import type { Ref, ComputedRef } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 export const useConfig = () => {
+  const { t } = useI18n()
   const configTypes = {
     CAMERA: 'CAMERA',
     DEVICE: 'DEVICE'
@@ -43,39 +45,42 @@ export const useConfig = () => {
     if (configType.value === configTypes.CAMERA) {
       return [
         {
-          label: '摄像头名称',
+          label: t('she-xiang-tou-ming-cheng'),
           prop: 'name'
         },
         {
-          label: '拉流地址',
+          label: t('la-liu-di-zhi'),
           prop: 'rtsp'
         },
         {
-          label: '关联状态',
+          label: t('guan-lian-zhuang-tai'),
           prop: 'rid',
-          slot: (row: any) => (currentCar.value && row.rid === currentCar.value ? '已关联' : '')
+          slot: (row: any) =>
+            currentCar.value && row.rid === currentCar.value ? t('yi-guan-lian') : ''
         },
         {
-          label: '操作',
+          label: t('cao-zuo'),
           slot: (row: Record<string, any>) => (
             <ElDropdown>
               {{
-                default: () => '操作',
+                default: () => t('cao-zuo'),
                 dropdown: () => (
                   <ElDropdownMenu>
                     <ElDropdownItem>
                       <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
-                        删除
+                        {t('shan-chu')}
                       </ElButton>
                     </ElDropdownItem>
                     <ElDropdownItem>
                       <ElButton link onClick={() => handleEdit(row)}>
-                        编辑
+                        {t('bian-ji')}{' '}
                       </ElButton>
                     </ElDropdownItem>
                     <ElDropdownItem>
                       <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
-                        {currentCar.value && row.rid === currentCar.value ? '取消关联' : '关联'}
+                        {currentCar.value && row.rid === currentCar.value
+                          ? t('qu-xiao-guan-lian')
+                          : t('guan-lian')}
                       </ElButton>
                     </ElDropdownItem>
                   </ElDropdownMenu>
@@ -88,23 +93,23 @@ export const useConfig = () => {
     } else if (configType.value === configTypes.DEVICE) {
       return [
         {
-          label: '设备编号',
+          label: t('she-bei-bian-hao'),
           prop: 'id'
         },
         {
-          label: '外设名称',
+          label: t('wai-she-ming-cheng'),
           prop: 'name'
         },
         {
-          label: '外设类型',
+          label: t('wai-she-lei-xing'),
           prop: 'type'
         },
         {
-          label: '外设状态',
+          label: t('wai-she-zhuang-tai'),
           prop: 'status'
         },
         {
-          label: '操作',
+          label: t('cao-zuo'),
           prop: 'action'
         }
       ]
@@ -143,8 +148,8 @@ export const useConfig = () => {
   const formRules: ComputedRef<FormRules> = computed(() => {
     if (configType.value === configTypes.CAMERA) {
       return {
-        name: [{ required: true, message: '请输入名称' }],
-        rtsp: [{ required: true, message: '拉流地址' }]
+        name: [{ required: true, message: t('qing-shu-ru-ming-cheng') }],
+        rtsp: [{ required: true, message: t('la-liu-di-zhi') }]
       }
     } else {
       return {}
@@ -155,11 +160,11 @@ export const useConfig = () => {
       return [
         {
           prop: 'name',
-          title: '名称'
+          title: t('ming-cheng')
         },
         {
           prop: 'rtsp',
-          title: '拉流地址'
+          title: t('la-liu-di-zhi')
         }
       ]
     } else {
@@ -214,7 +219,7 @@ export const useConfig = () => {
   const FormDialog = () => (
     <ElDialog
       model-value={dialogVisible.value}
-      title="添加"
+      title={t('tian-jia')}
       close-on-click-modal={false}
       close-on-press-escape={false}
       onClose={handleCancel}
@@ -233,7 +238,7 @@ export const useConfig = () => {
         footer: () => (
           <Fragment>
             <ElButton loading={loading.value} type="primary" onClick={handleSubmit}>
-              确定
+              {t('que-ding')}
             </ElButton>
           </Fragment>
         )
@@ -245,7 +250,7 @@ export const useConfig = () => {
     <Fragment>
       <ElPageHeader onBack={() => (isConfig.value = false)}>
         {{
-          title: () => '返回'
+          title: () => t('fan-hui')
         }}
       </ElPageHeader>
       <ElDivider></ElDivider>
@@ -255,7 +260,7 @@ export const useConfig = () => {
           dialogVisible.value = true
         }}
       >
-        添加
+        {t('tian-jia')}
       </ElButton>
       <ElDivider></ElDivider>
       <ElTable data={configData.value}>

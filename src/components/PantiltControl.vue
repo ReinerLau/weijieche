@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-white">云台控制</div>
+    <div class="text-white">{{ t('yun-tai-kong-zhi') }}</div>
     <div class="flex justify-center">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
@@ -34,7 +34,7 @@
     </div>
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex text-white items-center">
-        <span class="w-24">水平角度</span>
+        <span class="w-24">{{ t('shui-ping-jiao-du') }}</span>
         <el-slider
           v-model="horizonAngle"
           class="flex-1"
@@ -46,7 +46,7 @@
         />
       </div>
       <div class="flex text-white items-center">
-        <span class="w-24">垂直角度</span>
+        <span class="w-24">{{ t('chui-zhi-jiao-du') }}</span>
         <el-slider
           v-model="verticalAngle"
           class="flex-1"
@@ -64,8 +64,12 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
 import { debounce } from 'lodash'
-import { ref, type Ref } from 'vue'
+import { ref } from 'vue'
 import { currentCar, haveCurrentCar } from '../shared/index'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const horizonAngle = ref(0)
 const verticalAngle = ref(0)

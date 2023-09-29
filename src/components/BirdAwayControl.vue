@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-white mb-7">驱鸟器控制</div>
+    <div class="text-white mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
     <div class="grid gap-2 grid-cols-5 grid-rows-1 w-full h-14 mr-4">
       <template v-for="item in buttonList" :key="item.value">
         <el-button size="large" @click="onClick(item.value)">
@@ -9,7 +9,7 @@
       </template>
     </div>
     <div class="flex justify-center items-center">
-      <span class="text-white mr-5">音量</span>
+      <span class="text-white mr-5">{{ t('yin-liang') }}</span>
       <el-slider
         v-model="volume"
         class="flex-1"
@@ -27,29 +27,33 @@
 import { patrolingCruise } from '@/api'
 import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
-import { computed, ref, watch, type ComputedRef } from 'vue'
-import { pressedButtons } from '../shared/index'
+import { computed, ref, watch } from 'vue'
+import { pressedButtons } from '@/shared'
+import type { ComputedRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const buttonList = [
   {
     value: '01',
-    content: '驱鸟'
+    content: t('qu-niao')
   },
   {
     value: '02',
-    content: '驱人'
+    content: t('qu-ren')
   },
   {
     value: '03',
-    content: '暂停'
+    content: t('zan-ting')
   },
   {
     value: '05',
-    content: '使能'
+    content: t('shi-neng')
   },
   {
     value: '06',
-    content: '失能'
+    content: t('shi-neng-0')
   }
 ]
 

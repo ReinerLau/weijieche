@@ -18,26 +18,30 @@ import {
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { Fragment, computed, ref, watch, type Ref } from 'vue'
+import { Fragment, computed, ref, watch } from 'vue'
 import { pressedButtons } from '../shared/index'
 import { useController } from './useController'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
+  const { t } = useI18n()
   const detailDrawerVisible = ref(false)
   const modeText = {
-    [modes.AUTO]: '自主',
-    [modes.MANUAL]: '手动',
-    [modes.STOP]: '停止'
+    [modes.AUTO]: t('zi-zhu'),
+    [modes.MANUAL]: t('shou-dong'),
+    [modes.STOP]: t('ting-zhi')
   }
   const mode = computed(() => {
-    return modeText[statusData.value.customMode] || '未知'
+    return modeText[statusData.value.customMode] || t('wei-zhi')
   })
   const baseModeText = {
-    [baseModes.AUTO]: '解锁',
-    [baseModes.MANUAL]: '解锁',
-    [baseModes.STOP]: '锁定'
+    [baseModes.AUTO]: t('jie-suo'),
+    [baseModes.MANUAL]: t('jie-suo'),
+    [baseModes.STOP]: t('suo-ding')
   }
   const baseMode = computed(() => {
-    return baseModeText[statusData.value.baseMode] || '未知'
+    return baseModeText[statusData.value.baseMode] || t('wei-zhi')
   })
 
   const {
@@ -64,15 +68,15 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
 
   const status = computed(() => [
     {
-      title: '模式',
+      title: t('mo-shi'),
       value: mode.value
     },
     {
-      title: '底盘',
+      title: t('di-pan'),
       value: baseMode.value
     },
     {
-      title: '控制器',
+      title: t('kong-zhi-qi'),
       slot: () => (
         <div class="flex flex-col">
           <ElSelect v-model={currentController.value}>
@@ -85,41 +89,43 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
               <ElOption key={key} label={value} value={value}></ElOption>
             ))}
           </ElSelect>
-          <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>设置映射</ElButton>
+          <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>
+            {t('she-zhi-ying-she')}
+          </ElButton>
         </div>
       )
     },
     {
-      title: `速度：${gear.value ? '前进' : '后退'}`,
+      title: `${t('su-du')}: ${gear.value ? t('qian-jin') : t('hou-tui')}`,
       value: speed.value
     },
     {
-      title: '转向',
+      title: t('zhuan-xiang'),
       value: direction.value
     },
     {
-      title: '电量',
+      title: t('dian-liang'),
       value: `${statusData.value.battery || 0}%`
     },
     {
-      title: '温度',
+      title: t('wen-du'),
       value: statusData.value.temperature || 0
     },
     {
-      title: '湿度',
+      title: t('shi-du'),
       value: `${statusData.value.humidity || 0}%`
     },
     {
-      title: '火焰',
-      value: statusData.value.blaze ? '有火焰' : '无火焰'
+      title: t('huo-yan'),
+      value: statusData.value.blaze ? t('you-huo-yan') : t('wu-huo-yan')
     },
     {
-      title: '噪音',
+      title: t('zao-yin'),
       value: `${statusData.value.noise || 0} DB`
     },
     {
-      title: '烟雾',
-      value: statusData.value.smoke ? '有烟雾' : '无烟雾'
+      title: t('yan-wu'),
+      value: statusData.value.smoke ? t('you-yan-wu') : t('wu-yan-wu')
     },
     {
       title: 'PM2.5',
@@ -130,15 +136,15 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       value: `${statusData.value.pm10 || 0}ug/m³`
     },
     {
-      title: '硫化氢',
+      title: t('liu-hua-qing'),
       value: `${statusData.value.h2S || 0}ug/m³`
     },
     {
-      title: '甲烷',
+      title: t('jia-wan'),
       value: `${statusData.value.ch4 || 0}ug/m³`
     },
     {
-      title: '一氧化碳',
+      title: t('yi-yang-hua-tan'),
       value: `${statusData.value.co || 0}ug/m³`
     }
   ])

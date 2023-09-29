@@ -1,12 +1,11 @@
-import { haveCurrentCar } from '../shared/index';
 <template>
   <div>
-    <div class="text-white mb-7">全屏画面切换</div>
+    <div class="text-white mb-7">{{ t('quan-ping-hua-mian-qie-huan') }}</div>
     <div class="flex justify-between">
       <el-button size="large" circle @click="onClick(keyMap.SWITCH)">
         <i-icomoon-free-switch />
       </el-button>
-      <el-button size="large" circle @click="onClick(keyMap.BACK)">返回</el-button>
+      <el-button size="large" circle @click="onClick(keyMap.BACK)">{{ t('fan-hui') }}</el-button>
     </div>
     <div class="flex justify-center mb-7">
       <el-row class="w-48">
@@ -60,6 +59,9 @@ import { haveCurrentCar } from '../shared/index';
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const keyMap = {
   SWITCH: '01',
