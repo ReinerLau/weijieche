@@ -83,5 +83,12 @@
   "ming-cheng": "名称",
   "tian-jia": "添加",
   "que-ding": "确定",
-  "yi-guan-lian": "已关联"
+  "yi-guan-lian": "已关联",
+  "wei-jie-che": "围界车",
+  "zhang-hao": "账号",
+  "mi-ma": "密码",
+  "ji-zhu-mi-ma": "记住密码",
+  "deng-lu": "登录",
+  "yong-hu-ming-bu-neng-wei-kong": "用户名不能为空",
+  "mi-ma-bu-neng-wei-kong": "密码不能为空"
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[#2d3a4b] h-full flex justify-center flex-col items-center">
-    <div class="text-white text-2xl font-bold mb-5">围界车</div>
+    <div class="text-white text-2xl font-bold mb-5">{{ t('wei-jie-che') }}</div>
     <el-form
       ref="loginFormRef"
       :model="loginForm"
@@ -12,7 +12,7 @@
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
-          placeholder="用户名"
+          :placeholder="t('zhang-hao')"
           name="username"
           type="text"
           tabindex="1"
@@ -25,7 +25,7 @@
         <el-input
           v-model="loginForm.password"
           type="password"
-          placeholder="密码"
+          :placeholder="t('mi-ma')"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -36,12 +36,12 @@
       <el-checkbox
         v-model="ifRememberPassword"
         class="!text-white block"
-        label="记住密码"
+        :label="t('ji-zhu-mi-ma')"
         @change="handleRememberPassword"
       ></el-checkbox>
 
       <el-button class="w-full" :loading="loading" type="primary" @click.prevent="handleLogin">
-        登录
+        {{ t('deng-lu') }}
       </el-button>
     </el-form>
   </div>
@@ -52,8 +52,13 @@ import { login } from '@/api'
 import { useRememberPassword } from '@/composables'
 import { getCookie, setCookie, setToken } from '@/utils'
 import type { FormInstance } from 'element-plus'
-import { reactive, ref, type Ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const { ifRememberPassword, handleRememberPassword, getRememberPassword } = useRememberPassword()
 
 const loginForm = reactive({
@@ -61,8 +66,8 @@ const loginForm = reactive({
   password: ''
 })
 const loginRules = {
-  username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-  password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
+  username: [{ required: true, trigger: 'blur', message: t('yong-hu-ming-bu-neng-wei-kong') }],
+  password: [{ required: true, trigger: 'blur', message: t('mi-ma-bu-neng-wei-kong') }]
 }
 
 loginForm.username = getCookie('username') || ''
