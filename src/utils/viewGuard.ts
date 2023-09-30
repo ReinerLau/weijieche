@@ -2,6 +2,8 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import type { RouteLocationNormalizedLoaded, Router } from 'vue-router'
 import { getToken } from './token'
+import { login } from '@/api'
+import { setToken } from '@/utils'
 
 const whiteList = ['/login']
 
@@ -26,7 +28,12 @@ async function handleHasToken(to: RouteLocationNormalizedLoaded) {
   }
 }
 
-function handleNoToken(to: RouteLocationNormalizedLoaded) {
+async function handleNoToken(to: RouteLocationNormalizedLoaded) {
+  const res = await login({
+    username: 'admin',
+    password: 'imrobot123'
+  })
+  setToken(res.data.tokenHead + res.data.token)
   if (!whiteList.includes(to.path)) {
     return '/login'
   }

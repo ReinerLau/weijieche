@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { login } from '@/api/user'
+import { login } from '@/api'
 import { useRememberPassword } from '@/composables'
 import { getCookie, setCookie, setToken } from '@/utils'
 import type { FormInstance } from 'element-plus'
