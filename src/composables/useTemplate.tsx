@@ -24,7 +24,7 @@ export const useTemplate = () => {
         <ElDialog v-model={dialogVisible.value} title={t('mo-ban')}>
           {{
             default: () => (
-              <ElForm label-width={100} model={formData.value}>
+              <ElForm label-width={250} model={formData.value}>
                 <ElFormItem prop="name" label={t('mo-ban-ming-cheng')}>
                   <ElInput v-model={formData.value.name} clearable></ElInput>
                 </ElFormItem>
