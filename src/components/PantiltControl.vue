@@ -34,7 +34,7 @@
     </div>
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex text-white items-center">
-        <span class="w-24">{{ t('shui-ping-jiao-du') }}</span>
+        <span class="mr-2">{{ t('shui-ping-jiao-du') }}</span>
         <el-slider
           v-model="horizonAngle"
           class="flex-1"
@@ -46,7 +46,7 @@
         />
       </div>
       <div class="flex text-white items-center">
-        <span class="w-24">{{ t('chui-zhi-jiao-du') }}</span>
+        <span class="mr-2">{{ t('chui-zhi-jiao-du') }}</span>
         <el-slider
           v-model="verticalAngle"
           class="flex-1"

@@ -5,7 +5,7 @@
       <el-button size="large" circle @click="onClick(keyMap.SWITCH)">
         <i-icomoon-free-switch />
       </el-button>
-      <el-button size="large" circle @click="onClick(keyMap.BACK)">{{ t('fan-hui') }}</el-button>
+      <el-button size="large" @click="onClick(keyMap.BACK)">{{ t('fan-hui') }}</el-button>
     </div>
     <div class="flex justify-center mb-7">
       <el-row class="w-48">
