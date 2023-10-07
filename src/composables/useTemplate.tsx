@@ -8,8 +8,11 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
-import { defineComponent, ref, watch, type Ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 export const useTemplate = () => {
+  const { t } = useI18n()
   const dialogVisible = ref(false)
   const formData: Ref<{ name?: string; memo?: string }> = ref({})
   const searchDialogVisible = ref(false)
@@ -18,14 +21,14 @@ export const useTemplate = () => {
     emits: ['confirm'],
     setup(props, { emit }) {
       return () => (
-        <ElDialog v-model={dialogVisible.value} title="模板">
+        <ElDialog v-model={dialogVisible.value} title={t('mo-ban')}>
           {{
             default: () => (
               <ElForm label-width={100} model={formData.value}>
-                <ElFormItem prop="name" label="模板名称">
+                <ElFormItem prop="name" label={t('mo-ban-ming-cheng')}>
                   <ElInput v-model={formData.value.name} clearable></ElInput>
                 </ElFormItem>
-                <ElFormItem prop="memo" label="备注">
+                <ElFormItem prop="memo" label={t('bei-zhu')}>
                   <ElInput v-model={formData.value.memo} clearable></ElInput>
                 </ElFormItem>
               </ElForm>
@@ -37,7 +40,7 @@ export const useTemplate = () => {
                 class="w-full"
                 onClick={() => emit('confirm', formData.value)}
               >
-                确定
+                {t('que-ding')}
               </ElButton>
             )
           }}
@@ -67,7 +70,7 @@ export const useTemplate = () => {
       }
 
       return () => (
-        <ElDialog v-model={searchDialogVisible.value} title="模板" width="80%">
+        <ElDialog v-model={searchDialogVisible.value} title={t('mo-ban')} width="80%">
           {{
             default: () => (
               <ElTable
@@ -78,14 +81,14 @@ export const useTemplate = () => {
                   currentTemplate.value = val
                 }}
               >
-                <ElTableColumn property="name" label="名称" />
-                <ElTableColumn property="memo" label="备注" />
-                <ElTableColumn property="createTime" label="创建时间" />
-                <ElTableColumn label="操作">
+                <ElTableColumn property="name" label={t('ming-cheng')} />
+                <ElTableColumn property="memo" label={t('bei-zhu')} />
+                <ElTableColumn property="createTime" label={t('chuang-jian-shi-jian')} />
+                <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
                       <ElButton link onClick={() => handleDelete(row.id)}>
-                        删除
+                        {t('shan-chu')}
                       </ElButton>
                     )
                   }}
@@ -99,7 +102,7 @@ export const useTemplate = () => {
                 class="w-full"
                 onClick={() => emit('confirm', currentTemplate.value)}
               >
-                确定
+                {t('que-ding')}
               </ElButton>
             )
           }}

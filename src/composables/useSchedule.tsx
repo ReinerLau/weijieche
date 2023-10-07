@@ -15,9 +15,12 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
-import { computed, defineComponent, onMounted, ref, toRaw, watch, type Ref } from 'vue'
+import { computed, defineComponent, onMounted, ref, toRaw, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export const useSchedule = () => {
+  const { t } = useI18n()
   const dialogVisible = ref(false)
   const ScheduleDialog = defineComponent({
     setup() {
@@ -70,31 +73,31 @@ export const useSchedule = () => {
       const dayOptions = [
         {
           value: 1,
-          label: '周一'
+          label: t('zhou-yi')
         },
         {
           value: 2,
-          label: '周二'
+          label: t('zhou-er')
         },
         {
           value: 3,
-          label: '周三'
+          label: t('zhou-san')
         },
         {
           value: 4,
-          label: '周四'
+          label: t('zhou-si')
         },
         {
           value: 5,
-          label: '周五'
+          label: t('zhou-wu')
         },
         {
           value: 6,
-          label: '周六'
+          label: t('zhou-liu')
         },
         {
           value: 7,
-          label: '周日'
+          label: t('zhou-ri')
         }
       ]
 
@@ -106,30 +109,34 @@ export const useSchedule = () => {
       })
 
       return () => (
-        <ElDialog v-model={dialogVisible.value} title="定时任务" width="80%">
+        <ElDialog v-model={dialogVisible.value} title={t('ding-shi-ren-wu')} width="80%">
           {{
             default: () => (
-              <ElForm label-width={100} model={formData.value}>
-                <ElFormItem prop="missionId" label="路径模板">
-                  <ElSelect v-model={formData.value.missionId} placeholder="请选择" class="w-full">
+              <ElForm label-width={250} model={formData.value}>
+                <ElFormItem prop="missionId" label={t('lu-jing-mo-ban')}>
+                  <ElSelect
+                    v-model={formData.value.missionId}
+                    placeholder={t('qing-xuan-ze')}
+                    class="w-full"
+                  >
                     {templateList.value.map((item: any) => (
                       <ElOption label={item.name} value={item.id}></ElOption>
                     ))}
                   </ElSelect>
                 </ElFormItem>
-                <ElFormItem prop="loopConditions" label="循环条件">
+                <ElFormItem prop="loopConditions" label={t('xun-huan-tiao-jian')}>
                   <ElSelect
                     v-model={formData.value.loopConditions}
-                    placeholder="请选择"
+                    placeholder={t('qing-xuan-ze')}
                     class="w-full"
                     onChange={handleLoopConditionChange}
                   >
-                    <ElOption label="每天" value={loopConditionsMap.DAY}></ElOption>
-                    <ElOption label="每周" value={loopConditionsMap.WEEK}></ElOption>
-                    <ElOption label="单次" value={loopConditionsMap.SINGLE}></ElOption>
+                    <ElOption label={t('mei-tian')} value={loopConditionsMap.DAY}></ElOption>
+                    <ElOption label={t('mei-zhou')} value={loopConditionsMap.WEEK}></ElOption>
+                    <ElOption label={t('dan-ci')} value={loopConditionsMap.SINGLE}></ElOption>
                   </ElSelect>
                 </ElFormItem>
-                <ElFormItem prop="conditions" label="循环时间">
+                <ElFormItem prop="conditions" label={t('xun-huan-shi-jian')}>
                   <ElCheckboxGroup
                     v-model={formData.value.conditions}
                     disabled={conditionsDisabled.value}
@@ -139,29 +146,29 @@ export const useSchedule = () => {
                     })}
                   </ElCheckboxGroup>
                 </ElFormItem>
-                <ElFormItem prop="time" label="下发时间">
+                <ElFormItem prop="time" label={t('xia-fa-shi-jian')}>
                   <ElDatePicker
                     v-model={formData.value.time}
                     type="datetime"
-                    placeholder="请选择"
+                    placeholder={t('qing-xuan-ze')}
                     defaultValue={new Date()}
                     format="YYYY-MM-DD HH:mm"
                     value-format="YYYY-MM-DDTHH:mm"
                   />
                 </ElFormItem>
-                <ElFormItem prop="changeMission" label="返回充电点">
+                <ElFormItem prop="changeMission" label={t('fan-hui-chong-dian-dian')}>
                   <ElSwitch
                     v-model={formData.value.changeMission}
                     inline-prompt
-                    active-text="是"
-                    inactiveText="否"
+                    active-text={t('shi')}
+                    inactiveText={t('fou')}
                   />
                 </ElFormItem>
               </ElForm>
             ),
             footer: () => (
               <ElButton size="large" type="primary" class="w-full" onClick={handleConfirm}>
-                确定
+                {t('que-ding')}
               </ElButton>
             )
           }}
@@ -192,48 +199,48 @@ export const useSchedule = () => {
 
       const columns = [
         {
-          label: '机器人编码',
+          label: t('ji-qi-ren-bian-ma'),
           prop: 'code'
         },
         {
-          label: '路径模板',
+          label: t('lu-jing-mo-ban'),
           prop: 'missionId'
         },
         {
-          label: '循环条件',
+          label: t('xun-huan-tiao-jian'),
           prop: 'loopConditions'
         },
         {
-          label: '循环时间',
+          label: t('xun-huan-shi-jian'),
           prop: 'conditions'
         },
         {
-          label: '充电任务',
+          label: t('chong-dian-ren-wu'),
           prop: 'changeMission'
         },
         {
-          label: '返回结果',
+          label: t('fan-hui-jie-guo'),
           prop: 'result'
         },
         {
-          label: '下发时间',
+          label: t('xia-fa-shi-jian'),
           prop: 'time'
         }
       ]
 
       return () => (
-        <ElDialog v-model={searchDialogVisible.value} title="定时任务" width="80%">
+        <ElDialog v-model={searchDialogVisible.value} title={t('ding-shi-ren-wu')} width="80%">
           {{
             default: () => (
               <ElTable height="50vh" data={list.value} highlight-current-row>
                 {columns.map((item) => (
                   <ElTableColumn property={item.prop} label={item.label} />
                 ))}
-                <ElTableColumn label="操作">
+                <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
                       <ElButton link onClick={() => handleDelete(row.id)}>
-                        删除
+                        {t('shan-chu')}
                       </ElButton>
                     )
                   }}
