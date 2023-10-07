@@ -462,7 +462,19 @@ export const useMap = () => {
       const debugMode = ref(false)
       watch(debugMode, (val: boolean) => {
         tileLayer.config('debug', val)
+        if (val) {
+          map.on('mousemove', debugMapMouseMoveEvent)
+        } else {
+          mouseCoordinate.value = ''
+          map.off('mousemove', debugMapMouseMoveEvent)
+        }
       })
+
+      const mouseCoordinate = ref('')
+
+      function debugMapMouseMoveEvent(e: any) {
+        mouseCoordinate.value = `${e.coordinate.x}, ${e.coordinate.y}`
+      }
 
       onMounted(() => {
         initMap()
@@ -509,12 +521,13 @@ export const useMap = () => {
               </div>
             </ElScrollbar>
           </div>
-          <div class="absolute bottom-5 right-5 z-10">
+          <div class="absolute bottom-5 right-5 z-10 text-right">
             <ElSwitch
               v-model={debugMode.value}
               activeText={t('tiao-shi')}
               inactiveText={t('zheng-chang')}
             />
+            <div>{mouseCoordinate.value}</div>
           </div>
           <div class="h-full" ref={mapRef} />
           <TemplateDialog onConfirm={handleConfirm} />
