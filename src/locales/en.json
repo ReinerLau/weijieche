@@ -114,5 +114,11 @@
   "zhou-san": "Wednesday",
   "zhou-si": "Thursday",
   "zhou-wu": "Friday",
-  "zhou-yi": "Monday"
+  "zhou-yi": "Monday",
+  "pei-zhi-wai-she": "Configure peripherals",
+  "che-liang-bian-hao": "Vehicle number",
+  "nei-wang-duan-kou": "Internal port",
+  "nei-wang-ip": "Private IP",
+  "wai-wang-duan-kou": "External network port",
+  "wai-wang-ip": "Public IP Address"
 }

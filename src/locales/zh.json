@@ -114,5 +114,13 @@
   "fou": "否",
   "ji-qi-ren-bian-ma": "机器人编码",
   "chong-dian-ren-wu": "充电任务",
-  "fan-hui-jie-guo": "返回结果"
+  "fan-hui-jie-guo": "返回结果",
+  "pei-zhi-wai-she": "配置外设",
+  "che-liang-bian-hao": "车辆编号",
+  "nei-wang-duan-kou": "内网端口",
+  "nei-wang-ip": "内网IP",
+  "wai-wang-duan-kou": "外网端口",
+  "wai-wang-ip": "外网IP",
+  "qing-xuan-ze-che-liang": "请选择车辆",
+  "ti-shi": "提示"
 }

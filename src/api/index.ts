@@ -7,6 +7,7 @@ export * from './schedule'
 export * from './template'
 export * from './user'
 export * from './log'
+export * from './device'
 
 export function getCarInfo(code: string) {
   return request({

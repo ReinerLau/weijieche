@@ -114,5 +114,11 @@
   "zhou-san": "Mercredi",
   "zhou-si": "Jeudi",
   "zhou-wu": "vendredi",
-  "zhou-yi": "Lundi"
+  "zhou-yi": "Lundi",
+  "pei-zhi-wai-she": "Configurer les périphériques externes",
+  "che-liang-bian-hao": "Numéro de véhicule",
+  "nei-wang-duan-kou": "Port intérieur",
+  "nei-wang-ip": "Adresse IP interne.",
+  "wai-wang-duan-kou": "Port externe",
+  "wai-wang-ip": "Adresse IP publique"
 }

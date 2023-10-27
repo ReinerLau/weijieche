@@ -2,19 +2,23 @@ import {
   ElButton,
   ElDialog,
   ElDivider,
-  ElDropdown,
-  ElDropdownItem,
-  ElDropdownMenu,
+  // ElDropdown,
+  // ElDropdownItem,
+  // ElDropdownMenu,
+  ElNotification,
   ElForm,
   ElFormItem,
   ElInput,
   ElMessage,
   ElPageHeader,
   ElTable,
-  ElTableColumn
+  ElTableColumn,
+  ElOption,
+ElSelect
 } from 'element-plus'
 import { computed, ref, toRaw, watch, Fragment } from 'vue'
 import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
+import { createDevice, deleteDevice, getDeviceListByCode, updateDevice,getDeviceTypeList } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -32,11 +36,20 @@ export const useConfig = () => {
   const configData: Ref<any[]> = ref([])
   watch(isConfig, () => getList())
 
+  const deviceTypeList=ref([])
+
   async function getList() {
     let data: any[] = []
     if (configType.value === configTypes.CAMERA) {
       const res = await getCameraList({ page: 1, limit: 9999999 })
       data = res.data.list || res.data
+    }
+   else if (configType.value === configTypes.DEVICE) {
+    
+      const res = await getDeviceListByCode(currentCar.value,'patroling')
+      data = res.data.list || res.data
+      const r = await getDeviceTypeList();
+       deviceTypeList.value  = r.data || [];
     }
     configData.value = data
   }
@@ -60,40 +73,27 @@ export const useConfig = () => {
         {
           label: t('cao-zuo'),
           slot: (row: Record<string, any>) => (
-            <ElDropdown>
-              {{
-                default: () => t('cao-zuo'),
-                dropdown: () => (
-                  <ElDropdownMenu>
-                    <ElDropdownItem>
-                      <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
+            <div>
+                  <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
                         {t('shan-chu')}
                       </ElButton>
-                    </ElDropdownItem>
-                    <ElDropdownItem>
                       <ElButton link onClick={() => handleEdit(row)}>
                         {t('bian-ji')}{' '}
                       </ElButton>
-                    </ElDropdownItem>
-                    <ElDropdownItem>
                       <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
                         {currentCar.value && row.rid === currentCar.value
                           ? t('qu-xiao-guan-lian')
                           : t('guan-lian')}
-                      </ElButton>
-                    </ElDropdownItem>
-                  </ElDropdownMenu>
-                )
-              }}
-            </ElDropdown>
+                  </ElButton>
+            </div>
           )
         }
       ]
     } else if (configType.value === configTypes.DEVICE) {
       return [
         {
-          label: t('she-bei-bian-hao'),
-          prop: 'id'
+          label:t('che-liang-bian-hao'),
+          prop: 'rid'
         },
         {
           label: t('wai-she-ming-cheng'),
@@ -109,7 +109,16 @@ export const useConfig = () => {
         },
         {
           label: t('cao-zuo'),
-          prop: 'action'
+          slot: (row: Record<string, any>) => (
+            <div> 
+               <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
+                  {t('shan-chu')}
+                </ElButton>
+                <ElButton link onClick={() => handleEdit(row)}>
+                {t('bian-ji')}{' '}
+              </ElButton>
+              </div>
+          )
         }
       ]
     } else {
@@ -119,14 +128,26 @@ export const useConfig = () => {
 
   const loading = ref(false)
   async function handleDelete(id: number) {
-    loading.value = true
-    try {
-      const res: any = await deleteCamera(id)
-      ElMessage({ type: 'success', message: res.message })
-      getList()
-    } finally {
-      loading.value = false
-      getList()
+    if (configType.value === configTypes.CAMERA) {
+      loading.value = true
+      try {
+        const res: any = await deleteCamera(id)
+        ElMessage({ type: 'success', message: res.message })
+        getList()
+      } finally {
+        loading.value = false
+        getList()
+      }
+    }else if (configType.value === configTypes.DEVICE){
+      loading.value = true
+      try {
+        const res: any = await deleteDevice(id)
+        ElMessage({ type: 'success', message: res.message })
+        getList()
+      } finally {
+        loading.value = false
+        getList()
+      }
     }
   }
 
@@ -150,10 +171,23 @@ export const useConfig = () => {
         name: [{ required: true, message: t('qing-shu-ru-ming-cheng') }],
         rtsp: [{ required: true, message: t('la-liu-di-zhi') }]
       }
-    } else {
+    } else if (configType.value === configTypes.DEVICE){
+      return {
+        rid: [{ required: true, message:t('che-liang-bian-hao') }],
+        type: [{ required: true, message: t('wai-she-lei-xing') }],
+        intranatPort: [{ required: true, message:t('nei-wang-duan-kou') }],
+        intranatIp: [{ required: true, message: t('nei-wang-ip') }],
+        internatPort: [{ required: true, message: t('wai-wang-duan-kou') }],
+        internatIp:[{ required: true, message:t('wai-wang-ip')  }]
+      }
+    }
+    else {
       return {}
     }
   })
+
+
+
   const formFields: ComputedRef<formField[]> = computed(() => {
     if (configType.value === configTypes.CAMERA) {
       return [
@@ -166,6 +200,46 @@ export const useConfig = () => {
           title: t('la-liu-di-zhi')
         }
       ]
+    }else if (configType.value === configTypes.DEVICE) {
+     console.log(currentCar.value);
+     
+      return [
+        {
+          prop: 'rid',
+          title: t('che-liang-bian-hao'),
+          slot:() => <ElInput v-model={currentCar.value} disabled  ></ElInput>,
+        },
+        {
+          prop: 'type',
+          title: t('wai-she-lei-xing'),
+          slot: (form: Record<string, any>) => (
+            <ElSelect  class="w-full"
+            v-model={form.value["type"]}
+            placeholder="外设类型"
+            clearable>
+               {deviceTypeList.value.map((item:any) => (
+          <ElOption key={item} label={item.name} value={item.type}></ElOption>
+        ))}
+            </ElSelect>
+          )
+        },
+        {
+          prop: 'intranatPort',
+          title:t('nei-wang-duan-kou')
+        },
+        {
+          prop: 'intranatIp',
+          title:t('nei-wang-ip')
+        },
+        {
+          prop: 'internatPort',
+          title:t('wai-wang-duan-kou')
+        },
+        {
+          prop: 'internatIp',
+          title: t('wai-wang-ip')
+        }
+      ]
     } else {
       return []
     }
@@ -176,25 +250,59 @@ export const useConfig = () => {
     dialogVisible.value = false
   }
 
+  function handleVisible() {
+    if (!currentCar.value) {
+      ElNotification({
+        title: t('ti-shi'),
+        message: t('qing-xuan-ze-che-liang'),
+      })
+      return
+    }
+      dialogVisible.value =true
+   
+  
+  }
   async function handleSubmit() {
-    await formRef.value?.validate(async (valid: boolean) => {
-      if (valid) {
-        loading.value = true
-        try {
-          let res: any
-          if (form.value.id) {
-            res = await updateCamera(form.value)
-          } else {
-            res = await createCamera(form.value)
+    if (configType.value === configTypes.CAMERA) {
+      await formRef.value?.validate(async (valid: boolean) => {
+        if (valid) {
+          loading.value = true
+          try {
+            let res: any
+            if (form.value.id) {
+              res = await updateCamera(form.value)
+            } else {
+              res = await createCamera(form.value)
+            }
+            ElMessage({ type: 'success', message: res.message })
+            handleCancel()
+          } finally {
+            loading.value = false
+            getList()
           }
-          ElMessage({ type: 'success', message: res.message })
-          handleCancel()
-        } finally {
-          loading.value = false
-          getList()
         }
-      }
-    })
+      })
+    }else if(configType.value === configTypes.DEVICE){
+      await formRef.value?.validate(async (valid: boolean) => {
+        if (valid) {
+          loading.value = true
+          try {
+            let res: any
+            if (form.value.id) {
+              res = await updateDevice(form.value)
+            } else {
+              res = await createDevice(form.value)
+            }
+            ElMessage({ type: 'success', message: res.message })
+            handleCancel()
+          } finally {
+            loading.value = false
+            getList()
+          }
+        }
+      })
+    }
+    
   }
 
   function handleEdit(data: any) {
@@ -255,9 +363,7 @@ export const useConfig = () => {
       <ElDivider></ElDivider>
       <ElButton
         size="large"
-        onClick={() => {
-          dialogVisible.value = true
-        }}
+        onClick={handleVisible}
       >
         {t('tian-jia')}
       </ElButton>

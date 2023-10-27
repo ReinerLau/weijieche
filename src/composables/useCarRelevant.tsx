@@ -75,7 +75,7 @@ export const useCarRelevant = ({
         >
           {t('pei-zhi-jian-kong')}
         </ElButton>
-        {/* <ElButton
+         <ElButton
           class="w-full"
           size="large"
           onClick={() => {
@@ -84,8 +84,7 @@ export const useCarRelevant = ({
             carSettingDrawerVisible.value = false
           }}
         >
-          配置外设
-        </ElButton> */}
+         { t('pei-zhi-wai-she')} </ElButton> 
         <ElDivider />
         <FrameSwitchOver />
         <ElDivider />
