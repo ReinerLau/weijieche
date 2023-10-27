@@ -13,9 +13,8 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
-import { computed, ref, toRaw, watch } from 'vue'
-import { Fragment } from 'vue/jsx-runtime'
-import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '../api/camera'
+import { computed, ref, toRaw, watch, Fragment } from 'vue'
+import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'

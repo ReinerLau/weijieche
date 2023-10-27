@@ -1,10 +1,11 @@
+import { connectCar } from '@/api'
 import { getCarList } from '@/api/list'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { currentCar } from '@/shared'
 import { ElButton, ElDivider, ElDrawer, ElOption, ElScrollbar, ElSelect } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -37,6 +38,10 @@ export const useCarRelevant = ({
       : '🚫'
   })
 
+  watch(currentCar, (code: string) => {
+    connectCar(code)
+  })
+
   const CarRelevantDrawer = () => (
     <ElDrawer
       class="select-none"
@@ -60,7 +65,7 @@ export const useCarRelevant = ({
           ))}
         </ElSelect>
         <ElButton
-          class="w-full"
+          class="w-full mb-5"
           size="large"
           onClick={() => {
             isConfig.value = true

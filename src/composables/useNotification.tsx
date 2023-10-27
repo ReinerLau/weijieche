@@ -1,19 +1,31 @@
 import { getToken } from '@/utils'
-import { ElAlert, ElBadge, ElButton, ElCard, ElDrawer, ElNotification } from 'element-plus'
-import { Fragment, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import {
+  ElAlert,
+  ElBadge,
+  ElButton,
+  ElCard,
+  ElDrawer,
+  ElMessage,
+  ElNotification,
+  ElScrollbar
+} from 'element-plus'
+import { Fragment, onBeforeUnmount, onMounted, ref } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { deleteLog, getAllLog } from '@/api'
+import { useVirtualList } from '@vueuse/core'
+import { remove } from 'lodash'
 interface websocketData {
   id: string
   type: string
   message: string
-  time?: string
+  createTime?: string
 }
 export const useNotification = () => {
   const notificationDrawerVisible = ref(false)
-  const notifications: websocketData[] = reactive([])
+  const notifications: Ref<websocketData[]> = ref([])
 
   const { t } = useI18n()
 
@@ -44,7 +56,7 @@ export const useNotification = () => {
       message,
       position: 'bottom-right'
     })
-    notifications.push(data)
+    notifications.value.push(data)
     alarmRef.value && alarmRef.value.play()
   }
 
@@ -59,6 +71,26 @@ export const useNotification = () => {
     websocket?.close()
   })
 
+  const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(notifications, {
+    itemHeight: 125
+  })
+
+  async function lookMore() {
+    const res = await getAllLog()
+    notifications.value = res.data || []
+    scrollTo(0)
+  }
+
+  async function delLog(id: string) {
+    const res: any = await deleteLog(id)
+    ElMessage({
+      type: 'success',
+      message: res.message
+    })
+    getAllLog()
+    remove(list.value, (item) => item.data.id === id)
+  }
+
   const NotificationDrawer = () => (
     <ElDrawer
       title={t('tong-zhi')}
@@ -70,28 +102,46 @@ export const useNotification = () => {
       {!isOpen.value && (
         <ElAlert title={t('websocket-lian-jie-yi-duan-kai')} type="error" class="!mb-5" />
       )}
-      {notifications.map((item, index) => (
-        <ElCard key={item.id} class="mb-5">
-          {{
-            header: () => (
-              <div class="flex justify-between">
-                <span>{item.time}</span>
-                <ElButton link onClick={() => notifications.splice(index, 1)}>
-                  <IconCloseFill />
-                </ElButton>
-              </div>
-            ),
-            default: () => <div>{item.message}</div>
-          }}
-        </ElCard>
-      ))}
+      <div class="text-right">
+        <ElButton class="mb-5" link onClick={lookMore}>
+          查看更多
+        </ElButton>
+      </div>
+      <div
+        ref={containerProps.ref}
+        style={containerProps.style}
+        class="h-[90%]"
+        onScroll={containerProps.onScroll}
+      >
+        <div {...wrapperProps.value}>
+          {list.value.map((item, index) => (
+            <ElCard key={item.data.id} class="mb-5">
+              {{
+                header: () => (
+                  <div class="flex justify-between">
+                    <span>{item.data.createTime}</span>
+                    <ElButton link onClick={() => delLog(item.data.id)}>
+                      <IconCloseFill />
+                    </ElButton>
+                  </div>
+                ),
+                default: () => <div>{item.data.message}</div>
+              }}
+            </ElCard>
+          ))}
+        </div>
+      </div>
     </ElDrawer>
   )
 
   const NotificationController = () => (
     <Fragment>
       <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
-        <ElBadge value={notifications.length} hidden={notifications.length === 0} isDot={true}>
+        <ElBadge
+          value={notifications.value.length}
+          hidden={notifications.value.length === 0}
+          isDot={true}
+        >
           <IconMdiBellOutline />
         </ElBadge>
       </ElButton>

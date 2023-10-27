@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import CameraPlayer from '@/components/CameraPlayer.vue';
+import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
-useCarRelevant,
-useConfig,
-useControlSection,
-useDetail,
-useInternational,
-useMap,
-useNotification,
-useResponsive,
-useTheme
-} from '@/composables';
+  useCarRelevant,
+  useConfig,
+  useControlSection,
+  useDetail,
+  useInternational,
+  useMap,
+  useNotification,
+  useResponsive,
+  useTheme
+} from '@/composables'
 
-import { cameraList } from '@/shared';
-import { onMounted } from 'vue';
+import { cameraList } from '@/shared'
+import { onMounted } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -55,7 +55,7 @@ const { MapContainer } = useMap()
     <el-main v-if="isConfig" id="main" class="h-0">
       <ConfigSection />
     </el-main>
-    <el-container v-else>
+    <el-container v-show="!isConfig">
       <el-header>
         <TopControl />
       </el-header>

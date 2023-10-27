@@ -15,9 +15,19 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
+import { cloneDeep } from 'lodash'
 import { computed, defineComponent, onMounted, ref, toRaw, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const defaultFormData = {
+  loopConditions: '',
+  conditions: [],
+  time: '',
+  code: '',
+  missionId: null,
+  changeMission: false
+}
 
 export const useSchedule = () => {
   const { t } = useI18n()
@@ -31,14 +41,7 @@ export const useSchedule = () => {
         code: string
         missionId: number | null
         changeMission: boolean
-      }> = ref({
-        loopConditions: '',
-        conditions: [],
-        time: '',
-        code: '',
-        missionId: null,
-        changeMission: false
-      })
+      }> = ref(cloneDeep(defaultFormData))
       const loopConditionsMap = {
         DAY: '1',
         WEEK: '2',
@@ -63,6 +66,8 @@ export const useSchedule = () => {
             type: 'success',
             message: res.message
           })
+          dialogVisible.value = false
+          formData.value = cloneDeep(defaultFormData)
         }
       }
 

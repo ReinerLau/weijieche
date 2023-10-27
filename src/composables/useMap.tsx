@@ -2,7 +2,6 @@ import {
   createHomePath,
   createMissionTemplate,
   deleteHomePath,
-  getCarInfo,
   getHomePath,
   goHome,
   sendMavlinkMission
@@ -14,15 +13,19 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
+  ElInput,
   ElMessage,
   ElScrollbar,
   ElSwitch
 } from 'element-plus'
 import * as maptalks from 'maptalks'
-import { Fragment, defineComponent, onMounted, ref, watch } from 'vue'
+import { Fragment, defineComponent, onMounted, ref, watch, reactive, withModifiers } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
+import IconMdiSignalOff from '~icons/mdi/signal-off'
+import { useMapMaker } from '@/composables'
+import { getCarInfo } from '@/api'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -40,9 +43,9 @@ export const useMap = () => {
         searchDialogVisible: scheduleSearchDialogVisible,
         ScheduleSearchDialog
       } = useSchedule()
+      const { isConnectedWS, initMakerLayer } = useMapMaker()
       const mapRef: Ref<HTMLElement | undefined> = ref()
       let map: maptalks.Map
-      let markerLayer: maptalks.VectorLayer
       let drawTool: maptalks.DrawTool
       let pathLayer: maptalks.VectorLayer
       let homePathLayer: maptalks.VectorLayer
@@ -89,35 +92,11 @@ export const useMap = () => {
             minZoom: 11,
             baseLayer: tileLayer
           })
-          markerLayer = new maptalks.VectorLayer('marker')
-          markerLayer.addTo(map)
+          initMakerLayer(map)
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
           pathLayer = new maptalks.VectorLayer('line')
           pathLayer.addTo(map)
-        }
-      }
-
-      watch(currentCar, (val: string) => {
-        addMarker(val)
-      })
-
-      async function addMarker(val: string) {
-        markerLayer.clear()
-        const res: any = await getCarInfo(val)
-        if (res.data.longitude && res.data.latitude) {
-          const coordinates = [res.data.longitude, res.data.latitude]
-          // const coordinates = [25.97905635, -10.66232601]
-          const point = new maptalks.Marker(coordinates, {
-            symbol: {
-              markerType: 'triangle',
-              markerFill: 'red',
-              markerWidth: 15,
-              markerHeight: 20,
-              markerRotation: -res.data.heading
-            }
-          })
-          markerLayer.addGeometry(point)
         }
       }
 
@@ -232,6 +211,11 @@ export const useMap = () => {
           clearLine()
           clearDrawTool()
         }
+      }
+
+      function jumpToCoordinate(x: number, y: number) {
+        const coordinate = new maptalks.Coordinate([x, y])
+        map.setCenter(coordinate)
       }
 
       function clearLine() {
@@ -465,16 +449,26 @@ export const useMap = () => {
         if (val) {
           map.on('mousemove', debugMapMouseMoveEvent)
         } else {
-          mouseCoordinate.value = ''
           map.off('mousemove', debugMapMouseMoveEvent)
         }
       })
 
-      const mouseCoordinate = ref('')
+      const mouseCoordinate = reactive({
+        x: 0,
+        y: 0
+      })
 
       function debugMapMouseMoveEvent(e: any) {
-        mouseCoordinate.value = `${e.coordinate.x}, ${e.coordinate.y}`
+        mouseCoordinate.x = e.coordinate.x
+        mouseCoordinate.y = e.coordinate.y
       }
+
+      watch(currentCar, async (code: string) => {
+        const res = await getCarInfo(code)
+        const x = res.data.longitude
+        const y = res.data.latitude
+        jumpToCoordinate(x, y)
+      })
 
       onMounted(() => {
         initMap()
@@ -527,8 +521,38 @@ export const useMap = () => {
               activeText={t('tiao-shi')}
               inactiveText={t('zheng-chang')}
             />
-            <div>{mouseCoordinate.value}</div>
+            {debugMode.value ? (
+              <div class="flex">
+                <ElInput
+                  v-model={mouseCoordinate.x}
+                  class="mr-1"
+                  onKeydown={withModifiers(
+                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
+                    ['enter']
+                  )}
+                />
+                <ElInput
+                  v-model={mouseCoordinate.y}
+                  class="mr-1"
+                  onKeydown={withModifiers(
+                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
+                    ['enter']
+                  )}
+                />
+                <ElButton
+                  type="primary"
+                  onClick={() => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y)}
+                >
+                  确定
+                </ElButton>
+              </div>
+            ) : null}
           </div>
+          {!isConnectedWS.value ? (
+            <div class="absolute left-5 top-5 z-10 text-red-600">
+              <IconMdiSignalOff />
+            </div>
+          ) : null}
           <div class="h-full" ref={mapRef} />
           <TemplateDialog onConfirm={handleConfirm} />
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
