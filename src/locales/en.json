@@ -120,5 +120,7 @@
   "nei-wang-duan-kou": "Internal port",
   "nei-wang-ip": "Private IP",
   "wai-wang-duan-kou": "External network port",
-  "wai-wang-ip": "Public IP Address"
+  "wai-wang-ip": "Public IP Address",
+  "qing-xuan-ze-che-liang": "Please select a vehicle.",
+  "ti-shi": "Prompt"
 }

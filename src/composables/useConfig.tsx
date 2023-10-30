@@ -14,7 +14,8 @@ import {
   ElTable,
   ElTableColumn,
   ElOption,
-ElSelect
+  ElSelect,
+  ElSwitch
 } from 'element-plus'
 import { computed, ref, toRaw, watch, Fragment } from 'vue'
 import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
@@ -45,7 +46,6 @@ export const useConfig = () => {
       data = res.data.list || res.data
     }
    else if (configType.value === configTypes.DEVICE) {
-    
       const res = await getDeviceListByCode(currentCar.value,'patroling')
       data = res.data.list || res.data
       const r = await getDeviceTypeList();
@@ -173,7 +173,8 @@ export const useConfig = () => {
       }
     } else if (configType.value === configTypes.DEVICE){
       return {
-        rid: [{ required: true, message:t('che-liang-bian-hao') }],
+        rid: [{ required: false, message:t('che-liang-bian-hao') }],
+        name: [{ required: true, message:t('wai-she-ming-cheng') }],
         type: [{ required: true, message: t('wai-she-lei-xing') }],
         intranatPort: [{ required: true, message:t('nei-wang-duan-kou') }],
         intranatIp: [{ required: true, message: t('nei-wang-ip') }],
@@ -201,13 +202,15 @@ export const useConfig = () => {
         }
       ]
     }else if (configType.value === configTypes.DEVICE) {
-     console.log(currentCar.value);
-     
       return [
         {
           prop: 'rid',
           title: t('che-liang-bian-hao'),
           slot:() => <ElInput v-model={currentCar.value} disabled  ></ElInput>,
+        },
+        {
+          prop: 'name',
+          title: t('wai-she-ming-cheng'),
         },
         {
           prop: 'type',
@@ -224,6 +227,13 @@ export const useConfig = () => {
           )
         },
         {
+          prop: 'status',
+          title:t('wai-she-zhuang-tai-0'),
+          slot:(form: Record<string, any>)=>
+            <ElSwitch v-model={form.value["status"]} active-text="开启" inactive-text="关闭"  style="--el-switch-off-color: #808080" active-value="1"
+            inactive-value="0"/>
+        },
+        {
           prop: 'intranatPort',
           title:t('nei-wang-duan-kou')
         },
@@ -238,7 +248,7 @@ export const useConfig = () => {
         {
           prop: 'internatIp',
           title: t('wai-wang-ip')
-        }
+        },
       ]
     } else {
       return []
@@ -291,6 +301,8 @@ export const useConfig = () => {
             if (form.value.id) {
               res = await updateDevice(form.value)
             } else {
+              form.value.isDel=0
+              form.value.rid=currentCar.value
               res = await createDevice(form.value)
             }
             ElMessage({ type: 'success', message: res.message })
