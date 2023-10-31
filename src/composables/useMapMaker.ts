@@ -46,6 +46,7 @@ export const useMapMaker = () => {
     longitude?: number
     latitude?: number
     heading?: number
+    robotCode?: string
   }
 
   function initMarker(data: CarInfo) {
@@ -65,7 +66,11 @@ export const useMapMaker = () => {
   }
 
   function itIsTheCar(data: CarInfo) {
-    return data.rid === currentCar.value || data.robotid === currentCar.value
+    return (
+      data.rid === currentCar.value ||
+      data.robotid === currentCar.value ||
+      data.robotCode === currentCar.value
+    )
   }
 
   function hasCoordinate(data: CarInfo) {
