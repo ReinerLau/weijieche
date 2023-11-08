@@ -123,5 +123,7 @@
   "wai-wang-ip": "外网IP",
   "qing-xuan-ze-che-liang": "请选择车辆",
   "ti-shi": "提示",
-  "wai-she-zhuang-tai-0": "外设状态"
+  "wai-she-zhuang-tai-0": "外设状态",
+  "qing-xuan-ze-kong-zhi-qi": "请选择控制器",
+  "qing-xuan-ze-kong-zhi-qi-lei-xing": "请选择控制器类型"
 }

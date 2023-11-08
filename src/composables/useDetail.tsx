@@ -79,12 +79,15 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       title: t('kong-zhi-qi'),
       slot: () => (
         <div class="flex flex-col">
-          <ElSelect v-model={currentController.value}>
+          <ElSelect v-model={currentController.value} placeholder={t('qing-xuan-ze-kong-zhi-qi')}>
             {controllers.value.map((item) => (
               <ElOption key={item.id} label={item.id} value={item.id}></ElOption>
             ))}
           </ElSelect>
-          <ElSelect v-model={currentControllerType.value}>
+          <ElSelect
+            v-model={currentControllerType.value}
+            placeholder={t('qing-xuan-ze-kong-zhi-qi-lei-xing')}
+          >
             {Object.entries(controllerTypes.value).map(([key, value]) => (
               <ElOption key={key} label={value} value={value}></ElOption>
             ))}

@@ -122,5 +122,8 @@
   "wai-wang-duan-kou": "External network port",
   "wai-wang-ip": "Public IP Address",
   "qing-xuan-ze-che-liang": "Please select a vehicle.",
-  "ti-shi": "Prompt"
+  "ti-shi": "Prompt",
+  "qing-xuan-ze-kong-zhi-qi": "Please select a controller.",
+  "qing-xuan-ze-kong-zhi-qi-lei-xing": "Please select the controller type.",
+  "wai-she-zhuang-tai-0": "Peripheral status"
 }

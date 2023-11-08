@@ -122,5 +122,8 @@
   "wai-wang-duan-kou": "Port externe",
   "wai-wang-ip": "Adresse IP publique",
   "qing-xuan-ze-che-liang": "Veuillez choisir un véhicule.",
-  "ti-shi": "Indication/Notification (Note)"
+  "ti-shi": "Indication/Notification (Note)",
+  "qing-xuan-ze-kong-zhi-qi": "Veuillez sélectionner le contrôleur.",
+  "qing-xuan-ze-kong-zhi-qi-lei-xing": "Veuillez sélectionner le type de contrôleur",
+  "wai-she-zhuang-tai-0": "État du périphérique externe"
 }
