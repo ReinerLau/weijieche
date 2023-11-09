@@ -1,5 +1,6 @@
 import { getToken } from './token'
 
+// 连接 websocket
 export function initWebSocket(
   url: string,
   {

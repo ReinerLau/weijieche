@@ -30,30 +30,69 @@ import { getCarInfo } from '@/api'
 export const useMap = () => {
   const MapContainer = defineComponent({
     setup() {
+      // 国际化相关
       const { t } = useI18n()
+
+      // 模板相关
       const {
         TemplateDialog,
         dialogVisible: templateDialogVisible,
         searchDialogVisible: templateSearchDialogVisible,
         TemplateSearchDialog
       } = useTemplate()
+
+      // 定时任务相关
       const {
         dialogVisible: scheduleDialogVisible,
         ScheduleDialog,
         searchDialogVisible: scheduleSearchDialogVisible,
         ScheduleSearchDialog
       } = useSchedule()
+
+      // 车辆标记相关
       const { isConnectedWS, initMakerLayer } = useMapMaker()
+
+      // 地图 DOM 元素
       const mapRef: Ref<HTMLElement | undefined> = ref()
+
+      // 地图实例
+      // https://maptalks.org/maptalks.js/api/1.x/Map.html
+      // https://maptalks.org/examples/cn/map/load/#map_load
       let map: maptalks.Map
+
+      // 绘制工具实例
+      // https://maptalks.org/maptalks.js/api/1.x/DrawTool.html
+      // https://maptalks.org/examples/cn/interaction/draw-tool/#interaction_draw-tool
       let drawTool: maptalks.DrawTool
+
+      // 路线图层实例
+      // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
+      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let pathLayer: maptalks.VectorLayer
+
+      // 返航路线图层实例
+      // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
+      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let homePathLayer: maptalks.VectorLayer
+
+      // 路线所有点的组合
+      // https://maptalks.org/maptalks.js/api/1.x/Marker.html
+      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       const pathPoints: maptalks.Marker[] = []
+
+      // 当前正在创建的返航路线
+      // https://maptalks.org/maptalks.js/api/1.x/LineString.html
+      // https://maptalks.org/examples/cn/geometry/linestring/#geometry_linestring
       let creatingHomePath: maptalks.LineString | undefined
+
+      // 瓦片图层实例
+      // https://maptalks.org/examples/cn/map/load/#map_load
+      // https://maptalks.org/maptalks.js/api/1.x/TileLayer.html
+      // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
       let tileLayer: maptalks.TileLayer
 
-      function patchPointDrawendEvent(e: any) {
+      // 每次点击地图新建路线点的事件
+      function pathPointDrawendEvent(e: any) {
         const pathPoint = e.geometry as maptalks.Marker
         pathPoint.config({
           draggable: true
@@ -68,10 +107,11 @@ export const useMap = () => {
         addPathPointToLayer(pathPoint)
       }
 
+      // 绘制工具相关的事件
       const drawToolEvents = {
         PATH_POINT_DRAW_END: {
           type: 'drawend',
-          event: patchPointDrawendEvent
+          event: pathPointDrawendEvent
         },
         HOME_PATH_DRAW_END: {
           type: 'drawend',
@@ -79,6 +119,7 @@ export const useMap = () => {
         }
       }
 
+      // 初始化地图
       function initMap() {
         tileLayer = new maptalks.TileLayer('base', {
           urlTemplate: '/tiles/{z}/{x}/{y}.jpg',
@@ -92,7 +133,9 @@ export const useMap = () => {
             minZoom: 11,
             baseLayer: tileLayer
           })
+
           initMakerLayer(map)
+
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
           pathLayer = new maptalks.VectorLayer('line')
@@ -100,11 +143,13 @@ export const useMap = () => {
         }
       }
 
+      // 初始化绘制工具
       function initDrawTool() {
         drawTool = new maptalks.DrawTool({ mode: 'Point' })
         drawTool.addTo(map).disable()
       }
 
+      // 按钮组
       const toolbarItems = [
         {
           title: t('xin-jian'),
@@ -201,6 +246,7 @@ export const useMap = () => {
         }
       ]
 
+      // 下发任务
       async function handleCreatePlan() {
         if (haveCurrentCar() && havePath()) {
           const data = getLineCoordinates()
@@ -213,17 +259,21 @@ export const useMap = () => {
         }
       }
 
+      // 跳转到指定坐标
       function jumpToCoordinate(x: number, y: number) {
+        // https://maptalks.org/maptalks.js/api/1.x/Coordinate.html
         const coordinate = new maptalks.Coordinate([x, y])
         map.setCenter(coordinate)
       }
 
+      // 清空图层上的线
       function clearLine() {
         pathLayer.clear()
         pathPoints.length = 0
         creatingHomePath = undefined
       }
 
+      // 确定保存路线模板
       async function handleConfirm(formData: { name?: string; memo?: string }) {
         const data = {
           mission: JSON.stringify(getLineCoordinates()),
@@ -240,6 +290,7 @@ export const useMap = () => {
         clearDrawTool()
       }
 
+      // 确定选择模板路线在地图上显示
       function handleConfirmTemplate(template: any) {
         templateSearchDialogVisible.value = false
         const coordinates: number[][] = JSON.parse(template.mission).map((item: any) => [
@@ -248,6 +299,9 @@ export const useMap = () => {
         ])
 
         coordinates.forEach((coodrinate, index) => {
+          // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
+          // https://maptalks.org/maptalks.js/api/1.x/Marker.html
+          // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
           const pathPoint = new maptalks.Marker(coodrinate, {
             symbol: {
               textName: index + 1,
@@ -261,6 +315,7 @@ export const useMap = () => {
         })
       }
 
+      // 添加路线点到图层中
       function addPathPointToLayer(pathPoint: maptalks.Marker) {
         pathLayer.addGeometry(pathPoint)
         if (entryPoint) {
@@ -270,6 +325,8 @@ export const useMap = () => {
         pathPoints.push(pathPoint)
         if (pathPoints.length >= 2) {
           const lastTwoPoints = pathPoints.slice(-2)
+          // https://maptalks.org/maptalks.js/api/1.x/ConnectorLine.html
+          // https://maptalks.org/maptalks.js/api/1.x/Marker.html#getCoordinates
           const connectLine = new maptalks.ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
             showOn: 'always',
             symbol: {
@@ -277,10 +334,12 @@ export const useMap = () => {
             },
             zIndex: -1
           })
+          // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html#addGeometry
           pathLayer.addGeometry(connectLine)
         }
       }
 
+      // 获取路线上各个点的坐标信息
       function getLineCoordinates() {
         return pathPoints.map((item) => ({
           x: item.getCoordinates().y,
@@ -288,6 +347,7 @@ export const useMap = () => {
         }))
       }
 
+      // 校验地图是否已存在路线
       function havePath() {
         if (pathPoints.length > 0) {
           return true
@@ -300,7 +360,9 @@ export const useMap = () => {
         }
       }
 
+      // 保存返航路线之前校验地图上是否存在返航路线
       function haveHomePath() {
+        // https://maptalks.org/maptalks.js/api/1.x/LineString.html#getCoordinates
         if (creatingHomePath && creatingHomePath.getCoordinates().length > 0) {
           return true
         } else {
@@ -312,7 +374,9 @@ export const useMap = () => {
         }
       }
 
+      // 返航路线绘制结束之后
       function homePathDrawEndEvent(e: any) {
+        // https://maptalks.org/maptalks.js/api/1.x/LineString.html#config
         e.geometry.config({
           arrowStyle: 'classic'
         })
@@ -323,6 +387,7 @@ export const useMap = () => {
         creatingHomePath = e.geometry
       }
 
+      // 开始新建路线
       function handleCreatePath() {
         drawTool.setMode('Point')
         drawTool.setSymbol({
@@ -333,8 +398,10 @@ export const useMap = () => {
         drawTool.on('drawend', drawToolEvents.PATH_POINT_DRAW_END.event)
       }
 
+      // 开始新建返航路线
       function handleCreateHomePath() {
         drawTool.setMode('LineString')
+        // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
         drawTool.setSymbol({
           lineColor: '#ff931e'
         })
@@ -342,7 +409,9 @@ export const useMap = () => {
         drawTool.on('drawend', homePathDrawEndEvent)
       }
 
+      // 初始化右键菜单
       function initMenu() {
+        // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
         map.setMenu({
           items: [
             {
@@ -353,6 +422,7 @@ export const useMap = () => {
         })
       }
 
+      // 清空并禁用绘制工具所有状态，包括对事件的监听
       function clearDrawTool() {
         drawTool.disable()
         for (const key in drawToolEvents) {
@@ -364,6 +434,7 @@ export const useMap = () => {
 
       let entryPoint: maptalks.Marker | undefined
 
+      // 保存返航路线
       async function handleSaveHomePath() {
         if (creatingHomePath) {
           const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
@@ -386,8 +457,10 @@ export const useMap = () => {
         }
       }
 
+      // 当前预览的返航路线实例
       let previewHomePath: maptalks.LineString | undefined
 
+      // 初始化所有返航路线
       async function initHomePath() {
         homePathLayer.clear()
         const res = await getHomePath({ limit: 99999 })
@@ -405,6 +478,9 @@ export const useMap = () => {
             ]
           }
           const entryPointCoord = JSON.parse(item.enterGps)
+          // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
+          // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
+          // https://maptalks.org/maptalks.js/api/1.x/Marker.html
           new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
             symbol: {
               markerType: 'ellipse',
@@ -443,7 +519,9 @@ export const useMap = () => {
         })
       }
 
+      // 是否开启调试模式
       const debugMode = ref(false)
+      // 开启调试模式监听鼠标移动事件，关闭调试模式移除鼠标移动事件
       watch(debugMode, (val: boolean) => {
         tileLayer.config('debug', val)
         if (val) {
@@ -453,16 +531,19 @@ export const useMap = () => {
         }
       })
 
+      // 当前鼠标坐标
       const mouseCoordinate = reactive({
         x: 0,
         y: 0
       })
 
+      // 调试模式下的鼠标移动事件
       function debugMapMouseMoveEvent(e: any) {
         mouseCoordinate.x = e.coordinate.x
         mouseCoordinate.y = e.coordinate.y
       }
 
+      // 监听到当前车辆切换之后地图中心跳转到车辆位置
       watch(currentCar, async (code: string) => {
         const res = await getCarInfo(code)
         const x = res.data.longitude

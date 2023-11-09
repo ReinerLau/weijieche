@@ -2,8 +2,10 @@ import { getCameraListByCode } from '@/api'
 import { ElMessage } from 'element-plus'
 import { ref, watch, type Ref } from 'vue'
 
+// 当前选择的车辆编号
 export const currentCar = ref('')
 
+// 校验是否已经选择车辆
 export function haveCurrentCar() {
   if (currentCar.value) {
     return true
@@ -13,18 +15,22 @@ export function haveCurrentCar() {
   }
 }
 
+// 车辆绑定的摄像头数据
 export const cameraList: Ref<any[]> = ref([])
+// 每次切换车辆都要重新获取对应的摄像头数据
 watch(currentCar, async () => {
   const res = await getCameraListByCode(currentCar.value, 'patroling')
   cameraList.value = res.data
 })
 
+// 车辆模式
 export const modes = {
   STOP: 1,
   AUTO: 4,
   MANUAL: 3
 }
 
+// 底盘模式
 export const baseModes = {
   AUTO: 129,
   MANUAL: 1,
