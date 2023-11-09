@@ -44,6 +44,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     return baseModeText[statusData.value.baseMode] || t('wei-zhi')
   })
 
+  // 手柄、方向盘相关逻辑
   const {
     controllers,
     controllerTypes,
@@ -54,6 +55,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     direction
   } = useController()
 
+  // 监听前进后退的切换按键
   watch(pressedButtons, (val) => {
     if (currentControllerType.value === controllerTypes.value.WHEEL) {
       if (val === 6) {

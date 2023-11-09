@@ -31,9 +31,16 @@ export const baseModes = {
   STOP: 0
 }
 
+// 当前选择的控制器 id
 export const currentController = ref('')
+
+// 当前选择的控制器类型
 export const currentControllerType = ref('')
+
+// 控制按过的按键
 export const pressedButtons = ref(-1)
+
+// 所有控制器类型
 export const controllerTypes = ref({
   WHEEL: '方向盘',
   GAMEPAD: '手柄'

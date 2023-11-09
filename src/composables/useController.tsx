@@ -8,108 +8,144 @@ import {
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 手柄、方向盘相关逻辑
 export const useController = () => {
   const { t } = useI18n()
+
+  // 已连接的控制器
   const controllers: Ref<Gamepad[]> = ref([])
+
+  // 速度
   const speed = ref(0)
+
+  // true：前进，false：后退
   const gear = ref(true)
+
+  // 手柄映射
   const gamepadMap = reactive({
     SPEED: 0,
     DIRECTION: 0
   })
+
+  // 方向盘映射
   const wheelMap = reactive({
     SPEED: 0,
     DIRECTION: 0
   })
+
+  // 方向
   const direction = ref(0)
 
+  // 保存和获取控制器映射需要用到
   const stroageKeys = {
     GAMEPAD: 'gamepad-key-map',
     WHEEL: 'wheel-key-map'
   }
 
+  // 尝试从本地存储中获取上一次设置好的控制器映射
   function initControllerMap() {
+    // 获取手柄映射
     let res: any = JSON.parse(localStorage.getItem(stroageKeys.GAMEPAD) || '{}')
     gamepadMap.SPEED = res.SPEED || 0
     gamepadMap.DIRECTION = res.DIRECTION || 0
+
+    // 获取方向盘映射
     res = JSON.parse(localStorage.getItem(stroageKeys.WHEEL) || '{}')
     wheelMap.SPEED = res.SPEED || 0
     wheelMap.DIRECTION = res.DIRECTION || 0
   }
 
+  // 用于随时取消对控制器操作的监听
   let rAF: number
 
-  onControllerOperation()
-  initControllerMap()
-
-  const { onConnected, onDisconnected } = useGamepad()
-
-  onConnected(onControllerOperation)
-  onDisconnected(() => {
-    cancelAnimationFrame(rAF)
-    currentController.value = ''
-    currentControllerType.value = ''
-  })
-
+  // 实时监听控制器操作
   function onControllerOperation() {
+    // 获取所有已连接的控制器
     const { gamepads } = useGamepad()
     controllers.value = gamepads.value
+
+    // 匹配当前选择的控制器
     if (currentController.value && currentControllerType.value) {
       const controller = gamepads.value.find((item) => item.id === currentController.value)
       if (controller) {
+        // 控制器摇杆信息
         const axes = controller?.axes
+
+        // 控制器按键信息
         const buttons = controller?.buttons
+
         axeMap.value = axes
         speed.value = setSpeed(axes)
         direction.value = setDirection(axes)
         pressedButtons.value = setButtons(buttons)
       }
     }
+
+    // 大概每 16ms 执行一次
     rAF = requestAnimationFrame(onControllerOperation)
   }
 
+  // 获取按过的按键
   function setButtons(buttons: ReadonlyArray<GamepadButton>) {
     return buttons.findIndex((item) => item.pressed)
   }
 
+  // 获取速度
   function setSpeed(axes: ReadonlyArray<number>): number {
     let newSpeed = speed.value
     let gas = 0
     if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
+      // 如果当前选择的控制器类型是手柄
       gas = parseFloat(axes[gamepadMap.SPEED].toFixed(1))
       newSpeed = Math.abs(gas) * 1000
     } else if (currentControllerType.value === controllerTypes.value.WHEEL) {
+      // 如果当前选择的控制器类型是方向盘
       gas = parseFloat(axes[wheelMap.SPEED].toFixed(1))
       newSpeed = parseFloat((Math.abs(gas - 1) / 2).toFixed(1)) * 1000
     }
+
     return gear.value ? newSpeed : -newSpeed
   }
 
+  // 获取转向
   function setDirection(axes: ReadonlyArray<number>): number {
     let newDirection = 0
+
     let wheel = 0
+
     if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
+      // 如果当前选择的控制器类型是手柄
       wheel = parseFloat(axes[gamepadMap.DIRECTION].toFixed(1))
     } else if (currentControllerType.value === controllerTypes.value.WHEEL) {
+      // 如果当前选择的控制器类型是方向盘
       wheel = parseFloat(axes[wheelMap.DIRECTION].toFixed(1))
     }
     newDirection = wheel * 1000
+
     return newDirection
   }
 
+  // 控制器映射设置弹窗是否可视
   const controllerMapDialogVisible = ref(false)
+
+  // 摇杆映射
   const axeMap: Ref<readonly number[]> = ref([])
 
+  // 每次修改手柄映射都保存起来
   watch(gamepadMap, (val) => {
     localStorage.setItem(stroageKeys.GAMEPAD, JSON.stringify(val))
   })
+
+  // 每次修改方向盘映射都保存起来
   watch(wheelMap, (val) => {
     localStorage.setItem(stroageKeys.WHEEL, JSON.stringify(val))
   })
+
+  // 设置映射的弹窗组件
   const ControllerMapDialog = () => (
     <ElDialog v-model={controllerMapDialogVisible.value} title={t('kong-zhi-qi-ying-she')}>
       {{
@@ -167,6 +203,24 @@ export const useController = () => {
       }}
     </ElDialog>
   )
+
+  onMounted(() => {
+    onControllerOperation()
+
+    initControllerMap()
+
+    const { onConnected, onDisconnected } = useGamepad()
+
+    // 监听到控制器连接后开始监听
+    onConnected(onControllerOperation)
+
+    // 监听到控制器断连后取消监听
+    onDisconnected(() => {
+      cancelAnimationFrame(rAF)
+      currentController.value = ''
+      currentControllerType.value = ''
+    })
+  })
 
   return {
     controllers,
