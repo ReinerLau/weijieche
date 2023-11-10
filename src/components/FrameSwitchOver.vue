@@ -61,8 +61,10 @@ import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { useI18n } from 'vue-i18n'
 
+// 国际化
 const { t } = useI18n()
 
+// 不同功能对应映射值
 const keyMap = {
   SWITCH: '01',
   BACK: '02',
@@ -77,6 +79,8 @@ const keyMap = {
   AV3: '10',
   AV4: '11'
 }
+
+// 开启功能
 async function onClick(value: string) {
   if (haveCurrentCar()) {
     const data = {
