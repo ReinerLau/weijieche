@@ -12,11 +12,21 @@ import { defineComponent, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 export const useTemplate = () => {
+  // 国际化
+  // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
+
+  // 弹窗是否可见
   const dialogVisible = ref(false)
+
+  // 新建模板的表单数据
   const formData: Ref<{ name?: string; memo?: string }> = ref({})
+
+  // 搜索模板弹窗是否可见
   const searchDialogVisible = ref(false)
 
+  // 新建模板弹窗组件
+  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const TemplateDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
@@ -49,6 +59,8 @@ export const useTemplate = () => {
     }
   })
 
+  // 搜索模板弹窗组件
+  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const TemplateSearchDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
