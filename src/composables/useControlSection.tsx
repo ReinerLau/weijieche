@@ -12,8 +12,12 @@ import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-pl
 import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 顶部操控相关
 export const useControlSection = () => {
+  // 国际化
   const { t } = useI18n()
+  // 顶部操控区域组件
+
   const TopControl = () => (
     <ElScrollbar always={true}>
       <ElMenu mode="horizontal" ellipsis={false}>
@@ -23,11 +27,13 @@ export const useControlSection = () => {
     </ElScrollbar>
   )
 
+  // 每个模式数据结构的类型声明
   interface MenuItem {
     title: string
     subItems: { title: string; event?: () => void }[]
   }
 
+  // 模式选项
   const menuItems: ComputedRef<MenuItem[]> = computed(() => [
     {
       title: t('mo-shi'),
@@ -54,12 +60,19 @@ export const useControlSection = () => {
     event?: (value: any) => any
   }
 
+  // 前灯是否开启
   const frontLight = ref(false)
+
+  // 后灯是否开启
   const backLight = ref(false)
+
+  // 前后灯映射值
   const lightModes = {
     FRONT: '01',
     BACK: '02'
   }
+
+  // 切换前后灯相关事件
   function toggleLight(value: boolean, mode: string) {
     if (haveCurrentCar()) {
       const data = {
@@ -72,7 +85,11 @@ export const useControlSection = () => {
       patrolingCruise(data)
     }
   }
+
+  // 语音是否开启
   const voice = ref(false)
+
+  // 切换语音开启
   function toggleVoice(value: boolean) {
     if (haveCurrentCar()) {
       const data = {
@@ -83,18 +100,25 @@ export const useControlSection = () => {
     }
   }
 
+  // 可选模式值
   const modeKey = {
     STOP: 'STOP' as const,
     AUTO: 'AUTO' as const,
     MANUAL: 'MANUAL' as const
   }
+
+  // 设置模式
   function setMode(type: keyof typeof baseModes) {
     if (haveCurrentCar()) {
       const data = { baseMode: baseModes[type], customMode: modes[type] }
       patrolingSetMode(currentCar.value, data)
     }
   }
+
+  // 激光发散器是否开启
   const disperseMode = ref(false)
+
+  // 切换激光发散器
   function controlLaser(value: boolean) {
     if (haveCurrentCar()) {
       const data = {
@@ -107,6 +131,8 @@ export const useControlSection = () => {
       patrolingCruise(data)
     }
   }
+
+  // 切换按钮组
   const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
       title: t('qian-deng'),
@@ -139,6 +165,7 @@ export const useControlSection = () => {
     }
   ])
 
+  // 模式切换组件
   const Menus = () => (
     <Fragment>
       {menuItems.value.map((menuItem) => (
@@ -160,6 +187,7 @@ export const useControlSection = () => {
     </Fragment>
   )
 
+  // 各种开关按钮组件
   const Switchs = () => (
     <Fragment>
       {switchGroup.value.map((item) => (
@@ -173,6 +201,7 @@ export const useControlSection = () => {
     </Fragment>
   )
 
+  // 开关按钮相关事件
   const switchEvent = {
     FRONT_LIGHT: () => {
       frontLight.value = !frontLight.value
@@ -189,6 +218,7 @@ export const useControlSection = () => {
     STOP: () => setMode(modeKey.STOP)
   }
 
+  // 连接不同控制器下不同按键对应的切换功能
   const actionMap: ComputedRef<any[]> = computed(() => {
     const actions = new Array(20)
     if (currentControllerType.value === controllerTypes.value.WHEEL) {
@@ -208,6 +238,7 @@ export const useControlSection = () => {
     }
   })
 
+  // 监听按键按下触发不同的事件
   watch(pressedButtons, (val) => {
     if (val !== -1) {
       const actionGetter = actionMap.value[val]

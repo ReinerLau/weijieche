@@ -16,19 +16,30 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { deleteLog, getAllLog } from '@/api'
 import { useVirtualList } from '@vueuse/core'
+// 删除数组元素
+// https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
+
+// 收到的 websocket 数据结构类型声明
 interface websocketData {
   id: string
   type: string
   message: string
   createTime?: string
 }
+
+// 警报通知相关
 export const useNotification = () => {
+  // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
+
+  // 通知列表数据
   const notifications: Ref<websocketData[]> = ref([])
 
+  // 国际化
   const { t } = useI18n()
 
+  // 连接 websocket
   function initWebsocket() {
     const token = getToken()
     if (token) {
@@ -46,8 +57,11 @@ export const useNotification = () => {
       return websocket
     }
   }
+
+  // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
 
+  // 从 websocket 收到数据后
   function onMessage(e: any) {
     const data: websocketData = JSON.parse(e.data)
     const { type, message } = data
@@ -60,27 +74,34 @@ export const useNotification = () => {
     alarmRef.value && alarmRef.value.play()
   }
 
+  // websocket 实例
   let websocket: WebSocket | undefined
+  // 是否显示 websocket 已断开的提示
   const isOpen = ref(false)
 
   onMounted(() => {
     websocket = initWebsocket()
   })
 
+  // 关闭页面同时关闭 websocket
   onBeforeUnmount(() => {
     websocket?.close()
   })
 
+  // 虚拟滚动相关，防止数据过多滚动卡顿
+  // https://vueuse.org/core/useVirtualList/#usevirtuallist
   const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(notifications, {
     itemHeight: 125
   })
 
+  // 查看警报历史数据
   async function lookMore() {
     const res = await getAllLog()
     notifications.value = res.data || []
     scrollTo(0)
   }
 
+  // 删除警报数据
   async function delLog(id: string) {
     const res: any = await deleteLog(id)
     ElMessage({
@@ -91,6 +112,7 @@ export const useNotification = () => {
     remove(list.value, (item) => item.data.id === id)
   }
 
+  // 警报抽屉组件
   const NotificationDrawer = () => (
     <ElDrawer
       title={t('tong-zhi')}
@@ -134,6 +156,7 @@ export const useNotification = () => {
     </ElDrawer>
   )
 
+  // 控制警报抽屉组件
   const NotificationController = () => (
     <Fragment>
       <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>

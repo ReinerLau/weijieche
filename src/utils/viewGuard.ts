@@ -7,6 +7,7 @@ import { getToken } from './token'
 
 const whiteList = ['/login']
 
+// 每次跳转前检查是否存在 token
 export function checkToken(router: Router) {
   router.beforeEach((to) => {
     NProgress.start()
@@ -20,6 +21,7 @@ export function checkToken(router: Router) {
   })
 }
 
+// 有 token 的话
 async function handleHasToken(to: RouteLocationNormalizedLoaded) {
   if (to.path === '/login') {
     return '/'
@@ -28,6 +30,7 @@ async function handleHasToken(to: RouteLocationNormalizedLoaded) {
   }
 }
 
+// 没 token 的话
 async function handleNoToken(to: RouteLocationNormalizedLoaded) {
   // const res = await login({
   //   username: 'admin',

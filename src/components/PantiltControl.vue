@@ -69,9 +69,12 @@ import { currentCar, haveCurrentCar } from '../shared/index'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 国际化
 const { t } = useI18n()
 
+// 水平角度
 const horizonAngle = ref(0)
+// 垂直角度
 const verticalAngle = ref(0)
 
 const angleTypes = {
@@ -79,6 +82,7 @@ const angleTypes = {
   VERTICAL: 'vertical'
 }
 
+// 不同功能映射值
 const keyMap = {
   UP: '08',
   LEFT: '04',
@@ -87,6 +91,7 @@ const keyMap = {
   DOWN: '16'
 }
 
+// 点击触发不同共呢个
 function onClick(value: string) {
   if (haveCurrentCar()) {
     const data = {
@@ -99,10 +104,14 @@ function onClick(value: string) {
     patrolingCruise(data)
   }
 }
+
+// 修改水平角度
 const changeHorizonAngle = createDebouce('75', horizonAngle)
 
+// 修改垂直角度
 const changeVerticalAngle = createDebouce('77', verticalAngle)
 
+// 转换成防抖函数，防止过多调度
 function createDebouce(param2: string, ref: Ref<number>) {
   return debounce(async () => {
     if (haveCurrentCar()) {
@@ -117,6 +126,8 @@ function createDebouce(param2: string, ref: Ref<number>) {
     }
   }, 500)
 }
+
+// 修改角度
 function handleChangeAngle(type: string) {
   if (type === angleTypes.HORIZON) {
     changeHorizonAngle()

@@ -10,6 +10,7 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
 
+// 选择车左边抽屉相关
 export const useCarRelevant = ({
   isConfig,
   configType,
@@ -22,28 +23,39 @@ export const useCarRelevant = ({
     DEVICE: string
   }
 }) => {
+  // 国际化
   const { t } = useI18n()
+
+  // 抽屉是否可见
   const carSettingDrawerVisible = ref(false)
+
+  // 可选车辆数据
   const carList: Ref<{ id: number; code: string; name: string; status: number }[]> = ref([])
+
+  // 获取车辆数据
   async function getList() {
     const { data } = await getCarList('patroling')
     carList.value = data || []
   }
 
+  // 当前车辆名字
   const currentCarName = computed(() => {
     return carList.value.find((item) => item.code === currentCar.value)?.name
   })
 
+  // 当前车辆状态
   const currentCarStatus = () => {
     return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
   }
 
   const { NewCurrentCarStatus } = useCarStatus(currentCarStatus())
 
+  // 监听切换车辆后重新激活车辆
   watch(currentCar, (code: string) => {
     connectCar(code)
   })
 
+  // 车辆相关抽屉
   const CarRelevantDrawer = () => (
     <ElDrawer
       class="select-none"
@@ -98,6 +110,7 @@ export const useCarRelevant = ({
     </ElDrawer>
   )
 
+  // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
     <div>
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>

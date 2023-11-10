@@ -7,7 +7,8 @@ import {
   currentController,
   currentControllerType,
   haveCurrentCar,
-  modes
+  modes,
+  pressedButtons
 } from '@/shared'
 import {
   ElButton,
@@ -19,27 +20,38 @@ import {
   ElSelect
 } from 'element-plus'
 import { Fragment, computed, ref, watch } from 'vue'
-import { pressedButtons } from '../shared/index'
 import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 底部状态相关
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
+  // 国际化
   const { t } = useI18n()
+
+  // 底部抽屉是否可见
   const detailDrawerVisible = ref(false)
+
+  // 车辆模式文字映射
   const modeText = {
     [modes.AUTO]: t('zi-zhu'),
     [modes.MANUAL]: t('shou-dong'),
     [modes.STOP]: t('ting-zhi')
   }
+
+  // 当前模式显示的文字
   const mode = computed(() => {
     return modeText[statusData.value.customMode] || t('wei-zhi')
   })
+
+  // 底盘模式文字映射
   const baseModeText = {
     [baseModes.AUTO]: t('jie-suo'),
     [baseModes.MANUAL]: t('jie-suo'),
     [baseModes.STOP]: t('suo-ding')
   }
+
+  // 当前底盘模式
   const baseMode = computed(() => {
     return baseModeText[statusData.value.baseMode] || t('wei-zhi')
   })
@@ -68,6 +80,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     }
   })
 
+  // 所有状态值
   const status = computed(() => [
     {
       title: t('mo-shi'),
@@ -154,7 +167,10 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     }
   ])
 
+  // 状态数据
   const statusData: Ref<Record<string, any>> = ref({})
+
+  // 每次打开底部抽屉重新获取数据
   watch(detailDrawerVisible, async (value: boolean) => {
     if (!value) return
     if (haveCurrentCar()) {
@@ -163,6 +179,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     }
   })
 
+  // 视频监控区域组件
   const CameraSection = () => (
     <Fragment>
       {cameraList.value.map((item) => (
@@ -173,6 +190,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     </Fragment>
   )
 
+  // 底部抽屉组件
   const DetailSection = () => (
     <ElDrawer
       title="详情"

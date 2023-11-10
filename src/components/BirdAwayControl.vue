@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+// 驱鸟器控制
 import { patrolingCruise } from '@/api'
 import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
@@ -32,8 +33,10 @@ import { pressedButtons } from '@/shared'
 import type { ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 国际化
 const { t } = useI18n()
 
+// 按钮组合
 const buttonList = [
   {
     value: '01',
@@ -57,6 +60,7 @@ const buttonList = [
   }
 ]
 
+// 点击按钮
 async function onClick(value: string) {
   if (haveCurrentCar()) {
     const data = {
@@ -70,7 +74,9 @@ async function onClick(value: string) {
   }
 }
 
+// 音量值
 const volume = ref(0)
+// 修改音量
 const changeVolumn = debounce(async () => {
   if (haveCurrentCar()) {
     const data = {
@@ -84,9 +90,12 @@ const changeVolumn = debounce(async () => {
   }
 }, 500)
 
+// 驱鸟功能是否开启
 const playBirdAway = ref(false)
+// 驱人功能是否开启
 const playPersonAway = ref(false)
 
+// 切换按钮事件
 const switchEvent = {
   PERSON: () => {
     playPersonAway.value = !playPersonAway.value
@@ -106,6 +115,7 @@ const switchEvent = {
   }
 }
 
+// 不同控制器按钮对应的功能映射
 const actionMap: ComputedRef<any[]> = computed(() => {
   const actions = new Array(20)
   if (currentControllerType.value === controllerTypes.value.WHEEL) {
@@ -121,6 +131,7 @@ const actionMap: ComputedRef<any[]> = computed(() => {
   }
 })
 
+// 监听控制器按钮触发功能
 watch(pressedButtons, (val) => {
   if (val !== -1) {
     console.log(val)
@@ -129,6 +140,7 @@ watch(pressedButtons, (val) => {
   }
 })
 
+// 修改音量
 function handleChange() {
   changeVolumn()
 }

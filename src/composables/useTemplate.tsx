@@ -11,12 +11,24 @@ import {
 import { defineComponent, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+// 模板相关
 export const useTemplate = () => {
+  // 国际化
+  // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
+
+  // 弹窗是否可见
   const dialogVisible = ref(false)
+
+  // 新建模板的表单数据
   const formData: Ref<{ name?: string; memo?: string }> = ref({})
+
+  // 搜索模板弹窗是否可见
   const searchDialogVisible = ref(false)
 
+  // 新建模板弹窗组件
+  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const TemplateDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
@@ -49,21 +61,31 @@ export const useTemplate = () => {
     }
   })
 
+  // 搜索模板弹窗组件
+  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const TemplateSearchDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
+      // 列表数据
       const list: Ref<any[]> = ref([])
+
+      // 当前选择的模板
       const currentTemplate = ref()
+
+      // 删除模板
       async function handleDelete(id: number) {
         await deleteTemplate(id)
         getList()
       }
+
+      // 每次打开搜索弹窗重新获取数据
       watch(searchDialogVisible, async (val) => {
         if (val) {
           getList()
         }
       })
 
+      // 获取列表数据
       async function getList() {
         const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
         list.value = res.data || []
