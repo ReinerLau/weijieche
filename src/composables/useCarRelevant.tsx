@@ -8,6 +8,7 @@ import { ElButton, ElDivider, ElDrawer, ElOption, ElScrollbar, ElSelect } from '
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCarStatus } from './useCarStatus'
 
 export const useCarRelevant = ({
   isConfig,
@@ -23,7 +24,7 @@ export const useCarRelevant = ({
 }) => {
   const { t } = useI18n()
   const carSettingDrawerVisible = ref(false)
-  const carList: Ref<{ id: number; code: string; name: string; status: string }[]> = ref([])
+  const carList: Ref<{ id: number; code: string; name: string; status: number }[]> = ref([])
   async function getList() {
     const { data } = await getCarList('patroling')
     carList.value = data || []
@@ -32,11 +33,12 @@ export const useCarRelevant = ({
   const currentCarName = computed(() => {
     return carList.value.find((item) => item.code === currentCar.value)?.name
   })
-  const currentCarStatus = computed(() => {
-    return carList.value.find((item) => item.code === currentCar.value)?.status === '1'
-      ? '✅'
-      : '🚫'
-  })
+
+  const currentCarStatus = () => {
+    return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
+  }
+
+  const { NewCurrentCarStatus } = useCarStatus(currentCarStatus())
 
   watch(currentCar, (code: string) => {
     connectCar(code)
@@ -60,7 +62,7 @@ export const useCarRelevant = ({
           {carList.value.map((item) => (
             <ElOption key={item.id} value={item.code}>
               <span>{item.name}</span>
-              <span>{item.status === '1' ? '✅' : '🚫'}</span>
+              <span>{item.status === 1 ? '✅' : '🚫'}</span>
             </ElOption>
           ))}
         </ElSelect>
@@ -75,7 +77,7 @@ export const useCarRelevant = ({
         >
           {t('pei-zhi-jian-kong')}
         </ElButton>
-         <ElButton
+        <ElButton
           class="w-full"
           size="large"
           onClick={() => {
@@ -84,7 +86,8 @@ export const useCarRelevant = ({
             carSettingDrawerVisible.value = false
           }}
         >
-         { t('pei-zhi-wai-she')} </ElButton> 
+          {t('pei-zhi-wai-she')}{' '}
+        </ElButton>
         <ElDivider />
         <FrameSwitchOver />
         <ElDivider />
@@ -100,7 +103,7 @@ export const useCarRelevant = ({
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton>
-      <span>{currentCarStatus.value}</span>
+      <span>{NewCurrentCarStatus.value}</span>
     </div>
   )
 
