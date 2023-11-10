@@ -15,11 +15,14 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
+// 深拷贝
+// https://lodash.com/docs/4.17.15#cloneDeep
 import { cloneDeep } from 'lodash'
 import { computed, defineComponent, onMounted, ref, toRaw, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+// 重置表单数据
 const defaultFormData = {
   loopConditions: '',
   conditions: [],
@@ -29,11 +32,19 @@ const defaultFormData = {
   changeMission: false
 }
 
+// 定时任务相关
 export const useSchedule = () => {
+  // 国际化
+  // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
+
+  // 新建定时任务弹窗组件是否可见
   const dialogVisible = ref(false)
+
+  // 新建定时任务弹窗组件
   const ScheduleDialog = defineComponent({
     setup() {
+      // 表单数据
       const formData: Ref<{
         loopConditions: string
         conditions: number[]
@@ -42,12 +53,15 @@ export const useSchedule = () => {
         missionId: number | null
         changeMission: boolean
       }> = ref(cloneDeep(defaultFormData))
+
+      // 不同循环条件对应的值映射
       const loopConditionsMap = {
         DAY: '1',
         WEEK: '2',
         SINGLE: '3'
       }
 
+      // 修改循环条件
       function handleLoopConditionChange(value: string) {
         if (value === loopConditionsMap.DAY) {
           formData.value.conditions = [1, 2, 3, 4, 5, 6, 7]
@@ -56,6 +70,7 @@ export const useSchedule = () => {
         }
       }
 
+      // 保存
       async function handleConfirm() {
         if (haveCurrentCar()) {
           const data: any = { ...toRaw(formData.value) }
@@ -71,10 +86,12 @@ export const useSchedule = () => {
         }
       }
 
+      // 按天、单次情况下需要禁用周选择
       const conditionsDisabled = computed(() => {
         return ['1', '3', undefined, ''].includes(formData.value.loopConditions)
       })
 
+      // 一周内可选项
       const dayOptions = [
         {
           value: 1,
@@ -106,8 +123,10 @@ export const useSchedule = () => {
         }
       ]
 
+      // 模板列表数据
       const templateList = ref([])
 
+      // 首次加载获取模板数据
       onMounted(async () => {
         const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
         templateList.value = res.data || []
@@ -182,26 +201,36 @@ export const useSchedule = () => {
     }
   })
 
+  // 搜索定时任务弹窗是否可见
   const searchDialogVisible = ref(false)
 
+  // 搜索定时任务弹窗组件
+  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const ScheduleSearchDialog = defineComponent({
     setup() {
+      // 列表数据
       const list: Ref<any[]> = ref([])
+
+      // 删除定时任务
       async function handleDelete(id: number) {
         await deleteTimingTask(id)
         getList()
       }
+
+      // 每次打开弹窗组件获取列表
       watch(searchDialogVisible, async (val) => {
         if (val) {
           getList()
         }
       })
 
+      // 获取列表数据
       async function getList() {
         const res = await getTimingTaskList()
         list.value = res.data?.list || []
       }
 
+      // 列表表头
       const columns = [
         {
           label: t('ji-qi-ren-bian-ma'),
