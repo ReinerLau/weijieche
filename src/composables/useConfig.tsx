@@ -19,40 +19,57 @@ import {
 } from 'element-plus'
 import { computed, ref, toRaw, watch, Fragment } from 'vue'
 import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
-import { createDevice, deleteDevice, getDeviceListByCode, updateDevice,getDeviceTypeList } from '@/api'
+import {
+  createDevice,
+  deleteDevice,
+  getDeviceListByCode,
+  updateDevice,
+  getDeviceTypeList
+} from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
+// 配置监控、配置外设相关
 export const useConfig = () => {
+  // 国际化
   const { t } = useI18n()
+
+  // 不同的配置类型
   const configTypes = {
     CAMERA: 'CAMERA',
     DEVICE: 'DEVICE'
   }
 
+  // 当前是否处于配置模式下
   const isConfig = ref(false)
+  // 当前类型
   const configType = ref('')
+  // 当前配置数据
   const configData: Ref<any[]> = ref([])
+  // 没次进入配置模式重新获取配置数据
   watch(isConfig, () => getList())
 
-  const deviceTypeList=ref([])
+  // 设备类型数据
+  const deviceTypeList = ref([])
 
+  // 根据不同配置模式获取不同数据
   async function getList() {
     let data: any[] = []
     if (configType.value === configTypes.CAMERA) {
       const res = await getCameraList({ page: 1, limit: 9999999 })
       data = res.data.list || res.data
-    }
-   else if (configType.value === configTypes.DEVICE) {
-      const res = await getDeviceListByCode(currentCar.value,'patroling')
+    } else if (configType.value === configTypes.DEVICE) {
+      const res = await getDeviceListByCode(currentCar.value, 'patroling')
       data = res.data.list || res.data
-      const r = await getDeviceTypeList();
-       deviceTypeList.value  = r.data || [];
+      const r = await getDeviceTypeList()
+      deviceTypeList.value = r.data || []
     }
     configData.value = data
   }
+
+  // 不同配置下的表头
   const configColumns = computed(() => {
     if (configType.value === configTypes.CAMERA) {
       return [
@@ -74,17 +91,17 @@ export const useConfig = () => {
           label: t('cao-zuo'),
           slot: (row: Record<string, any>) => (
             <div>
-                  <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
-                        {t('shan-chu')}
-                      </ElButton>
-                      <ElButton link onClick={() => handleEdit(row)}>
-                        {t('bian-ji')}{' '}
-                      </ElButton>
-                      <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
-                        {currentCar.value && row.rid === currentCar.value
-                          ? t('qu-xiao-guan-lian')
-                          : t('guan-lian')}
-                  </ElButton>
+              <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
+                {t('shan-chu')}
+              </ElButton>
+              <ElButton link onClick={() => handleEdit(row)}>
+                {t('bian-ji')}{' '}
+              </ElButton>
+              <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
+                {currentCar.value && row.rid === currentCar.value
+                  ? t('qu-xiao-guan-lian')
+                  : t('guan-lian')}
+              </ElButton>
             </div>
           )
         }
@@ -92,7 +109,7 @@ export const useConfig = () => {
     } else if (configType.value === configTypes.DEVICE) {
       return [
         {
-          label:t('che-liang-bian-hao'),
+          label: t('che-liang-bian-hao'),
           prop: 'rid'
         },
         {
@@ -110,14 +127,14 @@ export const useConfig = () => {
         {
           label: t('cao-zuo'),
           slot: (row: Record<string, any>) => (
-            <div> 
-               <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
-                  {t('shan-chu')}
-                </ElButton>
-                <ElButton link onClick={() => handleEdit(row)}>
+            <div>
+              <ElButton link loading={loading.value} onClick={() => handleDelete(row.id)}>
+                {t('shan-chu')}
+              </ElButton>
+              <ElButton link onClick={() => handleEdit(row)}>
                 {t('bian-ji')}{' '}
               </ElButton>
-              </div>
+            </div>
           )
         }
       ]
@@ -126,7 +143,10 @@ export const useConfig = () => {
     }
   })
 
+  // 配置数据获取过程中的 loading 是否可见
   const loading = ref(false)
+
+  // 删除配置数据
   async function handleDelete(id: number) {
     if (configType.value === configTypes.CAMERA) {
       loading.value = true
@@ -138,7 +158,7 @@ export const useConfig = () => {
         loading.value = false
         getList()
       }
-    }else if (configType.value === configTypes.DEVICE){
+    } else if (configType.value === configTypes.DEVICE) {
       loading.value = true
       try {
         const res: any = await deleteDevice(id)
@@ -151,6 +171,7 @@ export const useConfig = () => {
     }
   }
 
+  // 新增/编辑表单是否可见
   const dialogVisible = ref(false)
 
   interface TableRowData {
@@ -163,32 +184,33 @@ export const useConfig = () => {
     slot?: (form: Ref<any>) => JSX.Element
   }
 
+  // element plus 表单组件实例
   const formRef: Ref<FormInstance | undefined> = ref()
+  // 表单数据
   const form: Ref<Record<string, any>> = ref({})
+  // 表单校验规则
   const formRules: ComputedRef<FormRules> = computed(() => {
     if (configType.value === configTypes.CAMERA) {
       return {
         name: [{ required: true, message: t('qing-shu-ru-ming-cheng') }],
         rtsp: [{ required: true, message: t('la-liu-di-zhi') }]
       }
-    } else if (configType.value === configTypes.DEVICE){
+    } else if (configType.value === configTypes.DEVICE) {
       return {
-        rid: [{ required: false, message:t('che-liang-bian-hao') }],
-        name: [{ required: true, message:t('wai-she-ming-cheng') }],
+        rid: [{ required: false, message: t('che-liang-bian-hao') }],
+        name: [{ required: true, message: t('wai-she-ming-cheng') }],
         type: [{ required: true, message: t('wai-she-lei-xing') }],
-        intranatPort: [{ required: true, message:t('nei-wang-duan-kou') }],
+        intranatPort: [{ required: true, message: t('nei-wang-duan-kou') }],
         intranatIp: [{ required: true, message: t('nei-wang-ip') }],
         internatPort: [{ required: true, message: t('wai-wang-duan-kou') }],
-        internatIp:[{ required: true, message:t('wai-wang-ip')  }]
+        internatIp: [{ required: true, message: t('wai-wang-ip') }]
       }
-    }
-    else {
+    } else {
       return {}
     }
   })
 
-
-
+  // 表单字段
   const formFields: ComputedRef<formField[]> = computed(() => {
     if (configType.value === configTypes.CAMERA) {
       return [
@@ -201,77 +223,84 @@ export const useConfig = () => {
           title: t('la-liu-di-zhi')
         }
       ]
-    }else if (configType.value === configTypes.DEVICE) {
+    } else if (configType.value === configTypes.DEVICE) {
       return [
         {
           prop: 'rid',
           title: t('che-liang-bian-hao'),
-          slot:() => <ElInput v-model={currentCar.value} disabled  ></ElInput>,
+          slot: () => <ElInput v-model={currentCar.value} disabled></ElInput>
         },
         {
           prop: 'name',
-          title: t('wai-she-ming-cheng'),
+          title: t('wai-she-ming-cheng')
         },
         {
           prop: 'type',
           title: t('wai-she-lei-xing'),
           slot: (form: Record<string, any>) => (
-            <ElSelect  class="w-full"
-            v-model={form.value["type"]}
-            placeholder="外设类型"
-            clearable>
-               {deviceTypeList.value.map((item:any) => (
-          <ElOption key={item} label={item.name} value={item.type}></ElOption>
-        ))}
+            <ElSelect class="w-full" v-model={form.value['type']} placeholder="外设类型" clearable>
+              {deviceTypeList.value.map((item: any) => (
+                <ElOption key={item} label={item.name} value={item.type}></ElOption>
+              ))}
             </ElSelect>
           )
         },
         {
           prop: 'status',
-          title:t('wai-she-zhuang-tai-0'),
-          slot:(form: Record<string, any>)=>
-            <ElSwitch v-model={form.value["status"]} active-text="开启" inactive-text="关闭"  style="--el-switch-off-color: #808080" active-value="1"
-            inactive-value="0"/>
+          title: t('wai-she-zhuang-tai-0'),
+          slot: (form: Record<string, any>) => (
+            <ElSwitch
+              v-model={form.value['status']}
+              active-text="开启"
+              inactive-text="关闭"
+              style="--el-switch-off-color: #808080"
+              active-value="1"
+              inactive-value="0"
+            />
+          )
         },
         {
           prop: 'intranatPort',
-          title:t('nei-wang-duan-kou')
+          title: t('nei-wang-duan-kou')
         },
         {
           prop: 'intranatIp',
-          title:t('nei-wang-ip')
+          title: t('nei-wang-ip')
         },
         {
           prop: 'internatPort',
-          title:t('wai-wang-duan-kou')
+          title: t('wai-wang-duan-kou')
         },
         {
           prop: 'internatIp',
           title: t('wai-wang-ip')
-        },
+        }
       ]
     } else {
       return []
     }
   })
+
+  // 关闭表单弹窗
   function handleCancel() {
     formRef.value?.resetFields()
     form.value = {}
     dialogVisible.value = false
   }
 
+  // 打开新增/编辑弹窗
   function handleVisible() {
     if (!currentCar.value) {
       ElNotification({
         title: t('ti-shi'),
-        message: t('qing-xuan-ze-che-liang'),
+        message: t('qing-xuan-ze-che-liang')
       })
       return
     }
-      dialogVisible.value =true
-   
-  
+    dialogVisible.value = true
   }
+
+  // 提交表单数据
   async function handleSubmit() {
     if (configType.value === configTypes.CAMERA) {
       await formRef.value?.validate(async (valid: boolean) => {
@@ -292,7 +321,7 @@ export const useConfig = () => {
           }
         }
       })
-    }else if(configType.value === configTypes.DEVICE){
+    } else if (configType.value === configTypes.DEVICE) {
       await formRef.value?.validate(async (valid: boolean) => {
         if (valid) {
           loading.value = true
@@ -301,8 +330,8 @@ export const useConfig = () => {
             if (form.value.id) {
               res = await updateDevice(form.value)
             } else {
-              form.value.isDel=0
-              form.value.rid=currentCar.value
+              form.value.isDel = 0
+              form.value.rid = currentCar.value
               res = await createDevice(form.value)
             }
             ElMessage({ type: 'success', message: res.message })
@@ -314,14 +343,15 @@ export const useConfig = () => {
         }
       })
     }
-    
   }
 
+  // 编辑
   function handleEdit(data: any) {
     dialogVisible.value = true
     form.value = Object.assign({}, toRaw(data))
   }
 
+  // 关联摄像头
   async function handleConnect(id: string, rid: string) {
     if (haveCurrentCar()) {
       const data = {
@@ -335,6 +365,7 @@ export const useConfig = () => {
     }
   }
 
+  // 表单弹窗组件
   const FormDialog = () => (
     <ElDialog
       model-value={dialogVisible.value}
@@ -365,6 +396,7 @@ export const useConfig = () => {
     </ElDialog>
   )
 
+  // 配置表格区域
   const ConfigSection = () => (
     <Fragment>
       <ElPageHeader onBack={() => (isConfig.value = false)}>
@@ -373,10 +405,7 @@ export const useConfig = () => {
         }}
       </ElPageHeader>
       <ElDivider></ElDivider>
-      <ElButton
-        size="large"
-        onClick={handleVisible}
-      >
+      <ElButton size="large" onClick={handleVisible}>
         {t('tian-jia')}
       </ElButton>
       <ElDivider></ElDivider>
