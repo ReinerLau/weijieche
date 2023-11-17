@@ -26,6 +26,7 @@ import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
+import { usePointTask } from './usePointTask'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -49,6 +50,8 @@ export const useMap = () => {
         ScheduleSearchDialog
       } = useSchedule()
 
+      const { createTaskEvent, editTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } =
+        usePointTask()
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer } = useMapMaker()
 
@@ -75,10 +78,16 @@ export const useMap = () => {
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let homePathLayer: maptalks.VectorLayer
 
+      //任务图层实例
+      let taskPointLayer: maptalks.VectorLayer
+
       // 路线所有点的组合
       // https://maptalks.org/maptalks.js/api/1.x/Marker.html
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       const pathPoints: maptalks.Marker[] = []
+
+      //入口点
+      let entryPoint: maptalks.Marker | undefined
 
       // 当前正在创建的返航路线
       // https://maptalks.org/maptalks.js/api/1.x/LineString.html
@@ -107,6 +116,25 @@ export const useMap = () => {
         addPathPointToLayer(pathPoint)
       }
 
+      // 每次点击地图新建任务点的事件
+      async function taskPointDrawEndEvent(e: any) {
+        const taskPoint = e.geometry as maptalks.Marker
+        taskPoint.setSymbol({
+          markerType: 'ellipse',
+          markerFill: '#138C46',
+          markerWidth: 30,
+          markerHeight: 30
+        })
+        const pointCoordinates = {
+          x: taskPoint.getCoordinates().y,
+          y: taskPoint.getCoordinates().x
+        }
+        createTaskEvent(JSON.stringify(pointCoordinates), () => {
+          addTaskPointToLayer(taskPoint)
+          initTaskPoints()
+        })
+      }
+
       // 绘制工具相关的事件
       const drawToolEvents = {
         PATH_POINT_DRAW_END: {
@@ -116,6 +144,10 @@ export const useMap = () => {
         HOME_PATH_DRAW_END: {
           type: 'drawend',
           event: homePathDrawEndEvent
+        },
+        TASK_POINT_DRAW_END: {
+          type: 'drawend',
+          event: taskPointDrawEndEvent
         }
       }
 
@@ -127,7 +159,7 @@ export const useMap = () => {
         })
         if (mapRef.value) {
           map = new maptalks.Map(mapRef.value, {
-            center: [25.97905635, -10.66232601],
+            center: [113.48570073, 22.56210475],
             zoom: 12,
             maxZoom: 19,
             minZoom: 11,
@@ -140,6 +172,8 @@ export const useMap = () => {
           homePathLayer.addTo(map)
           pathLayer = new maptalks.VectorLayer('line')
           pathLayer.addTo(map)
+          taskPointLayer = new maptalks.VectorLayer('task-point')
+          taskPointLayer.addTo(map)
         }
       }
 
@@ -157,6 +191,14 @@ export const useMap = () => {
             clearLine()
             clearDrawTool()
             handleCreatePath()
+          }
+        },
+        {
+          title: t('ren-wu-dian'),
+          event: () => {
+            clearLine()
+            clearDrawTool()
+            handleCreatePoint()
           }
         },
         {
@@ -290,6 +332,40 @@ export const useMap = () => {
         clearDrawTool()
       }
 
+      // 在地图上显示所有任务点
+      async function initTaskPoints() {
+        taskPointLayer.clear()
+        try {
+          const taskPointList = await getList()
+          const data: any = []
+          taskPointList.forEach((item: any) => {
+            try {
+              const gps = JSON.parse(item.gps)
+              data.push(gps)
+            } catch (error) {
+              data.push(item.gps)
+            }
+          })
+          const coordinates: number[][] = data.map((item: any) => [item.y, item.x])
+          coordinates.forEach((coodrinate) => {
+            const taskPoint = new maptalks.Marker(coodrinate, {
+              symbol: {
+                // textName: index + 1,
+                markerType: 'ellipse',
+                markerFill: '#138C46',
+                markerWidth: 30,
+                markerHeight: 30
+              }
+            }).on('click', (e: any) => {
+              entryPoint = e.target
+            })
+            addTaskPointToLayer(taskPoint)
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
       // 确定选择模板路线在地图上显示
       function handleConfirmTemplate(template: any) {
         templateSearchDialogVisible.value = false
@@ -297,7 +373,6 @@ export const useMap = () => {
           item.y,
           item.x
         ])
-
         coordinates.forEach((coodrinate, index) => {
           // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
           // https://maptalks.org/maptalks.js/api/1.x/Marker.html
@@ -336,6 +411,15 @@ export const useMap = () => {
           })
           // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html#addGeometry
           pathLayer.addGeometry(connectLine)
+        }
+      }
+
+      // 添加任务点到图层中
+      function addTaskPointToLayer(taskPoint: maptalks.Marker) {
+        taskPointLayer.addGeometry(taskPoint)
+        if (entryPoint) {
+          taskPoint.setCoordinates(entryPoint.getCenter())
+          entryPoint = undefined
         }
       }
 
@@ -398,6 +482,17 @@ export const useMap = () => {
         drawTool.on('drawend', drawToolEvents.PATH_POINT_DRAW_END.event)
       }
 
+      //开始新建任务点
+      function handleCreatePoint() {
+        drawTool.setMode('Point')
+        drawTool.setSymbol({
+          markerType: 'ellipse',
+          markerFill: '#f3072f'
+        })
+        drawTool.enable()
+        drawTool.on('drawend', drawToolEvents.TASK_POINT_DRAW_END.event)
+      }
+
       // 开始新建返航路线
       function handleCreateHomePath() {
         drawTool.setMode('LineString')
@@ -431,8 +526,6 @@ export const useMap = () => {
           drawTool.off(type, event)
         }
       }
-
-      let entryPoint: maptalks.Marker | undefined
 
       // 保存返航路线
       async function handleSaveHomePath() {
@@ -549,6 +642,7 @@ export const useMap = () => {
         const x = res.data.longitude
         const y = res.data.latitude
         jumpToCoordinate(x, y)
+        // initTaskPoints()
       })
 
       onMounted(() => {
@@ -556,6 +650,7 @@ export const useMap = () => {
         initDrawTool()
         initMenu()
         initHomePath()
+        initTaskPoints()
       })
       return () => (
         <div class="h-full relative">
@@ -639,6 +734,7 @@ export const useMap = () => {
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
           <ScheduleDialog />
           <ScheduleSearchDialog />
+          <PointSettingFormDialog />
         </div>
       )
     }
