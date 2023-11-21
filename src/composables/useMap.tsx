@@ -50,8 +50,7 @@ export const useMap = () => {
         ScheduleSearchDialog
       } = useSchedule()
 
-      const { createTaskEvent, editTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } =
-        usePointTask()
+      const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer } = useMapMaker()
 
@@ -129,8 +128,9 @@ export const useMap = () => {
           x: taskPoint.getCoordinates().y,
           y: taskPoint.getCoordinates().x
         }
-        createTaskEvent(JSON.stringify(pointCoordinates), () => {
+        handleTaskEvent(JSON.stringify(pointCoordinates), () => {
           addTaskPointToLayer(taskPoint)
+          clearDrawTool()
           initTaskPoints()
         })
       }
@@ -337,18 +337,28 @@ export const useMap = () => {
         taskPointLayer.clear()
         try {
           const taskPointList = await getList()
-          const data: any = []
-          taskPointList.forEach((item: any) => {
-            try {
-              const gps = JSON.parse(item.gps)
-              data.push(gps)
-            } catch (error) {
-              data.push(item.gps)
+          for (const coordinate of taskPointList) {
+            const taskMenuOptions = {
+              items: [
+                {
+                  item: t('bian-ji'),
+                  click: () => {
+                    handleTaskEvent(coordinate, () => {
+                      initTaskPoints()
+                    })
+                  }
+                },
+                {
+                  item: t('shan-chu'),
+                  click: async () => {
+                    await deleteTaskEvent(coordinate.id)
+                    initTaskPoints()
+                  }
+                }
+              ]
             }
-          })
-          const coordinates: number[][] = data.map((item: any) => [item.y, item.x])
-          coordinates.forEach((coodrinate) => {
-            const taskPoint = new maptalks.Marker(coodrinate, {
+            const coordinateGps = JSON.parse(coordinate.gps)
+            const taskPoint = new maptalks.Marker([coordinateGps.y, coordinateGps.x], {
               symbol: {
                 // textName: index + 1,
                 markerType: 'ellipse',
@@ -356,13 +366,16 @@ export const useMap = () => {
                 markerWidth: 30,
                 markerHeight: 30
               }
-            }).on('click', (e: any) => {
-              entryPoint = e.target
             })
+              .on('click', (e: any) => {
+                entryPoint = e.target
+              })
+              .setMenu(taskMenuOptions)
+
             addTaskPointToLayer(taskPoint)
-          })
+          }
         } catch (error) {
-          console.error(error)
+          ElMessage({ type: 'error', message: '异常' })
         }
       }
 
@@ -373,11 +386,11 @@ export const useMap = () => {
           item.y,
           item.x
         ])
-        coordinates.forEach((coodrinate, index) => {
+        coordinates.forEach((coordinate, index) => {
           // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
           // https://maptalks.org/maptalks.js/api/1.x/Marker.html
           // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
-          const pathPoint = new maptalks.Marker(coodrinate, {
+          const pathPoint = new maptalks.Marker(coordinate, {
             symbol: {
               textName: index + 1,
               markerType: 'ellipse',
@@ -473,6 +486,7 @@ export const useMap = () => {
 
       // 开始新建路线
       function handleCreatePath() {
+        entryPoint = undefined
         drawTool.setMode('Point')
         drawTool.setSymbol({
           markerType: 'ellipse',
@@ -484,6 +498,7 @@ export const useMap = () => {
 
       //开始新建任务点
       function handleCreatePoint() {
+        entryPoint = undefined
         drawTool.setMode('Point')
         drawTool.setSymbol({
           markerType: 'ellipse',
