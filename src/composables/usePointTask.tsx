@@ -10,7 +10,7 @@ import {
 } from 'element-plus'
 import { ref, type ComputedRef, type Ref, computed, Fragment, toRaw, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { createPointTask, updatePointTask, getPointTaskList } from '@/api'
+import { createPointTask, updatePointTask, getPointTaskList, deletePointTask } from '@/api'
 
 export const usePointTask = () => {
   const { t } = useI18n()
@@ -35,18 +35,23 @@ export const usePointTask = () => {
     taskPointList.value = res.data?.list || []
     return res.data?.list || []
   }
-  //添加
-  function createTaskEvent(c: any, callback: () => void) {
+
+  //处理添加/编辑
+  function handleTaskEvent(c: any, callback: () => void) {
+    pointCoordinates.value = {}
+    taskPoint.value = () => {}
     pointSettingDialogVisible.value = true
+    if (c.id) {
+      form.value = Object.assign({}, toRaw(c))
+    }
     taskPoint.value = callback
     pointCoordinates.value = c
   }
-  // 编辑
-  function editTaskEvent(data: any) {
-    pointSettingDialogVisible.value = true
-    form.value = Object.assign({}, toRaw(data))
-  }
 
+  //删除
+  async function deleteTaskEvent(id: number) {
+    await deletePointTask(id)
+  }
   const PointSettingFormDialog = defineComponent({
     emits: ['confirm'],
     setup() {
@@ -85,24 +90,24 @@ export const usePointTask = () => {
       })
 
       // 提交表单数据
-      async function handleSubmit(callback: () => void) {
+      async function handleSubmit() {
         await formRef.value?.validate(async (valid: boolean) => {
           if (valid) {
             loading.value = true
             try {
               let res: any
-              form.value.gps = pointCoordinates.value
               if (form.value.id) {
                 res = await updatePointTask(form.value)
               } else {
+                form.value.gps = pointCoordinates.value
                 res = await createPointTask(form.value)
+              }
+              //更新数据
+              if (typeof taskPoint.value === 'function') {
+                taskPoint.value()
               }
               ElMessage({ type: 'success', message: res.message })
               handleCancel()
-              if (typeof callback === 'function') {
-                callback()
-              }
-              getList()
             } finally {
               loading.value = false
             }
@@ -119,7 +124,7 @@ export const usePointTask = () => {
 
       return () => (
         <ElDialog
-          title="t('pei-zhi-lu-jing-dian-ren-wu')"
+          title={t('pei-zhi-lu-jing-dian-ren-wu')}
           align-center
           model-value={pointSettingDialogVisible.value}
           close-on-click-modal={false}
@@ -143,9 +148,7 @@ export const usePointTask = () => {
                   loading={loading.value}
                   type="primary"
                   onClick={() => {
-                    if (taskPoint.value !== null) {
-                      handleSubmit(taskPoint.value)
-                    }
+                    handleSubmit()
                   }}
                 >
                   {t('que-ding')}
@@ -159,10 +162,10 @@ export const usePointTask = () => {
   })
 
   return {
-    createTaskEvent,
-    editTaskEvent,
+    handleTaskEvent,
     PointSettingFormDialog,
     pointSettingDialogVisible,
-    getList
+    getList,
+    deleteTaskEvent
   }
 }
