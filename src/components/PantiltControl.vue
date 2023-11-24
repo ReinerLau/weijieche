@@ -54,7 +54,7 @@
           :min="-180"
           :max="180"
           :show-input-controls="false"
-          @change="handleChangeAngle(angleTypes.HORIZON)"
+          @change="handleChangeAngle(angleTypes.VERTICAL)"
         />
       </div>
     </div>
@@ -91,7 +91,7 @@ const keyMap = {
   DOWN: '16'
 }
 
-// 点击触发不同共呢个
+// 点击触发不同个功能
 function onClick(value: string) {
   if (haveCurrentCar()) {
     const data = {
