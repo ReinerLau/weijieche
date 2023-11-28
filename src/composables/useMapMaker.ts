@@ -1,8 +1,8 @@
-import { getCarInfo } from '@/api'
+import { getCarInfo, getCarList } from '@/api'
 import { currentCar } from '@/shared'
 import { initWebSocket } from '@/utils'
 import { Map, Marker, VectorLayer } from 'maptalks'
-import { watch, ref, onBeforeUnmount } from 'vue'
+import { watch, ref, onBeforeUnmount, type Ref } from 'vue'
 
 export const useMapMaker = () => {
   // 车辆标记图层
@@ -44,9 +44,35 @@ export const useMapMaker = () => {
   const isConnectedWS = ref(false)
 
   // 初始化车辆标记图层
-  function initMakerLayer(map: Map) {
+  async function initMakerLayer(map: Map) {
     markerLayer = new VectorLayer('marker')
     markerLayer.addTo(map)
+
+    initCar()
+  }
+
+  //初始化所有车辆标记
+  const carList: Ref<{ robotid: string; longitude: number; latitude: number; heading: number }[]> =
+    ref([])
+
+  async function initCar() {
+    markerLayer.clear()
+    const { data } = await getCarList()
+    carList.value = data.list || []
+    for (const { longitude, latitude, heading } of carList.value) {
+      if (longitude && latitude) {
+        const point = new Marker([longitude as number, latitude as number], {
+          symbol: {
+            markerType: 'triangle',
+            markerFill: 'yellow',
+            markerWidth: 15,
+            markerHeight: 20,
+            markerRotation: heading
+          }
+        })
+        markerLayer.addGeometry(point)
+      }
+    }
   }
 
   // 车辆信息类型声明
