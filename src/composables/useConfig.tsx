@@ -2,9 +2,6 @@ import {
   ElButton,
   ElDialog,
   ElDivider,
-  // ElDropdown,
-  // ElDropdownItem,
-  // ElDropdownMenu,
   ElNotification,
   ElForm,
   ElFormItem,
@@ -48,8 +45,9 @@ export const useConfig = () => {
   const configType = ref('')
   // 当前配置数据
   const configData: Ref<any[]> = ref([])
-  // 没次进入配置模式重新获取配置数据
+  // 每次进入配置模式重新获取配置数据
   watch(isConfig, () => getList())
+  watch(currentCar, () => (isConfig.value = false))
 
   // 设备类型数据
   const deviceTypeList = ref([])
@@ -62,7 +60,7 @@ export const useConfig = () => {
       data = res.data.list || res.data
     } else if (configType.value === configTypes.DEVICE) {
       const res = await getDeviceListByCode(currentCar.value, 'patroling')
-      data = res.data.list || res.data
+      data = res.data || []
       const r = await getDeviceTypeList()
       deviceTypeList.value = r.data || []
     }
@@ -332,6 +330,7 @@ export const useConfig = () => {
             } else {
               form.value.isDel = 0
               form.value.rid = currentCar.value
+              form.value.rtype = 'patroling'
               res = await createDevice(form.value)
             }
             ElMessage({ type: 'success', message: res.message })
