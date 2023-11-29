@@ -285,8 +285,21 @@ export const useMap = () => {
               }
             }
           ]
+        },
+        {
+          title: t('yi-jian-ding-wei'),
+          event: backToCenter
         }
       ]
+
+      async function backToCenter() {
+        if (haveCurrentCar()) {
+          const res = await getCarInfo(currentCar.value)
+          const x = res.data.longitude
+          const y = res.data.latitude
+          jumpToCoordinate(x, y)
+        }
+      }
 
       // 下发任务
       async function handleCreatePlan() {
