@@ -5,6 +5,9 @@ import {
   ElFormItem,
   ElInput,
   ElMessage,
+  // ElOption,
+  // ElSelect,
+  ElSlider,
   type FormInstance,
   type FormRules
 } from 'element-plus'
@@ -28,7 +31,7 @@ export const usePointTask = () => {
   const form: Ref<Record<string, any>> = ref({})
   const taskPointList: Ref<any[]> = ref([])
   const taskPoint = ref<(() => void) | null>(null)
-  const pointCoordinates = ref({})
+  const pointCoordinates: Ref<string> = ref('')
 
   async function getList() {
     const res = await getPointTaskList()
@@ -38,14 +41,16 @@ export const usePointTask = () => {
 
   //处理添加/编辑
   function handleTaskEvent(c: any, callback: () => void) {
-    pointCoordinates.value = {}
+    pointCoordinates.value = ''
     taskPoint.value = () => {}
     pointSettingDialogVisible.value = true
     if (c.id) {
+      pointCoordinates.value = c.gps
       form.value = Object.assign({}, toRaw(c))
+    } else {
+      pointCoordinates.value = c
     }
     taskPoint.value = callback
-    pointCoordinates.value = c
   }
 
   //删除
@@ -62,9 +67,20 @@ export const usePointTask = () => {
           cameraAngle: [
             { required: true, message: t('qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du') }
           ],
+          // taskType: [{ required: true, message: '请指定任务类型' }],
           time: [{ required: true, message: t('qing-shu-ru-ting-liu-shi-jian-s') }]
         }
       })
+      // const taskTypeList = [
+      //   {
+      //     name: '任务类型1',
+      //     type: '识别'
+      //   },
+      //   {
+      //     name: '任务类型2',
+      //     type: '攻击'
+      //   }
+      // ]
 
       // 表单字段
       const formFields: ComputedRef<formField[]> = computed(() => {
@@ -73,9 +89,35 @@ export const usePointTask = () => {
             prop: 'name',
             title: t('ming-cheng')
           },
+          // {
+          //   prop: 'taskType',
+          //   title: '摄像头类型',
+          //   slot: (form: Record<string, any>) => (
+          //     <ElSelect
+          //       class="w-full"
+          //       v-model={form.value['taskType']}
+          //       placeholder="请选择类型"
+          //       clearable
+          //     >
+          //       {taskTypeList.map((item: any) => (
+          //         <ElOption key={item} label={item.name} value={item.type}></ElOption>
+          //       ))}
+          //     </ElSelect>
+          //   )
+          // },
           {
             prop: 'cameraAngle',
-            title: t('she-xiang-tou-zhuan-dong-jiao-du')
+            title: t('she-xiang-tou-zhuan-dong-jiao-du'),
+            slot: () => (
+              <ElSlider
+                v-model={form.value['cameraAngle']}
+                class="flex-1"
+                step={1}
+                min={0}
+                max={360}
+                show-input-controls={false}
+              />
+            )
           },
           {
             prop: 'gps',
