@@ -31,3 +31,10 @@ export function connectCar(code: string) {
     method: 'get'
   })
 }
+
+export function getCarList() {
+  return request({
+    url: `/robot-vehicle-log/v1`,
+    method: 'get'
+  })
+}
