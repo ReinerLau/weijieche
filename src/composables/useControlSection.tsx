@@ -123,10 +123,10 @@ export const useControlSection = () => {
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
-        param1: '09',
-        param2: value ? '1' : '0',
-        param3: '0',
-        param4: '0'
+        param1: '01',
+        param2: value ? '01' : '00',
+        param3: 255,
+        param4: 'ff'
       }
       patrolingCruise(data)
     }
