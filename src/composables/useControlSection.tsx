@@ -57,30 +57,35 @@ export const useControlSection = () => {
   interface SwitchGroup {
     title: string
     ref: Ref<boolean>
+    disabled?: Ref<boolean> | boolean
     event?: (value: any) => any
   }
 
-  // 前灯是否开启
-  const frontLight = ref(false)
+  // 近灯是否开启
+  const lowLight = ref(false)
 
-  // 后灯是否开启
-  const backLight = ref(false)
+  // 远灯是否开启
+  const highLight = ref(false)
 
-  // 前后灯映射值
+  //自动灯是否开启
+  const autoLight = ref(false)
+
+  // 近远灯映射值
   const lightModes = {
-    FRONT: '01',
-    BACK: '02'
+    HIGHBEAM: '01',
+    LOWBEAM: '02',
+    AUTOBEAM: '03'
   }
 
-  // 切换前后灯相关事件
+  // 切换近远灯相关事件
   function toggleLight(value: boolean, mode: string) {
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
         param1: '07',
-        param2: value ? '01' : '00',
-        param3: mode,
-        param4: '00'
+        param2: value ? mode : '00',
+        param3: 255,
+        param4: 255
       }
       patrolingCruise(data)
     }
@@ -135,22 +140,34 @@ export const useControlSection = () => {
   // 切换按钮组
   const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
     {
-      title: t('qian-deng'),
-      ref: frontLight,
+      title: t('jin-guang-deng'),
+      ref: lowLight,
       event: (value: boolean) => {
         if (haveCurrentCar()) {
-          toggleLight(value, lightModes.FRONT)
+          toggleLight(value, lightModes.LOWBEAM)
         }
-      }
+      },
+      disabled: highLight.value || autoLight.value ? true : false
     },
     {
-      title: t('hou-deng'),
-      ref: backLight,
+      title: t('yuan-guang-deng'),
+      ref: highLight,
       event: (value: boolean) => {
         if (haveCurrentCar()) {
-          toggleLight(value, lightModes.BACK)
+          toggleLight(value, lightModes.HIGHBEAM)
         }
-      }
+      },
+      disabled: lowLight.value || autoLight.value ? true : false
+    },
+    {
+      title: t('zi-dong-yuan-guang-deng'),
+      ref: autoLight,
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.AUTOBEAM)
+        }
+      },
+      disabled: lowLight.value || highLight.value ? true : false
     },
     {
       title: t('yu-yin'),
@@ -194,7 +211,11 @@ export const useControlSection = () => {
         <ElMenuItem index={item.title}>
           <div class="flex items-center w-full justify-between">
             <span class="mr-2">{item.title}</span>
-            <ElSwitch v-model={item.ref.value} onChange={item.event} />
+            <ElSwitch
+              v-model={item.ref.value}
+              onChange={item.event}
+              disabled={Boolean(item.disabled)}
+            />
           </div>
         </ElMenuItem>
       ))}
@@ -203,13 +224,13 @@ export const useControlSection = () => {
 
   // 开关按钮相关事件
   const switchEvent = {
-    FRONT_LIGHT: () => {
-      frontLight.value = !frontLight.value
-      toggleLight(frontLight.value, lightModes.FRONT)
+    LOW_LIGHT: () => {
+      lowLight.value = !lowLight.value
+      toggleLight(lowLight.value, lightModes.LOWBEAM)
     },
-    BACK_LIGHT: () => {
-      backLight.value = !backLight.value
-      toggleLight(frontLight.value, lightModes.BACK)
+    HIGH_LIGHT: () => {
+      highLight.value = !highLight.value
+      toggleLight(lowLight.value, lightModes.HIGHBEAM)
     },
     LASER: () => {
       disperseMode.value = !disperseMode.value
@@ -224,14 +245,14 @@ export const useControlSection = () => {
     if (currentControllerType.value === controllerTypes.value.WHEEL) {
       actions[1] = switchEvent.LASER
       actions[4] = switchEvent.STOP
-      actions[7] = switchEvent.FRONT_LIGHT
-      actions[11] = switchEvent.BACK_LIGHT
+      actions[7] = switchEvent.LOW_LIGHT
+      actions[11] = switchEvent.HIGH_LIGHT
       return actions
     } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
       actions[3] = switchEvent.LASER
       actions[4] = switchEvent.STOP
-      actions[6] = switchEvent.FRONT_LIGHT
-      actions[7] = switchEvent.BACK_LIGHT
+      actions[6] = switchEvent.LOW_LIGHT
+      actions[7] = switchEvent.HIGH_LIGHT
       return actions
     } else {
       return actions
