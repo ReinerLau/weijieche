@@ -125,5 +125,18 @@
   "ti-shi": "提示",
   "wai-she-zhuang-tai-0": "外设状态",
   "qing-xuan-ze-kong-zhi-qi": "请选择控制器",
-  "qing-xuan-ze-kong-zhi-qi-lei-xing": "请选择控制器类型"
+  "qing-xuan-ze-kong-zhi-qi-lei-xing": "请选择控制器类型",
+  "ren-wu-dian": "任务点",
+  "pei-zhi-lu-jing-dian-ren-wu": "配置路径点任务",
+  "qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du": "请选择摄像头转动角度",
+  "qing-shu-ru-ting-liu-shi-jian-s": "请输入停留时间/S",
+  "she-xiang-tou-zhuan-dong-jiao-du": "摄像头转动角度",
+  "lu-jing-dian-jing-wei-du-zuo-biao": "路径点经纬度坐标",
+  "ting-liu-shi-jian-s": "停留时间/S",
+  "yi-jian-ding-wei": "一键定位",
+  "she-zhi-lu-duan-che-su": "设置路段车速",
+  "che-su": "车速",
+  "ren-wu-lei-xing": "任务类型",
+  "che-liang-su-du": "车辆速度",
+  "qing-she-zhi-che-liang-su-du": "请设置车辆速度"
 }

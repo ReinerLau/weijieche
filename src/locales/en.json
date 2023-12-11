@@ -125,5 +125,18 @@
   "ti-shi": "Prompt",
   "qing-xuan-ze-kong-zhi-qi": "Please select a controller.",
   "qing-xuan-ze-kong-zhi-qi-lei-xing": "Please select the controller type.",
-  "wai-she-zhuang-tai-0": "Peripheral status"
+  "wai-she-zhuang-tai-0": "Peripheral status",
+  "che-liang-su-du": "vehicle speed",
+  "che-su": "speed",
+  "lu-jing-dian-jing-wei-du-zuo-biao": "Path point latitude and longitude coordinates",
+  "pei-zhi-lu-jing-dian-ren-wu": "Configure waypoint tasks",
+  "qing-she-zhi-che-liang-su-du": "Please set vehicle speed",
+  "qing-shu-ru-ting-liu-shi-jian-s": "Please enter the stay time/S",
+  "qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du": "Please select camera rotation angle",
+  "ren-wu-dian": "mission point",
+  "ren-wu-lei-xing": "Task type",
+  "she-xiang-tou-zhuan-dong-jiao-du": "Camera rotation angle",
+  "she-zhi-lu-duan-che-su": "Set road segment speed",
+  "ting-liu-shi-jian-s": "Residence time/S",
+  "yi-jian-ding-wei": "One click positioning"
 }

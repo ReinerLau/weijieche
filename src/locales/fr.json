@@ -125,5 +125,18 @@
   "ti-shi": "Indication/Notification (Note)",
   "qing-xuan-ze-kong-zhi-qi": "Veuillez sélectionner le contrôleur.",
   "qing-xuan-ze-kong-zhi-qi-lei-xing": "Veuillez sélectionner le type de contrôleur",
-  "wai-she-zhuang-tai-0": "État du périphérique externe"
+  "wai-she-zhuang-tai-0": "État du périphérique externe",
+  "che-liang-su-du": "Vitesse du véhicule",
+  "che-su": "vitesse",
+  "lu-jing-dian-jing-wei-du-zuo-biao": "Coordonnées de latitude et de longitude du point de chemin",
+  "pei-zhi-lu-jing-dian-ren-wu": "Configurer les tâches de waypoint",
+  "qing-she-zhi-che-liang-su-du": "Veuillez régler la vitesse du véhicule",
+  "qing-shu-ru-ting-liu-shi-jian-s": "Veuillez entrer le temps de séjour/S",
+  "qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du": "Veuillez sélectionner l'angle de rotation de la caméra",
+  "ren-wu-dian": "point de mission",
+  "ren-wu-lei-xing": "Type de tâche",
+  "she-xiang-tou-zhuan-dong-jiao-du": "Angle de rotation de la caméra",
+  "she-zhi-lu-duan-che-su": "Définir la vitesse du segment de route",
+  "ting-liu-shi-jian-s": "Temps de séjour/S",
+  "yi-jian-ding-wei": "Positionnement en un clic"
 }
