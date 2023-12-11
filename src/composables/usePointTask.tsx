@@ -5,8 +5,8 @@ import {
   ElFormItem,
   ElInput,
   ElMessage,
-  // ElOption,
-  // ElSelect,
+  ElOption,
+  ElSelect,
   ElSlider,
   type FormInstance,
   type FormRules
@@ -65,22 +65,42 @@ export const usePointTask = () => {
         return {
           name: [{ required: false, message: t('qing-shu-ru-ming-cheng') }],
           cameraAngle: [
-            { required: true, message: t('qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du') }
+            {
+              required: !isShowRules.value,
+              message: t('qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du')
+            }
           ],
-          // taskType: [{ required: true, message: '请指定任务类型' }],
-          time: [{ required: true, message: t('qing-shu-ru-ting-liu-shi-jian-s') }]
+          type: [{ required: true, message: '请指定任务类型' }],
+          time: [
+            {
+              required: !isShowRules.value,
+              message: t('qing-shu-ru-ting-liu-shi-jian-s')
+            }
+          ],
+          speed: [
+            {
+              required: isShowRules.value,
+              message: t('qing-she-zhi-che-liang-su-du')
+            }
+          ]
         }
       })
-      // const taskTypeList = [
-      //   {
-      //     name: '任务类型1',
-      //     type: '识别'
-      //   },
-      //   {
-      //     name: '任务类型2',
-      //     type: '攻击'
-      //   }
-      // ]
+
+      //任务类型
+      const taskTypeList = [
+        {
+          name: '巡检任务',
+          type: 1
+        },
+        {
+          name: '识别任务',
+          type: 2
+        },
+        {
+          name: '速度设置',
+          type: 3
+        }
+      ]
 
       // 表单字段
       const formFields: ComputedRef<formField[]> = computed(() => {
@@ -89,34 +109,21 @@ export const usePointTask = () => {
             prop: 'name',
             title: t('ming-cheng')
           },
-          // {
-          //   prop: 'taskType',
-          //   title: '摄像头类型',
-          //   slot: (form: Record<string, any>) => (
-          //     <ElSelect
-          //       class="w-full"
-          //       v-model={form.value['taskType']}
-          //       placeholder="请选择类型"
-          //       clearable
-          //     >
-          //       {taskTypeList.map((item: any) => (
-          //         <ElOption key={item} label={item.name} value={item.type}></ElOption>
-          //       ))}
-          //     </ElSelect>
-          //   )
-          // },
           {
-            prop: 'cameraAngle',
-            title: t('she-xiang-tou-zhuan-dong-jiao-du'),
-            slot: () => (
-              <ElSlider
-                v-model={form.value['cameraAngle']}
-                class="flex-1"
-                step={1}
-                min={0}
-                max={360}
-                show-input-controls={false}
-              />
+            prop: 'type',
+            title: t('ren-wu-lei-xing'),
+            slot: (form: Record<string, any>) => (
+              <ElSelect
+                class="w-full"
+                v-model={form.value['type']}
+                placeholder="请选择类型"
+                clearable
+                onChange={handleTaskType}
+              >
+                {taskTypeList.map((item: any) => (
+                  <ElOption key={item} label={item.name} value={item.type}></ElOption>
+                ))}
+              </ElSelect>
             )
           },
           {
@@ -126,10 +133,51 @@ export const usePointTask = () => {
           },
           {
             prop: 'time',
-            title: t('ting-liu-shi-jian-s')
+            title: t('ting-liu-shi-jian-s'),
+            slot: () => (
+              <ElInput
+                v-model={form.value['time']}
+                disabled={form.value['type'] === 3 ? true : false}
+              ></ElInput>
+            )
+          },
+          {
+            prop: 'speed',
+            title: t('che-liang-su-du'),
+            slot: () => (
+              <ElInput
+                v-model={form.value['speed']}
+                disabled={form.value['type'] === 3 ? false : true}
+              ></ElInput>
+            )
+          },
+          {
+            prop: 'cameraAngle',
+            title: form.value['type'] === 3 ? '' : t('she-xiang-tou-zhuan-dong-jiao-du'),
+            slot: () => (
+              <ElSlider
+                v-model={form.value['cameraAngle']}
+                class="flex-1"
+                step={1}
+                min={0}
+                max={360}
+                show-input-controls={false}
+                v-show={form.value['type'] === 3 ? false : true}
+              />
+            )
           }
         ]
       })
+
+      //输入校验判断
+      const isShowRules = ref(true)
+
+      function handleTaskType(v: any) {
+        isShowRules.value = v === 3
+        form.value['cameraAngle'] = undefined
+        form.value['time'] = undefined
+        form.value['speed'] = undefined
+      }
 
       // 提交表单数据
       async function handleSubmit() {
@@ -176,7 +224,13 @@ export const usePointTask = () => {
         >
           {{
             default: () => (
-              <ElForm ref={formRef} model={form} rules={formRules.value} label-width="200">
+              <ElForm
+                ref={formRef}
+                model={form}
+                rules={formRules.value}
+                label-width="200"
+                label-position="top"
+              >
                 {formFields.value.map((item: any) => (
                   <ElFormItem label={item.title} prop={item.prop}>
                     {item.slot ? item.slot(form) : <ElInput v-model={form.value[item.prop]} />}
