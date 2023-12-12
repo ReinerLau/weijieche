@@ -187,6 +187,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
           <CameraPlayer url={item.rtsp} />
         </div>
       ))}
+      {cameraList.value.length === 0 ? null : <ElButton>切换视频</ElButton>}
     </Fragment>
   )
 

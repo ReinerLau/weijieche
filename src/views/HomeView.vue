@@ -62,6 +62,7 @@ const { MapContainer } = useMap()
       <el-main>
         <div ref="mainRef" class="h-full overflow-y-auto flex">
           <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
+            <el-button>视频切换</el-button>
             <div class="flex-1" v-for="item in cameraList" :key="item.id">
               <CameraPlayer :url="item.rtsp" />
             </div>
