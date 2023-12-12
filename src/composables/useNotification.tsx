@@ -6,8 +6,7 @@ import {
   ElCard,
   ElDrawer,
   ElMessage,
-  ElNotification,
-  ElScrollbar
+  ElNotification
 } from 'element-plus'
 import { Fragment, onBeforeUnmount, onMounted, ref } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
@@ -20,11 +19,18 @@ import { useVirtualList } from '@vueuse/core'
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
 
+export const isAlarm = ref(false)
+export const newLongitude = ref(0)
+export const newLatitude = ref(0)
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
   id: string
   type: string
   message: string
+  code: string
+  longitude: number
+  latitude: number
+  heading: number
   createTime?: string
 }
 
@@ -63,15 +69,24 @@ export const useNotification = () => {
 
   // 从 websocket 收到数据后
   function onMessage(e: any) {
+    isAlarm.value = false
     const data: websocketData = JSON.parse(e.data)
-    const { type, message } = data
+    const { type, message, code, longitude, latitude } = data
+
     ElNotification({
       type: type as 'warning' | 'error',
-      message,
+      message: code + ':' + message,
       position: 'bottom-right'
     })
+    if (alarmRef.value) {
+      alarmRef.value.play()
+      // 声音设置
+      alarmRef.value.volume = 1
+      newLongitude.value = longitude
+      newLatitude.value = latitude
+      isAlarm.value = true
+    }
     notifications.value.push(data)
-    alarmRef.value && alarmRef.value.play()
   }
 
   // websocket 实例

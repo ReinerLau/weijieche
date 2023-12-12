@@ -3,12 +3,13 @@ import { currentCar } from '@/shared'
 import { initWebSocket } from '@/utils'
 import { Map, Marker, VectorLayer } from 'maptalks'
 import { watch, ref, onBeforeUnmount, type Ref } from 'vue'
+import { isAlarm, newLongitude, newLatitude } from './useNotification'
 
 export const useMapMaker = () => {
   // 车辆标记图层
   // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
   let markerLayer: VectorLayer
-
+  let alarmMarkerLayer: VectorLayer
   // https://zh.javascript.info/websocket
   let ws: WebSocket | undefined
 
@@ -47,7 +48,8 @@ export const useMapMaker = () => {
   async function initMakerLayer(map: Map) {
     markerLayer = new VectorLayer('marker')
     markerLayer.addTo(map)
-
+    alarmMarkerLayer = new VectorLayer('alarm-marker')
+    alarmMarkerLayer.addTo(map)
     initCar()
   }
 
@@ -128,6 +130,23 @@ export const useMapMaker = () => {
     const data = res.data || {}
     initMarker(data)
   }
+
+  watch(isAlarm, () => {
+    if (newLongitude && newLatitude && isAlarm) {
+      alarmMarkerLayer.clear()
+      const point = new Marker([newLongitude.value, newLatitude.value], {
+        symbol: {
+          markerType: 'triangle',
+          markerFill: 'red',
+          markerWidth: 15,
+          markerHeight: 20,
+          markerRotation: 0
+        }
+      })
+      alarmMarkerLayer.addGeometry(point)
+      point.flash(200, 12)
+    }
+  })
 
   return {
     isConnectedWS,
