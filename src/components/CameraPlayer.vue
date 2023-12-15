@@ -13,7 +13,7 @@ const props = defineProps<{ url: string }>()
 const videoRef: Ref<HTMLVideoElement | undefined> = ref()
 
 // srs 拉流实例
-const srs = new SrsRtcPlayerAsync()
+let srs = new SrsRtcPlayerAsync()
 
 // 监听拉流地址变成重新拉流
 watch(
@@ -29,6 +29,8 @@ onMounted(() => {
 
 // 拉流
 function initPlay() {
+  srs.close()
+  srs = new SrsRtcPlayerAsync()
   if (videoRef.value && props.url) {
     videoRef.value.srcObject = srs.stream
     srs.play(props.url)

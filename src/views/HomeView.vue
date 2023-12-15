@@ -13,7 +13,7 @@ import {
 } from '@/composables'
 
 import { cameraList } from '@/shared'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -33,7 +33,10 @@ onMounted(() => {
   checkIsMobile()
 })
 
-const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
+//视频流地址切换
+const cameraUrl = ref('')
+
+const { DetailSection, detailDrawerVisible } = useDetail({ isMobile }, { cameraUrl })
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
@@ -62,10 +65,17 @@ const { MapContainer } = useMap()
       <el-main>
         <div ref="mainRef" class="h-full overflow-y-auto flex">
           <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
-            <el-button>视频切换</el-button>
-            <div class="flex-1" v-for="item in cameraList" :key="item.id">
-              <CameraPlayer :url="item.rtsp" />
-            </div>
+            <el-select v-model="cameraUrl" class="m-2" placeholder="视频切换" size="large">
+              <el-option
+                v-for="item in cameraList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.rtsp"
+              />
+            </el-select>
+            <!-- <div class="flex-1" v-for="item in cameraList" :key="item.id"> -->
+            <CameraPlayer :url="cameraUrl" />
+            <!-- </div> -->
           </div>
           <div class="h-full flex-1 flex flex-col">
             <div class="h-full">
