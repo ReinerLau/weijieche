@@ -25,7 +25,10 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 底部状态相关
-export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
+export const useDetail = (
+  { isMobile }: { isMobile: Ref<boolean> },
+  { cameraUrl }: { cameraUrl: Ref<string> }
+) => {
   // 国际化
   const { t } = useI18n()
 
@@ -180,16 +183,29 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   })
 
   // 视频监控区域组件
-  const CameraSection = () => (
-    <Fragment>
-      {cameraList.value.map((item) => (
+  const CameraSection = () =>
+    cameraList.value.length === 0 ? null : (
+      <Fragment>
+        {/* {cameraList.value.map((item) => (
         <div class="bg-black h-60" key={item.id}>
           <CameraPlayer url={item.rtsp} />
         </div>
-      ))}
-      {cameraList.value.length === 0 ? null : <ElButton>切换视频</ElButton>}
-    </Fragment>
-  )
+      ))
+      } */}
+        {
+          <ElSelect v-model={cameraUrl.value} class="m-2" placeholder="视频切换" size="large">
+            {cameraList.value.map((item) => (
+              <ElOption key={item.id} label={item.name} value={item.rtsp} />
+            ))}
+          </ElSelect>
+        }
+        {
+          <div class="bg-black h-60">
+            <CameraPlayer url={cameraUrl.value} />
+          </div>
+        }
+      </Fragment>
+    )
 
   // 底部抽屉组件
   const DetailSection = () => (
