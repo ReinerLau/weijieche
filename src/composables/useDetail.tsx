@@ -193,7 +193,12 @@ export const useDetail = (
       ))
       } */}
         {
-          <ElSelect v-model={cameraUrl.value} class="m-2" placeholder="视频切换" size="large">
+          <ElSelect
+            v-model={cameraUrl.value}
+            class="m-2"
+            placeholder={t('shi-pin-qie-huan')}
+            size="large"
+          >
             {cameraList.value.map((item) => (
               <ElOption key={item.id} label={item.name} value={item.rtsp} />
             ))}

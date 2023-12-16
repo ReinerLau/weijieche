@@ -65,7 +65,12 @@ const { MapContainer } = useMap()
       <el-main>
         <div ref="mainRef" class="h-full overflow-y-auto flex">
           <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
-            <el-select v-model="cameraUrl" class="m-2" placeholder="视频切换" size="large">
+            <el-select
+              v-model="cameraUrl"
+              class="m-2"
+              :placeholder="$t('shi-pin-qie-huan')"
+              size="large"
+            >
               <el-option
                 v-for="item in cameraList"
                 :key="item.id"
