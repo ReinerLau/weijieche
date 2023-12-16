@@ -6,7 +6,8 @@ import {
   ElCard,
   ElDrawer,
   ElMessage,
-  ElNotification
+  ElMessageBox
+  // ElNotification
 } from 'element-plus'
 import { Fragment, onBeforeUnmount, onMounted, ref } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
@@ -15,13 +16,13 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { deleteLog, getAllLog } from '@/api'
 import { useVirtualList } from '@vueuse/core'
+import { useTemplate } from './useTemplate'
+
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
+import { Marker, VectorLayer, Map } from 'maptalks'
 
-export const isAlarm = ref(false)
-export const newLongitude = ref(0)
-export const newLatitude = ref(0)
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
   id: string
@@ -36,6 +37,12 @@ interface websocketData {
 
 // 警报通知相关
 export const useNotification = () => {
+  // 警报弹窗组件
+  const { TemplateAlarmDialog, alarmDialogVisible } = useTemplate()
+
+  //异常警报图层
+  let alarmMarkerLayer: VectorLayer
+
   // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
 
@@ -69,25 +76,66 @@ export const useNotification = () => {
 
   // 从 websocket 收到数据后
   function onMessage(e: any) {
-    isAlarm.value = false
+    // alarmMarkerLayer.clear()
     const data: websocketData = JSON.parse(e.data)
     const { type, message, code, longitude, latitude } = data
+    // ElNotification({
+    //   type: type as 'warning' | 'error',
+    //   message: code + ':' + message,
+    //   position: 'bottom-right'
+    // })
+    const messageBox = ref<any>(null)
 
-    ElNotification({
+    messageBox.value = ElMessageBox({
+      title: '警告',
+      message: code + ': ' + message,
       type: type as 'warning' | 'error',
-      message: code + ':' + message,
-      position: 'bottom-right'
+      customClass: 'notification-message-box',
+      showCancelButton: true,
+      cancelButtonText: '关闭',
+      confirmButtonText: '处理',
+      beforeClose: (action, instance, done) => {
+        if (action === 'confirm') {
+          // 点击处理按钮时的逻辑
+          alarmDialogVisible.value = true
+        } else if (action === 'cancel') {
+          // 点击关闭按钮时的逻辑
+          console.log('关闭')
+        }
+        done()
+      }
     })
     if (alarmRef.value) {
       alarmRef.value.play()
       // 声音设置
       alarmRef.value.volume = 1
-      newLongitude.value = longitude
-      newLatitude.value = latitude
-      isAlarm.value = true
+      // handleAlarmEvent(longitude, latitude)
     }
+
     notifications.value.push(data)
   }
+
+  function initAlarmLayer(map: Map) {
+    alarmMarkerLayer = new VectorLayer('alarm-marker')
+    alarmMarkerLayer.addTo(map)
+  }
+
+  //警报
+  // function handleAlarmEvent(longitude: number, latitude: number) {
+  //   if (longitude && latitude) {
+  //     const point = new Marker([longitude as number, latitude as number], {
+  //       symbol: {
+  //         markerType: 'triangle',
+  //         markerFill: 'red',
+  //         markerWidth: 15,
+  //         markerHeight: 20,
+  //         markerRotation: 0
+  //       }
+  //     })
+  //     alarmMarkerLayer.addGeometry(point)
+  //     point.flash(200, 12)
+  //   }
+  // }
 
   // websocket 实例
   let websocket: WebSocket | undefined
@@ -184,10 +232,12 @@ export const useNotification = () => {
         </ElBadge>
       </ElButton>
       <audio ref={alarmRef} src="/unionAlarm.wav" hidden></audio>
+      <TemplateAlarmDialog />
     </Fragment>
   )
   return {
     NotificationDrawer,
-    NotificationController
+    NotificationController,
+    initAlarmLayer
   }
 }
