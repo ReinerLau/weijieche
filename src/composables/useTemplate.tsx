@@ -27,6 +27,9 @@ export const useTemplate = () => {
   // 搜索模板弹窗是否可见
   const searchDialogVisible = ref(false)
 
+  // 警告弹窗是否可见
+  const alarmDialogVisible = ref(false)
+
   // 新建模板弹窗组件
   // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
   const TemplateDialog = defineComponent({
@@ -133,10 +136,31 @@ export const useTemplate = () => {
     }
   })
 
+  //警报弹窗
+  const TemplateAlarmDialog = defineComponent({
+    emits: ['confirm'],
+    setup() {
+      // 每次打开搜索弹窗重新获取数据
+      watch(alarmDialogVisible, async (val) => {
+        if (val) {
+          getList()
+        }
+      })
+
+      // 获取图片数据
+      async function getList() {}
+
+      return () => (
+        <ElDialog v-model={alarmDialogVisible.value} title="警告弹窗" width="80%"></ElDialog>
+      )
+    }
+  })
   return {
     TemplateDialog,
     dialogVisible,
     TemplateSearchDialog,
-    searchDialogVisible
+    searchDialogVisible,
+    TemplateAlarmDialog,
+    alarmDialogVisible
   }
 }
