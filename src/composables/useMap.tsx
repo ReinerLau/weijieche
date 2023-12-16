@@ -27,7 +27,10 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
+import { useNotification } from './useNotification'
 
+export const isRecord = ref(false)
+export const isRecordPath = ref(false)
 export const useMap = () => {
   const MapContainer = defineComponent({
     setup() {
@@ -51,8 +54,9 @@ export const useMap = () => {
       } = useSchedule()
 
       const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
+      const { initAlarmLayer } = useNotification()
       // 车辆标记相关
-      const { isConnectedWS, initMakerLayer } = useMapMaker()
+      const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
 
       // 地图 DOM 元素
       const mapRef: Ref<HTMLElement | undefined> = ref()
@@ -76,6 +80,9 @@ export const useMap = () => {
       // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let homePathLayer: maptalks.VectorLayer
+
+      //录制路线图层实例
+      // let recordPathLayer: maptalks.VectorLayer
 
       //任务图层实例
       let taskPointLayer: maptalks.VectorLayer
@@ -102,6 +109,7 @@ export const useMap = () => {
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
         const pathPoint = e.geometry as maptalks.Marker
+
         pathPoint.config({
           draggable: true
         })
@@ -167,6 +175,7 @@ export const useMap = () => {
           })
 
           initMakerLayer(map)
+          initAlarmLayer(map)
 
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
@@ -187,11 +196,38 @@ export const useMap = () => {
       const toolbarItems = [
         {
           title: t('xin-jian'),
-          event: () => {
-            clearLine()
-            clearDrawTool()
-            handleCreatePath()
-          }
+          subItems: [
+            {
+              title: t('xin-jian-lu-xian'),
+              event: () => {
+                clearLine()
+                clearDrawTool()
+                handleCreatePath()
+                isRecordPath.value = false
+              }
+            },
+            {
+              title: t('lu-zhi-lu-xian'),
+              event: () => {
+                clearLine()
+                clearDrawTool()
+                if (haveCurrentCar()) {
+                  isRecord.value = true
+                }
+              }
+            },
+            {
+              title: t('jie-shu-lu-zhi'),
+              event: () => {
+                if (havePath()) {
+                  clearLine()
+                  clearDrawTool()
+                  isRecord.value = false
+                  isRecordPath.value = true
+                }
+              }
+            }
+          ]
         },
         {
           title: t('ren-wu-dian'),
@@ -250,7 +286,7 @@ export const useMap = () => {
           title: t('mo-ban'),
           subItems: [
             {
-              title: t('bao-cun'),
+              title: t('bao-cun-lu-xian'),
               event: () => {
                 if (havePath()) {
                   clearDrawTool()
@@ -259,7 +295,7 @@ export const useMap = () => {
               }
             },
             {
-              title: t('sou-suo'),
+              title: t('sou-suo-mo-ban'),
               event: () => {
                 clearDrawTool()
                 templateSearchDialogVisible.value = true
@@ -304,7 +340,7 @@ export const useMap = () => {
       // 下发任务
       async function handleCreatePlan() {
         if (haveCurrentCar() && havePath()) {
-          const data = getLineCoordinates()
+          const data = getLineCoordinates(pathPoints)
           const res: any = await sendMavlinkMission(data, currentCar.value)
           ElMessage.success({
             message: res.message
@@ -331,7 +367,9 @@ export const useMap = () => {
       // 确定保存路线模板
       async function handleConfirm(formData: { name?: string; memo?: string }) {
         const data = {
-          mission: JSON.stringify(getLineCoordinates()),
+          mission: isRecordPath.value
+            ? JSON.stringify(getLineCoordinates(recordPathPoints))
+            : JSON.stringify(getLineCoordinates(pathPoints)),
           name: formData.name,
           memo: formData.memo,
           rtype: 'patroling'
@@ -343,6 +381,8 @@ export const useMap = () => {
         templateDialogVisible.value = false
         clearLine()
         clearDrawTool()
+        isRecordPath.value = false
+        recordPathPoints.length = 0
       }
 
       // 在地图上显示所有任务点
@@ -450,8 +490,8 @@ export const useMap = () => {
       }
 
       // 获取路线上各个点的坐标信息
-      function getLineCoordinates() {
-        return pathPoints.map((item) => ({
+      function getLineCoordinates(list: any) {
+        return list.map((item: any) => ({
           x: item.getCoordinates().y,
           y: item.getCoordinates().x
         }))
@@ -459,7 +499,7 @@ export const useMap = () => {
 
       // 校验地图是否已存在路线
       function havePath() {
-        if (pathPoints.length > 0) {
+        if (pathPoints.length > 0 || recordPathPoints.length > 0) {
           return true
         } else {
           ElMessage({
@@ -725,6 +765,7 @@ export const useMap = () => {
               activeText={t('tiao-shi')}
               inactiveText={t('zheng-chang')}
             />
+
             {debugMode.value ? (
               <div class="flex">
                 <ElInput

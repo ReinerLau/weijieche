@@ -1,15 +1,17 @@
 import { getCarInfo, getCarList } from '@/api'
 import { currentCar } from '@/shared'
 import { initWebSocket } from '@/utils'
-import { Map, Marker, VectorLayer } from 'maptalks'
+import { ConnectorLine, Map, Marker, VectorLayer } from 'maptalks'
 import { watch, ref, onBeforeUnmount, type Ref } from 'vue'
-import { isAlarm, newLongitude, newLatitude } from './useNotification'
+import { isRecord, isRecordPath } from './useMap'
 
 export const useMapMaker = () => {
   // 车辆标记图层
   // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
   let markerLayer: VectorLayer
-  let alarmMarkerLayer: VectorLayer
+
+  //录制路线图层实例
+  let recordPathLayer: VectorLayer
   // https://zh.javascript.info/websocket
   let ws: WebSocket | undefined
 
@@ -43,13 +45,13 @@ export const useMapMaker = () => {
 
   // 标记是否已经连接 websocket
   const isConnectedWS = ref(false)
-
   // 初始化车辆标记图层
   async function initMakerLayer(map: Map) {
     markerLayer = new VectorLayer('marker')
     markerLayer.addTo(map)
-    alarmMarkerLayer = new VectorLayer('alarm-marker')
-    alarmMarkerLayer.addTo(map)
+
+    recordPathLayer = new VectorLayer('record-point')
+    recordPathLayer.addTo(map)
     initCar()
   }
 
@@ -81,10 +83,45 @@ export const useMapMaker = () => {
   interface CarInfo {
     robotid?: string
     rid?: string
-    longitude?: number
-    latitude?: number
-    heading?: number
+    longitude?: number | string
+    latitude?: number | string
+    heading?: number | string
     robotCode?: string
+  }
+
+  const recordPathPoints: Marker[] = []
+
+  //录制路线
+  function initRecordPath(data: CarInfo) {
+    markerLayer.clear()
+    if (hasCoordinate(data) && itIsTheCar(data) && isRecord.value) {
+      const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
+        symbol: {
+          markerType: 'ellipse',
+          markerFill: 'red',
+          markerWidth: 20,
+          markerHeight: 20
+        }
+      })
+
+      recordPathLayer.addGeometry(pathPoint)
+
+      recordPathPoints.push(pathPoint)
+
+      if (recordPathPoints.length >= 2) {
+        const lastTwoPoints = recordPathPoints.slice(-2)
+        const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+          showOn: 'always',
+          symbol: {
+            lineColor: 'red',
+            lineWidth: 2
+          },
+          zIndex: -1
+        })
+
+        recordPathLayer.addGeometry(connectLine)
+      }
+    }
   }
 
   // 添加车辆标记到图层上
@@ -121,6 +158,7 @@ export const useMapMaker = () => {
   // 每次收到新坐标信息更新车辆坐标
   function updateMarker(e: MessageEvent<any>) {
     const data = JSON.parse(e.data)
+    initRecordPath(data)
     initMarker(data)
   }
 
@@ -131,25 +169,15 @@ export const useMapMaker = () => {
     initMarker(data)
   }
 
-  watch(isAlarm, () => {
-    if (newLongitude && newLatitude && isAlarm) {
-      alarmMarkerLayer.clear()
-      const point = new Marker([newLongitude.value, newLatitude.value], {
-        symbol: {
-          markerType: 'triangle',
-          markerFill: 'red',
-          markerWidth: 15,
-          markerHeight: 20,
-          markerRotation: 0
-        }
-      })
-      alarmMarkerLayer.addGeometry(point)
-      point.flash(200, 12)
+  watch(isRecord, () => {
+    if (isRecordPath.value) {
+      recordPathLayer.clear()
     }
   })
 
   return {
     isConnectedWS,
-    initMakerLayer
+    initMakerLayer,
+    recordPathPoints
   }
 }
