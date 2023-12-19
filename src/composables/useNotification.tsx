@@ -21,8 +21,9 @@ import { useTemplate } from './useTemplate'
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
-import { Marker, VectorLayer, Map } from 'maptalks'
-
+import { VectorLayer, Map, Marker } from 'maptalks'
+//异常警报图层
+export let alarmMarkerLayer: VectorLayer
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
   id: string
@@ -39,9 +40,6 @@ interface websocketData {
 export const useNotification = () => {
   // 警报弹窗组件
   const { TemplateAlarmDialog, alarmDialogVisible } = useTemplate()
-
-  //异常警报图层
-  let alarmMarkerLayer: VectorLayer
 
   // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
@@ -76,14 +74,8 @@ export const useNotification = () => {
 
   // 从 websocket 收到数据后
   function onMessage(e: any) {
-    // alarmMarkerLayer.clear()
     const data: websocketData = JSON.parse(e.data)
     const { type, message, code, longitude, latitude } = data
-    // ElNotification({
-    //   type: type as 'warning' | 'error',
-    //   message: code + ':' + message,
-    //   position: 'bottom-right'
-    // })
     const messageBox = ref<any>(null)
 
     messageBox.value = ElMessageBox({
@@ -105,11 +97,13 @@ export const useNotification = () => {
         done()
       }
     })
-    if (alarmRef.value) {
+
+    if (alarmRef.value && longitude && latitude) {
       alarmRef.value.play()
       // 声音设置
       alarmRef.value.volume = 1
-      // handleAlarmEvent(longitude, latitude)
+      //警报闪烁
+      handleAlarmEvent(longitude, latitude)
     }
 
     notifications.value.push(data)
@@ -120,32 +114,35 @@ export const useNotification = () => {
     alarmMarkerLayer.addTo(map)
   }
 
-  //警报
-  // function handleAlarmEvent(longitude: number, latitude: number) {
-  //   if (longitude && latitude) {
-  //     const point = new Marker([longitude as number, latitude as number], {
-  //       symbol: {
-  //         markerType: 'triangle',
-  //         markerFill: 'red',
-  //         markerWidth: 15,
-  //         markerHeight: 20,
-  //         markerRotation: 0
-  //       }
-  //     })
-  //     alarmMarkerLayer.addGeometry(point)
-  //     point.flash(200, 12)
-  //   }
-  // }
+  //每次收到警报定位车辆
+  function handleAlarmEvent(longitude: number, latitude: number) {
+    alarmMarkerLayer.clear()
+    if (longitude && latitude) {
+      const point = new Marker([longitude as number, latitude as number], {
+        symbol: {
+          markerType: 'triangle',
+          markerFill: 'red',
+          markerWidth: 15,
+          markerHeight: 20,
+          markerRotation: 0
+        }
+      })
 
+      alarmMarkerLayer.addGeometry(point)
+      point.flash(200, 12)
+    }
+  }
   // websocket 实例
   let websocket: WebSocket | undefined
   // 是否显示 websocket 已断开的提示
   const isOpen = ref(false)
 
   onMounted(() => {
+    if (alarmRef.value) {
+      alarmRef.value.load() // 预加载音频
+    }
     websocket = initWebsocket()
   })
-
   // 关闭页面同时关闭 websocket
   onBeforeUnmount(() => {
     websocket?.close()
