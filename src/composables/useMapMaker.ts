@@ -69,7 +69,7 @@ export const useMapMaker = () => {
             markerFill: 'yellow',
             markerWidth: 15,
             markerHeight: 20,
-            markerRotation: heading
+            markerRotation: Number(heading)
           }
         })
         markerLayer.addGeometry(point)
@@ -132,7 +132,7 @@ export const useMapMaker = () => {
           markerFill: 'red',
           markerWidth: 15,
           markerHeight: 20,
-          markerRotation: data.heading
+          markerRotation: Number(data.heading)
         }
       })
       markerLayer.addGeometry(point)
