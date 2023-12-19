@@ -211,7 +211,8 @@ export const useMap = () => {
               event: () => {
                 clearLine()
                 clearDrawTool()
-                if (haveCurrentCar()) {
+                if (haveCurrentCar() && !isRecord.value) {
+                  recordPathPoints.length = 0
                   isRecord.value = true
                 }
               }
@@ -290,6 +291,14 @@ export const useMap = () => {
               event: () => {
                 if (havePath()) {
                   clearDrawTool()
+                  //判断是否停止录制
+                  if (isRecord.value) {
+                    ElMessage({
+                      type: 'error',
+                      message: t('qing-xian-jie-shu-lu-zhi')
+                    })
+                    return false
+                  }
                   templateDialogVisible.value = true
                 }
               }
@@ -378,6 +387,7 @@ export const useMap = () => {
         ElMessage.success({
           message: res.message
         })
+
         templateDialogVisible.value = false
         clearLine()
         clearDrawTool()
@@ -499,7 +509,7 @@ export const useMap = () => {
 
       // 校验地图是否已存在路线
       function havePath() {
-        if (pathPoints.length > 0 || recordPathPoints.length > 0) {
+        if (pathPoints.length > 1 || recordPathPoints.length > 1) {
           return true
         } else {
           ElMessage({
@@ -710,7 +720,6 @@ export const useMap = () => {
         const x = res.data.longitude
         const y = res.data.latitude
         jumpToCoordinate(x, y)
-        // initTaskPoints()
       })
 
       onMounted(() => {

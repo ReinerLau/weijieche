@@ -9,10 +9,8 @@ export const useMapMaker = () => {
   // 车辆标记图层
   // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
   let markerLayer: VectorLayer
-
   //录制路线图层实例
-  let recordPathLayer: VectorLayer
-  // https://zh.javascript.info/websocket
+  let recordPathLayer: VectorLayer // https://zh.javascript.info/websocket
   let ws: WebSocket | undefined
 
   // 监听到选择车辆后连接 websocket
@@ -155,23 +153,36 @@ export const useMapMaker = () => {
     return data.longitude && data.latitude
   }
 
+  const newData = ref({})
+
   // 每次收到新坐标信息更新车辆坐标
   function updateMarker(e: MessageEvent<any>) {
     const data = JSON.parse(e.data)
-    initRecordPath(data)
-    initMarker(data)
-  }
 
+    initMarker(data)
+
+    //保存车最新数据
+    newData.value = data
+
+    // 判断是否开启录制
+    if (isRecord.value) {
+      initRecordPath(data)
+    }
+  }
   // 根据车辆编号获取车辆坐标
   async function addMarker(code: string) {
     const res: any = await getCarInfo(code)
     const data = res.data || {}
+    isRecord.value = false
+    recordPathLayer.clear()
     initMarker(data)
   }
 
-  watch(isRecord, () => {
-    if (isRecordPath.value) {
+  // 监听是否处于录制状态
+  watch(isRecordPath, () => {
+    if (!isRecord.value && !isRecordPath.value) {
       recordPathLayer.clear()
+      initMarker(newData.value)
     }
   })
 
