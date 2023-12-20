@@ -27,7 +27,9 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
-import { useNotification } from './useNotification'
+
+//异常警报图层
+export let alarmMarkerLayer: maptalks.VectorLayer
 
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
@@ -54,7 +56,7 @@ export const useMap = () => {
       } = useSchedule()
 
       const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
-      const { initAlarmLayer } = useNotification()
+
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
 
@@ -175,8 +177,9 @@ export const useMap = () => {
           })
 
           initMakerLayer(map)
-          initAlarmLayer(map)
 
+          alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
+          alarmMarkerLayer.addTo(map)
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
           pathLayer = new maptalks.VectorLayer('line')
