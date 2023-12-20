@@ -148,5 +148,9 @@
   "lu-zhi-lu-xian": "录制路线",
   "jie-shu-lu-zhi": "结束录制",
   "shi-pin-qie-huan": "视频切换",
-  "qing-xian-jie-shu-lu-zhi": "请先结束录制"
+  "qing-xian-jie-shu-lu-zhi": "请先结束录制",
+  "websocket-lian-jie-cheng-gong": "websocket连接成功!",
+  "websocket-duan-kai-lian-jie": "websocket断开连接!",
+  "websocket-chu-cuo-duan-lian": "websocket出错断连!",
+  "websocket-duan-kai-zhong-lian-zhong": "websocket断开重连中..."
 }

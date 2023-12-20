@@ -148,5 +148,9 @@
   "sou-suo-mo-ban": "Modèle de recherche",
   "xin-jian-lu-xian": "Créer un nouvel itinéraire",
   "shi-pin-qie-huan": "Commutation vidéo",
-  "qing-xian-jie-shu-lu-zhi": "Veuillez d'abord terminer l'enregistrement"
+  "qing-xian-jie-shu-lu-zhi": "Veuillez d'abord terminer l'enregistrement",
+  "websocket-chu-cuo-duan-lian": "erreur websocket et déconnexion !",
+  "websocket-duan-kai-lian-jie": "websocket déconnecté !",
+  "websocket-duan-kai-zhong-lian-zhong": "websocket déconnecté et reconnecté...",
+  "websocket-lian-jie-cheng-gong": "Connexion Websocket réussie !"
 }

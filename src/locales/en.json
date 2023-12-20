@@ -148,5 +148,9 @@
   "sou-suo-mo-ban": "Search template",
   "xin-jian-lu-xian": "Create new route",
   "shi-pin-qie-huan": "Video switching",
-  "qing-xian-jie-shu-lu-zhi": "Please end recording first"
+  "qing-xian-jie-shu-lu-zhi": "Please end recording first",
+  "websocket-chu-cuo-duan-lian": "websocket error and disconnection!",
+  "websocket-duan-kai-lian-jie": "websocket disconnected!",
+  "websocket-duan-kai-zhong-lian-zhong": "websocket disconnected and reconnecting...",
+  "websocket-lian-jie-cheng-gong": "websocket connection successful!"
 }
