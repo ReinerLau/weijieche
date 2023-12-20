@@ -17,13 +17,12 @@ import { useI18n } from 'vue-i18n'
 import { deleteLog, getAllLog } from '@/api'
 import { useVirtualList } from '@vueuse/core'
 import { useTemplate } from './useTemplate'
-
+import { alarmMarkerLayer } from './useMap'
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
-import { VectorLayer, Map, Marker } from 'maptalks'
-//异常警报图层
-export let alarmMarkerLayer: VectorLayer
+import { Marker } from 'maptalks'
+
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
   id: string
@@ -58,12 +57,24 @@ export const useNotification = () => {
       websocket.onmessage = onMessage
       websocket.onopen = () => {
         isOpen.value = true
+        ElMessage({
+          type: 'success',
+          message: t('websocket-lian-jie-cheng-gong')
+        })
       }
       websocket.onclose = () => {
         isOpen.value = false
+        ElMessage({
+          type: 'warning',
+          message: t('websocket-duan-kai-lian-jie')
+        })
       }
       websocket.onerror = () => {
         isOpen.value = false
+        ElMessage({
+          type: 'error',
+          message: t('websocket-chu-cuo-duan-lian')
+        })
       }
       return websocket
     }
@@ -109,11 +120,6 @@ export const useNotification = () => {
     notifications.value.push(data)
   }
 
-  function initAlarmLayer(map: Map) {
-    alarmMarkerLayer = new VectorLayer('alarm-marker')
-    alarmMarkerLayer.addTo(map)
-  }
-
   //每次收到警报定位车辆
   function handleAlarmEvent(longitude: number, latitude: number) {
     alarmMarkerLayer.clear()
@@ -127,7 +133,6 @@ export const useNotification = () => {
           markerRotation: 0
         }
       })
-
       alarmMarkerLayer.addGeometry(point)
       point.flash(200, 12)
     }
@@ -234,7 +239,6 @@ export const useNotification = () => {
   )
   return {
     NotificationDrawer,
-    NotificationController,
-    initAlarmLayer
+    NotificationController
   }
 }

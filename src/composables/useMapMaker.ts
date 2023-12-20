@@ -4,8 +4,13 @@ import { initWebSocket } from '@/utils'
 import { ConnectorLine, Map, Marker, VectorLayer } from 'maptalks'
 import { watch, ref, onBeforeUnmount, type Ref } from 'vue'
 import { isRecord, isRecordPath } from './useMap'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 export const useMapMaker = () => {
+  // 国际化相关
+  const { t } = useI18n()
+
   // 车辆标记图层
   // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
   let markerLayer: VectorLayer
@@ -21,12 +26,24 @@ export const useMapMaker = () => {
       onmessage: updateMarker,
       onopen: () => {
         isConnectedWS.value = true
+        ElMessage({
+          type: 'success',
+          message: t('websocket-lian-jie-cheng-gong')
+        })
       },
       onclose: () => {
         isConnectedWS.value = false
+        ElMessage({
+          type: 'warning',
+          message: t('websocket-duan-kai-lian-jie')
+        })
       },
       onerror: () => {
         isConnectedWS.value = false
+        ElMessage({
+          type: 'error',
+          message: t('websocket-chu-cuo-duan-lian')
+        })
       }
     })
   })
@@ -47,7 +64,6 @@ export const useMapMaker = () => {
   async function initMakerLayer(map: Map) {
     markerLayer = new VectorLayer('marker')
     markerLayer.addTo(map)
-
     recordPathLayer = new VectorLayer('record-point')
     recordPathLayer.addTo(map)
     initCar()
