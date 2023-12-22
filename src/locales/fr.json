@@ -152,5 +152,20 @@
   "websocket-chu-cuo-duan-lian": "erreur websocket et déconnexion !",
   "websocket-duan-kai-lian-jie": "websocket déconnecté !",
   "websocket-duan-kai-zhong-lian-zhong": "websocket déconnecté et reconnecté...",
-  "websocket-lian-jie-cheng-gong": "Connexion Websocket réussie !"
+  "websocket-lian-jie-cheng-gong": "Connexion Websocket réussie !",
+  "qing-xuan-ze-ren-wu-lei-xing": "Veuillez sélectionner le type de tâche",
+  "shi-bie-ren-wu": "tâche de reconnaissance",
+  "su-du-she-zhi": "réglage de la vitesse",
+  "xun-jian-ren-wu": "Tâches d'inspection",
+  "bao-cun-fan-hang-lu-xian": "Enregistrer l'itinéraire de retour",
+  "che-liang-fan-hang": "Restitution du véhicule",
+  "kai-shi-lu-zhi": "Commencer l'enregistrement",
+  "kai-shi-zhi-hang-fan-hang": "Commencez à rentrer chez vous",
+  "lu-xian-hui-zhi": "dessin d'itinéraire",
+  "mo-ban-lie-biao": "Liste des modèles",
+  "ren-wu-lie-biao": "liste de tâches",
+  "xia-fa-ren-wu": "Tâches d'émission",
+  "xin-jian-fan-hang-lu-xian": "Créer un nouvel itinéraire de retour",
+  "xin-jian-ren-wu": "Créer une nouvelle tâche",
+  "yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian": "L'enregistrement est terminé, veuillez sauvegarder l'itinéraire !"
 }

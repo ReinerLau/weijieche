@@ -152,5 +152,20 @@
   "websocket-lian-jie-cheng-gong": "websocket连接成功!",
   "websocket-duan-kai-lian-jie": "websocket断开连接!",
   "websocket-chu-cuo-duan-lian": "websocket出错断连!",
-  "websocket-duan-kai-zhong-lian-zhong": "websocket断开重连中..."
+  "websocket-duan-kai-zhong-lian-zhong": "websocket断开重连中...",
+  "qing-xuan-ze-ren-wu-lei-xing": "请选择任务类型",
+  "xun-jian-ren-wu": "巡检任务",
+  "shi-bie-ren-wu": "识别任务",
+  "su-du-she-zhi": "速度设置",
+  "yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian": "已结束录制，请保存路线!",
+  "kai-shi-lu-zhi": "开始录制",
+  "mo-ban-lie-biao": "模板列表",
+  "ren-wu-lie-biao": "任务列表",
+  "xin-jian-ren-wu": "新建任务",
+  "xin-jian-fan-hang-lu-xian": "新建返航路线",
+  "bao-cun-fan-hang-lu-xian": "保存返航路线",
+  "kai-shi-zhi-hang-fan-hang": "开始执行返航",
+  "che-liang-fan-hang": "车辆返航",
+  "lu-xian-hui-zhi": "路线绘制",
+  "xia-fa-ren-wu": "下发任务"
 }

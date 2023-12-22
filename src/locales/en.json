@@ -152,5 +152,20 @@
   "websocket-chu-cuo-duan-lian": "websocket error and disconnection!",
   "websocket-duan-kai-lian-jie": "websocket disconnected!",
   "websocket-duan-kai-zhong-lian-zhong": "websocket disconnected and reconnecting...",
-  "websocket-lian-jie-cheng-gong": "websocket connection successful!"
+  "websocket-lian-jie-cheng-gong": "websocket connection successful!",
+  "qing-xuan-ze-ren-wu-lei-xing": "Please select task type",
+  "shi-bie-ren-wu": "recognition task",
+  "su-du-she-zhi": "speed setting",
+  "xun-jian-ren-wu": "Inspection tasks",
+  "bao-cun-fan-hang-lu-xian": "Save return route",
+  "che-liang-fan-hang": "Vehicle return",
+  "kai-shi-lu-zhi": "Start recording",
+  "kai-shi-zhi-hang-fan-hang": "Start returning home",
+  "lu-xian-hui-zhi": "route drawing",
+  "mo-ban-lie-biao": "Template list",
+  "ren-wu-lie-biao": "task list",
+  "xia-fa-ren-wu": "Issue tasks",
+  "xin-jian-fan-hang-lu-xian": "Create a new return route",
+  "xin-jian-ren-wu": "Create new task",
+  "yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian": "Recording has ended, please save the route!"
 }
