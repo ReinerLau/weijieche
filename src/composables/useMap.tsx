@@ -119,8 +119,8 @@ export const useMap = () => {
           textName: pathPoints.length + 1,
           markerType: 'ellipse',
           markerFill: '#ff930e',
-          markerWidth: 20,
-          markerHeight: 20
+          markerWidth: 10,
+          markerHeight: 10
         })
         addPathPointToLayer(pathPoint)
       }
@@ -131,8 +131,8 @@ export const useMap = () => {
         taskPoint.setSymbol({
           markerType: 'ellipse',
           markerFill: '#138C46',
-          markerWidth: 30,
-          markerHeight: 30
+          markerWidth: 10,
+          markerHeight: 10
         })
         const pointCoordinates = {
           x: taskPoint.getCoordinates().y,
@@ -198,7 +198,7 @@ export const useMap = () => {
       // 按钮组
       const toolbarItems = [
         {
-          title: t('xin-jian'),
+          title: t('lu-xian-hui-zhi'),
           subItems: [
             {
               title: t('xin-jian-lu-xian'),
@@ -206,6 +206,7 @@ export const useMap = () => {
                 clearLine()
                 clearDrawTool()
                 handleCreatePath()
+                isRecord.value = false
                 isRecordPath.value = false
               }
             },
@@ -217,6 +218,11 @@ export const useMap = () => {
                 if (haveCurrentCar() && !isRecord.value) {
                   recordPathPoints.length = 0
                   isRecord.value = true
+                  ElMessage({
+                    type: 'success',
+                    message: t('kai-shi-lu-zhi')
+                  })
+                  // isRecordPath.value = true
                 }
               }
             },
@@ -227,6 +233,10 @@ export const useMap = () => {
                   clearLine()
                   clearDrawTool()
                   isRecord.value = false
+                  ElMessage({
+                    type: 'success',
+                    message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+                  })
                   isRecordPath.value = true
                 }
               }
@@ -249,14 +259,14 @@ export const useMap = () => {
           }
         },
         {
-          title: t('xia-fa'),
+          title: t('xia-fa-ren-wu'),
           event: handleCreatePlan
         },
         {
-          title: t('fan-hang'),
+          title: t('che-liang-fan-hang'),
           subItems: [
             {
-              title: t('xin-jian'),
+              title: t('xin-jian-fan-hang-lu-xian'),
               event: () => {
                 clearDrawTool()
                 clearLine()
@@ -264,7 +274,7 @@ export const useMap = () => {
               }
             },
             {
-              title: t('bao-cun'),
+              title: t('bao-cun-fan-hang-lu-xian'),
               event: () => {
                 if (haveHomePath()) {
                   clearDrawTool()
@@ -273,7 +283,7 @@ export const useMap = () => {
               }
             },
             {
-              title: t('kai-shi'),
+              title: t('kai-shi-zhi-hang-fan-hang'),
               event: async () => {
                 if (haveCurrentCar()) {
                   const res: any = await goHome(currentCar.value)
@@ -307,7 +317,7 @@ export const useMap = () => {
               }
             },
             {
-              title: t('sou-suo-mo-ban'),
+              title: t('mo-ban-lie-biao'),
               event: () => {
                 clearDrawTool()
                 templateSearchDialogVisible.value = true
@@ -319,14 +329,14 @@ export const useMap = () => {
           title: t('ding-shi-ren-wu'),
           subItems: [
             {
-              title: t('xin-jian'),
+              title: t('xin-jian-ren-wu'),
               event: () => {
                 clearDrawTool()
                 scheduleDialogVisible.value = true
               }
             },
             {
-              title: t('sou-suo'),
+              title: t('ren-wu-lie-biao'),
               event: () => {
                 clearDrawTool()
                 scheduleSearchDialogVisible.value = true
@@ -429,8 +439,8 @@ export const useMap = () => {
                 // textName: index + 1,
                 markerType: 'ellipse',
                 markerFill: '#138C46',
-                markerWidth: 30,
-                markerHeight: 30
+                markerWidth: 10,
+                markerHeight: 10
               }
             })
               .on('click', (e: any) => {
@@ -447,6 +457,8 @@ export const useMap = () => {
 
       // 确定选择模板路线在地图上显示
       function handleConfirmTemplate(template: any) {
+        clearDrawTool()
+        clearLine()
         templateSearchDialogVisible.value = false
         const coordinates: number[][] = JSON.parse(template.mission).map((item: any) => [
           item.y,
@@ -461,8 +473,8 @@ export const useMap = () => {
               textName: index + 1,
               markerType: 'ellipse',
               markerFill: '#ff930e',
-              markerWidth: 20,
-              markerHeight: 20
+              markerWidth: 10,
+              markerHeight: 10
             }
           })
           addPathPointToLayer(pathPoint)
@@ -658,8 +670,8 @@ export const useMap = () => {
           new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
             symbol: {
               markerType: 'ellipse',
-              markerWidth: 40,
-              markerHeight: 40,
+              markerWidth: 15,
+              markerHeight: 15,
               markerFillOpacity: 0.5
             }
           })

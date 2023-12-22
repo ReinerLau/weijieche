@@ -20,6 +20,7 @@ export const useMapMaker = () => {
 
   // 监听到选择车辆后连接 websocket
   watch(currentCar, (code: string) => {
+    recordPathPoints.length = 0
     addMarker(code)
     tryCloseWS()
     ws = initWebSocket('/websocket/patroling/location', {
@@ -83,9 +84,9 @@ export const useMapMaker = () => {
           symbol: {
             markerType: 'triangle',
             markerFill: 'yellow',
-            markerWidth: 15,
-            markerHeight: 20,
-            markerRotation: Number(heading)
+            markerWidth: 8,
+            markerHeight: 10,
+            markerRotation: -Number(heading)
           }
         })
         markerLayer.addGeometry(point)
@@ -113,8 +114,8 @@ export const useMapMaker = () => {
         symbol: {
           markerType: 'ellipse',
           markerFill: 'red',
-          markerWidth: 20,
-          markerHeight: 20
+          markerWidth: 8,
+          markerHeight: 10
         }
       })
 
@@ -146,9 +147,9 @@ export const useMapMaker = () => {
         symbol: {
           markerType: 'triangle',
           markerFill: 'red',
-          markerWidth: 15,
-          markerHeight: 20,
-          markerRotation: Number(data.heading)
+          markerWidth: 8,
+          markerHeight: 10,
+          markerRotation: -Number(data.heading)
         }
       })
       markerLayer.addGeometry(point)
@@ -196,7 +197,15 @@ export const useMapMaker = () => {
 
   // 监听是否处于录制状态
   watch(isRecordPath, () => {
+    initMarker(newData.value)
     if (!isRecord.value && !isRecordPath.value) {
+      recordPathLayer.clear()
+      initMarker(newData.value)
+    }
+  })
+
+  watch(isRecord, () => {
+    if (!isRecord.value) {
       recordPathLayer.clear()
       initMarker(newData.value)
     }

@@ -128,8 +128,8 @@ export const useNotification = () => {
         symbol: {
           markerType: 'triangle',
           markerFill: 'red',
-          markerWidth: 15,
-          markerHeight: 20,
+          markerWidth: 8,
+          markerHeight: 10,
           markerRotation: 0
         }
       })

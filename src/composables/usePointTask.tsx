@@ -70,7 +70,7 @@ export const usePointTask = () => {
               message: t('qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du')
             }
           ],
-          type: [{ required: true, message: '请指定任务类型' }],
+          type: [{ required: true, message: t('qing-xuan-ze-ren-wu-lei-xing') }],
           time: [
             {
               required: !isShowRules.value,
@@ -89,15 +89,15 @@ export const usePointTask = () => {
       //任务类型
       const taskTypeList = [
         {
-          name: '巡检任务',
+          name: t('xun-jian-ren-wu'),
           type: 1
         },
         {
-          name: '识别任务',
+          name: t('shi-bie-ren-wu'),
           type: 2
         },
         {
-          name: '速度设置',
+          name: t('su-du-she-zhi'),
           type: 3
         }
       ]
@@ -116,7 +116,7 @@ export const usePointTask = () => {
               <ElSelect
                 class="w-full"
                 v-model={form.value['type']}
-                placeholder="请选择类型"
+                placeholder={t('qing-xuan-ze-ren-wu-lei-xing')}
                 clearable
                 onChange={handleTaskType}
               >
