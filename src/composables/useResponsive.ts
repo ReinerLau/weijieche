@@ -8,7 +8,7 @@ export const useResponsive = () => {
   const mainRef: Ref<HTMLElement | undefined> = ref()
   // 校验是否处于移动端模式
   function checkIsMobile() {
-    if (innerWidth < 1280 || innerHeight < 820) {
+    if (innerWidth < 1000 || innerHeight < 520) {
       isMobile.value = true
       // if (mainRef.value) {
       //   mainRef.value.style.flexDirection = 'column'
