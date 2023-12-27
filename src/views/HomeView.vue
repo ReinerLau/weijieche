@@ -9,7 +9,8 @@ import {
   useMap,
   useNotification,
   useResponsive,
-  useTheme
+  useTheme,
+  useHistory
 } from '@/composables'
 
 import { cameraList } from '@/shared'
@@ -37,6 +38,7 @@ onMounted(() => {
 const cameraUrl = ref('')
 
 const { DetailSection, detailDrawerVisible } = useDetail({ isMobile }, { cameraUrl })
+const { HistoryController } = useHistory()
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
@@ -50,8 +52,9 @@ const { MapContainer } = useMap()
         <CarRelevantController />
         <div class="flex items-center">
           <NotificationController />
-          <ThemeController class="ml-3" />
-          <InternationalController class="ml-3" />
+          <ThemeController />
+          <InternationalController />
+          <HistoryController />
         </div>
       </div>
     </el-header>

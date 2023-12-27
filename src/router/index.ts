@@ -17,6 +17,14 @@ const router = createRouter({
       meta: {
         title: '登录'
       }
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('@/views/HistoryView.vue'),
+      meta: {
+        title: ''
+      }
     }
   ]
 })
