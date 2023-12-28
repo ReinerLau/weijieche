@@ -6,7 +6,8 @@ import {
   ElCard,
   ElDrawer,
   ElMessage,
-  ElMessageBox
+  ElMessageBox,
+  ElTooltip
   // ElNotification
 } from 'element-plus'
 import { Fragment, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -224,15 +225,18 @@ export const useNotification = () => {
   // 控制警报抽屉组件
   const NotificationController = () => (
     <Fragment>
-      <ElButton link onClick={() => (notificationDrawerVisible.value = true)}>
-        <ElBadge
-          value={notifications.value.length}
-          hidden={notifications.value.length === 0}
-          isDot={true}
-        >
-          <IconMdiBellOutline />
-        </ElBadge>
-      </ElButton>
+      <ElTooltip content={t('tong-zhi')}>
+        <ElButton link onClick={() => (notificationDrawerVisible.value = true)} class="ml-3">
+          <ElBadge
+            value={notifications.value.length}
+            hidden={notifications.value.length === 0}
+            isDot={true}
+          >
+            <IconMdiBellOutline />
+          </ElBadge>
+        </ElButton>
+      </ElTooltip>
+
       <audio ref={alarmRef} src="/unionAlarm.wav" hidden></audio>
       <TemplateAlarmDialog />
     </Fragment>

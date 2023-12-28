@@ -1,12 +1,15 @@
 // https://vueuse.org/
 import { useDark, useToggle } from '@vueuse/core'
-import { ElButton } from 'element-plus'
+import { ElButton, ElTooltip } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 // 图标查看 docs/图标引入
 import IconPhMoon from '~icons/ph/moon'
 import IconPhSun from '~icons/ph/sun'
 
 // 主题相关
 export const useTheme = () => {
+  const { t } = useI18n()
+
   // 当前是否处于黑暗模式
   // https://vueuse.org/core/useDark/#usedark
   const isDark = useDark()
@@ -16,9 +19,11 @@ export const useTheme = () => {
 
   // 切换主题按钮
   const ThemeController = () => (
-    <ElButton link onClick={() => toggleDark()}>
-      {isDark.value ? <IconPhSun /> : <IconPhMoon />}
-    </ElButton>
+    <ElTooltip content={t('zhu-ti')}>
+      <ElButton link onClick={() => toggleDark()} class="ml-3">
+        {isDark.value ? <IconPhSun /> : <IconPhMoon />}
+      </ElButton>
+    </ElTooltip>
   )
   return {
     ThemeController
