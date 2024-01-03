@@ -13,3 +13,10 @@ export function deleteLog(id: string) {
     method: 'delete'
   })
 }
+
+export function getPatrolTask() {
+  return request({
+    url: `/vehicle-task/v1/list`,
+    method: 'get'
+  })
+}

@@ -52,7 +52,9 @@ export const useMap = () => {
         dialogVisible: scheduleDialogVisible,
         ScheduleDialog,
         searchDialogVisible: scheduleSearchDialogVisible,
-        ScheduleSearchDialog
+        ScheduleSearchDialog,
+        PatrolTaskDialog,
+        patrolTaskVisible: patrolTaskDialogVisible
       } = useSchedule()
 
       const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
@@ -246,9 +248,11 @@ export const useMap = () => {
         {
           title: t('ren-wu-dian'),
           event: () => {
-            clearLine()
-            clearDrawTool()
-            handleCreatePoint()
+            if (endRecording()) {
+              clearLine()
+              clearDrawTool()
+              handleCreatePoint()
+            }
           }
         },
         {
@@ -256,6 +260,7 @@ export const useMap = () => {
           event: () => {
             clearLine()
             clearDrawTool()
+            isRecord.value = false
           }
         },
         {
@@ -268,9 +273,11 @@ export const useMap = () => {
             {
               title: t('xin-jian-fan-hang-lu-xian'),
               event: () => {
-                clearDrawTool()
-                clearLine()
-                handleCreateHomePath()
+                if (endRecording()) {
+                  clearDrawTool()
+                  clearLine()
+                  handleCreateHomePath()
+                }
               }
             },
             {
@@ -297,21 +304,13 @@ export const useMap = () => {
           ]
         },
         {
-          title: t('mo-ban'),
+          title: t('lu-xian-mo-ban'),
           subItems: [
             {
               title: t('bao-cun-lu-xian'),
               event: () => {
-                if (havePath()) {
+                if (havePath() && endRecording()) {
                   clearDrawTool()
-                  //判断是否停止录制
-                  if (isRecord.value) {
-                    ElMessage({
-                      type: 'error',
-                      message: t('qing-xian-jie-shu-lu-zhi')
-                    })
-                    return false
-                  }
                   templateDialogVisible.value = true
                 }
               }
@@ -319,8 +318,10 @@ export const useMap = () => {
             {
               title: t('mo-ban-lie-biao'),
               event: () => {
-                clearDrawTool()
-                templateSearchDialogVisible.value = true
+                if (endRecording()) {
+                  clearDrawTool()
+                  templateSearchDialogVisible.value = true
+                }
               }
             }
           ]
@@ -331,15 +332,33 @@ export const useMap = () => {
             {
               title: t('xin-jian-ren-wu'),
               event: () => {
-                clearDrawTool()
-                scheduleDialogVisible.value = true
+                if (endRecording()) {
+                  clearDrawTool()
+                  scheduleDialogVisible.value = true
+                }
               }
             },
             {
               title: t('ren-wu-lie-biao'),
               event: () => {
-                clearDrawTool()
-                scheduleSearchDialogVisible.value = true
+                if (endRecording()) {
+                  clearDrawTool()
+                  scheduleSearchDialogVisible.value = true
+                }
+              }
+            }
+          ]
+        },
+        {
+          title: t('xun-luo-ren-wu'),
+          subItems: [
+            {
+              title: t('ren-wu-lie-biao'),
+              event: () => {
+                if (endRecording()) {
+                  clearDrawTool()
+                  patrolTaskDialogVisible.value = true
+                }
               }
             }
           ]
@@ -351,7 +370,7 @@ export const useMap = () => {
       ]
 
       async function backToCenter() {
-        if (haveCurrentCar()) {
+        if (haveCurrentCar() && endRecording()) {
           const res = await getCarInfo(currentCar.value)
           const x = res.data.longitude
           const y = res.data.latitude
@@ -532,6 +551,19 @@ export const useMap = () => {
             message: t('xian-xin-jian-lu-jing')
           })
           return false
+        }
+      }
+
+      // 校验地图是否已结束录制路线
+      function endRecording() {
+        if (isRecord.value) {
+          ElMessage({
+            type: 'error',
+            message: t('qing-xian-jie-shu-lu-zhi')
+          })
+          return false
+        } else {
+          return true
         }
       }
 
@@ -828,6 +860,7 @@ export const useMap = () => {
           <ScheduleDialog />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
+          <PatrolTaskDialog />
         </div>
       )
     }

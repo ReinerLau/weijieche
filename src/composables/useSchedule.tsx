@@ -21,6 +21,8 @@ import { cloneDeep } from 'lodash'
 import { computed, defineComponent, onMounted, ref, toRaw, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getPatrolTask } from '@/api'
+import { parseTime } from '@/utils'
 
 // 重置表单数据
 const defaultFormData = {
@@ -287,10 +289,139 @@ export const useSchedule = () => {
     }
   })
 
+  const patrolTaskVisible = ref(false)
+
+  //巡逻任务列表
+  const PatrolTaskDialog = defineComponent({
+    setup() {
+      const list: Ref<any[]> = ref([])
+
+      // 每次打开弹窗组件获取列表
+      watch(patrolTaskVisible, async (val) => {
+        if (val) {
+          getList()
+        }
+      })
+
+      async function getList() {
+        const res = await getPatrolTask()
+        list.value = res.data?.list || []
+      }
+
+      const columns = [
+        {
+          label: '机器人code',
+          prop: 'code'
+        },
+        {
+          label: '任务名称',
+          prop: 'name'
+        },
+        {
+          label: '巡逻路线',
+          prop: 'route'
+        },
+        {
+          label: '巡逻开始时间',
+          prop: 'startTime',
+          slot: (row: any) => (
+            <ElTableColumn property={row.prop} label={row.label}>
+              {{
+                default: ({ row }: { row: any }) => {
+                  if (row.startTime) {
+                    return parseTime(row.startTime)
+                  }
+                }
+              }}
+            </ElTableColumn>
+          )
+        },
+        {
+          label: '巡逻结束时间',
+          prop: 'endTime',
+          slot: (row: any) => (
+            <ElTableColumn property={row.prop} label={row.label}>
+              {{
+                default: ({ row }: { row: any }) => {
+                  if (row.endTime) {
+                    return parseTime(row.endTime)
+                  }
+                }
+              }}
+            </ElTableColumn>
+          )
+        },
+        {
+          label: '任务状态',
+          prop: 'status',
+          slot: (row: any) => (
+            <ElTableColumn property={row.prop} label={row.label}>
+              {{
+                default: ({ row }: { row: any }) => {
+                  if (row.status === 0) {
+                    return '完成'
+                  } else {
+                    return '未完成'
+                  }
+                }
+              }}
+            </ElTableColumn>
+          )
+        },
+        {
+          label: '任务类型',
+          prop: 'type',
+          slot: (row: any) => (
+            <ElTableColumn property={row.prop} label={row.label}>
+              {{
+                default: ({ row }: { row: any }) => {
+                  if (row.status === 0) {
+                    return '普通任务'
+                  } else {
+                    return '定时任务'
+                  }
+                }
+              }}
+            </ElTableColumn>
+          )
+        }
+      ]
+      return () => (
+        <ElDialog v-model={patrolTaskVisible.value} title={t('xun-luo-ren-wu')} width="80%">
+          {{
+            default: () => (
+              <ElTable height="50vh" data={list.value} highlight-current-row>
+                {columns.map((item) =>
+                  item.slot ? (
+                    item.slot(item)
+                  ) : (
+                    <ElTableColumn property={item.prop} label={item.label} />
+                  )
+                )}
+                <ElTableColumn label={t('cao-zuo')}>
+                  {{
+                    default: ({ row }: { row: any }) => (
+                      <div>
+                        <ElButton>{t('lu-xian')}</ElButton>
+                        <ElButton>{t('shi-pin')}</ElButton>
+                      </div>
+                    )
+                  }}
+                </ElTableColumn>
+              </ElTable>
+            )
+          }}
+        </ElDialog>
+      )
+    }
+  })
+
   return {
     ScheduleDialog,
     dialogVisible,
     ScheduleSearchDialog,
-    searchDialogVisible
+    searchDialogVisible,
+    PatrolTaskDialog,
+    patrolTaskVisible
   }
 }
