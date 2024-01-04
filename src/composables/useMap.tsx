@@ -80,6 +80,9 @@ export const useMap = () => {
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let pathLayer: maptalks.VectorLayer
 
+      //巡逻路线图层
+      let patrolpathLayer: maptalks.VectorLayer
+
       // 返航路线图层实例
       // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
@@ -188,6 +191,8 @@ export const useMap = () => {
           pathLayer.addTo(map)
           taskPointLayer = new maptalks.VectorLayer('task-point')
           taskPointLayer.addTo(map)
+          patrolpathLayer = new maptalks.VectorLayer('patrol')
+          patrolpathLayer.addTo(map)
         }
       }
 
@@ -360,6 +365,12 @@ export const useMap = () => {
                   patrolTaskDialogVisible.value = true
                 }
               }
+            },
+            {
+              title: t('qing-kong-lu-xian'),
+              event: () => {
+                clearDrawPatrolLine()
+              }
             }
           ]
         },
@@ -403,6 +414,12 @@ export const useMap = () => {
         pathLayer.clear()
         pathPoints.length = 0
         creatingHomePath = undefined
+      }
+
+      //清空巡逻路线
+      function clearDrawPatrolLine() {
+        patrolpathLayer.clear()
+        patrolpathPoints.length = 0
       }
 
       // 确定保存路线模板
@@ -521,6 +538,66 @@ export const useMap = () => {
           })
           // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html#addGeometry
           pathLayer.addGeometry(connectLine)
+        }
+      }
+
+      //选择巡逻任务路线按钮后显示路线在地图上
+      function handleConfirmPatrolTask(row: any) {
+        const text = t('ren-wu-ming-cheng') + ':' + row.name
+        const options = {
+          // markerFill: '#DC00FE',
+          autoPan: true,
+          // minWidth: 80,
+          // minHeight: 120,
+          // single: false,
+          // custom: true,
+          dx: -3,
+          dy: -12,
+          content: `<div style="color:red">${text}</div>`
+        }
+        clearDrawTool()
+        clearLine()
+        clearDrawPatrolLine()
+        patrolTaskDialogVisible.value = false
+        const coordinates: number[][] = row.route.map((item: any) => [item.y, item.x])
+        coordinates.forEach((coordinate, index) => {
+          const pathPoint = new maptalks.Marker(coordinate, {
+            symbol: {
+              textName: index + 1,
+              markerType: 'ellipse',
+              markerFill: '#DC00FE',
+              markerWidth: 10,
+              markerHeight: 10
+            }
+          })
+            .on('click', (e: any) => {
+              entryPoint = e.target
+            })
+            .setInfoWindow(options)
+          addPatrolPathPointToLayer(pathPoint)
+        })
+      }
+
+      const patrolpathPoints: maptalks.Marker[] = []
+      // 添加巡逻路线到图层中
+      function addPatrolPathPointToLayer(pathPoint: maptalks.Marker) {
+        patrolpathLayer.addGeometry(pathPoint)
+        if (entryPoint) {
+          pathPoint.setCoordinates(entryPoint.getCenter())
+          entryPoint = undefined
+        }
+
+        patrolpathPoints.push(pathPoint)
+        if (patrolpathPoints.length >= 2) {
+          const lastTwoPoints = patrolpathPoints.slice(-2)
+          const connectLine = new maptalks.ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+            showOn: 'always',
+            symbol: {
+              lineColor: '#DC00FE'
+            },
+            zIndex: -1
+          })
+          patrolpathLayer.addGeometry(connectLine)
         }
       }
 
@@ -860,7 +937,7 @@ export const useMap = () => {
           <ScheduleDialog />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
-          <PatrolTaskDialog />
+          <PatrolTaskDialog onConfirm={handleConfirmPatrolTask} />
         </div>
       )
     }
