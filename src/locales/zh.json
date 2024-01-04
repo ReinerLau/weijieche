@@ -170,5 +170,16 @@
   "xia-fa-ren-wu": "下发任务",
   "yu-yan": "语言",
   "li-shi": "历史",
-  "zhu-ti": "主题"
+  "zhu-ti": "主题",
+  "lu-xian-mo-ban": "路线模板",
+  "xun-luo-ren-wu": "巡逻任务",
+  "lu-xian": "路线",
+  "shi-pin": "视频",
+  "ji-qi-ren-code": "机器人code",
+  "ren-wu-ming-cheng": "任务名称",
+  "xun-luo-kai-shi-shi-jian": "巡逻开始时间",
+  "xun-luo-jie-shu-shi-jian": "巡逻结束时间",
+  "ren-wu-zhuang-tai": "任务状态",
+  "qing-kong-lu-xian": "清空路线",
+  "xun-luo-lu-xian": "巡逻路线"
 }
