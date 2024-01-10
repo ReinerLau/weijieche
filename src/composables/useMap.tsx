@@ -229,7 +229,6 @@ export const useMap = () => {
                     type: 'success',
                     message: t('kai-shi-lu-zhi')
                   })
-                  // isRecordPath.value = true
                 }
               }
             },
@@ -512,6 +511,30 @@ export const useMap = () => {
               markerWidth: 10,
               markerHeight: 10
             }
+          }).setMenu({
+            items: [
+              {
+                item: t('xin-zeng-ren-wu-dian'),
+                click: () => {
+                  const pointCoordinates = {
+                    x: pathPoint.getCoordinates().y,
+                    y: pathPoint.getCoordinates().x
+                  }
+                  handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+                    pathLayer.addGeometry(pathPoint)
+                    // pathPoint.setSymbol({
+                    //   textName: index + 1,
+                    //   markerType: 'ellipse',
+                    //   markerFill: '#138C46',
+                    //   markerWidth: 10,
+                    //   markerHeight: 10
+                    // })
+                    clearDrawTool()
+                    initTaskPoints()
+                  })
+                }
+              }
+            ]
           })
           addPathPointToLayer(pathPoint)
         })
