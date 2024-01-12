@@ -489,8 +489,10 @@ export const useMap = () => {
         }
       }
 
+      const pathPointList: any = []
       // 确定选择模板路线在地图上显示
       function handleConfirmTemplate(template: any) {
+        pathPointList.length = 0
         clearDrawTool()
         clearLine()
         templateSearchDialogVisible.value = false
@@ -536,7 +538,14 @@ export const useMap = () => {
             ]
           })
           addPathPointToLayer(pathPoint)
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          pathPointList.push(pointCoordinates)
         })
+
+        jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
       }
 
       // 添加路线点到图层中
@@ -563,8 +572,10 @@ export const useMap = () => {
         }
       }
 
+      const pathPointArray: any = []
       //选择巡逻任务路线按钮后显示路线在地图上
       function handleConfirmPatrolTaskPath(row: any) {
+        pathPointArray.length = 0
         const text = t('ren-wu-ming-cheng') + ':' + row.name
         const options = {
           autoPan: true,
@@ -577,6 +588,7 @@ export const useMap = () => {
         clearDrawPatrolLine()
         patrolTaskDialogVisible.value = false
         const coordinates: number[][] = row.route.map((item: any) => [item.y, item.x])
+
         coordinates.forEach((coordinate, index) => {
           const pathPoint = new maptalks.Marker(coordinate, {
             symbol: {
@@ -592,7 +604,14 @@ export const useMap = () => {
             })
             .setInfoWindow(options)
           addPatrolPathPointToLayer(pathPoint)
+
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          pathPointArray.push(pointCoordinates)
         })
+        jumpToCoordinate(pathPointArray[0].y, pathPointArray[0].x)
       }
 
       const patrolpathPoints: maptalks.Marker[] = []
