@@ -181,5 +181,11 @@
   "xun-luo-jie-shu-shi-jian": "巡逻结束时间",
   "ren-wu-zhuang-tai": "任务状态",
   "qing-kong-lu-xian": "清空路线",
-  "xun-luo-lu-xian": "巡逻路线"
+  "xun-luo-lu-xian": "巡逻路线",
+  "wan-cheng": "完成",
+  "wei-wan-cheng": "未完成",
+  "pu-tong-ren-wu": "普通任务",
+  "xin-zeng-ren-wu-dian": "新增任务点",
+  "cha-xun": "查询",
+  "zhong-zhi": "重置"
 }

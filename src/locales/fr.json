@@ -181,5 +181,11 @@
   "xun-luo-jie-shu-shi-jian": "Heure de fin de la patrouille",
   "xun-luo-kai-shi-shi-jian": "Heure de début de la patrouille",
   "qing-kong-lu-xian": "itinéraire dégagé",
-  "xun-luo-lu-xian": "itinéraire de patrouille"
+  "xun-luo-lu-xian": "itinéraire de patrouille",
+  "wan-cheng": "Terminé",
+  "wei-wan-cheng": "Pas terminé",
+  "pu-tong-ren-wu": "Tâches ordinaires",
+  "xin-zeng-ren-wu-dian": "Ajouter un point de tâche",
+  "cha-xun": "Enquête",
+  "zhong-zhi": "Réinitialisation"
 }
