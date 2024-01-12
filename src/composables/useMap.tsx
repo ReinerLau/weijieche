@@ -27,7 +27,6 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
-
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
 
@@ -565,15 +564,10 @@ export const useMap = () => {
       }
 
       //选择巡逻任务路线按钮后显示路线在地图上
-      function handleConfirmPatrolTask(row: any) {
+      function handleConfirmPatrolTaskPath(row: any) {
         const text = t('ren-wu-ming-cheng') + ':' + row.name
         const options = {
-          // markerFill: '#DC00FE',
           autoPan: true,
-          // minWidth: 80,
-          // minHeight: 120,
-          // single: false,
-          // custom: true,
           dx: -3,
           dy: -12,
           content: `<div style="color:red">${text}</div>`
@@ -960,7 +954,7 @@ export const useMap = () => {
           <ScheduleDialog />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
-          <PatrolTaskDialog onConfirm={handleConfirmPatrolTask} />
+          <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
         </div>
       )
     }
