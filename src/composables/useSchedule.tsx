@@ -8,8 +8,11 @@ import {
   ElDialog,
   ElForm,
   ElFormItem,
+  ElInput,
   ElMessage,
   ElOption,
+  ElPagination,
+  ElScrollbar,
   ElSelect,
   ElSwitch,
   ElTable,
@@ -23,6 +26,7 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getPatrolTask } from '@/api'
 import { parseTime } from '@/utils'
+import { useVideoTemplate } from '@/composables'
 
 // 重置表单数据
 const defaultFormData = {
@@ -293,9 +297,9 @@ export const useSchedule = () => {
 
   //巡逻任务列表
   const PatrolTaskDialog = defineComponent({
-    setup() {
+    emits: ['confirm'],
+    setup(props, { emit }) {
       const list: Ref<any[]> = ref([])
-
       // 每次打开弹窗组件获取列表
       watch(patrolTaskVisible, async (val) => {
         if (val) {
@@ -303,26 +307,114 @@ export const useSchedule = () => {
         }
       })
 
-      async function getList() {
-        const res = await getPatrolTask()
-        list.value = res.data?.list || []
+      const initialParams = {
+        limit: 10,
+        page: 1
       }
+
+      const params: Record<string, any> = ref(Object.assign({}, initialParams))
+
+      const total = ref(0)
+
+      async function getList(): Promise<void> {
+        const res = await getPatrolTask(params.value)
+        list.value = res.data?.list || []
+        total.value = res.data ? res.data.total : 0
+      }
+
+      function handleQuery() {
+        getList()
+      }
+
+      function handleReset() {
+        params.value = Object.assign({}, initialParams)
+        getList()
+      }
+
+      const statusType = {
+        0: t('wan-cheng'),
+        1: t('wei-wan-cheng')
+      }
+
+      const taskType = {
+        0: t('pu-tong-ren-wu'),
+        1: t('ding-shi-ren-wu')
+      }
+
+      const queryFields = [
+        {
+          prop: 'status',
+          title: t('ren-wu-zhuang-tai'),
+          slot: (params: any) => (
+            <ElSelect
+              size="small"
+              class=" w-48"
+              v-model={params.value['status']}
+              placeholder={t('ren-wu-zhuang-tai')}
+              clearable
+            >
+              {Object.entries(statusType).map(([value, label]) => (
+                <ElOption key={value} label={label} value={value}></ElOption>
+              ))}
+            </ElSelect>
+          )
+        },
+        {
+          prop: 'type',
+          title: t('ren-wu-lei-xing'),
+          slot: (params: any) => (
+            <ElSelect
+              size="small"
+              class=" w-48"
+              v-model={params.value['type']}
+              placeholder={t('ren-wu-lei-xing')}
+              clearable
+            >
+              {Object.entries(taskType).map(([value, label]) => (
+                <ElOption key={value} label={label} value={value}></ElOption>
+              ))}
+            </ElSelect>
+          )
+        },
+        {
+          prop: 'startTime',
+          title: t('xun-luo-kai-shi-shi-jian'),
+          slot: (params: any) => (
+            <ElDatePicker
+              size="small"
+              v-model={params.value['startTime']}
+              type="datetime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+              placeholder={t('xun-luo-kai-shi-shi-jian')}
+            />
+          )
+        },
+        {
+          prop: 'endTime',
+          title: t('xun-luo-jie-shu-shi-jian'),
+          slot: (params: any) => (
+            <ElDatePicker
+              size="small"
+              v-model={params.value['endTime']}
+              type="datetime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+              placeholder={t('xun-luo-jie-shu-shi-jian')}
+            />
+          )
+        }
+      ]
 
       const columns = [
         {
-          label: '机器人code',
+          label: t('ji-qi-ren-code'),
           prop: 'code'
         },
         {
-          label: '任务名称',
+          label: t('ren-wu-ming-cheng'),
           prop: 'name'
         },
         {
-          label: '巡逻路线',
-          prop: 'route'
-        },
-        {
-          label: '巡逻开始时间',
+          label: t('xun-luo-kai-shi-shi-jian'),
           prop: 'startTime',
           slot: (row: any) => (
             <ElTableColumn property={row.prop} label={row.label}>
@@ -337,7 +429,7 @@ export const useSchedule = () => {
           )
         },
         {
-          label: '巡逻结束时间',
+          label: t('xun-luo-jie-shu-shi-jian'),
           prop: 'endTime',
           slot: (row: any) => (
             <ElTableColumn property={row.prop} label={row.label}>
@@ -352,16 +444,16 @@ export const useSchedule = () => {
           )
         },
         {
-          label: '任务状态',
+          label: t('ren-wu-zhuang-tai'),
           prop: 'status',
           slot: (row: any) => (
             <ElTableColumn property={row.prop} label={row.label}>
               {{
                 default: ({ row }: { row: any }) => {
                   if (row.status === 0) {
-                    return '完成'
+                    return t('wan-cheng')
                   } else {
-                    return '未完成'
+                    return t('wei-wan-cheng')
                   }
                 }
               }}
@@ -369,16 +461,16 @@ export const useSchedule = () => {
           )
         },
         {
-          label: '任务类型',
+          label: t('ren-wu-lei-xing'),
           prop: 'type',
           slot: (row: any) => (
             <ElTableColumn property={row.prop} label={row.label}>
               {{
                 default: ({ row }: { row: any }) => {
-                  if (row.status === 0) {
-                    return '普通任务'
+                  if (row.type === 1) {
+                    return t('ding-shi-ren-wu')
                   } else {
-                    return '定时任务'
+                    return t('pu-tong-ren-wu')
                   }
                 }
               }}
@@ -386,32 +478,103 @@ export const useSchedule = () => {
           )
         }
       ]
+
+      //清空搜索框
+      function handleVisible() {
+        params.value = Object.assign({}, initialParams)
+      }
+
+      //打开视频
+      const cameraUrl = ref('')
+
+      const { dialogVisible: videoDialogVisible, VideoPlayDialog } = useVideoTemplate(cameraUrl)
+
+      function handleConfirmVideo(row: any) {
+        videoDialogVisible.value = true
+        cameraUrl.value = row.videoPath
+      }
+
       return () => (
-        <ElDialog v-model={patrolTaskVisible.value} title={t('xun-luo-ren-wu')} width="80%">
-          {{
-            default: () => (
-              <ElTable height="50vh" data={list.value} highlight-current-row>
-                {columns.map((item) =>
-                  item.slot ? (
-                    item.slot(item)
-                  ) : (
-                    <ElTableColumn property={item.prop} label={item.label} />
-                  )
-                )}
-                <ElTableColumn label={t('cao-zuo')}>
-                  {{
-                    default: ({ row }: { row: any }) => (
-                      <div>
-                        <ElButton>{t('lu-xian')}</ElButton>
-                        <ElButton>{t('shi-pin')}</ElButton>
-                      </div>
+        <div>
+          <ElDialog
+            v-model={patrolTaskVisible.value}
+            onClose={handleVisible}
+            title={t('xun-luo-ren-wu')}
+            width="80%"
+          >
+            {{
+              header: () => (
+                <div class=" flex flex-col ">
+                  <span class="mb-3">{t('xun-luo-ren-wu')}</span>
+                  <ElScrollbar>
+                    <div class="flex justify-between">
+                      {queryFields.map((item) => (
+                        <div>
+                          {item.slot ? (
+                            item.slot(params)
+                          ) : (
+                            <ElInput
+                              v-model={params.value[item.prop]}
+                              placeholder={item.title}
+                              clearable
+                            ></ElInput>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </ElScrollbar>
+                  <div class="flex pt-2">
+                    <ElButton type="primary" class="mr-2" onClick={handleQuery}>
+                      {t('cha-xun')}
+                    </ElButton>
+                    <ElButton type="info" onClick={handleReset}>
+                      {t('zhong-zhi')}
+                    </ElButton>
+                  </div>
+                </div>
+              ),
+              default: () => (
+                <ElTable height="50vh" data={list.value} highlight-current-row>
+                  {columns.map((item) =>
+                    item.slot ? (
+                      item.slot(item)
+                    ) : (
+                      <ElTableColumn property={item.prop} label={item.label} />
                     )
-                  }}
-                </ElTableColumn>
-              </ElTable>
-            )
-          }}
-        </ElDialog>
+                  )}
+                  <ElTableColumn label={t('cao-zuo')}>
+                    {{
+                      default: ({ row }: { row: any }) => (
+                        <div>
+                          <ElButton onClick={() => emit('confirm', row)}>{t('lu-xian')}</ElButton>
+                          <ElButton onClick={() => handleConfirmVideo(row)}>
+                            {t('shi-pin')}
+                          </ElButton>
+                        </div>
+                      )
+                    }}
+                  </ElTableColumn>
+                </ElTable>
+              ),
+              footer: () => (
+                <div class="flex justify-end mt-2">
+                  <ElScrollbar>
+                    <ElPagination
+                      layout="sizes, prev, pager, next"
+                      total={total.value}
+                      v-model:current-page={params.value.page}
+                      v-model:page-size={params.value.limit}
+                      page-sizes={[10, 20, 50, 100, 200, 500]}
+                      onSize-change={getList}
+                      onCurrent-change={getList}
+                    />
+                  </ElScrollbar>
+                </div>
+              )
+            }}
+          </ElDialog>
+          <VideoPlayDialog />
+        </div>
       )
     }
   })
