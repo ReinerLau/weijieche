@@ -7,7 +7,7 @@ import {
   sendMavlinkMission
 } from '@/api'
 import { useTemplate } from '@/composables'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import {
   ElButton,
   ElDropdown,
@@ -112,6 +112,16 @@ export const useMap = () => {
       // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
       let tileLayer: maptalks.TileLayer
 
+      // 判断车辆
+      function haveCurrentCar() {
+        if (currentCar.value) {
+          return true
+        } else {
+          ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+          return false
+        }
+      }
+
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
         const pathPoint = e.geometry as maptalks.Marker
@@ -123,8 +133,8 @@ export const useMap = () => {
           textName: pathPoints.length + 1,
           markerType: 'ellipse',
           markerFill: '#ff930e',
-          markerWidth: 10,
-          markerHeight: 10
+          markerWidth: 13,
+          markerHeight: 13
         })
         addPathPointToLayer(pathPoint)
       }
@@ -135,8 +145,8 @@ export const useMap = () => {
         taskPoint.setSymbol({
           markerType: 'ellipse',
           markerFill: '#138C46',
-          markerWidth: 10,
-          markerHeight: 10
+          markerWidth: 13,
+          markerHeight: 13
         })
         const pointCoordinates = {
           x: taskPoint.getCoordinates().y,
@@ -404,7 +414,7 @@ export const useMap = () => {
       function jumpToCoordinate(x: number, y: number) {
         // https://maptalks.org/maptalks.js/api/1.x/Coordinate.html
         const coordinate = new maptalks.Coordinate([x, y])
-        map.setCenter(coordinate)
+        map.setCenter(coordinate).setZoom(18)
       }
 
       // 清空图层上的线
@@ -473,8 +483,8 @@ export const useMap = () => {
                 // textName: index + 1,
                 markerType: 'ellipse',
                 markerFill: '#138C46',
-                markerWidth: 10,
-                markerHeight: 10
+                markerWidth: 13,
+                markerHeight: 13
               }
             })
               .on('click', (e: any) => {
@@ -509,8 +519,8 @@ export const useMap = () => {
               textName: index + 1,
               markerType: 'ellipse',
               markerFill: '#ff930e',
-              markerWidth: 10,
-              markerHeight: 10
+              markerWidth: 13,
+              markerHeight: 13
             }
           }).setMenu({
             items: [
@@ -595,8 +605,8 @@ export const useMap = () => {
               textName: index + 1,
               markerType: 'ellipse',
               markerFill: '#DC00FE',
-              markerWidth: 10,
-              markerHeight: 10
+              markerWidth: 13,
+              markerHeight: 13
             }
           })
             .on('click', (e: any) => {
@@ -815,8 +825,8 @@ export const useMap = () => {
           new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
             symbol: {
               markerType: 'ellipse',
-              markerWidth: 15,
-              markerHeight: 15,
+              markerWidth: 13,
+              markerHeight: 13,
               markerFillOpacity: 0.5
             }
           })

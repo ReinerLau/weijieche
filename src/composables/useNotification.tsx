@@ -129,8 +129,8 @@ export const useNotification = () => {
         symbol: {
           markerType: 'triangle',
           markerFill: 'red',
-          markerWidth: 8,
-          markerHeight: 10,
+          markerWidth: 14,
+          markerHeight: 16,
           markerRotation: 0
         }
       })
@@ -192,7 +192,7 @@ export const useNotification = () => {
       )}
       <div class="text-right">
         <ElButton class="mb-5" link onClick={lookMore}>
-          查看更多
+          {t('cha-kan-geng-duo')}
         </ElButton>
       </div>
       <div

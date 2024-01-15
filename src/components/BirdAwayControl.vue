@@ -26,15 +26,26 @@
 <script setup lang="ts">
 // 驱鸟器控制
 import { patrolingCruise } from '@/api'
-import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
+import { controllerTypes, currentCar, currentControllerType } from '@/shared'
 import { debounce } from 'lodash'
 import { computed, ref, watch } from 'vue'
 import { pressedButtons } from '@/shared'
 import type { ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
 
 // 国际化
 const { t } = useI18n()
+
+// 判断车辆
+function haveCurrentCar() {
+  if (currentCar.value) {
+    return true
+  } else {
+    ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+    return false
+  }
+}
 
 // 按钮组合
 const buttonList = [

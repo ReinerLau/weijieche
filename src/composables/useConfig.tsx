@@ -23,7 +23,7 @@ import {
   updateDevice,
   getDeviceTypeList
 } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import type { Ref, ComputedRef } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useI18n } from 'vue-i18n'
@@ -236,7 +236,12 @@ export const useConfig = () => {
           prop: 'type',
           title: t('wai-she-lei-xing'),
           slot: (form: Record<string, any>) => (
-            <ElSelect class="w-full" v-model={form.value['type']} placeholder="外设类型" clearable>
+            <ElSelect
+              class="w-full"
+              v-model={form.value['type']}
+              placeholder={t('wai-she-lei-xing')}
+              clearable
+            >
               {deviceTypeList.value.map((item: any) => (
                 <ElOption key={item} label={item.name} value={item.type}></ElOption>
               ))}
@@ -348,6 +353,16 @@ export const useConfig = () => {
   function handleEdit(data: any) {
     dialogVisible.value = true
     form.value = Object.assign({}, toRaw(data))
+  }
+
+  // 判断车辆
+  function haveCurrentCar() {
+    if (currentCar.value) {
+      return true
+    } else {
+      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+      return false
+    }
   }
 
   // 关联摄像头

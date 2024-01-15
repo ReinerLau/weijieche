@@ -4,11 +4,10 @@ import {
   controllerTypes,
   currentCar,
   currentControllerType,
-  haveCurrentCar,
   modes,
   pressedButtons
 } from '@/shared'
-import { ElMenu, ElMenuItem, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
+import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -16,6 +15,17 @@ import { useI18n } from 'vue-i18n'
 export const useControlSection = () => {
   // 国际化
   const { t } = useI18n()
+
+  // 判断车辆
+  function haveCurrentCar() {
+    if (currentCar.value) {
+      return true
+    } else {
+      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+      return false
+    }
+  }
+
   // 顶部操控区域组件
 
   const TopControl = () => (

@@ -65,12 +65,23 @@
 import { patrolingCruise } from '@/api'
 import { debounce } from 'lodash'
 import { ref } from 'vue'
-import { currentCar, haveCurrentCar } from '../shared/index'
+import { currentCar } from '../shared/index'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
 
 // 国际化
 const { t } = useI18n()
+
+// 判断车辆
+function haveCurrentCar() {
+  if (currentCar.value) {
+    return true
+  } else {
+    ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+    return false
+  }
+}
 
 // 水平角度
 const horizonAngle = ref(0)

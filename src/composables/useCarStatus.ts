@@ -64,7 +64,7 @@ export const useCarStatus = (status: any) => {
         isConnectedWS.value = false
         ElMessage({
           type: 'warning',
-          message: 'websocket断开连接!'
+          message: t('websocket-duan-kai-lian-jie')
         })
         // 断开后每隔一段时间重新连接
         startReconnectInterval()

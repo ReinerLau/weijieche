@@ -84,8 +84,8 @@ export const useMapMaker = () => {
           symbol: {
             markerType: 'triangle',
             markerFill: 'yellow',
-            markerWidth: 8,
-            markerHeight: 10,
+            markerWidth: 14,
+            markerHeight: 16,
             markerRotation: -Number(heading)
           }
         })
@@ -114,8 +114,8 @@ export const useMapMaker = () => {
         symbol: {
           markerType: 'ellipse',
           markerFill: 'red',
-          markerWidth: 8,
-          markerHeight: 10
+          markerWidth: 13,
+          markerHeight: 13
         }
       })
 
@@ -147,8 +147,8 @@ export const useMapMaker = () => {
         symbol: {
           markerType: 'triangle',
           markerFill: 'red',
-          markerWidth: 8,
-          markerHeight: 10,
+          markerWidth: 14,
+          markerHeight: 16,
           markerRotation: -Number(data.heading)
         }
       })

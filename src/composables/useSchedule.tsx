@@ -1,5 +1,5 @@
 import { createTimingTask, deleteTimingTask, getTemplateList, getTimingTaskList } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import {
   ElButton,
   ElCheckbox,
@@ -73,6 +73,16 @@ export const useSchedule = () => {
           formData.value.conditions = [1, 2, 3, 4, 5, 6, 7]
         } else {
           formData.value.conditions = []
+        }
+      }
+
+      // 判断车辆
+      function haveCurrentCar() {
+        if (currentCar.value) {
+          return true
+        } else {
+          ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+          return false
         }
       }
 

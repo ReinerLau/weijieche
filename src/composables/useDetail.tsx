@@ -6,7 +6,6 @@ import {
   currentCar,
   currentController,
   currentControllerType,
-  haveCurrentCar,
   modes,
   pressedButtons
 } from '@/shared'
@@ -15,6 +14,7 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElDrawer,
+  ElMessage,
   ElOption,
   ElScrollbar,
   ElSelect
@@ -169,6 +169,16 @@ export const useDetail = (
       value: `${statusData.value.co || 0}ug/m³`
     }
   ])
+
+  // 判断车辆
+  function haveCurrentCar() {
+    if (currentCar.value) {
+      return true
+    } else {
+      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+      return false
+    }
+  }
 
   // 状态数据
   const statusData: Ref<Record<string, any>> = ref({})
