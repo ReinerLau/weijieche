@@ -107,7 +107,11 @@ export const useDetail = (
             placeholder={t('qing-xuan-ze-kong-zhi-qi-lei-xing')}
           >
             {Object.entries(controllerTypes.value).map(([key, value]) => (
-              <ElOption key={key} label={value} value={value}></ElOption>
+              <ElOption
+                key={key}
+                label={key === 'GAMEPAD' ? t('shou-bing') : t('fang-xiang-pan')}
+                value={value}
+              ></ElOption>
             ))}
           </ElSelect>
           <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>
