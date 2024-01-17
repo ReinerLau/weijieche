@@ -188,5 +188,19 @@
   "xin-zeng-ren-wu-dian": "新增任务点",
   "cha-xun": "查询",
   "zhong-zhi": "重置",
-  "cha-kan-geng-duo": "查看更多"
+  "cha-kan-geng-duo": "查看更多",
+  "qing-xuan-ze-shi-jian": "请选择时间",
+  "qing-xuan-ze-kai-shi-shi-jian": "请选择开始时间",
+  "qing-xuan-ze-jie-shu-shi-jian": "请选择结束时间",
+  "an-nian-cha-xun": "按年查询",
+  "an-yue-cha-xun": "按月查询",
+  "an-zhou-cha-xun": "按周查询",
+  "an-tian-cha-xun": "按天查询",
+  "an-fan-wei-cha-xun": "按范围查询",
+  "zui-jin-san-tian": "最近三天",
+  "zui-jin-yi-zhou": "最近一周",
+  "zui-jin-yi-ge-yue": "最近一个月",
+  "zui-jin-san-ge-yue": "最近三个月",
+  "zui-jin-yi-nian": "最近一年",
+  "zui-jin-san-nian": "最近三年"
 }

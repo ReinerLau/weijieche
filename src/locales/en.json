@@ -188,5 +188,19 @@
   "xin-zeng-ren-wu-dian": "Add task points",
   "cha-xun": "query",
   "zhong-zhi": "reset",
-  "cha-kan-geng-duo": "See more"
+  "cha-kan-geng-duo": "See more",
+  "an-fan-wei-cha-xun": "Query by range",
+  "an-nian-cha-xun": "Query by year",
+  "an-tian-cha-xun": "Query by day",
+  "an-yue-cha-xun": "Query by month",
+  "an-zhou-cha-xun": "Query by week",
+  "qing-xuan-ze-jie-shu-shi-jian": "Please select end time",
+  "qing-xuan-ze-kai-shi-shi-jian": "Please select a start time",
+  "qing-xuan-ze-shi-jian": "Please select a time",
+  "zui-jin-san-ge-yue": "last three months",
+  "zui-jin-san-nian": "The last three years",
+  "zui-jin-san-tian": "last three days",
+  "zui-jin-yi-ge-yue": "last month",
+  "zui-jin-yi-nian": "last year",
+  "zui-jin-yi-zhou": "last week"
 }

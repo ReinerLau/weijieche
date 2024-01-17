@@ -188,5 +188,19 @@
   "xin-zeng-ren-wu-dian": "Ajouter un point de tâche",
   "cha-xun": "Enquête",
   "zhong-zhi": "Réinitialisation",
-  "cha-kan-geng-duo": "Voir plus"
+  "cha-kan-geng-duo": "Voir plus",
+  "an-fan-wei-cha-xun": "Requête par plage",
+  "an-nian-cha-xun": "Requête par année",
+  "an-tian-cha-xun": "Requête par jour",
+  "an-yue-cha-xun": "Requête par mois",
+  "an-zhou-cha-xun": "Requête par semaine",
+  "qing-xuan-ze-jie-shu-shi-jian": "Veuillez sélectionner l'heure de fin",
+  "qing-xuan-ze-kai-shi-shi-jian": "Veuillez sélectionner une heure de début",
+  "qing-xuan-ze-shi-jian": "Veuillez sélectionner une heure",
+  "zui-jin-san-ge-yue": "les trois derniers mois",
+  "zui-jin-san-nian": "Les trois dernières années",
+  "zui-jin-san-tian": "trois derniers jours",
+  "zui-jin-yi-ge-yue": "le mois dernier",
+  "zui-jin-yi-nian": "l'année dernière",
+  "zui-jin-yi-zhou": "la semaine dernière"
 }
