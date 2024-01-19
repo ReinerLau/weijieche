@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: '/history',
       name: 'history',
-      component: () => import('@/views/HistoryView.vue'),
+      component: () => import('@/views/StatisticAnalysis'),
       meta: {
         title: ''
       }
