@@ -202,5 +202,22 @@
   "zui-jin-san-tian": "last three days",
   "zui-jin-yi-ge-yue": "last month",
   "zui-jin-yi-nian": "last year",
-  "zui-jin-yi-zhou": "last week"
+  "zui-jin-yi-zhou": "last week",
+  "xun-luo-ren-wu-ci-shu": "Number of patrol missions",
+  "ren-yuan-ru-qin": "personal intrusion",
+  "shang-ge-shi-jian-duan-yi-chang-zong-shu": "Total number of exceptions in the previous time period",
+  "tie-si-wang-shi-bie": "Barbed wire identification",
+  "wu-ren-zhi-ban": "No one on duty",
+  "yi-chang-qing-kuang": "abnormal situation",
+  "yi-chang-shu": "Abnormal number",
+  "yi-chang-zong-shu": "Total number of exceptions",
+  "shang-ge-shi-jian-duan": "last time period",
+  "shang-nian": "Last year",
+  "shang-yue": "last month",
+  "shang-zhou": "last week",
+  "xun-luo-ci-shu-zhe-xian-tu": "Line chart of patrol times",
+  "yi-chang-qing-kuang-dui-bi-qu-shi-tu": "Abnormal situation comparison trend chart",
+  "yi-chang-qing-kuang-lei-xing-zhan-bi-tu": "Exception type proportion chart",
+  "yi-chang-qing-kuang-zhu-zhuang-tu": "Exception histogram",
+  "zuo-tian": "yesterday"
 }

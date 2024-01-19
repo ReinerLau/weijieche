@@ -202,5 +202,22 @@
   "zui-jin-san-tian": "trois derniers jours",
   "zui-jin-yi-ge-yue": "le mois dernier",
   "zui-jin-yi-nian": "l'année dernière",
-  "zui-jin-yi-zhou": "la semaine dernière"
+  "zui-jin-yi-zhou": "la semaine dernière",
+  "xun-luo-ren-wu-ci-shu": "Nombre de missions de patrouille",
+  "ren-yuan-ru-qin": "intrusion personnelle",
+  "shang-ge-shi-jian-duan-yi-chang-zong-shu": "Nombre total d'exceptions au cours de la période précédente",
+  "tie-si-wang-shi-bie": "Identification des barbelés",
+  "wu-ren-zhi-ban": "Personne de service",
+  "yi-chang-qing-kuang": "situation anormale",
+  "yi-chang-shu": "Numéro anormal",
+  "yi-chang-zong-shu": "Nombre total d'exceptions",
+  "shang-ge-shi-jian-duan": "dernière période",
+  "shang-nian": "L'année dernière",
+  "shang-yue": "le mois dernier",
+  "shang-zhou": "la semaine dernière",
+  "xun-luo-ci-shu-zhe-xian-tu": "Graphique linéaire des temps de patrouille",
+  "yi-chang-qing-kuang-dui-bi-qu-shi-tu": "Tableau de tendance de comparaison des situations anormales",
+  "yi-chang-qing-kuang-lei-xing-zhan-bi-tu": "Tableau des proportions de type d'exception",
+  "yi-chang-qing-kuang-zhu-zhuang-tu": "Histogramme des exceptions",
+  "zuo-tian": "hier"
 }

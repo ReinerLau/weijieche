@@ -202,5 +202,22 @@
   "zui-jin-yi-ge-yue": "最近一个月",
   "zui-jin-san-ge-yue": "最近三个月",
   "zui-jin-yi-nian": "最近一年",
-  "zui-jin-san-nian": "最近三年"
+  "zui-jin-san-nian": "最近三年",
+  "xun-luo-ren-wu-ci-shu": "巡逻任务次数",
+  "yi-chang-zong-shu": "异常总数",
+  "shang-ge-shi-jian-duan-yi-chang-zong-shu": "上个时间段异常总数",
+  "yi-chang-qing-kuang": "异常情况",
+  "tie-si-wang-shi-bie": "铁丝网识别",
+  "ren-yuan-ru-qin": "人员入侵",
+  "wu-ren-zhi-ban": "无人值班",
+  "yi-chang-shu": "异常数",
+  "xun-luo-ci-shu-zhe-xian-tu": "巡逻次数折线图",
+  "yi-chang-qing-kuang-zhu-zhuang-tu": "异常情况柱状图",
+  "yi-chang-qing-kuang-dui-bi-qu-shi-tu": "异常情况对比趋势图",
+  "yi-chang-qing-kuang-lei-xing-zhan-bi-tu": "异常情况类型占比图",
+  "shang-nian": "上年",
+  "shang-zhou": "上周",
+  "shang-yue": "上月",
+  "zuo-tian": "昨天",
+  "shang-ge-shi-jian-duan": "上个时间段"
 }
