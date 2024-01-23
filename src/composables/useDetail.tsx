@@ -146,7 +146,7 @@ export const useDetail = (
     },
     {
       title: t('zao-yin'),
-      value: `${statusData.value.noise || 0} DB`
+      value: `${statusData.value.noise || 0}DB`
     },
     {
       title: t('yan-wu'),
@@ -171,6 +171,14 @@ export const useDetail = (
     {
       title: t('yi-yang-hua-tan'),
       value: `${statusData.value.co || 0}ug/m³`
+    },
+    {
+      title: t('zhao-du-ji'),
+      value: `${statusData.value.lightNum || 0}Lux`
+    },
+    {
+      title: t('yu-liang-ji'),
+      value: `${statusData.value.rainfallNum || 0}ppm`
     }
   ])
 
