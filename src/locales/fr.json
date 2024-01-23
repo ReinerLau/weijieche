@@ -219,5 +219,12 @@
   "yi-chang-qing-kuang-dui-bi-qu-shi-tu": "Tableau de tendance de comparaison des situations anormales",
   "yi-chang-qing-kuang-lei-xing-zhan-bi-tu": "Tableau des proportions de type d'exception",
   "yi-chang-qing-kuang-zhu-zhuang-tu": "Histogramme des exceptions",
-  "zuo-tian": "hier"
+  "zuo-tian": "hier",
+  "shang-chuan-cheng-gong": "Téléchargement réussi",
+  "shang-chuan-wen-jian": "télécharger des fichiers",
+  "yu-liang-ji": "pluviomètre",
+  "zhao-du-ji": "Illuminomètre",
+  "xuan-ze-lu-xian-wen-jian": "Sélectionnez le fichier d'itinéraire",
+  "shang-chuan-lu-xian": "Télécharger l'itinéraire",
+  "dang-qian-yi-chang-shu": "Nombre actuel d'exceptions"
 }

@@ -219,5 +219,12 @@
   "yi-chang-qing-kuang-dui-bi-qu-shi-tu": "Abnormal situation comparison trend chart",
   "yi-chang-qing-kuang-lei-xing-zhan-bi-tu": "Exception type proportion chart",
   "yi-chang-qing-kuang-zhu-zhuang-tu": "Exception histogram",
-  "zuo-tian": "yesterday"
+  "zuo-tian": "yesterday",
+  "shang-chuan-cheng-gong": "Upload successful",
+  "shang-chuan-wen-jian": "upload files",
+  "yu-liang-ji": "rain gauge",
+  "zhao-du-ji": "Illuminometer",
+  "xuan-ze-lu-xian-wen-jian": "Select route file",
+  "shang-chuan-lu-xian": "Upload route",
+  "dang-qian-yi-chang-shu": "Current number of exceptions"
 }

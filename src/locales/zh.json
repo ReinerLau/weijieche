@@ -219,5 +219,12 @@
   "shang-zhou": "上周",
   "shang-yue": "上月",
   "zuo-tian": "昨天",
-  "shang-ge-shi-jian-duan": "上个时间段"
+  "shang-ge-shi-jian-duan": "上个时间段",
+  "zhao-du-ji": "照度计",
+  "yu-liang-ji": "雨量计",
+  "shang-chuan-wen-jian": "上传文件",
+  "shang-chuan-cheng-gong": "上传成功",
+  "xuan-ze-lu-xian-wen-jian": "选择路线文件",
+  "shang-chuan-lu-xian": "上传路线",
+  "dang-qian-yi-chang-shu": "当前异常数"
 }
