@@ -58,6 +58,9 @@ devDependencies:
   '@iconify-json/clarity':
     specifier: ^1.1.9
     version: 1.1.9
+  '@iconify-json/dashicons':
+    specifier: ^1.1.8
+    version: 1.1.8
   '@iconify-json/heroicons':
     specifier: ^1.1.12
     version: 1.1.12
@@ -792,6 +795,12 @@ packages:
 
   /@iconify-json/clarity@1.1.9:
     resolution: {integrity: sha512-U9Pj2YKZ1zVp2pikA1EOstEPmv7NuXRZR8wc31VXrZUrlMjvSWMwvcr8/VIcMBVK6smb7z/Ab3iZLvCs3mtyBw==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/dashicons@1.1.8:
+    resolution: {integrity: sha512-WwES8MshrckLtWftVbUxcyUQ5i94U3ThDpMMTSBQs5jRIQy/sdYKSg8ihhoJ2a50trsqVOVMNC4jk57mQSqH/w==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
