@@ -1,4 +1,14 @@
-import { ElCard, ElCol, ElRow, type DateModelType, type DateOrDates, dayjs } from 'element-plus'
+import {
+  ElCard,
+  ElCol,
+  ElRow,
+  type DateModelType,
+  type DateOrDates,
+  dayjs,
+  ElContainer,
+  ElMain,
+  ElScrollbar
+} from 'element-plus'
 import { computed, defineComponent, onMounted, watch } from 'vue'
 import { useTimePicker } from '@/composables/useTimePicker'
 import { useChartLine } from '@/composables/useChartLine'
@@ -40,7 +50,6 @@ export default defineComponent({
         startTime = dayjs(val).startOf(queryTimeType.value).format('YYYY-MM-DD HH:mm:ss')
         endTime = dayjs(val).endOf(queryTimeType.value).format('YYYY-MM-DD HH:mm:ss')
       }
-
       return { startTime, endTime }
     }
 
@@ -48,13 +57,8 @@ export default defineComponent({
       if (params.value.startTime && params.value.endTime) {
         const lineRes = await getPatrolData(params.value.startTime, params.value.endTime)
         const errorRes = await getErrorData(params.value.startTime, params.value.endTime)
-        const patrolResData = {
-          title: t('xun-luo-ren-wu-ci-shu'),
-          data: lineRes.data
-        }
         const abnormalResData = {
-          title1: t('yi-chang-zong-shu'),
-          title2: `${
+          name: `${
             queryTimeType.value === 'year'
               ? t('shang-nian')
               : queryTimeType.value === 'week'
@@ -66,12 +70,13 @@ export default defineComponent({
               : t('shang-ge-shi-jian-duan')
           }`,
           data: lineRes.data,
-          abnormalNum: errorRes.data !== null ? errorRes.data.compare : 0
+          abnormalNum: errorRes.data !== null ? errorRes.data.compare : 0,
+          errorCount: errorRes.data !== null ? errorRes.data.errorCount : 0
         }
         if (lineRes.data.length === 0) {
-          initChart()
+          initChart(abnormalResData.name)
         } else {
-          updateLineData(patrolResData, abnormalResData)
+          updateLineData(abnormalResData)
         }
 
         if (errorRes.data) {
@@ -88,35 +93,45 @@ export default defineComponent({
     })
 
     return () => (
-      <div class=" h-[100vh]  p-4 box-border">
-        <div class="grid gap-4">
-          <TimePicker v-model:type={queryTimeType.value} v-model={queryTime.value}></TimePicker>
-          <ElRow gutter={20}>
-            <ElCol span={13}>
-              <ElCard header={t('xun-luo-ci-shu-zhe-xian-tu')}>
-                <PatrolChart />
-              </ElCard>
-            </ElCol>
-            <ElCol span={11}>
-              <ElCard header={t('yi-chang-qing-kuang-zhu-zhuang-tu')}>
-                <BarChart />
-              </ElCard>
-            </ElCol>
-          </ElRow>
-          <ElRow gutter={20}>
-            <ElCol span={13}>
-              <ElCard header={t('yi-chang-qing-kuang-dui-bi-qu-shi-tu')}>
-                <AbnormalChart />
-              </ElCard>
-            </ElCol>
-            <ElCol span={11} class="">
-              <ElCard header={t('yi-chang-qing-kuang-lei-xing-zhan-bi-tu')}>
-                <PieChart />
-              </ElCard>
-            </ElCol>
-          </ElRow>
-        </div>
-      </div>
+      <ElContainer class="h-[100vh] border ">
+        <ElMain>
+          <div>
+            <div class="min-h-[10vh] mb-3">
+              <TimePicker v-model:type={queryTimeType.value} v-model={queryTime.value}></TimePicker>
+            </div>
+            <div class="h-full">
+              <ElScrollbar height="80vh">
+                <div class="grid gap-5 box-border">
+                  <ElRow gutter={20}>
+                    <ElCol span={18} xs={12}>
+                      <ElCard header={t('xun-luo-ci-shu-qing-kuang')}>
+                        <PatrolChart />
+                      </ElCard>
+                    </ElCol>
+                    <ElCol span={6} xs={12}>
+                      <ElCard header={t('yi-chang-qing-kuang-lei-xing-dui-bi')}>
+                        <BarChart />
+                      </ElCard>
+                    </ElCol>
+                  </ElRow>
+                  <ElRow gutter={20}>
+                    <ElCol span={18} xs={12}>
+                      <ElCard header={t('yi-chang-qing-kuang-dui-bi')}>
+                        <AbnormalChart />
+                      </ElCard>
+                    </ElCol>
+                    <ElCol span={6} xs={12}>
+                      <ElCard header={t('yi-chang-qing-kuang-lei-xing-zhan-bi')}>
+                        <PieChart />
+                      </ElCard>
+                    </ElCol>
+                  </ElRow>
+                </div>
+              </ElScrollbar>
+            </div>
+          </div>
+        </ElMain>
+      </ElContainer>
     )
   }
 })
