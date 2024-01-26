@@ -114,7 +114,7 @@ export const usePieChart = () => {
   })
 
   const PieChart: FunctionalComponent = () => {
-    return <div ref={chartRef} class="h-72 w-full" />
+    return <div ref={chartRef} class="h-64 w-full" />
   }
 
   return {
