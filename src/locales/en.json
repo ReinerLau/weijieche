@@ -203,10 +203,18 @@
   "xuan-ze-lu-xian-wen-jian": "Select route file",
   "shang-chuan-lu-xian": "Upload route",
   "cao-kong-duan": "Control end",
-  "shou-ye-fen-xi": "Home page analysis",
   "tui-chu-deng-lu": "sign out",
   "xun-luo-ci-shu-qing-kuang": "Number of patrols",
   "yi-chang-qing-kuang-dui-bi": "Comparison of abnormal situations",
   "yi-chang-qing-kuang-lei-xing-dui-bi": "Comparison of exception types",
-  "yi-chang-qing-kuang-lei-xing-zhan-bi": "Proportion of exception types"
+  "yi-chang-qing-kuang-lei-xing-zhan-bi": "Proportion of exception types",
+  "jie-shu-shi-jian": "End Time",
+  "kai-shi-shi-jian": "Starting time",
+  "bu-zuo-chu-li": "No processing",
+  "jing-bao-xiang-qing": "Alert details",
+  "shou-dong-chu-li": "Manual processing",
+  "shou-ye-fen-xi": "Home page analysis",
+  "qie-huan-cheng-gong": "Switch successful",
+  "zi-zhu-jie-suo": "Autonomous unlocking",
+  "ting-zhi-shang-suo": "Stop locking"
 }

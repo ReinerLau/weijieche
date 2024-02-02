@@ -202,11 +202,19 @@
   "shang-chuan-cheng-gong": "上传成功",
   "xuan-ze-lu-xian-wen-jian": "选择路线文件",
   "shang-chuan-lu-xian": "上传路线",
-  "shou-ye-fen-xi": "首页分析",
   "tui-chu-deng-lu": "退出登录",
   "cao-kong-duan": "操控端",
   "xun-luo-ci-shu-qing-kuang": "巡逻次数情况",
   "yi-chang-qing-kuang-lei-xing-dui-bi": "异常情况类型对比",
   "yi-chang-qing-kuang-dui-bi": "异常情况对比",
-  "yi-chang-qing-kuang-lei-xing-zhan-bi": "异常情况类型占比"
+  "yi-chang-qing-kuang-lei-xing-zhan-bi": "异常情况类型占比",
+  "kai-shi-shi-jian": "开始时间",
+  "jie-shu-shi-jian": "结束时间",
+  "shou-dong-chu-li": "手动处理",
+  "bu-zuo-chu-li": "不作处理",
+  "jing-bao-xiang-qing": "警报详情",
+  "shou-ye-fen-xi": "首页分析",
+  "qie-huan-cheng-gong": "切换成功",
+  "zi-zhu-jie-suo": "自主解锁",
+  "ting-zhi-shang-suo": "停止上锁"
 }

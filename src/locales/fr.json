@@ -203,10 +203,18 @@
   "xuan-ze-lu-xian-wen-jian": "Sélectionnez le fichier d'itinéraire",
   "shang-chuan-lu-xian": "Télécharger l'itinéraire",
   "cao-kong-duan": "Fin du contrôle",
-  "shou-ye-fen-xi": "Analyse de la page d'accueil",
   "tui-chu-deng-lu": "se déconnecter",
   "xun-luo-ci-shu-qing-kuang": "Nombre de patrouilles",
   "yi-chang-qing-kuang-dui-bi": "Comparaison de situations anormales",
   "yi-chang-qing-kuang-lei-xing-dui-bi": "Comparaison des types d'exceptions",
-  "yi-chang-qing-kuang-lei-xing-zhan-bi": "Proportion de types d'exceptions"
+  "yi-chang-qing-kuang-lei-xing-zhan-bi": "Proportion de types d'exceptions",
+  "jie-shu-shi-jian": "Heure de fin",
+  "kai-shi-shi-jian": "Heure de départ",
+  "bu-zuo-chu-li": "Aucun traitement",
+  "jing-bao-xiang-qing": "Détails de l'alerte",
+  "shou-dong-chu-li": "Traitement manuel",
+  "shou-ye-fen-xi": "Analyse de la page d'accueil",
+  "qie-huan-cheng-gong": "Switch avec succès",
+  "zi-zhu-jie-suo": "Déverrouillage autonome",
+  "ting-zhi-shang-suo": "Arrêter de verrouiller"
 }
