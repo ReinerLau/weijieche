@@ -26,13 +26,22 @@ watch(currentCar, async () => {
 export const modes = {
   STOP: 1,
   AUTO: 4,
-  MANUAL: 3
+  MANUAL: 3,
+  AUTODEBLOCKING: 262144,
+  STOPLOCK: 65536
 }
 
 // 底盘模式
 export const baseModes = {
   AUTO: 129,
   MANUAL: 1,
+  STOP: 0
+}
+
+//判断车辆切换模式
+export const mode = {
+  AUTO: 1,
+  MANUAL: 2,
   STOP: 0
 }
 

@@ -26,10 +26,9 @@ export function patrolingRemote(code: string, data: any) {
 }
 
 //切换模式
-export function patrolingSetMode(code: string, data: any) {
+export function patrolingSetMode(code: string, mode: number) {
   return request({
-    url: `/robot-cruise/PatrolingSetMode/${code}`,
-    method: 'post',
-    data: data
+    url: `/robot-cruise/PatrolingSetMode/${code}/${mode}`,
+    method: 'post'
   })
 }

@@ -1,10 +1,11 @@
 import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
 import {
-  baseModes,
+  mode,
+  // baseModes,
   controllerTypes,
   currentCar,
   currentControllerType,
-  modes,
+  // modes,
   pressedButtons
 } from '@/shared'
 import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
@@ -123,10 +124,11 @@ export const useControlSection = () => {
   }
 
   // 设置模式
-  function setMode(type: keyof typeof baseModes) {
+  async function setMode(type: keyof typeof mode) {
     if (haveCurrentCar()) {
-      const data = { baseMode: baseModes[type], customMode: modes[type] }
-      patrolingSetMode(currentCar.value, data)
+      // const data = { baseMode: baseModes[type], customMode: modes[type] }
+      await patrolingSetMode(currentCar.value, mode[type])
+      ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })
     }
   }
 

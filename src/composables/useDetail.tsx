@@ -39,7 +39,9 @@ export const useDetail = (
   const modeText = {
     [modes.AUTO]: t('zi-zhu'),
     [modes.MANUAL]: t('shou-dong'),
-    [modes.STOP]: t('ting-zhi')
+    [modes.STOP]: t('ting-zhi'),
+    [modes.AUTODEBLOCKING]: t('zi-zhu-jie-suo'),
+    [modes.STOPLOCK]: t('ting-zhi-shang-suo')
   }
 
   // 当前模式显示的文字
