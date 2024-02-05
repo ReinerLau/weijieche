@@ -387,7 +387,8 @@ export const useConfig = () => {
       close-on-click-modal={false}
       close-on-press-escape={false}
       onClose={handleCancel}
-      width="80%"
+      width="50vw"
+      align-center
     >
       {{
         default: () => (

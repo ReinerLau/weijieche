@@ -20,7 +20,7 @@ export const useTheme = () => {
   // 切换主题按钮
   const ThemeController = () => (
     <ElTooltip content={t('zhu-ti')}>
-      <ElButton link onClick={() => toggleDark()} class="ml-3">
+      <ElButton link onClick={() => toggleDark()} class="mr-3">
         {isDark.value ? <IconPhSun /> : <IconPhMoon />}
       </ElButton>
     </ElTooltip>

@@ -19,7 +19,7 @@ export const useInternational = () => {
   // 切换语言下拉框组件
   const InternationalController = () => (
     <ElTooltip content={t('yu-yan')}>
-      <ElDropdown onCommand={handleChange} class="ml-3">
+      <ElDropdown onCommand={handleChange}>
         {{
           default: () => <IconHeroiconsLanguage />,
           dropdown: () => (

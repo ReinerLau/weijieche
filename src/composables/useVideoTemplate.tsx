@@ -46,7 +46,8 @@ export const useVideoTemplate = (url: Ref<string>) => {
         <ElDialog
           v-model={dialogVisible.value}
           title={t('shi-pin')}
-          width="50%"
+          width="50vw"
+          align-center
           class="flex flex-col"
           onClose={handleClose}
         >

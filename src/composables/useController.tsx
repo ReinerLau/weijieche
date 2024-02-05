@@ -147,7 +147,12 @@ export const useController = () => {
 
   // 设置映射的弹窗组件
   const ControllerMapDialog = () => (
-    <ElDialog v-model={controllerMapDialogVisible.value} title={t('kong-zhi-qi-ying-she')}>
+    <ElDialog
+      v-model={controllerMapDialogVisible.value}
+      title={t('kong-zhi-qi-ying-she')}
+      width="50vw"
+      align-center
+    >
       {{
         default: () => (
           <ElScrollbar>

@@ -220,7 +220,7 @@ export const usePointTask = () => {
           close-on-click-modal={false}
           close-on-press-escape={false}
           onClose={handleCancel}
-          width="60%"
+          width="50vw"
         >
           {{
             default: () => (

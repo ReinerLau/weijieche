@@ -93,7 +93,7 @@ export default defineComponent({
     })
 
     return () => (
-      <ElContainer class="h-[100vh] border ">
+      <ElContainer class="h-[100vh]  ">
         <ElMain>
           <div>
             <div class="min-h-[10vh] mb-3">
