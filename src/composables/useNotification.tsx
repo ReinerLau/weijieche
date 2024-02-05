@@ -39,7 +39,7 @@ interface websocketData {
 // 警报通知相关
 export const useNotification = () => {
   // 警报弹窗组件
-  const { TemplateAlarmDialog, alarmDialogVisible } = useTemplate()
+  const { TemplateAlarmDialog, alarmDialogVisible, handleAlarm } = useTemplate()
 
   // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
@@ -84,27 +84,28 @@ export const useNotification = () => {
   // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
 
+  const wsData = ref({})
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     const data: websocketData = JSON.parse(e.data)
     const { type, message, code, longitude, latitude } = data
     const messageBox = ref<any>(null)
-
     messageBox.value = ElMessageBox({
       title: '警告',
       message: code + ': ' + message,
       type: type as 'warning' | 'error',
       customClass: 'notification-message-box',
-      showCancelButton: true,
-      cancelButtonText: '关闭',
-      confirmButtonText: '处理',
-      beforeClose: (action, instance, done) => {
+      showCancelButton: false,
+      // cancelButtonText: '关闭',
+      confirmButtonText: '查看警报详情',
+      beforeClose: async (action, instance, done) => {
         if (action === 'confirm') {
           // 点击处理按钮时的逻辑
           alarmDialogVisible.value = true
+          wsData.value = data
         } else if (action === 'cancel') {
           // 点击关闭按钮时的逻辑
-          console.log('关闭')
+          await handleAlarm()
         }
         done()
       }
@@ -238,9 +239,10 @@ export const useNotification = () => {
       </ElTooltip>
 
       <audio ref={alarmRef} src="/unionAlarm.wav" hidden></audio>
-      <TemplateAlarmDialog />
+      <TemplateAlarmDialog wsdata={wsData.value} />
     </Fragment>
   )
+
   return {
     NotificationDrawer,
     NotificationController
