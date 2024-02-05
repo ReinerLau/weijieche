@@ -4,11 +4,21 @@ import {
   type DateOrDates,
   ElSelect,
   ElOption,
-  ElDatePicker
+  ElDatePicker,
+  ElButton,
+  ElTooltip,
+  ElScrollbar
 } from 'element-plus'
 import { ref, type FunctionalComponent, type Ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'
+
+import ExitFill from '~icons/mingcute/exit-fill'
+import HomePage from '~icons/dashicons/admin-site'
+
+import { useRouter } from 'vue-router'
+import { setCookie, setToken } from '@/utils'
+import { useTheme, useInternational } from '@/composables'
 
 interface QueryTimeItem {
   label: string
@@ -22,17 +32,19 @@ interface QueryTimeItems {
 }
 
 export const useTimePicker = () => {
+  const { ThemeController } = useTheme()
+  const { InternationalController } = useInternational()
   // 国际化
   const { t } = useI18n()
   const queryTimeItmes: QueryTimeItems = {
-    year: { label: t('an-nian-cha-xun'), value: 'year', format: 'YYYY 年' },
-    month: { label: t('an-yue-cha-xun'), value: 'month', format: 'YYYY 年 MM 月' },
-    week: { label: t('an-zhou-cha-xun'), value: 'week', format: 'YYYY 年 第 w 周' },
-    date: { label: t('an-tian-cha-xun'), value: 'date', format: 'YYYY 年 MM 月 DD 日' },
+    year: { label: t('an-nian-cha-xun'), value: 'year', format: 'YYYY' },
+    month: { label: t('an-yue-cha-xun'), value: 'month', format: 'YYYY - MM ' },
+    week: { label: t('an-zhou-cha-xun'), value: 'week', format: 'YYYY -  w ' },
+    date: { label: t('an-tian-cha-xun'), value: 'date', format: 'YYYY - MM - DD ' },
     daterange: {
       label: t('an-fan-wei-cha-xun'),
       value: 'daterange',
-      format: 'YYYY 年 MM 月 DD 日',
+      format: 'YYYY - MM - DD ',
       shortcuts: [
         {
           text: t('zui-jin-san-tian'),
@@ -62,6 +74,19 @@ export const useTimePicker = () => {
     }
   }
 
+  const router = useRouter()
+
+  function jumpHome() {
+    router.push('/home')
+  }
+
+  function exitHome() {
+    // 清除相关的登录信息和状态
+    setCookie('username', '', -1) // 将 cookie 设置为过期
+    setCookie('password', '', -1)
+    setToken('') // 清除 token
+    router.push('/login')
+  }
   const TimePicker: FunctionalComponent<{
     type?:
       | 'year'
@@ -79,38 +104,58 @@ export const useTimePicker = () => {
       emit('update:modelValue', val)
     }
     return (
-      <div class="flex items-center flex-1 gap-x-5">
-        <ElSelect
-          modelValue={props.type}
-          placeholder={t('qing-xuan-ze-shi-jian')}
-          clearable
-          onChange={(val: string) => {
-            emit('update:modelValue', null)
-            emit('update:type', val)
-          }}
-        >
-          {Object.keys(queryTimeItmes).map((type) => (
-            <ElOption
-              key={type}
-              value={queryTimeItmes[type].value}
-              label={queryTimeItmes[type].label}
-            ></ElOption>
-          ))}
-        </ElSelect>
-        {props.type && (
-          <ElDatePicker
-            class="flex-1"
-            modelValue={props.modelValue}
-            type={props.type}
-            format={queryTimeItmes[props.type].format}
-            shortcuts={queryTimeItmes[props.type].shortcuts}
-            placeholder={t('qing-xuan-ze-shi-jian')}
-            start-placeholder={t('qing-xuan-ze-kai-shi-shi-jian')}
-            end-placeholder={t('qing-xuan-ze-jie-shu-shi-jian')}
-            onUpdate:modelValue={handleChange}
-          />
-        )}
-      </div>
+      <ElScrollbar>
+        <div class="flex items-center  justify-between ">
+          <div class="flex flex-col ">
+            <ElSelect
+              class=" w-96 mr-10"
+              modelValue={props.type}
+              placeholder={t('qing-xuan-ze-shi-jian')}
+              clearable
+              onChange={(val: string) => {
+                emit('update:modelValue', null)
+                emit('update:type', val)
+              }}
+            >
+              {Object.keys(queryTimeItmes).map((type) => (
+                <ElOption
+                  key={type}
+                  value={queryTimeItmes[type].value}
+                  label={queryTimeItmes[type].label}
+                ></ElOption>
+              ))}
+            </ElSelect>
+
+            {props.type && (
+              <ElDatePicker
+                modelValue={props.modelValue}
+                type={props.type}
+                format={queryTimeItmes[props.type].format}
+                shortcuts={queryTimeItmes[props.type].shortcuts}
+                placeholder={t('qing-xuan-ze-shi-jian')}
+                start-placeholder={t('kai-shi-shi-jian')}
+                end-placeholder={t('jie-shu-shi-jian')}
+                onUpdate: modelValue={handleChange}
+                style={{ width: '384px' }}
+              />
+            )}
+          </div>
+          <div class="flex items-center ">
+            <ElTooltip content={t('cao-kong-duan')}>
+              <ElButton link onClick={() => jumpHome()}>
+                <HomePage />
+              </ElButton>
+            </ElTooltip>
+            <InternationalController />
+            <ThemeController />
+            <ElTooltip content={t('tui-chu-deng-lu')}>
+              <ElButton link onClick={() => exitHome()}>
+                <ExitFill />
+              </ElButton>
+            </ElTooltip>
+          </div>
+        </div>
+      </ElScrollbar>
     )
   }
 
