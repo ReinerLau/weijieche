@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
   useCarRelevant,
   useConfig,
@@ -10,10 +9,10 @@ import {
   useNotification,
   useResponsive,
   useTheme,
-  useHistory
+  useHistory,
+  useLogout
 } from '@/composables'
 
-import { cameraList } from '@/shared'
 import { onMounted, ref } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
@@ -25,7 +24,7 @@ const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
 })
 
 const { TopControl } = useControlSection()
-const { checkIsMobile, isMobile, mainRef } = useResponsive()
+const { checkIsMobile, mainRef, isMobile } = useResponsive()
 
 window.onresize = () => {
   checkIsMobile()
@@ -34,15 +33,19 @@ onMounted(() => {
   checkIsMobile()
 })
 
-//视频流地址切换
+// 视频流地址切换
 const cameraUrl = ref('')
-
 const { DetailSection, detailDrawerVisible } = useDetail({ isMobile }, { cameraUrl })
 const { HistoryController } = useHistory()
+const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
 const { MapContainer } = useMap()
+
+function handleCameraUrl(url: any) {
+  cameraUrl.value = url
+}
 </script>
 
 <template>
@@ -51,10 +54,11 @@ const { MapContainer } = useMap()
       <div class="h-full flex items-center justify-between">
         <CarRelevantController />
         <div class="flex items-center">
-          <NotificationController />
           <ThemeController />
           <InternationalController />
+          <NotificationController />
           <HistoryController />
+          <LogoutController />
         </div>
       </div>
     </el-header>
@@ -67,27 +71,9 @@ const { MapContainer } = useMap()
       </el-header>
       <el-main>
         <div ref="mainRef" class="h-full overflow-y-auto flex">
-          <div v-if="!isMobile && cameraList.length > 0" class="bg-black w-96 flex flex-col">
-            <el-select
-              v-model="cameraUrl"
-              class="m-2"
-              :placeholder="$t('shi-pin-qie-huan')"
-              size="large"
-            >
-              <el-option
-                v-for="item in cameraList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.rtsp"
-              />
-            </el-select>
-            <!-- <div class="flex-1" v-for="item in cameraList" :key="item.id"> -->
-            <CameraPlayer :url="cameraUrl" />
-            <!-- </div> -->
-          </div>
           <div class="h-full flex-1 flex flex-col">
             <div class="h-full">
-              <MapContainer />
+              <MapContainer @confirm="handleCameraUrl" :isMobile="isMobile" />
             </div>
             <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
               <i-mdi-arrow-drop-up class="text-3xl" />
