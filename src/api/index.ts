@@ -19,7 +19,7 @@ export function getCarInfo(code: string) {
 
 export function sendMavlinkMission(data: { x: number; y: number }[], id: string) {
   return request({
-    url: `/patrol-cruise/patrolingCruise/v2/${id}`,
+    url: `/robot-cruise/patrolingCruise/v2/${id}`,
     method: 'post',
     data
   })

@@ -22,3 +22,11 @@ export function createMissionTemplate(data: any) {
     data
   })
 }
+
+export function getTemplatePathList(params: object) {
+  return request({
+    url: '/robot-mission-template/v1',
+    method: 'get',
+    params
+  })
+}
