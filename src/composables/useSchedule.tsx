@@ -604,12 +604,84 @@ export const useSchedule = () => {
     }
   })
 
+  //上传文件
+  const fileUploadVisible = ref(false)
+  const FileUploadDialog = defineComponent({
+    emits: ['confirm'],
+    setup(props, { emit }) {
+      const uploadRef = ref<UploadInstance | null>(null)
+      const submitUpload = () => {
+        if (uploadRef.value) {
+          uploadRef.value.submit()
+        }
+      }
+
+      const fileData = ref({})
+      const handleSuccess = (response: any) => {
+        fileData.value = response.data
+        emit('confirm', fileData.value)
+      }
+
+      const beforeAvatarUpload = (rawFile: any) => {
+        const fileExtension = rawFile.name.split('.').pop().toLowerCase()
+        if (fileExtension !== 'plan') {
+          ElMessage.error(t('qing-shang-chuan-zheng-que-de-lu-xian-wen-jian'))
+          return false
+        }
+        ElMessage({
+          type: 'success',
+          message: t('shang-chuan-cheng-gong')
+        })
+        return true
+      }
+
+      const handleClose = () => {
+        // 关闭弹窗时重置上传组件的状态
+        if (uploadRef.value) {
+          uploadRef.value.clearFiles() // 清空上传的文件
+        }
+        fileUploadVisible.value = false // 关闭弹窗
+      }
+      return () => (
+        <ElDialog
+          v-model={fileUploadVisible.value}
+          title={t('shang-chuan-wen-jian')}
+          width="50vw"
+          align-center
+          onClose={handleClose}
+        >
+          {{
+            default: () => (
+              <ElUpload
+                ref={uploadRef}
+                headers={{ Authorization: getToken() }}
+                action={`http://${window.location.host}/api/vehicle-task/v1/plan/parse`}
+                limit={1}
+                auto-upload={false}
+                on-success={handleSuccess}
+                before-upload={beforeAvatarUpload}
+              >
+                <ElButton type="primary">{t('xuan-ze-lu-xian-wen-jian')}</ElButton>
+              </ElUpload>
+            ),
+            footer: () => (
+              <ElButton size="large" type="primary" class="w-full" onClick={submitUpload}>
+                {t('shang-chuan-lu-xian')}
+              </ElButton>
+            )
+          }}
+        </ElDialog>
+      )
+    }
+  })
   return {
     ScheduleDialog,
     dialogVisible,
     ScheduleSearchDialog,
     searchDialogVisible,
     PatrolTaskDialog,
-    patrolTaskVisible
+    patrolTaskVisible,
+    FileUploadDialog,
+    fileUploadVisible
   }
 }
