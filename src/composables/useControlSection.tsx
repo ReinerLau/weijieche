@@ -1,4 +1,4 @@
-import { patrolingCruise, patrolingSetMode, patrolingVoice } from '@/api'
+import { patrolingCruise, patrolingSetMode } from '@/api'
 import {
   mode,
   // baseModes,
@@ -103,18 +103,18 @@ export const useControlSection = () => {
   }
 
   // 语音是否开启
-  const voice = ref(false)
+  // const voice = ref(false)
 
   // 切换语音开启
-  function toggleVoice(value: boolean) {
-    if (haveCurrentCar()) {
-      const data = {
-        rid: currentCar.value,
-        type: value ? '0' : '1'
-      }
-      patrolingVoice(data)
-    }
-  }
+  // function toggleVoice(value: boolean) {
+  //   if (haveCurrentCar()) {
+  //     const data = {
+  //       rid: currentCar.value,
+  //       type: value ? '0' : '1'
+  //     }
+  //     patrolingVoice(data)
+  //   }
+  // }
 
   // 可选模式值
   const modeKey = {
@@ -181,11 +181,11 @@ export const useControlSection = () => {
       },
       disabled: lowLight.value || highLight.value ? true : false
     },
-    {
-      title: t('yu-yin'),
-      ref: voice,
-      event: toggleVoice
-    },
+    // {
+    //   title: t('yu-yin'),
+    //   ref: voice,
+    //   event: toggleVoice
+    // },
 
     {
       title: t('ji-guang-fa-san-qi'),
