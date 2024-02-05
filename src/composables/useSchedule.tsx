@@ -16,16 +16,18 @@ import {
   ElSelect,
   ElSwitch,
   ElTable,
-  ElTableColumn
+  ElTableColumn,
+  ElUpload,
+  type UploadInstance
 } from 'element-plus'
 // 深拷贝
 // https://lodash.com/docs/4.17.15#cloneDeep
 import { cloneDeep } from 'lodash'
-import { computed, defineComponent, onMounted, ref, toRaw, watch } from 'vue'
+import { computed, defineComponent, ref, toRaw, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getPatrolTask } from '@/api'
-import { parseTime } from '@/utils'
+import { getToken, parseTime } from '@/utils'
 import { useVideoTemplate } from '@/composables'
 
 // 重置表单数据
@@ -43,6 +45,16 @@ export const useSchedule = () => {
   // 国际化
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
+
+  // 判断车辆
+  function haveCurrentCar() {
+    if (currentCar.value) {
+      return true
+    } else {
+      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
+      return false
+    }
+  }
 
   // 新建定时任务弹窗组件是否可见
   const dialogVisible = ref(false)
@@ -73,16 +85,6 @@ export const useSchedule = () => {
           formData.value.conditions = [1, 2, 3, 4, 5, 6, 7]
         } else {
           formData.value.conditions = []
-        }
-      }
-
-      // 判断车辆
-      function haveCurrentCar() {
-        if (currentCar.value) {
-          return true
-        } else {
-          ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-          return false
         }
       }
 
@@ -142,17 +144,24 @@ export const useSchedule = () => {
       // 模板列表数据
       const templateList = ref([])
 
-      // 首次加载获取模板数据
-      onMounted(async () => {
-        const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
-        templateList.value = res.data || []
+      // 监听弹窗加载获取模板数据
+      watch(dialogVisible, async (val) => {
+        if (val) {
+          const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
+          templateList.value = res.data || []
+        }
       })
 
       return () => (
-        <ElDialog v-model={dialogVisible.value} title={t('ding-shi-ren-wu')} width="80%">
+        <ElDialog
+          v-model={dialogVisible.value}
+          title={t('ding-shi-ren-wu')}
+          width="50vw"
+          align-center
+        >
           {{
             default: () => (
-              <ElForm label-width={250} model={formData.value}>
+              <ElForm label-width={150} model={formData.value}>
                 <ElFormItem prop="missionId" label={t('lu-jing-mo-ban')}>
                   <ElSelect
                     v-model={formData.value.missionId}
@@ -279,7 +288,12 @@ export const useSchedule = () => {
       ]
 
       return () => (
-        <ElDialog v-model={searchDialogVisible.value} title={t('ding-shi-ren-wu')} width="80%">
+        <ElDialog
+          v-model={searchDialogVisible.value}
+          title={t('ding-shi-ren-wu')}
+          width="50vw"
+          align-center
+        >
           {{
             default: () => (
               <ElTable height="50vh" data={list.value} highlight-current-row>
@@ -510,7 +524,8 @@ export const useSchedule = () => {
             v-model={patrolTaskVisible.value}
             onClose={handleVisible}
             title={t('xun-luo-ren-wu')}
-            width="80%"
+            width="50vw"
+            align-center
           >
             {{
               header: () => (
