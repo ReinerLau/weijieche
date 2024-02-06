@@ -100,28 +100,40 @@ export default defineComponent({
               <TimePicker v-model:type={queryTimeType.value} v-model={queryTime.value}></TimePicker>
             </div>
             <div class="h-full">
-              <ElScrollbar height="80vh">
+              <ElScrollbar height="82vh">
                 <div class="grid gap-5 box-border">
                   <ElRow gutter={20}>
                     <ElCol span={18} xs={12}>
-                      <ElCard header={t('xun-luo-ci-shu-qing-kuang')}>
+                      <ElCard
+                        class=" whitespace-nowrap overflow-hidden text-ellipsis"
+                        header={t('xun-luo-ci-shu-qing-kuang')}
+                      >
                         <PatrolChart />
                       </ElCard>
                     </ElCol>
                     <ElCol span={6} xs={12}>
-                      <ElCard header={t('yi-chang-qing-kuang-lei-xing-dui-bi')}>
+                      <ElCard
+                        class=" whitespace-nowrap overflow-hidden text-ellipsis"
+                        header={t('yi-chang-qing-kuang-lei-xing-dui-bi')}
+                      >
                         <BarChart />
                       </ElCard>
                     </ElCol>
                   </ElRow>
                   <ElRow gutter={20}>
                     <ElCol span={18} xs={12}>
-                      <ElCard header={t('yi-chang-qing-kuang-dui-bi')}>
+                      <ElCard
+                        class=" whitespace-nowrap overflow-hidden text-ellipsis"
+                        header={t('yi-chang-qing-kuang-dui-bi')}
+                      >
                         <AbnormalChart />
                       </ElCard>
                     </ElCol>
                     <ElCol span={6} xs={12}>
-                      <ElCard header={t('yi-chang-qing-kuang-lei-xing-zhan-bi')}>
+                      <ElCard
+                        class=" whitespace-nowrap overflow-hidden text-ellipsis"
+                        header={t('yi-chang-qing-kuang-lei-xing-zhan-bi')}
+                      >
                         <PieChart />
                       </ElCard>
                     </ElCol>
