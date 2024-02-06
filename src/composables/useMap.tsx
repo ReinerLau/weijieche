@@ -15,7 +15,9 @@ import {
   ElDropdownMenu,
   ElInput,
   ElMessage,
+  ElOption,
   ElScrollbar,
+  ElSelect,
   ElSwitch
 } from 'element-plus'
 import * as maptalks from 'maptalks'
@@ -27,6 +29,9 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
+import CameraPlayer from '@/components/CameraPlayer.vue'
+import { cameraList } from '@/shared'
+
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
 
@@ -34,9 +39,18 @@ export const isRecord = ref(false)
 export const isRecordPath = ref(false)
 export const useMap = () => {
   const MapContainer = defineComponent({
-    setup() {
+    emits: ['confirm'],
+    props: {
+      isMobile: {
+        type: Boolean,
+        required: true
+      }
+    },
+    setup(props, { emit }) {
       // 国际化相关
       const { t } = useI18n()
+
+      // const { isMobile } = useResponsive()
 
       // 模板相关
       const {
@@ -53,7 +67,9 @@ export const useMap = () => {
         searchDialogVisible: scheduleSearchDialogVisible,
         ScheduleSearchDialog,
         PatrolTaskDialog,
-        patrolTaskVisible: patrolTaskDialogVisible
+        patrolTaskVisible: patrolTaskDialogVisible,
+        FileUploadDialog,
+        fileUploadVisible: fileUploadDialogVisible
       } = useSchedule()
 
       const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
@@ -156,6 +172,7 @@ export const useMap = () => {
           addTaskPointToLayer(taskPoint)
           clearDrawTool()
           initTaskPoints()
+          console.log(pointCoordinates)
         })
       }
 
@@ -194,12 +211,16 @@ export const useMap = () => {
 
           alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
           alarmMarkerLayer.addTo(map)
+
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
+
           pathLayer = new maptalks.VectorLayer('line')
           pathLayer.addTo(map)
+
           taskPointLayer = new maptalks.VectorLayer('task-point')
           taskPointLayer.addTo(map)
+
           patrolpathLayer = new maptalks.VectorLayer('patrol')
           patrolpathLayer.addTo(map)
         }
@@ -211,6 +232,7 @@ export const useMap = () => {
         drawTool.addTo(map).disable()
       }
 
+      const isHomePath = ref(false)
       // 按钮组
       const toolbarItems = [
         {
@@ -221,7 +243,7 @@ export const useMap = () => {
               event: () => {
                 clearLine()
                 clearDrawTool()
-                handleCreatePath()
+                handleCreatePath('#ff931e', drawToolEvents.PATH_POINT_DRAW_END.event)
                 isRecord.value = false
                 isRecordPath.value = false
               }
@@ -255,6 +277,15 @@ export const useMap = () => {
                   isRecordPath.value = true
                 }
               }
+            },
+            {
+              title: t('shang-chuan-lu-xian'),
+              event: () => {
+                if (endRecording()) {
+                  clearDrawTool()
+                  fileUploadDialogVisible.value = true
+                }
+              }
             }
           ]
         },
@@ -264,7 +295,7 @@ export const useMap = () => {
             if (endRecording()) {
               clearLine()
               clearDrawTool()
-              handleCreatePoint()
+              handleCreatePath('#f3072f', drawToolEvents.TASK_POINT_DRAW_END.event)
             }
           }
         },
@@ -289,19 +320,20 @@ export const useMap = () => {
                 if (endRecording()) {
                   clearDrawTool()
                   clearLine()
+                  isHomePath.value = true
                   handleCreateHomePath()
                 }
               }
             },
-            {
-              title: t('bao-cun-fan-hang-lu-xian'),
-              event: () => {
-                if (haveHomePath()) {
-                  clearDrawTool()
-                  handleSaveHomePath()
-                }
-              }
-            },
+            // {
+            //   title: t('bao-cun-fan-hang-lu-xian'),
+            //   event: () => {
+            //     if (haveHomePath()) {
+            //       clearDrawTool()
+            //       handleSaveHomePath(true, onePoint)
+            //     }
+            //   }
+            // },
             {
               title: t('kai-shi-zhi-hang-fan-hang'),
               event: async () => {
@@ -499,9 +531,12 @@ export const useMap = () => {
         }
       }
 
+      let onePoint: maptalks.Marker | undefined
       const pathPointList: any = []
       // 确定选择模板路线在地图上显示
       function handleConfirmTemplate(template: any) {
+        entryPoint = undefined
+        onePoint = undefined
         pathPointList.length = 0
         clearDrawTool()
         clearLine()
@@ -522,31 +557,33 @@ export const useMap = () => {
               markerWidth: 13,
               markerHeight: 13
             }
-          }).setMenu({
-            items: [
-              {
-                item: t('xin-zeng-ren-wu-dian'),
-                click: () => {
-                  const pointCoordinates = {
-                    x: pathPoint.getCoordinates().y,
-                    y: pathPoint.getCoordinates().x
-                  }
-                  handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-                    pathLayer.addGeometry(pathPoint)
-                    // pathPoint.setSymbol({
-                    //   textName: index + 1,
-                    //   markerType: 'ellipse',
-                    //   markerFill: '#138C46',
-                    //   markerWidth: 10,
-                    //   markerHeight: 10
-                    // })
-                    clearDrawTool()
-                    initTaskPoints()
-                  })
-                }
-              }
-            ]
           })
+            .setMenu({
+              items: [
+                {
+                  item: t('xin-zeng-ren-wu-dian'),
+                  click: () => {
+                    const pointCoordinates = {
+                      x: pathPoint.getCoordinates().y,
+                      y: pathPoint.getCoordinates().x
+                    }
+                    handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+                      pathLayer.addGeometry(pathPoint)
+                      clearDrawTool()
+                      initTaskPoints()
+                    })
+                  }
+                },
+                {
+                  item: '添加返航点',
+                  click: handleCreateHomePath
+                }
+              ]
+            })
+            .on('click', (e: any) => {
+              entryPoint = e.target
+              onePoint = e.target
+            })
           addPathPointToLayer(pathPoint)
           const pointCoordinates = {
             x: pathPoint.getCoordinates().y,
@@ -580,6 +617,63 @@ export const useMap = () => {
           // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html#addGeometry
           pathLayer.addGeometry(connectLine)
         }
+      }
+
+      //上传文件后路线显示地图上
+      function handleConfirmFilePath(data: any) {
+        entryPoint = undefined
+        onePoint = undefined
+        pathLayer.clear()
+        pathPointList.length = 0
+        clearDrawTool()
+        clearLine()
+        fileUploadDialogVisible.value = false
+        const coordinates: number[][] = data.map((item: any) => [item.y, item.x])
+        coordinates.forEach((coordinate, index) => {
+          const pathPoint = new maptalks.Marker(coordinate, {
+            symbol: {
+              textName: index + 1,
+              markerType: 'ellipse',
+              markerFill: '#ff930e',
+              markerWidth: 13,
+              markerHeight: 13
+            }
+          })
+            .setMenu({
+              items: [
+                {
+                  item: t('she-zhi-wei-ren-wu-dian'),
+                  click: () => {
+                    const pointCoordinates = {
+                      x: pathPoint.getCoordinates().y,
+                      y: pathPoint.getCoordinates().x
+                    }
+                    handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+                      pathLayer.addGeometry(pathPoint)
+                      clearDrawTool()
+                      initTaskPoints()
+                    })
+                  }
+                },
+                {
+                  item: t('she-zhi-wei-fan-hang-dian'),
+                  click: handleCreateHomePath
+                }
+              ]
+            })
+            .on('click', (e: any) => {
+              entryPoint = e.target
+              onePoint = e.target
+            })
+          addPathPointToLayer(pathPoint)
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          pathPointList.push(pointCoordinates)
+        })
+
+        jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
       }
 
       const pathPointArray: any = []
@@ -690,6 +784,29 @@ export const useMap = () => {
         }
       }
 
+      // 开始新建路线/任务点
+      function handleCreatePath(color: string, event: any) {
+        entryPoint = undefined
+        drawTool.setMode('Point')
+        drawTool.setSymbol({
+          markerType: 'ellipse',
+          markerFill: color
+        })
+        drawTool.enable()
+        drawTool.on('drawend', event)
+      }
+
+      // 开始新建返航路线
+      function handleCreateHomePath() {
+        drawTool.setMode('LineString')
+        // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
+        drawTool.setSymbol({
+          lineColor: '#f3072f'
+        })
+        drawTool.enable()
+        drawTool.on('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
+      }
+
       // 保存返航路线之前校验地图上是否存在返航路线
       function haveHomePath() {
         // https://maptalks.org/maptalks.js/api/1.x/LineString.html#getCoordinates
@@ -710,46 +827,11 @@ export const useMap = () => {
         e.geometry.config({
           arrowStyle: 'classic'
         })
-        pathLayer.addGeometry(e.geometry)
+        homePathLayer.addGeometry(e.geometry)
         e.geometry.startEdit()
         drawTool.disable()
         drawTool.off('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
         creatingHomePath = e.geometry
-      }
-
-      // 开始新建路线
-      function handleCreatePath() {
-        entryPoint = undefined
-        drawTool.setMode('Point')
-        drawTool.setSymbol({
-          markerType: 'ellipse',
-          markerFill: '#ff931e'
-        })
-        drawTool.enable()
-        drawTool.on('drawend', drawToolEvents.PATH_POINT_DRAW_END.event)
-      }
-
-      //开始新建任务点
-      function handleCreatePoint() {
-        entryPoint = undefined
-        drawTool.setMode('Point')
-        drawTool.setSymbol({
-          markerType: 'ellipse',
-          markerFill: '#f3072f'
-        })
-        drawTool.enable()
-        drawTool.on('drawend', drawToolEvents.TASK_POINT_DRAW_END.event)
-      }
-
-      // 开始新建返航路线
-      function handleCreateHomePath() {
-        drawTool.setMode('LineString')
-        // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
-        drawTool.setSymbol({
-          lineColor: '#ff931e'
-        })
-        drawTool.enable()
-        drawTool.on('drawend', homePathDrawEndEvent)
       }
 
       // 初始化右键菜单
@@ -760,41 +842,65 @@ export const useMap = () => {
             {
               item: t('jie-shu'),
               click: clearDrawTool
+            },
+            {
+              item: t('bao-cun-fan-hang-lu-xian'),
+              click: () => {
+                if (haveHomePath()) {
+                  clearDrawTool()
+                  handleSaveHomePath(onePoint)
+                }
+              }
             }
           ]
         })
       }
 
-      // 清空并禁用绘制工具所有状态，包括对事件的监听
-      function clearDrawTool() {
-        drawTool.disable()
-        for (const key in drawToolEvents) {
-          const event = drawToolEvents[key as keyof typeof drawToolEvents].event
-          const type = drawToolEvents[key as keyof typeof drawToolEvents].type
-          drawTool.off(type, event)
-        }
-      }
-
       // 保存返航路线
-      async function handleSaveHomePath() {
+      async function handleSaveHomePath(p: any) {
+        homePathLayer.clear()
+
         if (creatingHomePath) {
-          const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
-          const entryPoint = coordinates[0]
-          const homePoint = coordinates.slice(-1)[0]
-          const data = {
-            enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
-            gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
-            mission: JSON.stringify(coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))),
-            name: new Date().toString(),
-            carStop: 1
+          if (isHomePath.value) {
+            const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
+            const entryPoint = coordinates[0]
+            const homePoint = coordinates.slice(-1)[0]
+            const data = {
+              enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
+              gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
+              mission: JSON.stringify(
+                coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))
+              ),
+              name: new Date().toString(),
+              carStop: 1
+            }
+            const res: any = await createHomePath(data)
+            ElMessage({ type: 'success', message: res.message })
+            creatingHomePath = undefined
+            initHomePath()
+            isHomePath.value = false
+          } else if (p) {
+            const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
+            const entryPoint = p.getCoordinates()
+            const homePoint = coordinates.slice(-1)[0]
+            const data = {
+              enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
+              gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
+              mission: JSON.stringify(
+                coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))
+              ),
+              name: new Date().toString(),
+              carStop: 1
+            }
+            const res: any = await createHomePath(data)
+            ElMessage({ type: 'success', message: res.message })
+            creatingHomePath = undefined
+            initHomePath()
+          } else {
+            ElMessage.error(t('qing-cong-lu-xian-dian-kai-shi-hui-zhi'))
           }
-          const res: any = await createHomePath(data)
-          ElMessage({
-            type: 'success',
-            message: res.message
-          })
-          clearLine()
-          initHomePath()
+        } else {
+          ElMessage.error(t('bao-cun-fan-hang-lu-xian-chu-cuo'))
         }
       }
 
@@ -860,6 +966,16 @@ export const useMap = () => {
         })
       }
 
+      // 清空并禁用绘制工具所有状态，包括对事件的监听
+      function clearDrawTool() {
+        drawTool.disable()
+        for (const key in drawToolEvents) {
+          const event = drawToolEvents[key as keyof typeof drawToolEvents].event
+          const type = drawToolEvents[key as keyof typeof drawToolEvents].type
+          drawTool.off(type, event)
+        }
+      }
+
       // 是否开启调试模式
       const debugMode = ref(false)
       // 开启调试模式监听鼠标移动事件，关闭调试模式移除鼠标移动事件
@@ -899,6 +1015,12 @@ export const useMap = () => {
         initHomePath()
         initTaskPoints()
       })
+
+      // 视频流地址切换
+      const cameraUrl = ref('')
+      function handleCameraUrl(url: string) {
+        emit('confirm', url)
+      }
       return () => (
         <div class="h-full relative">
           <div class="absolute top-5 right-5 z-10 w-3/4 bg-[#0c2d46] border border-[#1c91c7] rounded p-2">
@@ -938,6 +1060,7 @@ export const useMap = () => {
               </div>
             </ElScrollbar>
           </div>
+
           <div class="absolute bottom-5 right-5 z-10 text-right">
             <ElSwitch
               v-model={debugMode.value}
@@ -977,13 +1100,36 @@ export const useMap = () => {
               <IconMdiSignalOff />
             </div>
           ) : null}
-          <div class="h-full" ref={mapRef} />
+          <div class="h-full" ref={mapRef}></div>
+          <div
+            v-show={!props.isMobile && cameraList.value.length > 0}
+            class="absolute top-5 left-1 z-10 w-1/5  bg-[#0c2d46] "
+          >
+            <div class="bg-black flex flex-col h-[40vh]">
+              <ElSelect
+                v-model={cameraUrl.value}
+                class="m-2"
+                placeholder={t('shi-pin-qie-huan')}
+                size="large"
+                onChange={handleCameraUrl}
+              >
+                {cameraList.value.map((item: any) => (
+                  <ElOption key={item.id} label={item.name} value={item.rtsp}></ElOption>
+                ))}
+              </ElSelect>
+              <div class="h-full">
+                <CameraPlayer url={cameraUrl.value} />
+              </div>
+            </div>
+          </div>
+
           <TemplateDialog onConfirm={handleConfirm} />
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
           <ScheduleDialog />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
           <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
+          <FileUploadDialog onConfirm={handleConfirmFilePath} />
         </div>
       )
     }
