@@ -41,28 +41,28 @@ export const useControlSection = () => {
   // 每个模式数据结构的类型声明
   interface MenuItem {
     title: string
-    subItems: { title: string; event?: () => void }[]
+    event?: () => void
   }
 
   // 模式选项
   const menuItems: ComputedRef<MenuItem[]> = computed(() => [
+    // {
+    //   title: t('mo-shi'),
+    //   subItems: [
     {
-      title: t('mo-shi'),
-      subItems: [
-        {
-          title: t('shou-dong'),
-          event: () => setMode(modeKey.MANUAL)
-        },
-        {
-          title: t('zi-zhu'),
-          event: () => setMode(modeKey.AUTO)
-        },
-        {
-          title: t('ting-zhi'),
-          event: () => setMode(modeKey.STOP)
-        }
-      ]
+      title: t('shou-dong'),
+      event: () => setMode(modeKey.MANUAL)
+    },
+    {
+      title: t('zi-zhu'),
+      event: () => setMode(modeKey.AUTO)
+    },
+    {
+      title: t('ting-zhi'),
+      event: () => setMode(modeKey.STOP)
     }
+    //   ]
+    // }
   ])
 
   interface SwitchGroup {
@@ -146,6 +146,8 @@ export const useControlSection = () => {
         param4: 'ff'
       }
       patrolingCruise(data)
+    } else {
+      disperseMode.value = false
     }
   }
 
@@ -157,6 +159,8 @@ export const useControlSection = () => {
       event: (value: boolean) => {
         if (haveCurrentCar()) {
           toggleLight(value, lightModes.LOWBEAM)
+        } else {
+          lowLight.value = false
         }
       },
       disabled: highLight.value || autoLight.value ? true : false
@@ -167,6 +171,8 @@ export const useControlSection = () => {
       event: (value: boolean) => {
         if (haveCurrentCar()) {
           toggleLight(value, lightModes.HIGHBEAM)
+        } else {
+          highLight.value = false
         }
       },
       disabled: lowLight.value || autoLight.value ? true : false
@@ -177,6 +183,8 @@ export const useControlSection = () => {
       event: (value: boolean) => {
         if (haveCurrentCar()) {
           toggleLight(value, lightModes.AUTOBEAM)
+        } else {
+          autoLight.value = false
         }
       },
       disabled: lowLight.value || highLight.value ? true : false
@@ -197,22 +205,13 @@ export const useControlSection = () => {
   // 模式切换组件
   const Menus = () => (
     <Fragment>
-      {menuItems.value.map((menuItem) => (
-        <ElSubMenu index={menuItem.title}>
-          {{
-            title: () => menuItem.title,
-            default: () => (
-              <Fragment>
-                {menuItem.subItems.map((item) => (
-                  <ElMenuItem index={item.title} onClick={item.event}>
-                    {item.title}
-                  </ElMenuItem>
-                ))}
-              </Fragment>
-            )
-          }}
-        </ElSubMenu>
-      ))}
+      <Fragment>
+        {menuItems.value.map((item) => (
+          <ElMenuItem index={item.title} onClick={item.event}>
+            {item.title}
+          </ElMenuItem>
+        ))}
+      </Fragment>
     </Fragment>
   )
 
