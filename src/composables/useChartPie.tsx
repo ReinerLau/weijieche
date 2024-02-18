@@ -44,9 +44,9 @@ export const usePieChart = () => {
           },
           emphasis: {
             label: {
-              show: true,
-              fontSize: 12,
-              fontWeight: 'bold'
+              // show: true,
+              // fontSize: 12,
+              // fontWeight: 'bold'
             }
           },
           labelLine: {
