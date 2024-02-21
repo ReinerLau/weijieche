@@ -77,7 +77,7 @@ export const useTimePicker = () => {
   const router = useRouter()
 
   function jumpHome() {
-    router.push('/home')
+    router.push('/')
   }
 
   function exitHome() {
@@ -106,7 +106,7 @@ export const useTimePicker = () => {
     return (
       <ElScrollbar>
         <div class="flex items-center  justify-between ">
-          <div class="flex flex-col ">
+          <div class="flex flex-col">
             <ElSelect
               class=" w-96 mr-10"
               modelValue={props.type}
@@ -125,7 +125,6 @@ export const useTimePicker = () => {
                 ></ElOption>
               ))}
             </ElSelect>
-
             {props.type && (
               <ElDatePicker
                 modelValue={props.modelValue}
@@ -136,7 +135,7 @@ export const useTimePicker = () => {
                 start-placeholder={t('kai-shi-shi-jian')}
                 end-placeholder={t('jie-shu-shi-jian')}
                 onUpdate: modelValue={handleChange}
-                style={{ width: '384px' }}
+                style={{ width: '384px', marginTop: '10px' }}
               />
             )}
           </div>

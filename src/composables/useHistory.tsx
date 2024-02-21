@@ -10,7 +10,7 @@ export const useHistory = () => {
   const { t } = useI18n()
 
   function jumpHistory() {
-    router.push('/')
+    router.push('/home')
   }
 
   // 切换按钮
