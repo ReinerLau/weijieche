@@ -102,6 +102,8 @@ export const usePointTask = () => {
         }
       ]
 
+      const cameraAngleList: any = []
+
       // 表单字段
       const formFields: ComputedRef<formField[]> = computed(() => {
         return [
@@ -155,15 +157,29 @@ export const usePointTask = () => {
             prop: 'cameraAngle',
             title: form.value['type'] === 3 ? '' : t('she-xiang-tou-zhuan-dong-jiao-du'),
             slot: () => (
-              <ElSlider
+              // <ElSlider
+              //   v-model={form.value['cameraAngle']}
+              //   class="flex-1"
+              //   step={1}
+              //   min={0}
+              //   max={360}
+              //   show-input-controls={false}
+              //   v-show={form.value['type'] === 3 ? false : true}
+              // />
+              <ElSelect
+                class="w-full"
                 v-model={form.value['cameraAngle']}
-                class="flex-1"
-                step={1}
-                min={0}
-                max={360}
-                show-input-controls={false}
-                v-show={form.value['type'] === 3 ? false : true}
-              />
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                reserve-keyword={false}
+                placeholder="请填写x,y值,逗号分隔，如：1,2"
+              >
+                {cameraAngleList.map((item: any) => (
+                  <ElOption key={item} label={item.label} value={item.value}></ElOption>
+                ))}
+              </ElSelect>
             )
           }
         ]
