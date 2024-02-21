@@ -91,13 +91,13 @@ export const useNotification = () => {
     const { type, message, code, longitude, latitude } = data
     const messageBox = ref<any>(null)
     messageBox.value = ElMessageBox({
-      title: '警告',
+      title: t('jing-bao'),
       message: code + ': ' + message,
       type: type as 'warning' | 'error',
       customClass: 'notification-message-box',
       showCancelButton: false,
       // cancelButtonText: '关闭',
-      confirmButtonText: '查看警报详情',
+      confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
       beforeClose: async (action, instance, done) => {
         if (action === 'confirm') {
           // 点击处理按钮时的逻辑

@@ -229,7 +229,7 @@ export const useTemplate = () => {
   //警报弹窗
 
   async function handleAlarm() {
-    console.log('忽视')
+    alarmDialogVisible.value = false
   }
   const TemplateAlarmDialog = defineComponent({
     emits: ['confirm'],
@@ -251,23 +251,22 @@ export const useTemplate = () => {
       // 获取图片数据
       async function getList() {
         // srcList.value.push(props.wsdata.picPath)
-        srcList.value.push('1.jpeg')
+        srcList.value.push('a.jpeg')
       }
 
       return () => (
         <ElDialog
           v-model={alarmDialogVisible.value}
-          title={t('jing-bao-xiang-qing')}
-          class="h-[80vh]"
+          title={props.wsdata.message}
           width="500"
           align-center
         >
           {{
             default: () => (
               <div class="flex items-center justify-around ">
-                <span>{props.wsdata.message}</span>
                 <ElImage
-                  src="1.jpeg"
+                  class="w-28 h-28"
+                  src="a.jpeg"
                   fit="cover"
                   zoom-rate={1.2}
                   max-scale={7}
@@ -279,7 +278,7 @@ export const useTemplate = () => {
             ),
             footer: () => (
               <div class="flex justify-between">
-                <ElButton size="large" class="w-full" onClick={() => handleAlarm}>
+                <ElButton size="large" class="w-full" onClick={handleAlarm}>
                   {t('bu-zuo-chu-li')}
                 </ElButton>
                 <ElButton
