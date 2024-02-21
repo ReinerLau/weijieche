@@ -28,7 +28,7 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getPatrolTask } from '@/api'
 import { getToken, parseTime } from '@/utils'
-import { useVideoTemplate } from '@/composables'
+import { useVideoTemplate, useShowCamera } from '@/composables'
 
 // 重置表单数据
 const defaultFormData = {
@@ -371,7 +371,6 @@ export const useSchedule = () => {
           title: t('ren-wu-zhuang-tai'),
           slot: (params: any) => (
             <ElSelect
-              size="small"
               class=" w-48"
               v-model={params.value['status']}
               placeholder={t('ren-wu-zhuang-tai')}
@@ -388,7 +387,6 @@ export const useSchedule = () => {
           title: t('ren-wu-lei-xing'),
           slot: (params: any) => (
             <ElSelect
-              size="small"
               class=" w-48"
               v-model={params.value['type']}
               placeholder={t('ren-wu-lei-xing')}
@@ -402,29 +400,11 @@ export const useSchedule = () => {
         },
         {
           prop: 'startTime',
-          title: t('xun-luo-kai-shi-shi-jian'),
-          slot: (params: any) => (
-            <ElDatePicker
-              size="small"
-              v-model={params.value['startTime']}
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              placeholder={t('xun-luo-kai-shi-shi-jian')}
-            />
-          )
+          title: t('xun-luo-kai-shi-shi-jian')
         },
         {
           prop: 'endTime',
-          title: t('xun-luo-jie-shu-shi-jian'),
-          slot: (params: any) => (
-            <ElDatePicker
-              size="small"
-              v-model={params.value['endTime']}
-              type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
-              placeholder={t('xun-luo-jie-shu-shi-jian')}
-            />
-          )
+          title: t('xun-luo-jie-shu-shi-jian')
         }
       ]
 
@@ -514,8 +494,20 @@ export const useSchedule = () => {
       const { dialogVisible: videoDialogVisible, VideoPlayDialog } = useVideoTemplate(cameraUrl)
 
       function handleConfirmVideo(row: any) {
+        cameraUrl.value = ''
         videoDialogVisible.value = true
         cameraUrl.value = row.videoPath
+      }
+
+      //打开摄像画面
+      const cameraList: any = ref([])
+
+      const { dialogVisible: showCameraDialogVisible, ShowCameraDialog } = useShowCamera(cameraList)
+
+      function handleConfirmCamera(row: any) {
+        // cameraList.value = []
+        showCameraDialogVisible.value = true
+        // cameraList.value = row.cameraList
       }
 
       return () => (
@@ -538,11 +530,12 @@ export const useSchedule = () => {
                           {item.slot ? (
                             item.slot(params)
                           ) : (
-                            <ElInput
+                            <ElDatePicker
                               v-model={params.value[item.prop]}
+                              type="datetime"
+                              value-format="YYYY-MM-DD HH:mm:ss"
                               placeholder={item.title}
-                              clearable
-                            ></ElInput>
+                            />
                           )}
                         </div>
                       ))}
@@ -575,6 +568,9 @@ export const useSchedule = () => {
                           <ElButton onClick={() => handleConfirmVideo(row)}>
                             {t('shi-pin')}
                           </ElButton>
+                          <ElButton onClick={() => handleConfirmCamera(row)}>
+                            {t('hua-mian')}
+                          </ElButton>
                         </div>
                       )
                     }}
@@ -599,6 +595,7 @@ export const useSchedule = () => {
             }}
           </ElDialog>
           <VideoPlayDialog />
+          <ShowCameraDialog />
         </div>
       )
     }
