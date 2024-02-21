@@ -70,7 +70,7 @@ export const useDetail = (
     ControllerMapDialog,
     controllerMapDialogVisible,
     direction
-  } = useController()
+  } = useController(currentCar)
 
   // 监听前进后退的切换按键
   watch(pressedButtons, (val) => {
@@ -196,16 +196,31 @@ export const useDetail = (
 
   // 状态数据
   const statusData: Ref<Record<string, any>> = ref({})
-
+  let intervalId: any
   // 每次打开底部抽屉重新获取数据
   watch(detailDrawerVisible, async (value: boolean) => {
-    if (!value) return
     if (haveCurrentCar()) {
-      const res = await getCarInfo(currentCar.value)
-      statusData.value = res.data
+      clearInterval(intervalId)
+      intervalId = null
+      updateData()
+      intervalId = setInterval(async () => {
+        updateData()
+      }, 1000)
+    }
+    if (!value) {
+      if (intervalId) {
+        // 抽屉关闭时停止定时获取数据
+        clearInterval(intervalId)
+        intervalId = null
+      }
+      return
     }
   })
 
+  async function updateData() {
+    const res = await getCarInfo(currentCar.value)
+    statusData.value = res.data
+  }
   // 视频监控区域组件
   const CameraSection = () =>
     cameraList.value.length === 0 ? null : (

@@ -11,7 +11,7 @@ import {
 import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
+export const carMode = ref('')
 // 顶部操控相关
 export const useControlSection = () => {
   // 国际化
@@ -125,10 +125,13 @@ export const useControlSection = () => {
 
   // 设置模式
   async function setMode(type: keyof typeof mode) {
+    carMode.value = ''
     if (haveCurrentCar()) {
       // const data = { baseMode: baseModes[type], customMode: modes[type] }
       await patrolingSetMode(currentCar.value, mode[type])
       ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })
+      //保存当前模式
+      carMode.value = type
     }
   }
 

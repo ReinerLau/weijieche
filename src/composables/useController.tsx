@@ -1,3 +1,4 @@
+import { patrolingRemote } from '@/api/control'
 import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
@@ -11,9 +12,9 @@ import {
 import { reactive, ref, watch, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
+import { carMode } from './useControlSection'
 // 手柄、方向盘相关逻辑
-export const useController = () => {
+export const useController = (currentCar: any) => {
   const { t } = useI18n()
 
   // 已连接的控制器
@@ -80,6 +81,7 @@ export const useController = () => {
 
         axeMap.value = axes
         speed.value = setSpeed(axes)
+
         direction.value = setDirection(axes)
         pressedButtons.value = setButtons(buttons)
       }
@@ -143,6 +145,33 @@ export const useController = () => {
   // 每次修改方向盘映射都保存起来
   watch(wheelMap, (val) => {
     localStorage.setItem(stroageKeys.WHEEL, JSON.stringify(val))
+  })
+
+  let st: any = null
+  let seq = 0
+
+  function submitData() {
+    const data = { x: speed.value, y: direction.value, seq }
+
+    patrolingRemote(currentCar.value, data).then(() => {
+      seq++
+      if (seq > 254) {
+        seq = 0
+      }
+      // 按住按钮的情况
+      if (speed.value !== 0 || direction.value !== 0) {
+        st = setTimeout(submitData, 200)
+      }
+    })
+  }
+
+  watch([speed, direction], () => {
+    if (carMode.value === 'MANUAL') {
+      clearTimeout(st)
+      submitData()
+    } else {
+      return
+    }
   })
 
   // 设置映射的弹窗组件
