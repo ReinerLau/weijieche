@@ -147,7 +147,7 @@
   "kai-shi-lu-zhi": "开始录制",
   "mo-ban-lie-biao": "模板列表",
   "ren-wu-lie-biao": "任务列表",
-  "xin-jian-ren-wu": "新建任务",
+  "xin-jian-ren-wu": "新建任务", 
   "xin-jian-fan-hang-lu-xian": "新建返航路线",
   "bao-cun-fan-hang-lu-xian": "保存返航路线",
   "kai-shi-zhi-hang-fan-hang": "开始执行返航",
@@ -212,7 +212,6 @@
   "jie-shu-shi-jian": "结束时间",
   "shou-dong-chu-li": "手动处理",
   "bu-zuo-chu-li": "不作处理",
-  "jing-bao-xiang-qing": "警报详情",
   "qie-huan-cheng-gong": "切换成功",
   "zi-zhu-jie-suo": "自主解锁",
   "ting-zhi-shang-suo": "停止上锁",
@@ -221,5 +220,8 @@
   "she-zhi-wei-fan-hang-dian": "设置为返航点",
   "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "请从路线点开始绘制！",
   "bao-cun-fan-hang-lu-xian-chu-cuo": "保存返航路线出错",
-  "shou-ye-fen-xi": "首页分析"
+  "shou-ye-fen-xi": "首页分析",
+  "hua-mian": "画面",
+  "cha-kan-jing-bao-xiang-qing": "查看警报详情",
+  "jing-bao": "警报"
 }

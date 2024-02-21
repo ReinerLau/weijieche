@@ -211,7 +211,6 @@
   "jie-shu-shi-jian": "End Time",
   "kai-shi-shi-jian": "Starting time",
   "bu-zuo-chu-li": "No processing",
-  "jing-bao-xiang-qing": "Alert details",
   "shou-dong-chu-li": "Manual processing",
   "qie-huan-cheng-gong": "Switch successful",
   "zi-zhu-jie-suo": "Autonomous unlocking",
@@ -221,5 +220,8 @@
   "qing-shang-chuan-zheng-que-de-lu-xian-wen-jian": "Please upload the correct route file",
   "she-zhi-wei-fan-hang-dian": "Set as home point",
   "she-zhi-wei-ren-wu-dian": "Set as mission point",
-  "shou-ye-fen-xi": "Home page analysis"
+  "shou-ye-fen-xi": "Home page analysis",
+  "hua-mian": "Frame",
+  "cha-kan-jing-bao-xiang-qing": "View alert details",
+  "jing-bao": "Alarm"
 }

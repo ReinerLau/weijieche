@@ -211,7 +211,6 @@
   "jie-shu-shi-jian": "Heure de fin",
   "kai-shi-shi-jian": "Heure de départ",
   "bu-zuo-chu-li": "Aucun traitement",
-  "jing-bao-xiang-qing": "Détails de l'alerte",
   "shou-dong-chu-li": "Traitement manuel",
   "qie-huan-cheng-gong": "Switch avec succès",
   "zi-zhu-jie-suo": "Déverrouillage autonome",
@@ -221,5 +220,8 @@
   "qing-shang-chuan-zheng-que-de-lu-xian-wen-jian": "Veuillez télécharger le fichier d'itinéraire correct",
   "she-zhi-wei-fan-hang-dian": "Définir comme point d'origine",
   "she-zhi-wei-ren-wu-dian": "Définir comme point de mission",
-  "shou-ye-fen-xi": "Analyse de la page d'accueil"
+  "shou-ye-fen-xi": "Analyse de la page d'accueil",
+  "hua-mian": "Image",
+  "cha-kan-jing-bao-xiang-qing": "Voir les détails de l'alerte",
+  "jing-bao": "Alarmes"
 }
