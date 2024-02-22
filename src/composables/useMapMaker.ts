@@ -112,10 +112,10 @@ export const useMapMaker = () => {
     if (hasCoordinate(data) && itIsTheCar(data) && isRecord.value) {
       const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
         symbol: {
-          markerType: 'ellipse',
-          markerFill: 'red',
-          markerWidth: 13,
-          markerHeight: 13
+          // markerType: 'ellipse',
+          // markerFill: 'red',
+          // markerWidth: 13,
+          // markerHeight: 13
         }
       })
 
