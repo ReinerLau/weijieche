@@ -35,6 +35,8 @@ import { cameraList } from '@/shared'
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
 
+//判断任务是否下发
+export const isExecutePlan = ref(false)
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
 export const useMap = () => {
@@ -102,9 +104,8 @@ export const useMap = () => {
       // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
       // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
       let homePathLayer: maptalks.VectorLayer
-
-      //录制路线图层实例
-      // let recordPathLayer: maptalks.VectorLayer
+      // 绘制返航路线图层实例
+      let homePathDrawLayer: maptalks.VectorLayer
 
       //任务图层实例
       let taskPointLayer: maptalks.VectorLayer
@@ -141,7 +142,6 @@ export const useMap = () => {
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
         const pathPoint = e.geometry as maptalks.Marker
-
         pathPoint.config({
           draggable: true
         })
@@ -172,7 +172,6 @@ export const useMap = () => {
           addTaskPointToLayer(taskPoint)
           clearDrawTool()
           initTaskPoints()
-          console.log(pointCoordinates)
         })
       }
 
@@ -209,18 +208,26 @@ export const useMap = () => {
 
           initMakerLayer(map)
 
+          //警报图层
           alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
           alarmMarkerLayer.addTo(map)
 
+          //返航图层
           homePathLayer = new maptalks.VectorLayer('home-point')
           homePathLayer.addTo(map)
 
+          homePathDrawLayer = new maptalks.VectorLayer('home-line')
+          homePathDrawLayer.addTo(map)
+
+          //路线图层
           pathLayer = new maptalks.VectorLayer('line')
           pathLayer.addTo(map)
 
+          //任务点图层
           taskPointLayer = new maptalks.VectorLayer('task-point')
           taskPointLayer.addTo(map)
 
+          //巡逻任务路线图层
           patrolpathLayer = new maptalks.VectorLayer('patrol')
           patrolpathLayer.addTo(map)
         }
@@ -430,14 +437,17 @@ export const useMap = () => {
       }
 
       // 下发任务
+
       async function handleCreatePlan() {
+        isExecutePlan.value = false
         if (haveCurrentCar() && havePath()) {
           const data = getLineCoordinates(pathPoints)
           const res: any = await sendMavlinkMission(data, currentCar.value)
           ElMessage.success({
             message: res.message
           })
-          clearLine()
+          isExecutePlan.value = true
+          // clearLine()
           clearDrawTool()
         }
       }
@@ -801,7 +811,7 @@ export const useMap = () => {
         drawTool.setMode('LineString')
         // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
         drawTool.setSymbol({
-          lineColor: '#f3072f'
+          lineColor: 'blue'
         })
         drawTool.enable()
         drawTool.on('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
@@ -827,7 +837,7 @@ export const useMap = () => {
         e.geometry.config({
           arrowStyle: 'classic'
         })
-        homePathLayer.addGeometry(e.geometry)
+        homePathDrawLayer.addGeometry(e.geometry)
         e.geometry.startEdit()
         drawTool.disable()
         drawTool.off('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
@@ -844,6 +854,13 @@ export const useMap = () => {
               click: clearDrawTool
             },
             {
+              item: t('qu-xiao-fan-hang-lu-xian-hui-zhi'),
+              click: () => {
+                clearDrawTool()
+                homePathDrawLayer.clear()
+              }
+            },
+            {
               item: t('bao-cun-fan-hang-lu-xian'),
               click: () => {
                 if (haveHomePath()) {
@@ -858,7 +875,7 @@ export const useMap = () => {
 
       // 保存返航路线
       async function handleSaveHomePath(p: any) {
-        homePathLayer.clear()
+        homePathDrawLayer.clear()
 
         if (creatingHomePath) {
           if (isHomePath.value) {
