@@ -202,6 +202,10 @@ export const usePointTask = () => {
             loading.value = true
             try {
               let res: any
+              form.value['cameraAngle'] = form.value['cameraAngle'].map((item: any) => {
+                const [x, y] = item.split(/,|，/).map(Number) // 将每个元素按逗号分割后转换为数字
+                return { x, y }
+              })
               if (form.value.id) {
                 res = await updatePointTask(form.value)
               } else {
