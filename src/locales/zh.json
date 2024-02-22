@@ -147,7 +147,7 @@
   "kai-shi-lu-zhi": "开始录制",
   "mo-ban-lie-biao": "模板列表",
   "ren-wu-lie-biao": "任务列表",
-  "xin-jian-ren-wu": "新建任务", 
+  "xin-jian-ren-wu": "新建任务",
   "xin-jian-fan-hang-lu-xian": "新建返航路线",
   "bao-cun-fan-hang-lu-xian": "保存返航路线",
   "kai-shi-zhi-hang-fan-hang": "开始执行返航",
@@ -223,5 +223,6 @@
   "shou-ye-fen-xi": "首页分析",
   "hua-mian": "画面",
   "cha-kan-jing-bao-xiang-qing": "查看警报详情",
-  "jing-bao": "警报"
+  "jing-bao": "警报",
+  "qu-xiao-fan-hang-lu-xian-hui-zhi": "取消返航路线绘制"
 }
