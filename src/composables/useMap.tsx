@@ -808,6 +808,7 @@ export const useMap = () => {
 
       // 开始新建返航路线
       function handleCreateHomePath() {
+        onePoint = undefined
         drawTool.setMode('LineString')
         // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
         drawTool.setSymbol({
