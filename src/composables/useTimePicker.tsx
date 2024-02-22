@@ -140,13 +140,17 @@ export const useTimePicker = () => {
             )}
           </div>
           <div class="flex items-center ">
-            <ElTooltip content={t('cao-kong-duan')}>
-              <ElButton link onClick={() => jumpHome()}>
-                <HomePage />
-              </ElButton>
-            </ElTooltip>
+            <div class="mr-3">
+              <ElTooltip content={t('cao-kong-duan')}>
+                <ElButton link onClick={() => jumpHome()}>
+                  <HomePage />
+                </ElButton>
+              </ElTooltip>
+            </div>
             <InternationalController />
-            <ThemeController />
+            <div class="ml-3">
+              <ThemeController />
+            </div>
             <ElTooltip content={t('tui-chu-deng-lu')}>
               <ElButton link onClick={() => exitHome()}>
                 <ExitFill />
