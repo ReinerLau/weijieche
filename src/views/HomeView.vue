@@ -92,4 +92,7 @@ function handleCameraUrl(url: any) {
 .dark #container {
   background-color: #072232;
 }
+:deep(.maptalks-attribution) {
+  display: none !important;
+}
 </style>
