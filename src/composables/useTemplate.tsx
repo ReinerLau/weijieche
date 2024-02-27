@@ -240,19 +240,10 @@ export const useTemplate = () => {
       }
     },
     setup(props, { emit }) {
-      // 每次打开搜索弹窗重新获取数据
-      watch(alarmDialogVisible, async (val) => {
-        if (val) {
-          getList()
-        }
+      const srcList: any = []
+      watch(props, (val) => {
+        srcList.push(val.wsdata.picPath)
       })
-      const srcList: any = ref([])
-
-      // 获取图片数据
-      async function getList() {
-        // srcList.value.push(props.wsdata.picPath)
-        srcList.value.push('a.jpeg')
-      }
 
       return () => (
         <ElDialog
@@ -260,18 +251,19 @@ export const useTemplate = () => {
           title={props.wsdata.message}
           width="500"
           align-center
+          draggable={true}
         >
           {{
             default: () => (
               <div class="flex items-center justify-around ">
                 <ElImage
                   class="w-28 h-28"
-                  src="a.jpeg"
+                  src={props.wsdata.picPath}
                   fit="cover"
                   zoom-rate={1.2}
                   max-scale={7}
                   min-scale={0.2}
-                  preview-src-list={srcList.value}
+                  preview-src-list={srcList}
                   initial-index={0}
                 />
               </div>

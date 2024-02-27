@@ -6,11 +6,10 @@ import {
   ElCard,
   ElDrawer,
   ElMessage,
-  ElMessageBox,
+  ElNotification,
   ElTooltip
-  // ElNotification
 } from 'element-plus'
-import { Fragment, onBeforeUnmount, onMounted, ref } from 'vue'
+import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
 import type { Ref } from 'vue'
@@ -89,28 +88,45 @@ export const useNotification = () => {
   function onMessage(e: any) {
     if (e.data !== 'heartbeat') {
       const data: websocketData = JSON.parse(e.data)
-      const { type, message, code, longitude, latitude, heading } = data
+      const { message, longitude, latitude, heading } = data
       const messageBox = ref<any>(null)
-      messageBox.value = ElMessageBox({
+      const btn = resolveComponent('el-button')
+      messageBox.value = ElNotification({
+        type: 'warning',
         title: t('jing-bao'),
-        message: code + ': ' + message,
-        type: type as 'warning' | 'error',
-        customClass: 'notification-message-box',
-        showCancelButton: false,
+        dangerouslyUseHTMLString: true,
+        message: h('div', [
+          h('p', {}, message),
+          h(
+            btn,
+            {
+              style: 'color: #409EFF;cursor: pointer;',
+              onClick: () => {
+                handleAlarmAll(data)
+              }
+            },
+            t('cha-kan-jing-bao-xiang-qing')
+          )
+        ])
+
+        // message: code + ': ' + message,
+        // type: type as 'warning' | 'error',
+        // customClass: 'notification-message-box',
+        // showCancelButton: false,
         // cancelButtonText: '关闭',
-        confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
-        beforeClose: async (action, instance, done) => {
-          if (action === 'confirm') {
-            // 点击处理按钮时的逻辑
-            alarmDialogVisible.value = true
-            wsData.value = data
-          } else if (action === 'cancel') {
-            // 点击关闭按钮时的逻辑
-            await handleAlarm()
-          }
-          done()
-          alarmMarkerLayer.clear()
-        }
+        // confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
+        // beforeClose: async (action, instance, done) => {
+        //   if (action === 'confirm') {
+        //     // 点击处理按钮时的逻辑
+        //     alarmDialogVisible.value = true
+        //     wsData.value = data
+        //   } else if (action === 'cancel') {
+        //     // 点击关闭按钮时的逻辑
+        //     await handleAlarm()
+        //   }
+        //   done()
+        //   alarmMarkerLayer.clear()
+        // }
       })
 
       if (alarmRef.value && longitude && latitude) {
@@ -123,6 +139,11 @@ export const useNotification = () => {
 
       notifications.value.push(data)
     }
+  }
+
+  function handleAlarmAll(data: any) {
+    alarmDialogVisible.value = true
+    wsData.value = data
   }
 
   //每次收到警报定位车辆
