@@ -4,10 +4,10 @@ import {
   ElForm,
   ElFormItem,
   ElInput,
+  ElInputNumber,
   ElMessage,
   ElOption,
   ElSelect,
-  ElSlider,
   type FormInstance,
   type FormRules
 } from 'element-plus'
@@ -137,10 +137,11 @@ export const usePointTask = () => {
             prop: 'time',
             title: t('ting-liu-shi-jian-s'),
             slot: () => (
-              <ElInput
+              <ElInputNumber
+                min={0}
                 v-model={form.value['time']}
                 disabled={form.value['type'] === 3 ? true : false}
-              ></ElInput>
+              ></ElInputNumber>
             )
           },
           {
@@ -175,6 +176,7 @@ export const usePointTask = () => {
                 default-first-option
                 reserve-keyword={false}
                 placeholder="请填写x,y值,逗号分隔，如：1,2"
+                v-show={form.value['type'] === 3 ? false : true}
               >
                 {cameraAngleList.map((item: any) => (
                   <ElOption key={item} label={item.label} value={item.value}></ElOption>
