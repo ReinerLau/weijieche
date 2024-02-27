@@ -88,7 +88,7 @@ export const useNotification = () => {
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     const data: websocketData = JSON.parse(e.data)
-    const { type, message, code, longitude, latitude } = data
+    const { type, message, code, longitude, latitude, heading } = data
     const messageBox = ref<any>(null)
     messageBox.value = ElMessageBox({
       title: t('jing-bao'),
@@ -108,6 +108,7 @@ export const useNotification = () => {
           await handleAlarm()
         }
         done()
+        alarmMarkerLayer.clear()
       }
     })
 
@@ -116,14 +117,14 @@ export const useNotification = () => {
       // 声音设置
       alarmRef.value.volume = 1
       //警报闪烁
-      handleAlarmEvent(longitude, latitude)
+      handleAlarmEvent(longitude, latitude, heading)
     }
 
     notifications.value.push(data)
   }
 
   //每次收到警报定位车辆
-  function handleAlarmEvent(longitude: number, latitude: number) {
+  function handleAlarmEvent(longitude: number, latitude: number, heading: number) {
     alarmMarkerLayer.clear()
     if (longitude && latitude) {
       const point = new Marker([longitude as number, latitude as number], {
@@ -132,7 +133,7 @@ export const useNotification = () => {
           markerFill: 'red',
           markerWidth: 14,
           markerHeight: 16,
-          markerRotation: 0
+          markerRotation: -Number(heading)
         }
       })
       alarmMarkerLayer.addGeometry(point)
