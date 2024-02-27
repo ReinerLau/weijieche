@@ -50,7 +50,13 @@ export const usePointTask = () => {
       pointCoordinates.value = c.gps
       form.value = Object.assign({}, c)
       if (form.value['type'] !== 3) {
-        const cameraAngle = c.cameraAngle.map((item: any) => `${item.x},${item.y}`)
+        const cameraAngle = c.cameraAngle.map((item: any) => {
+          if (item.x & item.y) {
+            return `${item.x},${item.y}`
+          } else {
+            return item
+          }
+        })
         form.value['cameraAngle'] = cameraAngle
         isShowRules.value = false
       } else {
