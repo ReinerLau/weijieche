@@ -87,40 +87,42 @@ export const useNotification = () => {
   const wsData = ref({})
   // 从 websocket 收到数据后
   function onMessage(e: any) {
-    const data: websocketData = JSON.parse(e.data)
-    const { type, message, code, longitude, latitude, heading } = data
-    const messageBox = ref<any>(null)
-    messageBox.value = ElMessageBox({
-      title: t('jing-bao'),
-      message: code + ': ' + message,
-      type: type as 'warning' | 'error',
-      customClass: 'notification-message-box',
-      showCancelButton: false,
-      // cancelButtonText: '关闭',
-      confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
-      beforeClose: async (action, instance, done) => {
-        if (action === 'confirm') {
-          // 点击处理按钮时的逻辑
-          alarmDialogVisible.value = true
-          wsData.value = data
-        } else if (action === 'cancel') {
-          // 点击关闭按钮时的逻辑
-          await handleAlarm()
+    if (e.data !== 'heartbeat') {
+      const data: websocketData = JSON.parse(e.data)
+      const { type, message, code, longitude, latitude, heading } = data
+      const messageBox = ref<any>(null)
+      messageBox.value = ElMessageBox({
+        title: t('jing-bao'),
+        message: code + ': ' + message,
+        type: type as 'warning' | 'error',
+        customClass: 'notification-message-box',
+        showCancelButton: false,
+        // cancelButtonText: '关闭',
+        confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
+        beforeClose: async (action, instance, done) => {
+          if (action === 'confirm') {
+            // 点击处理按钮时的逻辑
+            alarmDialogVisible.value = true
+            wsData.value = data
+          } else if (action === 'cancel') {
+            // 点击关闭按钮时的逻辑
+            await handleAlarm()
+          }
+          done()
+          alarmMarkerLayer.clear()
         }
-        done()
-        alarmMarkerLayer.clear()
+      })
+
+      if (alarmRef.value && longitude && latitude) {
+        alarmRef.value.play()
+        // 声音设置
+        alarmRef.value.volume = 1
+        //警报闪烁
+        handleAlarmEvent(longitude, latitude, heading)
       }
-    })
 
-    if (alarmRef.value && longitude && latitude) {
-      alarmRef.value.play()
-      // 声音设置
-      alarmRef.value.volume = 1
-      //警报闪烁
-      handleAlarmEvent(longitude, latitude, heading)
+      notifications.value.push(data)
     }
-
-    notifications.value.push(data)
   }
 
   //每次收到警报定位车辆
