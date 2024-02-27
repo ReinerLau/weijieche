@@ -130,7 +130,7 @@ export const useNotification = () => {
       const point = new Marker([longitude as number, latitude as number], {
         symbol: {
           markerType: 'triangle',
-          markerFill: 'red',
+          markerFill: '#FF00F3',
           markerWidth: 14,
           markerHeight: 16,
           markerRotation: -Number(heading)
