@@ -11,7 +11,7 @@ import {
   type FormInstance,
   type FormRules
 } from 'element-plus'
-import { ref, type ComputedRef, type Ref, computed, Fragment, toRaw, defineComponent } from 'vue'
+import { ref, type ComputedRef, type Ref, computed, Fragment, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createPointTask, updatePointTask, getPointTaskList, deletePointTask } from '@/api'
 
@@ -32,6 +32,8 @@ export const usePointTask = () => {
   const taskPointList: Ref<any[]> = ref([])
   const taskPoint = ref<(() => void) | null>(null)
   const pointCoordinates: Ref<string> = ref('')
+  //输入校验判断
+  const isShowRules = ref(true)
 
   async function getList() {
     const res = await getPointTaskList()
@@ -46,7 +48,20 @@ export const usePointTask = () => {
     pointSettingDialogVisible.value = true
     if (c.id) {
       pointCoordinates.value = c.gps
-      form.value = Object.assign({}, toRaw(c))
+      form.value = Object.assign({}, c)
+      if (form.value['type'] !== 3) {
+        const cameraAngle = c.cameraAngle.map((item: any) => {
+          if (item.x & item.y) {
+            return `${item.x},${item.y}`
+          } else {
+            return item
+          }
+        })
+        form.value['cameraAngle'] = cameraAngle
+        isShowRules.value = false
+      } else {
+        isShowRules.value = true
+      }
     } else {
       pointCoordinates.value = c
     }
@@ -187,9 +202,6 @@ export const usePointTask = () => {
         ]
       })
 
-      //输入校验判断
-      const isShowRules = ref(true)
-
       function handleTaskType(v: any) {
         isShowRules.value = v === 3
         form.value['cameraAngle'] = undefined
@@ -204,10 +216,13 @@ export const usePointTask = () => {
             loading.value = true
             try {
               let res: any
-              form.value['cameraAngle'] = form.value['cameraAngle'].map((item: any) => {
-                const [x, y] = item.split(/,|，/).map(Number) // 将每个元素按逗号分割后转换为数字
-                return { x, y }
-              })
+              if (form.value['cameraAngle'] !== undefined) {
+                form.value['cameraAngle'] = form.value['cameraAngle'].map((item: any) => {
+                  const [x, y] = item.split(/,|、|，/).map(Number) // 将每个元素按逗号分割后转换为数字
+                  return { x, y }
+                })
+              }
+
               if (form.value.id) {
                 res = await updatePointTask(form.value)
               } else {
