@@ -250,7 +250,8 @@ export const useTemplate = () => {
           v-model={alarmDialogVisible.value}
           title={props.wsdata.message}
           width="500"
-          align-center
+          class=" !mr-[1vw]"
+          // align-center
           draggable={true}
         >
           {{
