@@ -502,12 +502,16 @@ export const useSchedule = () => {
       //打开摄像画面
       const cameraList: any = ref([])
 
-      const { dialogVisible: showCameraDialogVisible, ShowCameraDialog } = useShowCamera(cameraList)
+      const { showCameraDialogVisible, ShowCameraDialog } = useShowCamera(cameraList)
 
       function handleConfirmCamera(row: any) {
-        // cameraList.value = []
+        cameraList.value.length = 0
         showCameraDialogVisible.value = true
-        // cameraList.value = row.cameraList
+        if (row.picPath) {
+          cameraList.value = JSON.parse(row.picPath.replace(/'/g, '"'))
+        } else {
+          cameraList.value.length = 0
+        }
       }
 
       return () => (
