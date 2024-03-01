@@ -491,12 +491,16 @@ export const useSchedule = () => {
       //打开摄像画面
       const cameraList: any = ref([])
 
-      const { dialogVisible: showCameraDialogVisible, ShowCameraDialog } = useShowCamera(cameraList)
+      const { showCameraDialogVisible, ShowCameraDialog } = useShowCamera(cameraList)
 
-      function handleConfirmCamera() {
-        // cameraList.value = []
+      function handleConfirmCamera(row: any) {
+        cameraList.value.length = 0
         showCameraDialogVisible.value = true
-        // cameraList.value = row.cameraList
+        if (row.picPath) {
+          cameraList.value = row.picPath
+        } else {
+          cameraList.value.length = 0
+        }
       }
 
       return () => (
@@ -557,7 +561,9 @@ export const useSchedule = () => {
                           <ElButton onClick={() => handleConfirmVideo(row)}>
                             {t('shi-pin')}
                           </ElButton>
-                          <ElButton onClick={() => handleConfirmCamera()}>{t('hua-mian')}</ElButton>
+                          <ElButton onClick={() => handleConfirmCamera(row)}>
+                            {t('hua-mian')}
+                          </ElButton>
                         </div>
                       )
                     }}
