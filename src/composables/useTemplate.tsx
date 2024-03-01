@@ -240,8 +240,12 @@ export const useTemplate = () => {
       }
     },
     setup(props, { emit }) {
-      const srcList: any = []
+      const srcList: string[] = []
+      const imgUrl = ref<string>('')
       watch(props, (val) => {
+        imgUrl.value = ''
+        srcList.length = 0
+        imgUrl.value = val.wsdata.picPath
         srcList.push(val.wsdata.picPath)
       })
 
@@ -259,7 +263,7 @@ export const useTemplate = () => {
               <div class="flex items-center justify-around ">
                 <ElImage
                   class="w-28 h-28"
-                  src={props.wsdata.picPath}
+                  src={imgUrl.value}
                   fit="cover"
                   zoom-rate={1.2}
                   max-scale={7}
