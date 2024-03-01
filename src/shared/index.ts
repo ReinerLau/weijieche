@@ -1,5 +1,4 @@
-import { getCameraListByCode } from '@/api'
-import { ref, watch, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 // 当前选择的车辆编号
 export const currentCar = ref('')
@@ -16,11 +15,6 @@ export const currentCar = ref('')
 
 // 车辆绑定的摄像头数据
 export const cameraList: Ref<any[]> = ref([])
-// 每次切换车辆都要重新获取对应的摄像头数据
-watch(currentCar, async () => {
-  const res = await getCameraListByCode(currentCar.value, 'patroling')
-  cameraList.value = res.data
-})
 
 // 车辆模式
 export const modes = {
