@@ -508,7 +508,7 @@ export const useSchedule = () => {
         cameraList.value.length = 0
         showCameraDialogVisible.value = true
         if (row.picPath) {
-          cameraList.value = JSON.parse(row.picPath.replace(/'/g, '"'))
+          cameraList.value = row.picPath
         } else {
           cameraList.value.length = 0
         }
