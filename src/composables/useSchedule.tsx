@@ -1,5 +1,5 @@
 import { createTimingTask, deleteTimingTask, getTemplateList, getTimingTaskList } from '@/api'
-import { currentCar } from '@/shared'
+import { currentCar, haveCurrentCar } from '@/shared'
 import {
   ElButton,
   ElCheckbox,
@@ -8,7 +8,6 @@ import {
   ElDialog,
   ElForm,
   ElFormItem,
-  ElInput,
   ElMessage,
   ElOption,
   ElPagination,
@@ -45,16 +44,6 @@ export const useSchedule = () => {
   // 国际化
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
-
-  // 判断车辆
-  function haveCurrentCar() {
-    if (currentCar.value) {
-      return true
-    } else {
-      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-      return false
-    }
-  }
 
   // 新建定时任务弹窗组件是否可见
   const dialogVisible = ref(false)

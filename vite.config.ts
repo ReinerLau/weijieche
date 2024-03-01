@@ -2,11 +2,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import AutoImport from 'unplugin-auto-import/vite'
-import ElementPlus from 'unplugin-element-plus/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 
@@ -15,16 +12,12 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    AutoImport({
-      resolvers: [ElementPlusResolver()]
-    }),
     Components({
-      resolvers: [ElementPlusResolver({ importStyle: 'sass' }), IconsResolver()]
+      resolvers: [IconsResolver()]
     }),
     Icons({
       autoInstall: true
-    }),
-    ElementPlus({})
+    })
   ],
   resolve: {
     alias: {
@@ -41,9 +34,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'http://119.91.145.64:8081',
-        target: 'http://192.168.18.229:8081',
-        // target: 'http://192.168.18.94:8091',
+        target: 'http://192.168.18.233:8081',
         changeOrigin: true
       },
       '/rtc': {
@@ -51,11 +42,11 @@ export default defineConfig({
         changeOrigin: true
       },
       '/websocket': {
-        target: 'ws://192.168.18.94:8091',
+        target: 'ws://192.168.18.233',
         ws: true
       },
       '/tiles': {
-        target: 'http://localhost:3000',
+        target: 'http://192.168.18.233:3000',
         changeOrigin: true
       }
     }

@@ -58,8 +58,7 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
-import { ElMessage } from 'element-plus'
+import { currentCar, haveCurrentCar } from '@/shared'
 import { useI18n } from 'vue-i18n'
 
 // 国际化
@@ -79,16 +78,6 @@ const keyMap = {
   AV2: '09',
   AV3: '10',
   AV4: '11'
-}
-
-// 判断车辆
-function haveCurrentCar() {
-  if (currentCar.value) {
-    return true
-  } else {
-    ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-    return false
-  }
 }
 
 // 开启功能

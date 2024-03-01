@@ -1,28 +1,38 @@
-import { getCameraListByCode } from '@/api'
-import { ref, watch, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { i18n } from '@/utils'
 
-// 当前选择的车辆编号
+/**
+ * 当前选择的车辆编号
+ */
 export const currentCar = ref('')
 
-// 校验是否已经选择车辆
-// export function haveCurrentCar() {
-//   if (currentCar.value) {
-//     return true
-//   } else {
-//     ElMessage({ type: 'error', message: t('请选择车辆') })
-//     return false
-//   }
-// }
+/**
+ * 校验是否已经选择车辆
+ * @returns {boolean} true - 已选择车辆，false - 未选择车辆
+ */
+export function haveCurrentCar(): boolean {
+  if (currentCar.value) {
+    return true
+  } else {
+    ElMessage({ type: 'error', message: i18n.global.t('qing-xuan-ze-che-liang') })
+    return false
+  }
+}
 
-// 车辆绑定的摄像头数据
+/**
+ * 车辆绑定的摄像头数据
+ */
 export const cameraList: Ref<any[]> = ref([])
-// 每次切换车辆都要重新获取对应的摄像头数据
-watch(currentCar, async () => {
-  const res = await getCameraListByCode(currentCar.value, 'patroling')
-  cameraList.value = res.data
-})
 
-// 车辆模式
+/**
+ * 车辆模式
+ * @property STOP - 停止
+ * @property AUTO - 自动
+ * @property MANUAL - 手动
+ * @property AUTODEBLOCKING - 自主解锁
+ * @property STOPLOCK - 停止上锁
+ */
 export const modes = {
   STOP: 1,
   AUTO: 4,
@@ -31,30 +41,50 @@ export const modes = {
   STOPLOCK: 65536
 }
 
-// 底盘模式
+/**
+ * 底盘模式
+ * @property AUTO - 自动
+ * @property MANUAL - 手动
+ * @property STOP - 停止
+ */
 export const baseModes = {
   AUTO: 129,
   MANUAL: 1,
   STOP: 0
 }
 
-//判断车辆切换模式
+/**
+ * 判断车辆切换模式
+ * @property AUTO - 自动
+ * @property MANUAL - 手动
+ * @property STOP - 停止
+ */
 export const mode = {
   AUTO: 1,
   MANUAL: 2,
   STOP: 0
 }
 
-// 当前选择的控制器 id
+/**
+ * 当前选择的控制器 id
+ */
 export const currentController = ref('')
 
-// 当前选择的控制器类型
+/**
+ * 当前选择的控制器类型
+ */
 export const currentControllerType = ref('')
 
-// 控制按过的按键
+/**
+ * 控制按过的按键
+ */
 export const pressedButtons = ref(-1)
 
-// 所有控制器类型
+/**
+ * 所有控制器类型
+ * @property WHEEL - 方向盘
+ * @property GAMEPAD - 手柄
+ */
 export const controllerTypes = ref({
   WHEEL: '方向盘',
   GAMEPAD: '手柄'
