@@ -8,27 +8,17 @@ import {
   // modes,
   pressedButtons
 } from '@/shared'
-import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSubMenu, ElSwitch } from 'element-plus'
+import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSwitch } from 'element-plus'
 import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { haveCurrentCar } from '@/shared'
 export const carMode = ref('')
 // 顶部操控相关
 export const useControlSection = () => {
   // 国际化
   const { t } = useI18n()
 
-  // 判断车辆
-  function haveCurrentCar() {
-    if (currentCar.value) {
-      return true
-    } else {
-      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-      return false
-    }
-  }
-
   // 顶部操控区域组件
-
   const TopControl = () => (
     <ElScrollbar always={true}>
       <ElMenu mode="horizontal" ellipsis={false}>
