@@ -13,7 +13,9 @@ import {
   useLogout
 } from '@/composables'
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { currentCar, cameraList } from '@/shared'
+import { getCameraListByCode } from '@/api'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -46,6 +48,12 @@ const { MapContainer } = useMap()
 function handleCameraUrl(url: any) {
   cameraUrl.value = url
 }
+
+// 每次切换车辆都要重新获取对应的摄像头数据
+watch(currentCar, async () => {
+  const res = await getCameraListByCode(currentCar.value, 'patroling')
+  cameraList.value = res.data
+})
 </script>
 
 <template>
