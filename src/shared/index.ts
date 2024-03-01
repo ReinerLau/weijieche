@@ -1,17 +1,22 @@
 import { ref, type Ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { i18n } from '@/utils'
 
 // 当前选择的车辆编号
 export const currentCar = ref('')
 
-// 校验是否已经选择车辆
-// export function haveCurrentCar() {
-//   if (currentCar.value) {
-//     return true
-//   } else {
-//     ElMessage({ type: 'error', message: t('请选择车辆') })
-//     return false
-//   }
-// }
+/**
+ * 校验是否已经选择车辆
+ * @returns {boolean} true - 已选择车辆，false - 未选择车辆
+ */
+export function haveCurrentCar(): boolean {
+  if (currentCar.value) {
+    return true
+  } else {
+    ElMessage({ type: 'error', message: i18n.global.t('qing-xuan-ze-che-liang') })
+    return false
+  }
+}
 
 // 车辆绑定的摄像头数据
 export const cameraList: Ref<any[]> = ref([])
