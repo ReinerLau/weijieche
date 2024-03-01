@@ -14,7 +14,6 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElDrawer,
-  ElMessage,
   ElOption,
   ElScrollbar,
   ElSelect
@@ -23,6 +22,7 @@ import { Fragment, computed, ref, watch } from 'vue'
 import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { haveCurrentCar } from '@/shared'
 
 // 底部状态相关
 export const useDetail = (
@@ -183,16 +183,6 @@ export const useDetail = (
       value: `${statusData.value.rainfallNum || 0}ppm`
     }
   ])
-
-  // 判断车辆
-  function haveCurrentCar() {
-    if (currentCar.value) {
-      return true
-    } else {
-      ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-      return false
-    }
-  }
 
   // 状态数据
   const statusData: Ref<Record<string, any>> = ref({})

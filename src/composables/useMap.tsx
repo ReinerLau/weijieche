@@ -7,7 +7,7 @@ import {
   sendMavlinkMission
 } from '@/api'
 import { useTemplate } from '@/composables'
-import { currentCar } from '@/shared'
+import { currentCar, haveCurrentCar } from '@/shared'
 import {
   ElButton,
   ElDropdown,
@@ -128,16 +128,6 @@ export const useMap = () => {
       // https://maptalks.org/maptalks.js/api/1.x/TileLayer.html
       // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
       let tileLayer: maptalks.TileLayer
-
-      // 判断车辆
-      function haveCurrentCar() {
-        if (currentCar.value) {
-          return true
-        } else {
-          ElMessage({ type: 'error', message: t('qing-xuan-ze-che-liang') })
-          return false
-        }
-      }
 
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
