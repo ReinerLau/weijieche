@@ -240,8 +240,8 @@ export const useTemplate = () => {
       }
     },
     setup(props, { emit }) {
-      const srcList: any = []
-      const imgUrl: any = ref('')
+      const srcList: string[] = []
+      const imgUrl = ref<string>('')
       watch(props, (val) => {
         imgUrl.value = ''
         srcList.length = 0
