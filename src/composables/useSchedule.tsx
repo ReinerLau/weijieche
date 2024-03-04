@@ -11,6 +11,8 @@ import {
   ElMessage,
   ElOption,
   ElPagination,
+  ElRadioButton,
+  ElRadioGroup,
   ElScrollbar,
   ElSelect,
   ElSwitch,
@@ -40,7 +42,7 @@ const defaultFormData = {
 }
 
 // 定时任务相关
-export const useSchedule = () => {
+export const useSchedule = (handleCreatePlan: any) => {
   // 国际化
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
@@ -48,9 +50,15 @@ export const useSchedule = () => {
   // 新建定时任务弹窗组件是否可见
   const dialogVisible = ref(false)
 
-  // 新建定时任务弹窗组件
+  // 下发任务弹窗组件
   const ScheduleDialog = defineComponent({
-    setup() {
+    props: {
+      pointsdata: {
+        type: Object,
+        required: true
+      }
+    },
+    setup(props) {
       // 表单数据
       const formData: Ref<{
         loopConditions: string
@@ -80,14 +88,18 @@ export const useSchedule = () => {
       // 保存
       async function handleConfirm() {
         if (haveCurrentCar()) {
-          const data: any = { ...toRaw(formData.value) }
-          data.conditions = formData.value.conditions.join(',')
-          data.code = currentCar.value
-          const res: any = await createTimingTask(data)
-          ElMessage({
-            type: 'success',
-            message: res.message
-          })
+          if (isChange.value) {
+            const data: any = { ...toRaw(formData.value) }
+            data.conditions = formData.value.conditions.join(',')
+            data.code = currentCar.value
+            const res: any = await createTimingTask(data)
+            ElMessage({
+              type: 'success',
+              message: res.message
+            })
+          } else {
+            handleCreatePlan()
+          }
           dialogVisible.value = false
           formData.value = cloneDeep(defaultFormData)
         }
@@ -135,78 +147,101 @@ export const useSchedule = () => {
 
       // 监听弹窗加载获取模板数据
       watch(dialogVisible, async (val) => {
+        isChange.value = false
+        formData.value = cloneDeep(defaultFormData)
         if (val) {
           const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
           templateList.value = res.data || []
         }
       })
 
+      const isChange = ref(false)
+
+      watch(isChange, async (val) => {
+        if (val) {
+          const res = await getTemplateList({ limit: 999999, rtype: 'patroling' })
+          templateList.value = res.data || []
+        }
+        formData.value = cloneDeep(defaultFormData)
+      })
       return () => (
-        <ElDialog
-          v-model={dialogVisible.value}
-          title={t('ding-shi-ren-wu')}
-          width="50vw"
-          align-center
-        >
+        <ElDialog v-model={dialogVisible.value} width="50vw" align-center>
           {{
-            default: () => (
-              <ElForm label-width={150} model={formData.value}>
-                <ElFormItem prop="missionId" label={t('lu-jing-mo-ban')}>
-                  <ElSelect
-                    v-model={formData.value.missionId}
-                    placeholder={t('qing-xuan-ze')}
-                    class="w-full"
-                  >
-                    {templateList.value.map((item: any) => (
-                      <ElOption label={item.name} value={item.id}></ElOption>
-                    ))}
-                  </ElSelect>
-                </ElFormItem>
-                <ElFormItem prop="loopConditions" label={t('xun-huan-tiao-jian')}>
-                  <ElSelect
-                    v-model={formData.value.loopConditions}
-                    placeholder={t('qing-xuan-ze')}
-                    class="w-full"
-                    onChange={handleLoopConditionChange}
-                  >
-                    <ElOption label={t('mei-tian')} value={loopConditionsMap.DAY}></ElOption>
-                    <ElOption label={t('mei-zhou')} value={loopConditionsMap.WEEK}></ElOption>
-                    <ElOption label={t('dan-ci')} value={loopConditionsMap.SINGLE}></ElOption>
-                  </ElSelect>
-                </ElFormItem>
-                <ElFormItem prop="conditions" label={t('xun-huan-shi-jian')}>
-                  <ElCheckboxGroup
-                    v-model={formData.value.conditions}
-                    disabled={conditionsDisabled.value}
-                  >
-                    {dayOptions.map((item) => {
-                      return <ElCheckbox label={item.value}>{item.label}</ElCheckbox>
-                    })}
-                  </ElCheckboxGroup>
-                </ElFormItem>
-                <ElFormItem prop="time" label={t('xia-fa-shi-jian')}>
-                  <ElDatePicker
-                    v-model={formData.value.time}
-                    type="datetime"
-                    placeholder={t('qing-xuan-ze')}
-                    defaultValue={new Date()}
-                    format="YYYY-MM-DD HH:mm"
-                    value-format="YYYY-MM-DDTHH:mm"
-                  />
-                </ElFormItem>
-                <ElFormItem prop="changeMission" label={t('fan-hui-chong-dian-dian')}>
-                  <ElSwitch
-                    v-model={formData.value.changeMission}
-                    inline-prompt
-                    active-text={t('shi')}
-                    inactiveText={t('fou')}
-                  />
-                </ElFormItem>
-              </ElForm>
+            header: () => (
+              <div class=" flex flex-col ">
+                <span class="mb-3">{t('xin-jian-ren-wu')}</span>
+                <ElRadioGroup v-model={isChange.value}>
+                  <ElRadioButton label={false}>{t('pu-tong-ren-wu')}</ElRadioButton>
+                  <ElRadioButton label={true}>{t('ding-shi-ren-wu')}</ElRadioButton>
+                </ElRadioGroup>
+              </div>
             ),
+            default: () =>
+              isChange.value === true ? (
+                <ElForm label-width={150} model={formData.value}>
+                  <ElFormItem prop="missionId" label={t('lu-jing-mo-ban')}>
+                    <ElSelect
+                      v-model={formData.value.missionId}
+                      placeholder={t('qing-xuan-ze')}
+                      class="w-full"
+                    >
+                      {templateList.value.map((item: any) => (
+                        <ElOption label={item.name} value={item.id}></ElOption>
+                      ))}
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem prop="loopConditions" label={t('xun-huan-tiao-jian')}>
+                    <ElSelect
+                      v-model={formData.value.loopConditions}
+                      placeholder={t('qing-xuan-ze')}
+                      class="w-full"
+                      onChange={handleLoopConditionChange}
+                    >
+                      <ElOption label={t('mei-tian')} value={loopConditionsMap.DAY}></ElOption>
+                      <ElOption label={t('mei-zhou')} value={loopConditionsMap.WEEK}></ElOption>
+                      <ElOption label={t('dan-ci')} value={loopConditionsMap.SINGLE}></ElOption>
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem prop="conditions" label={t('xun-huan-shi-jian')}>
+                    <ElCheckboxGroup
+                      v-model={formData.value.conditions}
+                      disabled={conditionsDisabled.value}
+                    >
+                      {dayOptions.map((item) => {
+                        return <ElCheckbox label={item.value}>{item.label}</ElCheckbox>
+                      })}
+                    </ElCheckboxGroup>
+                  </ElFormItem>
+                  <ElFormItem prop="time" label={t('xia-fa-shi-jian')}>
+                    <ElDatePicker
+                      v-model={formData.value.time}
+                      type="datetime"
+                      placeholder={t('qing-xuan-ze')}
+                      defaultValue={new Date()}
+                      format="YYYY-MM-DD HH:mm"
+                      value-format="YYYY-MM-DDTHH:mm"
+                    />
+                  </ElFormItem>
+                  <ElFormItem prop="changeMission" label={t('fan-hui-chong-dian-dian')}>
+                    <ElSwitch
+                      v-model={formData.value.changeMission}
+                      inline-prompt
+                      active-text={t('shi')}
+                      inactiveText={t('fou')}
+                    />
+                  </ElFormItem>
+                </ElForm>
+              ) : (
+                <div class="flex flex-col ">
+                  <span>{t('lu-xian-dian')}</span>
+                  <ElScrollbar height="25vh">
+                    <span>{props.pointsdata.value}</span>
+                  </ElScrollbar>
+                </div>
+              ),
             footer: () => (
               <ElButton size="large" type="primary" class="w-full" onClick={handleConfirm}>
-                {t('que-ding')}
+                {t('xia-fa-ren-wu')}
               </ElButton>
             )
           }}
