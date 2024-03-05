@@ -504,7 +504,6 @@ export const useMap = () => {
             } else {
               res = await sendMavlinkMission(pathPointsData.value, currentCar.value)
             }
-
             ElMessage.success({
               message: res.message
             })
@@ -680,7 +679,6 @@ export const useMap = () => {
                     }
                     pointPathConfigVisible.value = true
                     handlePointConfigEvent(pointCoordinates, carNum)
-                    carSpeedData.value.length = 0
                   }
                 }
               ]
@@ -696,6 +694,8 @@ export const useMap = () => {
           }
           pathPointList.push(pointCoordinates)
           pathPointsData.value = JSON.parse(template.mission)
+
+          carSpeedData.value.length = 0
         })
 
         jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
@@ -764,6 +764,30 @@ export const useMap = () => {
                 {
                   item: t('she-zhi-wei-fan-hang-dian'),
                   click: handleCreateHomePath
+                },
+                {
+                  item: t('bian-ji-che-su'),
+                  click: () => {
+                    const pointCoordinates: {
+                      x: number
+                      y: number
+                    } = {
+                      x: pathPoint.getCoordinates().y,
+                      y: pathPoint.getCoordinates().x
+                    }
+                    clickNum = index + 1
+
+                    //保存已有车速值
+                    const carNum: string = carSpeedData.value[index] || ''
+                    if (!carSpeedData.value[index]) {
+                      const templateData: any = data[index]
+                      if (templateData.speed) {
+                        carNum = templateData.speed.toString()
+                      }
+                    }
+                    pointPathConfigVisible.value = true
+                    handlePointConfigEvent(pointCoordinates, carNum)
+                  }
                 }
               ]
             })
@@ -777,6 +801,8 @@ export const useMap = () => {
             y: pathPoint.getCoordinates().x
           }
           pathPointList.push(pointCoordinates)
+          pathPointsData.value = data
+          carSpeedData.value.length = 0
         })
 
         jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
@@ -832,7 +858,6 @@ export const useMap = () => {
           pathPoint.setCoordinates(entryPoint.getCenter())
           entryPoint = undefined
         }
-
         patrolpathPoints.push(pathPoint)
         if (patrolpathPoints.length >= 2) {
           const lastTwoPoints = patrolpathPoints.slice(-2)
