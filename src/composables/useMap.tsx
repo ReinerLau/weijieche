@@ -31,6 +31,7 @@ import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
 import CameraPlayer from '@/components/CameraPlayer.vue'
 import { cameraList } from '@/shared'
+import { usePointConfig } from '@/composables'
 
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
@@ -61,6 +62,13 @@ export const useMap = () => {
         searchDialogVisible: templateSearchDialogVisible,
         TemplateSearchDialog
       } = useTemplate()
+
+      // 路线点设置相关
+      const {
+        PointConfigDrawer,
+        pointConfigDrawerVisible: pointPathConfigVisible,
+        handlePointConfigEvent
+      } = usePointConfig()
 
       // 定时任务相关
       const {
@@ -129,19 +137,54 @@ export const useMap = () => {
       // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
       let tileLayer: maptalks.TileLayer
 
+      let pointNum: number = 0
+      let clickNum: number = 0
+      // 保存已有车速值
+      const carSpeedData = ref<
+        {
+          carNum: string
+        }[]
+      >([])
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
+        pointNum++
+        const chooseNum: number = pointNum
+        carSpeedData.value.length = 0
         const pathPoint = e.geometry as maptalks.Marker
+        const pointMenuOptions = {
+          items: [
+            {
+              item: t('she-zhi-che-su'),
+              click: () => {
+                const pointCoordinates: {
+                  x: number
+                  y: number
+                } = {
+                  x: pathPoint.getCoordinates().y,
+                  y: pathPoint.getCoordinates().x
+                }
+                clickNum = chooseNum
+                //保存已有车速值
+                const carNum: string = carSpeedData.value[clickNum - 1] || ''
+                pointPathConfigVisible.value = true
+                handlePointConfigEvent(pointCoordinates, carNum)
+              }
+            }
+          ]
+        }
+
         pathPoint.config({
           draggable: true
         })
-        pathPoint.setSymbol({
-          textName: pathPoints.length + 1,
-          markerType: 'ellipse',
-          markerFill: '#ff930e',
-          markerWidth: 13,
-          markerHeight: 13
-        })
+        pathPoint
+          .setSymbol({
+            textName: pathPoints.length + 1,
+            markerType: 'ellipse',
+            markerFill: '#ff930e',
+            markerWidth: 13,
+            markerHeight: 13
+          })
+          .setMenu(pointMenuOptions)
         addPathPointToLayer(pathPoint)
       }
 
@@ -426,19 +469,55 @@ export const useMap = () => {
         }
       }
 
+      //设置速度
+
+      const pointsData = ref<string[]>([])
+      const pathPointsData = ref<string[]>([])
+      function handleConfirmPointCarConfig(data: any) {
+        if (pathPointsData.value.length !== 0) {
+          pointsData.value = [...pathPointsData.value]
+          pointsData.value[clickNum - 1].speed = data.speed
+          //保存已有车速值
+          carSpeedData.value[clickNum - 1] = data.speed
+          pathPointsData.value = [...pointsData.value]
+        } else {
+          ElMessage.error({
+            message: t('lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian')
+          })
+        }
+      }
+
       // 下发任务
 
       async function handleCreatePlan() {
         isExecutePlan.value = false
         if (haveCurrentCar() && havePath()) {
-          const data = getLineCoordinates(pathPoints)
-          const res: any = await sendMavlinkMission(data, currentCar.value)
-          ElMessage.success({
-            message: res.message
-          })
+          try {
+            let res: any
+            if (missionTemplateId.value) {
+              const params = missionTemplateId.value
+                ? {
+                    missionTemplateId: missionTemplateId.value
+                  }
+                : {}
+              res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
+            } else {
+              res = await sendMavlinkMission(pathPointsData.value, currentCar.value)
+            }
+
+            ElMessage.success({
+              message: res.message
+            })
+          } catch (error) {
+            ElMessage.error({
+              message: t('xia-fa-ren-wu-shi-bai') + error.message
+            })
+          }
+
           isExecutePlan.value = true
-          // clearLine()
+          clearLine()
           clearDrawTool()
+          carSpeedData.value.length = 0
         }
       }
 
@@ -467,7 +546,7 @@ export const useMap = () => {
         const data = {
           mission: isRecordPath.value
             ? JSON.stringify(getLineCoordinates(recordPathPoints))
-            : JSON.stringify(getLineCoordinates(pathPoints)),
+            : JSON.stringify(pathPointsData.value),
           name: formData.name,
           memo: formData.memo,
           rtype: 'patroling'
@@ -534,6 +613,8 @@ export const useMap = () => {
       let onePoint: maptalks.Marker | undefined
       const pathPointList: any = []
       // 确定选择模板路线在地图上显示
+      const missionTemplateId = ref<number>()
+
       function handleConfirmTemplate(template: any) {
         entryPoint = undefined
         onePoint = undefined
@@ -541,10 +622,10 @@ export const useMap = () => {
         clearDrawTool()
         clearLine()
         templateSearchDialogVisible.value = false
-        const coordinates: number[][] = JSON.parse(template.mission).map((item: any) => [
-          item.y,
-          item.x
-        ])
+        missionTemplateId.value = template.id
+        const coordinates: number[][] = JSON.parse(template.mission).map(
+          (item: { x: number; y: number }) => [item.y, item.x]
+        )
         coordinates.forEach((coordinate, index) => {
           // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
           // https://maptalks.org/maptalks.js/api/1.x/Marker.html
@@ -575,8 +656,32 @@ export const useMap = () => {
                   }
                 },
                 {
-                  item: '添加返航点',
+                  item: t('tian-jia-fan-hang-dian'),
                   click: handleCreateHomePath
+                },
+                {
+                  item: t('bian-ji-che-su'),
+                  click: () => {
+                    const pointCoordinates: {
+                      x: number
+                      y: number
+                    } = {
+                      x: pathPoint.getCoordinates().y,
+                      y: pathPoint.getCoordinates().x
+                    }
+                    clickNum = index + 1
+                    //保存已有车速值
+                    let carNum: string = carSpeedData.value[index] || ''
+                    if (!carSpeedData.value[index]) {
+                      const templateData: any = JSON.parse(template.mission)[index]
+                      if (templateData.speed) {
+                        carNum = templateData.speed.toString()
+                      }
+                    }
+                    pointPathConfigVisible.value = true
+                    handlePointConfigEvent(pointCoordinates, carNum)
+                    carSpeedData.value.length = 0
+                  }
                 }
               ]
             })
@@ -590,6 +695,7 @@ export const useMap = () => {
             y: pathPoint.getCoordinates().x
           }
           pathPointList.push(pointCoordinates)
+          pathPointsData.value = JSON.parse(template.mission)
         })
 
         jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
@@ -842,7 +948,11 @@ export const useMap = () => {
           items: [
             {
               item: t('jie-shu'),
-              click: clearDrawTool
+              click: () => {
+                clearDrawTool()
+                pointNum = 0
+                pathPointsData.value = getLineCoordinates(pathPoints)
+              }
             },
             {
               item: t('qu-xiao-fan-hang-lu-xian-hui-zhi'),
@@ -1138,6 +1248,7 @@ export const useMap = () => {
           <PointSettingFormDialog />
           <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
           <FileUploadDialog onConfirm={handleConfirmFilePath} />
+          <PointConfigDrawer onConfirm={handleConfirmPointCarConfig} />
         </div>
       )
     }
