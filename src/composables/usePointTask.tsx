@@ -32,8 +32,6 @@ export const usePointTask = () => {
   const taskPointList: Ref<any[]> = ref([])
   const taskPoint = ref<(() => void) | null>(null)
   const pointCoordinates: Ref<string> = ref('')
-  //输入校验判断
-  const isShowRules = ref(true)
 
   async function getList() {
     const res = await getPointTaskList()
@@ -49,19 +47,14 @@ export const usePointTask = () => {
     if (c.id) {
       pointCoordinates.value = c.gps
       form.value = Object.assign({}, c)
-      if (form.value['type'] !== 3) {
-        const cameraAngle = c.cameraAngle.map((item: any) => {
-          if (item.x & item.y) {
-            return `${item.x},${item.y}`
-          } else {
-            return item
-          }
-        })
-        form.value['cameraAngle'] = cameraAngle
-        isShowRules.value = false
-      } else {
-        isShowRules.value = true
-      }
+      const cameraAngle = c.cameraAngle.map((item: any) => {
+        if (item.x & item.y) {
+          return `${item.x},${item.y}`
+        } else {
+          return item
+        }
+      })
+      form.value['cameraAngle'] = cameraAngle
     } else {
       pointCoordinates.value = c
     }
@@ -81,21 +74,15 @@ export const usePointTask = () => {
           name: [{ required: false, message: t('qing-shu-ru-ming-cheng') }],
           cameraAngle: [
             {
-              required: !isShowRules.value,
+              required: true,
               message: t('qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du')
             }
           ],
           type: [{ required: true, message: t('qing-xuan-ze-ren-wu-lei-xing') }],
           time: [
             {
-              required: !isShowRules.value,
+              required: true,
               message: t('qing-shu-ru-ting-liu-shi-jian-s')
-            }
-          ],
-          speed: [
-            {
-              required: isShowRules.value,
-              message: t('qing-she-zhi-che-liang-su-du')
             }
           ]
         }
@@ -110,10 +97,6 @@ export const usePointTask = () => {
         {
           name: t('shi-bie-ren-wu'),
           type: 2
-        },
-        {
-          name: t('su-du-she-zhi'),
-          type: 3
         }
       ]
 
@@ -135,7 +118,6 @@ export const usePointTask = () => {
                 v-model={form.value['type']}
                 placeholder={t('qing-xuan-ze-ren-wu-lei-xing')}
                 clearable
-                onChange={handleTaskType}
               >
                 {taskTypeList.map((item: any) => (
                   <ElOption key={item} label={item.name} value={item.type}></ElOption>
@@ -151,37 +133,12 @@ export const usePointTask = () => {
           {
             prop: 'time',
             title: t('ting-liu-shi-jian-s'),
-            slot: () => (
-              <ElInputNumber
-                min={0}
-                v-model={form.value['time']}
-                disabled={form.value['type'] === 3 ? true : false}
-              ></ElInputNumber>
-            )
-          },
-          {
-            prop: 'speed',
-            title: t('che-liang-su-du'),
-            slot: () => (
-              <ElInput
-                v-model={form.value['speed']}
-                disabled={form.value['type'] === 3 ? false : true}
-              ></ElInput>
-            )
+            slot: () => <ElInputNumber min={0} v-model={form.value['time']}></ElInputNumber>
           },
           {
             prop: 'cameraAngle',
-            title: form.value['type'] === 3 ? '' : t('she-xiang-tou-zhuan-dong-jiao-du'),
+            title: t('she-xiang-tou-zhuan-dong-jiao-du'),
             slot: () => (
-              // <ElSlider
-              //   v-model={form.value['cameraAngle']}
-              //   class="flex-1"
-              //   step={1}
-              //   min={0}
-              //   max={360}
-              //   show-input-controls={false}
-              //   v-show={form.value['type'] === 3 ? false : true}
-              // />
               <ElSelect
                 class="w-full"
                 v-model={form.value['cameraAngle']}
@@ -191,7 +148,6 @@ export const usePointTask = () => {
                 default-first-option
                 reserve-keyword={false}
                 placeholder="请填写x,y值,逗号分隔，如：1,2"
-                v-show={form.value['type'] === 3 ? false : true}
               >
                 {cameraAngleList.map((item: any) => (
                   <ElOption key={item} label={item.label} value={item.value}></ElOption>
@@ -201,13 +157,6 @@ export const usePointTask = () => {
           }
         ]
       })
-
-      function handleTaskType(v: any) {
-        isShowRules.value = v === 3
-        form.value['cameraAngle'] = undefined
-        form.value['time'] = undefined
-        form.value['speed'] = undefined
-      }
 
       // 提交表单数据
       async function handleSubmit() {

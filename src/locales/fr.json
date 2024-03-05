@@ -115,10 +115,8 @@
   "qing-xuan-ze-kong-zhi-qi": "Veuillez sélectionner le contrôleur.",
   "qing-xuan-ze-kong-zhi-qi-lei-xing": "Veuillez sélectionner le type de contrôleur",
   "wai-she-zhuang-tai-0": "État du périphérique externe",
-  "che-liang-su-du": "Vitesse du véhicule",
   "lu-jing-dian-jing-wei-du-zuo-biao": "Coordonnées de latitude et de longitude du point de chemin",
   "pei-zhi-lu-jing-dian-ren-wu": "Configurer les tâches de waypoint",
-  "qing-she-zhi-che-liang-su-du": "Veuillez régler la vitesse du véhicule",
   "qing-shu-ru-ting-liu-shi-jian-s": "Veuillez entrer le temps de séjour/S",
   "qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du": "Veuillez sélectionner l'angle de rotation de la caméra",
   "ren-wu-dian": "point de mission",
@@ -141,7 +139,6 @@
   "websocket-lian-jie-cheng-gong": "Connexion Websocket réussie !",
   "qing-xuan-ze-ren-wu-lei-xing": "Veuillez sélectionner le type de tâche",
   "shi-bie-ren-wu": "tâche de reconnaissance",
-  "su-du-she-zhi": "réglage de la vitesse",
   "xun-jian-ren-wu": "Tâches d'inspection",
   "bao-cun-fan-hang-lu-xian": "Enregistrer l'itinéraire de retour",
   "che-liang-fan-hang": "Restitution du véhicule",
@@ -224,5 +221,13 @@
   "hua-mian": "Image",
   "cha-kan-jing-bao-xiang-qing": "Voir les détails de l'alerte",
   "jing-bao": "Alarmes",
-  "qu-xiao-fan-hang-lu-xian-hui-zhi": "Annuler le tracé de l'itinéraire de retour"
+  "qu-xiao-fan-hang-lu-xian-hui-zhi": "Annuler le tracé de l'itinéraire de retour",
+  "bian-ji-che-su": "Modifier la vitesse",
+  "lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian": "L'itinéraire n'existe pas, veuillez faire un clic droit pour terminer le tracé de la ligne !",
+  "lu-xian-dian-gong-neng-she-zhi": "Paramètres de la fonction de point d'itinéraire",
+  "she-zhi-che-su": "Régler la vitesse du véhicule",
+  "tian-jia-fan-hang-dian": "Ajouter un point de retour",
+  "che-liang-su-du-ms": "Vitesse du véhicule m/s",
+  "lu-xian-dian-zuo-biao": "coordonnées du point d'itinéraire",
+  "xia-fa-ren-wu-shi-bai": "Échec de l'envoi de la tâche !"
 }
