@@ -115,10 +115,8 @@
   "qing-xuan-ze-kong-zhi-qi": "Please select a controller.",
   "qing-xuan-ze-kong-zhi-qi-lei-xing": "Please select the controller type.",
   "wai-she-zhuang-tai-0": "Peripheral status",
-  "che-liang-su-du": "vehicle speed",
   "lu-jing-dian-jing-wei-du-zuo-biao": "Path point latitude and longitude coordinates",
   "pei-zhi-lu-jing-dian-ren-wu": "Configure waypoint tasks",
-  "qing-she-zhi-che-liang-su-du": "Please set vehicle speed",
   "qing-shu-ru-ting-liu-shi-jian-s": "Please enter the stay time/S",
   "qing-xuan-ze-she-xiang-tou-zhuan-dong-jiao-du": "Please select camera rotation angle",
   "ren-wu-dian": "Mission point",
@@ -141,7 +139,6 @@
   "websocket-lian-jie-cheng-gong": "websocket connection successful!",
   "qing-xuan-ze-ren-wu-lei-xing": "Please select task type",
   "shi-bie-ren-wu": "recognition task",
-  "su-du-she-zhi": "speed setting",
   "xun-jian-ren-wu": "Inspection tasks",
   "bao-cun-fan-hang-lu-xian": "Save return route",
   "che-liang-fan-hang": "Vehicle return",
@@ -224,5 +221,13 @@
   "hua-mian": "Frame",
   "cha-kan-jing-bao-xiang-qing": "View alert details",
   "jing-bao": "Alarm",
-  "qu-xiao-fan-hang-lu-xian-hui-zhi": "Cancel the drawing of the return route"
+  "qu-xiao-fan-hang-lu-xian-hui-zhi": "Cancel the drawing of the return route",
+  "bian-ji-che-su": "Edit speed",
+  "lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian": "The route does not exist, please right-click to end drawing the line!",
+  "lu-xian-dian-gong-neng-she-zhi": "Route point function settings",
+  "she-zhi-che-su": "Set vehicle speed",
+  "tian-jia-fan-hang-dian": "Add return point",
+  "che-liang-su-du-ms": "Vehicle speed m/s",
+  "lu-xian-dian-zuo-biao": "route point coordinates",
+  "xia-fa-ren-wu-shi-bai": "Failed to send task!"
 }

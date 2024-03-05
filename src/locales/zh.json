@@ -124,8 +124,6 @@
   "ting-liu-shi-jian-s": "停留时间/S",
   "yi-jian-ding-wei": "一键定位",
   "ren-wu-lei-xing": "任务类型",
-  "che-liang-su-du": "车辆速度",
-  "qing-she-zhi-che-liang-su-du": "请设置车辆速度",
   "jin-guang-deng": "近光灯",
   "yuan-guang-deng": "远光灯",
   "zi-dong-yuan-guang-deng": "自动远光灯",
@@ -142,7 +140,6 @@
   "qing-xuan-ze-ren-wu-lei-xing": "请选择任务类型",
   "xun-jian-ren-wu": "巡检任务",
   "shi-bie-ren-wu": "识别任务",
-  "su-du-she-zhi": "速度设置",
   "yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian": "已结束录制，请保存路线!",
   "kai-shi-lu-zhi": "开始录制",
   "mo-ban-lie-biao": "模板列表",
@@ -224,5 +221,13 @@
   "hua-mian": "画面",
   "cha-kan-jing-bao-xiang-qing": "查看警报详情",
   "jing-bao": "警报",
-  "qu-xiao-fan-hang-lu-xian-hui-zhi": "取消返航路线绘制"
+  "qu-xiao-fan-hang-lu-xian-hui-zhi": "取消返航路线绘制",
+  "lu-xian-dian-gong-neng-she-zhi": "路线点功能设置",
+  "she-zhi-che-su": "设置车速",
+  "tian-jia-fan-hang-dian": "添加返航点",
+  "bian-ji-che-su": "编辑车速",
+  "lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian": "路线不存在，请右键结束画线!",
+  "lu-xian-dian-zuo-biao": "路线点坐标",
+  "che-liang-su-du-ms": "车辆速度m/s",
+  "xia-fa-ren-wu-shi-bai": "下发任务失败！"
 }
