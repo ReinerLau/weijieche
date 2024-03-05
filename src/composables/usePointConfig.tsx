@@ -48,7 +48,7 @@ export const usePointConfig = () => {
           title={t('lu-xian-dian-gong-neng-she-zhi')}
           class="select-none"
           v-model={pointConfigDrawerVisible.value}
-          size="80%"
+          size="50%"
         >
           {{
             default: () => (
