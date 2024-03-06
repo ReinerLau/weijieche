@@ -229,5 +229,7 @@
   "tian-jia-fan-hang-dian": "Add return point",
   "che-liang-su-du-ms": "Vehicle speed m/s",
   "lu-xian-dian-zuo-biao": "route point coordinates",
-  "xia-fa-ren-wu-shi-bai": "Failed to send task!"
+  "xia-fa-ren-wu-shi-bai": "Failed to send task!",
+  "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "Recording completed, please save the recording route template, select the template, and then issue the task!",
+  "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "Please create a new recording path or click the clear button first!"
 }

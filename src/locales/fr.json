@@ -229,5 +229,7 @@
   "tian-jia-fan-hang-dian": "Ajouter un point de retour",
   "che-liang-su-du-ms": "Vitesse du véhicule m/s",
   "lu-xian-dian-zuo-biao": "coordonnées du point d'itinéraire",
-  "xia-fa-ren-wu-shi-bai": "Échec de l'envoi de la tâche !"
+  "xia-fa-ren-wu-shi-bai": "Échec de l'envoi de la tâche !",
+  "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "Fin de l'enregistrement, enregistrez le modèle d'itinéraire d'enregistrement, sélectionnez le modèle et lancez la tâche!",
+  "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "Veuillez d'abord créer un nouveau chemin d'enregistrement ou appuyer sur la touche vider!"
 }
