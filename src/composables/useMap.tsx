@@ -300,13 +300,18 @@ export const useMap = () => {
                     type: 'success',
                     message: t('kai-shi-lu-zhi')
                   })
+                } else if (isRecord.value) {
+                  ElMessage({
+                    type: 'warning',
+                    message: '已开始录制中'
+                  })
                 }
               }
             },
             {
               title: t('jie-shu-lu-zhi'),
               event: () => {
-                if (havePath()) {
+                if (recordPathPoints.length > 1) {
                   clearLine()
                   clearDrawTool()
                   isRecord.value = false
@@ -315,6 +320,11 @@ export const useMap = () => {
                     message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
                   })
                   isRecordPath.value = true
+                } else {
+                  ElMessage({
+                    type: 'error',
+                    message: t('qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian')
+                  })
                 }
               }
             },
@@ -491,33 +501,44 @@ export const useMap = () => {
 
       async function handleCreatePlan() {
         isExecutePlan.value = false
-        if (haveCurrentCar() && havePath()) {
+
+        if (haveCurrentCar() && havePath() && endRecording()) {
           try {
             let res: any
-            if (missionTemplateId.value) {
-              const params = missionTemplateId.value
-                ? {
-                    missionTemplateId: missionTemplateId.value
-                  }
-                : {}
-              res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
-            } else {
-              res = await sendMavlinkMission(pathPointsData.value, currentCar.value)
+            if (isRecordPath.value) {
+              ElMessage({
+                type: 'error',
+                message: t(
+                  'lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu'
+                )
+              })
+            } else if (pathPointsData.value.length !== 0) {
+              if (missionTemplateId.value) {
+                const params = missionTemplateId.value
+                  ? {
+                      missionTemplateId: missionTemplateId.value
+                    }
+                  : {}
+                res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
+              } else {
+                res = await sendMavlinkMission(pathPointsData.value, currentCar.value)
+              }
+              ElMessage.success({
+                message: res.message
+              })
             }
-            ElMessage.success({
-              message: res.message
-            })
+            isExecutePlan.value = true
+            clearLine()
+            clearDrawTool()
+            carSpeedData.value.length = 0
+            pathPointsData.value.length = 0
           } catch (error) {
             ElMessage.error({
-              message: t('xia-fa-ren-wu-shi-bai') + error.message
+              message: t('xia-fa-ren-wu-shi-bai')
             })
           }
-
-          isExecutePlan.value = true
-          clearLine()
-          clearDrawTool()
-          carSpeedData.value.length = 0
         }
+        missionTemplateId.value = null
       }
 
       // 跳转到指定坐标
