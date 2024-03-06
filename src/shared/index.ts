@@ -30,15 +30,13 @@ export const cameraList: Ref<any[]> = ref([])
  * @property STOP - 停止
  * @property AUTO - 自动
  * @property MANUAL - 手动
- * @property AUTODEBLOCKING - 自主解锁
- * @property STOPLOCK - 停止上锁
  */
 export const modes = {
-  STOP: 1,
-  AUTO: 4,
-  MANUAL: 3,
-  AUTODEBLOCKING: 262144,
-  STOPLOCK: 65536
+  STOP: 0,
+  AUTO: 262144,
+  MANUAL: 196608
+  // AUTODEBLOCKING: 262144,
+  // STOPLOCK: 65536
 }
 
 /**
