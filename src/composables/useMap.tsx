@@ -53,7 +53,8 @@ export const useMap = () => {
       // 国际化相关
       const { t } = useI18n()
 
-      // const { isMobile } = useResponsive()
+      //保存路线点
+      const pathDataPoints = ref()
 
       // 模板相关
       const {
@@ -74,13 +75,12 @@ export const useMap = () => {
       const {
         dialogVisible: scheduleDialogVisible,
         ScheduleDialog,
-        searchDialogVisible: scheduleSearchDialogVisible,
         ScheduleSearchDialog,
         PatrolTaskDialog,
         patrolTaskVisible: patrolTaskDialogVisible,
         FileUploadDialog,
         fileUploadVisible: fileUploadDialogVisible
-      } = useSchedule()
+      } = useSchedule(handleCreatePlan)
 
       const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
 
@@ -358,10 +358,6 @@ export const useMap = () => {
           }
         },
         {
-          title: t('xia-fa-ren-wu'),
-          event: handleCreatePlan
-        },
-        {
           title: t('che-liang-fan-hang'),
           subItems: [
             {
@@ -422,31 +418,18 @@ export const useMap = () => {
           ]
         },
         {
-          title: t('ding-shi-ren-wu'),
+          title: t('xun-luo-ren-wu'),
           subItems: [
             {
-              title: t('xin-jian-ren-wu'),
+              title: t('xia-fa-ren-wu'),
               event: () => {
                 if (endRecording()) {
                   clearDrawTool()
+                  pathDataPoints.value = JSON.stringify(getLineCoordinates(pathPoints))
                   scheduleDialogVisible.value = true
                 }
               }
             },
-            {
-              title: t('ren-wu-lie-biao'),
-              event: () => {
-                if (endRecording()) {
-                  clearDrawTool()
-                  scheduleSearchDialogVisible.value = true
-                }
-              }
-            }
-          ]
-        },
-        {
-          title: t('xun-luo-ren-wu'),
-          subItems: [
             {
               title: t('ren-wu-lie-biao'),
               event: () => {
@@ -1289,7 +1272,7 @@ export const useMap = () => {
 
           <TemplateDialog onConfirm={handleConfirm} />
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
-          <ScheduleDialog />
+          <ScheduleDialog pointsdata={pathDataPoints} />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
           <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
