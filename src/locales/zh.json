@@ -229,5 +229,7 @@
   "lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian": "路线不存在，请右键结束画线!",
   "lu-xian-dian-zuo-biao": "路线点坐标",
   "che-liang-su-du-ms": "车辆速度m/s",
-  "xia-fa-ren-wu-shi-bai": "下发任务失败！"
+  "xia-fa-ren-wu-shi-bai": "下发任务失败！",
+  "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "录制结束，请保存录制路线模板，选择模板再下发任务！",
+  "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "请先新建录制路径或点击清空键！"
 }

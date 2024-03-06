@@ -108,7 +108,7 @@ export const useMapMaker = () => {
 
   //录制路线
   function initRecordPath(data: CarInfo) {
-    markerLayer.clear()
+    // markerLayer.clear()
     if (hasCoordinate(data) && itIsTheCar(data) && isRecord.value) {
       const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
         symbol: {
@@ -192,6 +192,7 @@ export const useMapMaker = () => {
     const data = res.data || {}
     isRecord.value = false
     recordPathLayer.clear()
+    newData.value = data
     initMarker(data)
   }
 
