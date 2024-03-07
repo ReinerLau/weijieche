@@ -8,20 +8,9 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import {
-  ElButton,
-  ElDropdown,
-  ElDropdownItem,
-  ElDropdownMenu,
-  ElInput,
-  ElMessage,
-  ElOption,
-  ElScrollbar,
-  ElSelect,
-  ElSwitch
-} from 'element-plus'
+import { ElMessage, ElOption, ElSelect } from 'element-plus'
 import * as maptalks from 'maptalks'
-import { Fragment, defineComponent, onMounted, ref, watch, reactive, withModifiers } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
@@ -33,6 +22,7 @@ import CameraPlayer from '@/components/CameraPlayer.vue'
 import { cameraList } from '@/shared'
 import { usePointConfig } from '@/composables'
 import ToolbarController from '@/components/ToolbarController.vue'
+import DebugController from '@/components/DebugController.vue'
 
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
@@ -1124,28 +1114,12 @@ export const useMap = () => {
         }
       }
 
-      // 是否开启调试模式
-      const debugMode = ref(false)
-      // 开启调试模式监听鼠标移动事件，关闭调试模式移除鼠标移动事件
-      watch(debugMode, (val: boolean) => {
+      /**
+       * 开启调试模式显示网格
+       * @param val 调试模式开启状态
+       */
+      const onChangeDebugMode = (val: boolean) => {
         tileLayer.config('debug', val)
-        if (val) {
-          map.on('mousemove', debugMapMouseMoveEvent)
-        } else {
-          map.off('mousemove', debugMapMouseMoveEvent)
-        }
-      })
-
-      // 当前鼠标坐标
-      const mouseCoordinate = reactive({
-        x: 0,
-        y: 0
-      })
-
-      // 调试模式下的鼠标移动事件
-      function debugMapMouseMoveEvent(e: any) {
-        mouseCoordinate.x = e.coordinate.x
-        mouseCoordinate.y = e.coordinate.y
       }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
@@ -1175,41 +1149,11 @@ export const useMap = () => {
             class="absolute top-5 right-5 z-10"
             items={toolbarItems}
           ></ToolbarController>
-
-          <div class="absolute bottom-5 right-5 z-10 text-right">
-            <ElSwitch
-              v-model={debugMode.value}
-              activeText={t('tiao-shi')}
-              inactiveText={t('zheng-chang')}
-            />
-
-            {debugMode.value ? (
-              <div class="flex">
-                <ElInput
-                  v-model={mouseCoordinate.x}
-                  class="mr-1"
-                  onKeydown={withModifiers(
-                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
-                    ['enter']
-                  )}
-                />
-                <ElInput
-                  v-model={mouseCoordinate.y}
-                  class="mr-1"
-                  onKeydown={withModifiers(
-                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
-                    ['enter']
-                  )}
-                />
-                <ElButton
-                  type="primary"
-                  onClick={() => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y)}
-                >
-                  确定
-                </ElButton>
-              </div>
-            ) : null}
-          </div>
+          <DebugController
+            class="absolute bottom-5 right-5 z-10"
+            onChange={onChangeDebugMode}
+            onJump={({ x, y }) => jumpToCoordinate(x, y)}
+          ></DebugController>
           {!isConnectedWS.value ? (
             <div class="absolute left-5 top-5 z-10 text-red-600">
               <IconMdiSignalOff />

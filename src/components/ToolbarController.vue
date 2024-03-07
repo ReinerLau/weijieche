@@ -1,11 +1,23 @@
 <script setup lang="ts">
 interface ToolbarItem {
+  /**
+   * 功能项标题
+   */
   title: string
+  /**
+   * 下拉框功能项配置
+   */
   subItems?: ToolbarItem[]
+  /**
+   * 功能项点击事件
+   */
   event?: () => void
 }
 
 defineProps<{
+  /**
+   * 所有功能项配置
+   */
   items: ToolbarItem[]
 }>()
 </script>
