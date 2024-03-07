@@ -128,11 +128,7 @@ export const useMap = () => {
       let pointNum: number = 0
       let clickNum: number = 0
       // 保存已有车速值
-      const carSpeedData = ref<
-        {
-          carNum: string
-        }[]
-      >([])
+      const carSpeedData = ref<string[]>([])
       // 每次点击地图新建路线点的事件
       function pathPointDrawendEvent(e: any) {
         pointNum++
@@ -443,8 +439,8 @@ export const useMap = () => {
 
       //设置速度
 
-      const pointsData = ref<string[]>([])
-      const pathPointsData = ref<string[]>([])
+      const pointsData = ref<{ x: number; y: number; speed: string }[]>([])
+      const pathPointsData = ref<{ x: number; y: number; speed: string }[]>([])
       function handleConfirmPointCarConfig(data: any) {
         if (pathPointsData.value.length !== 0) {
           pointsData.value = [...pathPointsData.value]
@@ -475,16 +471,12 @@ export const useMap = () => {
                 )
               })
             } else if (pathPointsData.value.length !== 0) {
-              if (missionTemplateId.value) {
-                const params = missionTemplateId.value
-                  ? {
-                      missionTemplateId: missionTemplateId.value
-                    }
-                  : {}
-                res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
-              } else {
-                res = await sendMavlinkMission(pathPointsData.value, currentCar.value)
-              }
+              const params = missionTemplateId.value
+                ? {
+                    missionTemplateId: missionTemplateId.value
+                  }
+                : {}
+              res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
               ElMessage.success({
                 message: res.message
               })
@@ -595,7 +587,7 @@ export const useMap = () => {
       let onePoint: maptalks.Marker | undefined
       const pathPointList: any = []
       // 确定选择模板路线在地图上显示
-      const missionTemplateId = ref<number>()
+      const missionTemplateId = ref<number | null | undefined>()
 
       function handleConfirmTemplate(template: any) {
         entryPoint = undefined
@@ -614,11 +606,18 @@ export const useMap = () => {
           // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
           const pathPoint = new maptalks.Marker(coordinate, {
             symbol: {
-              textName: index + 1,
-              markerType: 'ellipse',
-              markerFill: '#ff930e',
-              markerWidth: 13,
-              markerHeight: 13
+              markerType: index === 0 ? 'diamond' : 'ellipse',
+              markerFill: (() => {
+                if (index === 0) {
+                  return '#FF0070'
+                } else if (index === coordinates.length - 1) {
+                  return '#FF0070'
+                } else {
+                  return '#8D70DD'
+                }
+              })(),
+              markerWidth: 15,
+              markerHeight: 15
             }
           })
             .setMenu({
@@ -761,7 +760,7 @@ export const useMap = () => {
                     clickNum = index + 1
 
                     //保存已有车速值
-                    const carNum: string = carSpeedData.value[index] || ''
+                    let carNum: string = carSpeedData.value[index] || ''
                     if (!carSpeedData.value[index]) {
                       const templateData: any = data[index]
                       if (templateData.speed) {
