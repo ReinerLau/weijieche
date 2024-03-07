@@ -232,5 +232,14 @@
   "xia-fa-ren-wu-shi-bai": "Failed to send task!",
   "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "Recording completed, please save the recording route template, select the template, and then issue the task!",
   "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "Please create a new recording path or click the clear button first!",
-  "lu-xian-dian": "route point"
+  "lu-xian-dian": "route point",
+  "duan-kou": "port",
+  "ip": "IP",
+  "pin-pai": "brand",
+  "qing-shu-ru-duan-kou": "Please enter the port",
+  "qing-shu-ru-ip": "Please enter IP",
+  "qing-shu-ru-mi-ma": "Please enter password",
+  "qing-shu-ru-zhang-hao": "Please input Username",
+  "guan-bi": "closure",
+  "kai-qi": "turn on"
 }

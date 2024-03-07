@@ -46,6 +46,7 @@ export const useConfig = () => {
   // 当前配置数据
   const configData: Ref<any[]> = ref([])
   // 每次进入配置模式重新获取配置数据
+  watch(configType, () => getList())
   watch(isConfig, () => getList())
   watch(currentCar, () => (isConfig.value = false))
 
@@ -80,6 +81,10 @@ export const useConfig = () => {
           prop: 'rtsp'
         },
         {
+          label: t('pin-pai'),
+          prop: 'brand'
+        },
+        {
           label: t('guan-lian-zhuang-tai'),
           prop: 'rid',
           slot: (row: any) =>
@@ -93,7 +98,7 @@ export const useConfig = () => {
                 {t('shan-chu')}
               </ElButton>
               <ElButton link onClick={() => handleEdit(row)}>
-                {t('bian-ji')}{' '}
+                {t('bian-ji')}
               </ElButton>
               <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
                 {currentCar.value && row.rid === currentCar.value
@@ -120,7 +125,16 @@ export const useConfig = () => {
         },
         {
           label: t('wai-she-zhuang-tai'),
-          prop: 'status'
+          prop: 'status',
+          slot: (row: any) => {
+            if (Number(row.status) === 0) {
+              return t('guan-bi')
+            } else if (Number(row.status) === 1) {
+              return t('kai-qi')
+            } else {
+              return ''
+            }
+          }
         },
         {
           label: t('cao-zuo'),
@@ -130,7 +144,7 @@ export const useConfig = () => {
                 {t('shan-chu')}
               </ElButton>
               <ElButton link onClick={() => handleEdit(row)}>
-                {t('bian-ji')}{' '}
+                {t('bian-ji')}
               </ElButton>
             </div>
           )
@@ -191,6 +205,10 @@ export const useConfig = () => {
     if (configType.value === configTypes.CAMERA) {
       return {
         name: [{ required: true, message: t('qing-shu-ru-ming-cheng') }],
+        ip: [{ required: true, message: t('qing-shu-ru-ip') }],
+        port: [{ required: true, message: t('qing-shu-ru-duan-kou') }],
+        user: [{ required: true, message: t('qing-shu-ru-zhang-hao') }],
+        password: [{ required: true, message: t('qing-shu-ru-mi-ma') }],
         rtsp: [{ required: true, message: t('la-liu-di-zhi') }]
       }
     } else if (configType.value === configTypes.DEVICE) {
@@ -215,6 +233,26 @@ export const useConfig = () => {
         {
           prop: 'name',
           title: t('ming-cheng')
+        },
+        {
+          prop: 'ip',
+          title: t('ip')
+        },
+        {
+          prop: 'port',
+          title: t('duan-kou')
+        },
+        {
+          prop: 'user',
+          title: t('zhang-hao')
+        },
+        {
+          prop: 'password',
+          title: t('mi-ma')
+        },
+        {
+          prop: 'brand',
+          title: t('pin-pai')
         },
         {
           prop: 'rtsp',
@@ -253,9 +291,10 @@ export const useConfig = () => {
           title: t('wai-she-zhuang-tai-0'),
           slot: (form: Record<string, any>) => (
             <ElSwitch
+              class="my-2"
               v-model={form.value['status']}
-              active-text="开启"
-              inactive-text="关闭"
+              active-text={t('kai-qi')}
+              inactive-text={t('guan-bi')}
               style="--el-switch-off-color: #808080"
               active-value="1"
               inactive-value="0"
@@ -314,6 +353,7 @@ export const useConfig = () => {
             if (form.value.id) {
               res = await updateCamera(form.value)
             } else {
+              form.value.rtype = 'patroling'
               res = await createCamera(form.value)
             }
             ElMessage({ type: 'success', message: res.message })
@@ -331,11 +371,13 @@ export const useConfig = () => {
           try {
             let res: any
             if (form.value.id) {
+              form.value.status = Number(form.value.status)
               res = await updateDevice(form.value)
             } else {
               form.value.isDel = 0
               form.value.rid = currentCar.value
               form.value.rtype = 'patroling'
+              form.value.status = Number(form.value.status)
               res = await createDevice(form.value)
             }
             ElMessage({ type: 'success', message: res.message })
@@ -352,6 +394,7 @@ export const useConfig = () => {
   // 编辑
   function handleEdit(data: any) {
     dialogVisible.value = true
+    data.status = data.status.toString()
     form.value = Object.assign({}, toRaw(data))
   }
 
@@ -377,12 +420,13 @@ export const useConfig = () => {
       close-on-click-modal={false}
       close-on-press-escape={false}
       onClose={handleCancel}
-      width="50vw"
+      class="pr-14"
+      width="60vw"
       align-center
     >
       {{
         default: () => (
-          <ElForm ref={formRef} model={form} rules={formRules.value} label-width="100">
+          <ElForm ref={formRef} model={form} rules={formRules.value} label-width="200">
             {formFields.value.map((item) => (
               <ElFormItem label={item.title} prop={item.prop}>
                 {item.slot ? item.slot(form) : <ElInput v-model={form.value[item.prop]} />}
