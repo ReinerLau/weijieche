@@ -1,17 +1,7 @@
 <script setup lang="ts">
+import { baseLayer, jumpToCoordinate } from '@/shared/map'
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-const emit = defineEmits<{
-  /**
-   * 模式切换事件
-   */
-  change: [val: boolean]
-  /**
-   * 坐标跳转事件
-   */
-  jump: [mouseCoordinate: { x: number; y: number }]
-}>()
 
 const { t } = useI18n()
 
@@ -29,11 +19,12 @@ const mouseCoordinate = reactive({
 })
 
 /**
- * 开关切换
+ * 开启调试模式显示网格
+ * @param val 调试模式开启状态
  */
 const onChangeMode = (val: string | number | boolean) => {
   if (typeof val === 'boolean') {
-    emit('change', val)
+    baseLayer.config('debug', val)
   }
 }
 
@@ -41,7 +32,7 @@ const onChangeMode = (val: string | number | boolean) => {
  * 跳装坐标
  */
 const onJump = () => {
-  emit('jump', mouseCoordinate)
+  jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y)
 }
 </script>
 

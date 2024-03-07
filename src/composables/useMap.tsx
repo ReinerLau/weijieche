@@ -1072,14 +1072,6 @@ export const useMap = () => {
         }
       }
 
-      /**
-       * 开启调试模式显示网格
-       * @param val 调试模式开启状态
-       */
-      const onChangeDebugMode = (val: boolean) => {
-        baseLayer.config('debug', val)
-      }
-
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
       watch(currentCar, async (code: string) => {
         const res = await getCarInfo(code)
@@ -1098,11 +1090,7 @@ export const useMap = () => {
       return () => (
         <div class="h-full relative">
           <ToolbarController class="absolute top-5 right-5 z-10" items={toolbarItems} />
-          <DebugController
-            class="absolute bottom-5 right-5 z-10"
-            onChange={onChangeDebugMode}
-            onJump={({ x, y }) => jumpToCoordinate(x, y)}
-          />
+          <DebugController class="absolute bottom-5 right-5 z-10" />
           {!isConnectedWS.value && (
             <IconMdiSignalOff class="absolute left-5 top-5 z-10 text-red-600" />
           )}
