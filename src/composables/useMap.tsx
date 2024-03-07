@@ -8,7 +8,7 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { ElMessage, ElOption, ElSelect } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
@@ -18,11 +18,10 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
-import CameraPlayer from '@/components/CameraPlayer.vue'
-import { cameraList } from '@/shared'
 import { usePointConfig } from '@/composables'
 import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
+import VideoController from '@/components/VideoController.vue'
 
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
@@ -1137,49 +1136,19 @@ export const useMap = () => {
         initHomePath()
         initTaskPoints()
       })
-
-      // 视频流地址切换
-      const cameraUrl = ref('')
-      function handleCameraUrl(url: string) {
-        emit('confirm', url)
-      }
       return () => (
         <div class="h-full relative">
-          <ToolbarController
-            class="absolute top-5 right-5 z-10"
-            items={toolbarItems}
-          ></ToolbarController>
+          <ToolbarController class="absolute top-5 right-5 z-10" items={toolbarItems} />
           <DebugController
             class="absolute bottom-5 right-5 z-10"
             onChange={onChangeDebugMode}
             onJump={({ x, y }) => jumpToCoordinate(x, y)}
-          ></DebugController>
+          />
           {!isConnectedWS.value && (
             <IconMdiSignalOff class="absolute left-5 top-5 z-10 text-red-600" />
           )}
           <div class="h-full" ref={mapRef}></div>
-          <div
-            v-show={!props.isMobile && cameraList.value.length > 0}
-            class="absolute top-5 left-1 z-10 w-1/5  bg-[#0c2d46] "
-          >
-            <div class="bg-black flex flex-col h-[40vh]">
-              <ElSelect
-                v-model={cameraUrl.value}
-                class="m-2"
-                placeholder={t('shi-pin-qie-huan')}
-                size="large"
-                onChange={handleCameraUrl}
-              >
-                {cameraList.value.map((item: any) => (
-                  <ElOption key={item.id} label={item.name} value={item.rtsp}></ElOption>
-                ))}
-              </ElSelect>
-              <div class="h-full">
-                <CameraPlayer url={cameraUrl.value} />
-              </div>
-            </div>
-          </div>
-
+          <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
           <TemplateDialog onConfirm={handleConfirm} />
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
           <ScheduleDialog pointsdata={pathDataPoints} />

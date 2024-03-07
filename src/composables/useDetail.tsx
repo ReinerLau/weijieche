@@ -22,13 +22,10 @@ import { Fragment, computed, ref, watch } from 'vue'
 import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { haveCurrentCar } from '@/shared'
+import { haveCurrentCar, cameraUrl } from '@/shared'
 
 // 底部状态相关
-export const useDetail = (
-  { isMobile }: { isMobile: Ref<boolean> },
-  { cameraUrl }: { cameraUrl: Ref<string> }
-) => {
+export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   // 国际化
   const { t } = useI18n()
 

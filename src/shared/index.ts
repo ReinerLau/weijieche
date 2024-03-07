@@ -23,7 +23,7 @@ export function haveCurrentCar(): boolean {
 /**
  * 车辆绑定的摄像头数据
  */
-export const cameraList: Ref<any[]> = ref([])
+export const cameraList: Ref<{ id: number; name: string; rtsp: string }[]> = ref([])
 
 /**
  * 车辆模式
@@ -87,3 +87,8 @@ export const controllerTypes = ref({
   WHEEL: '方向盘',
   GAMEPAD: '手柄'
 })
+
+/**
+ * 当前播放的视频拉流地址
+ */
+export const cameraUrl = ref('')
