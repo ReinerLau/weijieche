@@ -23,22 +23,20 @@ export function haveCurrentCar(): boolean {
 /**
  * 车辆绑定的摄像头数据
  */
-export const cameraList: Ref<any[]> = ref([])
+export const cameraList: Ref<{ id: number; name: string; rtsp: string }[]> = ref([])
 
 /**
  * 车辆模式
  * @property STOP - 停止
  * @property AUTO - 自动
  * @property MANUAL - 手动
- * @property AUTODEBLOCKING - 自主解锁
- * @property STOPLOCK - 停止上锁
  */
 export const modes = {
-  STOP: 1,
-  AUTO: 4,
-  MANUAL: 3,
-  AUTODEBLOCKING: 262144,
-  STOPLOCK: 65536
+  STOP: 0,
+  AUTO: 262144,
+  MANUAL: 196608
+  // AUTODEBLOCKING: 262144,
+  // STOPLOCK: 65536
 }
 
 /**
@@ -89,3 +87,8 @@ export const controllerTypes = ref({
   WHEEL: '方向盘',
   GAMEPAD: '手柄'
 })
+
+/**
+ * 当前播放的视频拉流地址
+ */
+export const cameraUrl = ref('')

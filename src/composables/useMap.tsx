@@ -6,32 +6,21 @@ import {
   goHome,
   sendMavlinkMission
 } from '@/api'
-import { useTemplate } from '@/composables'
+import { useCreateMap, useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import {
-  ElButton,
-  ElDropdown,
-  ElDropdownItem,
-  ElDropdownMenu,
-  ElInput,
-  ElMessage,
-  ElOption,
-  ElScrollbar,
-  ElSelect,
-  ElSwitch
-} from 'element-plus'
+import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
-import { Fragment, defineComponent, onMounted, ref, watch, reactive, withModifiers } from 'vue'
-import type { Ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import { usePointTask } from './usePointTask'
-import CameraPlayer from '@/components/CameraPlayer.vue'
-import { cameraList } from '@/shared'
 import { usePointConfig } from '@/composables'
+import ToolbarController from '@/components/ToolbarController.vue'
+import DebugController from '@/components/DebugController.vue'
+import VideoController from '@/components/VideoController.vue'
 
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
@@ -49,12 +38,14 @@ export const useMap = () => {
         required: true
       }
     },
-    setup(props, { emit }) {
+    setup(props) {
       // 国际化相关
       const { t } = useI18n()
 
       //保存路线点
       const pathDataPoints = ref()
+
+      const { mapRef, initMap, getBaseLayer } = useCreateMap()
 
       // 模板相关
       const {
@@ -86,9 +77,6 @@ export const useMap = () => {
 
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      // 地图 DOM 元素
-      const mapRef: Ref<HTMLElement | undefined> = ref()
 
       // 地图实例
       // https://maptalks.org/maptalks.js/api/1.x/Map.html
@@ -135,7 +123,7 @@ export const useMap = () => {
       // https://maptalks.org/examples/cn/map/load/#map_load
       // https://maptalks.org/maptalks.js/api/1.x/TileLayer.html
       // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
-      let tileLayer: maptalks.TileLayer
+      let baseLayer: maptalks.TileLayer
 
       let pointNum: number = 0
       let clickNum: number = 0
@@ -220,61 +208,37 @@ export const useMap = () => {
         }
       }
 
-      const MAX_ZOOM = 25
+      /**
+       * 初始化
+       */
+      function init() {
+        map = initMap()
+        baseLayer = getBaseLayer()
 
-      function handleResolutions() {
-        const resolutions = []
-        const d = 2 * 6378137 * Math.PI
-        for (let i = 0; i < MAX_ZOOM; i++) {
-          resolutions[i] = d / (256 * Math.pow(2, i))
-        }
+        initMakerLayer(map)
 
-        return resolutions
-      }
+        //警报图层
+        alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
+        alarmMarkerLayer.addTo(map)
 
-      // 初始化地图
-      function initMap() {
-        tileLayer = new maptalks.TileLayer('base', {
-          maxAvailableZoom: 19,
-          urlTemplate: '/tiles/{z}/{x}/{y}.jpg',
-          tileSystem: [1, 1, -20037508.34, -20037508.34]
-        })
-        if (mapRef.value) {
-          map = new maptalks.Map(mapRef.value, {
-            center: [113.48570073, 22.56210475],
-            spatialReference: {
-              resolutions: handleResolutions()
-            },
-            zoom: 12,
-            minZoom: 11,
-            baseLayer: tileLayer
-          })
+        //返航图层
+        homePathLayer = new maptalks.VectorLayer('home-point')
+        homePathLayer.addTo(map)
 
-          initMakerLayer(map)
+        homePathDrawLayer = new maptalks.VectorLayer('home-line')
+        homePathDrawLayer.addTo(map)
 
-          //警报图层
-          alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
-          alarmMarkerLayer.addTo(map)
+        //路线图层
+        pathLayer = new maptalks.VectorLayer('line')
+        pathLayer.addTo(map)
 
-          //返航图层
-          homePathLayer = new maptalks.VectorLayer('home-point')
-          homePathLayer.addTo(map)
+        //任务点图层
+        taskPointLayer = new maptalks.VectorLayer('task-point')
+        taskPointLayer.addTo(map)
 
-          homePathDrawLayer = new maptalks.VectorLayer('home-line')
-          homePathDrawLayer.addTo(map)
-
-          //路线图层
-          pathLayer = new maptalks.VectorLayer('line')
-          pathLayer.addTo(map)
-
-          //任务点图层
-          taskPointLayer = new maptalks.VectorLayer('task-point')
-          taskPointLayer.addTo(map)
-
-          //巡逻任务路线图层
-          patrolpathLayer = new maptalks.VectorLayer('patrol')
-          patrolpathLayer.addTo(map)
-        }
+        //巡逻任务路线图层
+        patrolpathLayer = new maptalks.VectorLayer('patrol')
+        patrolpathLayer.addTo(map)
       }
 
       // 初始化绘制工具
@@ -642,11 +606,18 @@ export const useMap = () => {
           // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
           const pathPoint = new maptalks.Marker(coordinate, {
             symbol: {
-              textName: index + 1,
-              markerType: 'ellipse',
-              markerFill: '#ff930e',
-              markerWidth: 13,
-              markerHeight: 13
+              markerType: index === 0 ? 'diamond' : 'ellipse',
+              markerFill: (() => {
+                if (index === 0) {
+                  return '#FF0070'
+                } else if (index === coordinates.length - 1) {
+                  return '#FF0070'
+                } else {
+                  return '#8D70DD'
+                }
+              })(),
+              markerWidth: 15,
+              markerHeight: 15
             }
           })
             .setMenu({
@@ -1130,28 +1101,12 @@ export const useMap = () => {
         }
       }
 
-      // 是否开启调试模式
-      const debugMode = ref(false)
-      // 开启调试模式监听鼠标移动事件，关闭调试模式移除鼠标移动事件
-      watch(debugMode, (val: boolean) => {
-        tileLayer.config('debug', val)
-        if (val) {
-          map.on('mousemove', debugMapMouseMoveEvent)
-        } else {
-          map.off('mousemove', debugMapMouseMoveEvent)
-        }
-      })
-
-      // 当前鼠标坐标
-      const mouseCoordinate = reactive({
-        x: 0,
-        y: 0
-      })
-
-      // 调试模式下的鼠标移动事件
-      function debugMapMouseMoveEvent(e: any) {
-        mouseCoordinate.x = e.coordinate.x
-        mouseCoordinate.y = e.coordinate.y
+      /**
+       * 开启调试模式显示网格
+       * @param val 调试模式开启状态
+       */
+      const onChangeDebugMode = (val: boolean) => {
+        baseLayer.config('debug', val)
       }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
@@ -1163,120 +1118,25 @@ export const useMap = () => {
       })
 
       onMounted(() => {
-        initMap()
+        init()
         initDrawTool()
         initMenu()
         initHomePath()
         initTaskPoints()
       })
-
-      // 视频流地址切换
-      const cameraUrl = ref('')
-      function handleCameraUrl(url: string) {
-        emit('confirm', url)
-      }
       return () => (
         <div class="h-full relative">
-          <div class="absolute top-5 right-5 z-10 w-3/4 bg-[#0c2d46] border border-[#1c91c7] rounded p-2">
-            <ElScrollbar>
-              <div class="flex">
-                {toolbarItems.map((item, index) => (
-                  <Fragment>
-                    {item.subItems ? (
-                      <ElDropdown key={item.title} class="flex-1">
-                        {{
-                          default: () => (
-                            <ElButton link class="w-full" type="primary">
-                              {item.title}
-                            </ElButton>
-                          ),
-                          dropdown: () => (
-                            <ElDropdownMenu>
-                              {item.subItems.map((subItem) => (
-                                <ElDropdownItem key={subItem.title} onClick={subItem.event}>
-                                  {subItem.title}
-                                </ElDropdownItem>
-                              ))}
-                            </ElDropdownMenu>
-                          )
-                        }}
-                      </ElDropdown>
-                    ) : (
-                      <ElButton class="flex-1" link type="primary" onClick={item.event}>
-                        {item.title}
-                      </ElButton>
-                    )}
-                    {index !== toolbarItems.length - 1 && (
-                      <span class="px-2 text-[#1c91c7]">|</span>
-                    )}
-                  </Fragment>
-                ))}
-              </div>
-            </ElScrollbar>
-          </div>
-
-          <div class="absolute bottom-5 right-5 z-10 text-right">
-            <ElSwitch
-              v-model={debugMode.value}
-              activeText={t('tiao-shi')}
-              inactiveText={t('zheng-chang')}
-            />
-
-            {debugMode.value ? (
-              <div class="flex">
-                <ElInput
-                  v-model={mouseCoordinate.x}
-                  class="mr-1"
-                  onKeydown={withModifiers(
-                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
-                    ['enter']
-                  )}
-                />
-                <ElInput
-                  v-model={mouseCoordinate.y}
-                  class="mr-1"
-                  onKeydown={withModifiers(
-                    () => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y),
-                    ['enter']
-                  )}
-                />
-                <ElButton
-                  type="primary"
-                  onClick={() => jumpToCoordinate(mouseCoordinate.x, mouseCoordinate.y)}
-                >
-                  确定
-                </ElButton>
-              </div>
-            ) : null}
-          </div>
-          {!isConnectedWS.value ? (
-            <div class="absolute left-5 top-5 z-10 text-red-600">
-              <IconMdiSignalOff />
-            </div>
-          ) : null}
+          <ToolbarController class="absolute top-5 right-5 z-10" items={toolbarItems} />
+          <DebugController
+            class="absolute bottom-5 right-5 z-10"
+            onChange={onChangeDebugMode}
+            onJump={({ x, y }) => jumpToCoordinate(x, y)}
+          />
+          {!isConnectedWS.value && (
+            <IconMdiSignalOff class="absolute left-5 top-5 z-10 text-red-600" />
+          )}
           <div class="h-full" ref={mapRef}></div>
-          <div
-            v-show={!props.isMobile && cameraList.value.length > 0}
-            class="absolute top-5 left-1 z-10 w-1/5  bg-[#0c2d46] "
-          >
-            <div class="bg-black flex flex-col h-[40vh]">
-              <ElSelect
-                v-model={cameraUrl.value}
-                class="m-2"
-                placeholder={t('shi-pin-qie-huan')}
-                size="large"
-                onChange={handleCameraUrl}
-              >
-                {cameraList.value.map((item: any) => (
-                  <ElOption key={item.id} label={item.name} value={item.rtsp}></ElOption>
-                ))}
-              </ElSelect>
-              <div class="h-full">
-                <CameraPlayer url={cameraUrl.value} />
-              </div>
-            </div>
-          </div>
-
+          <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
           <TemplateDialog onConfirm={handleConfirm} />
           <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
           <ScheduleDialog pointsdata={pathDataPoints} />

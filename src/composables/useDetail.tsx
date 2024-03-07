@@ -22,13 +22,10 @@ import { Fragment, computed, ref, watch } from 'vue'
 import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { haveCurrentCar } from '@/shared'
+import { haveCurrentCar, cameraUrl } from '@/shared'
 
 // 底部状态相关
-export const useDetail = (
-  { isMobile }: { isMobile: Ref<boolean> },
-  { cameraUrl }: { cameraUrl: Ref<string> }
-) => {
+export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   // 国际化
   const { t } = useI18n()
 
@@ -39,9 +36,9 @@ export const useDetail = (
   const modeText = {
     [modes.AUTO]: t('zi-zhu'),
     [modes.MANUAL]: t('shou-dong'),
-    [modes.STOP]: t('ting-zhi'),
-    [modes.AUTODEBLOCKING]: t('zi-zhu-jie-suo'),
-    [modes.STOPLOCK]: t('ting-zhi-shang-suo')
+    [modes.STOP]: t('ting-zhi')
+    // [modes.AUTODEBLOCKING]: t('zi-zhu-jie-suo'),
+    // [modes.STOPLOCK]: t('ting-zhi-shang-suo')
   }
 
   // 当前模式显示的文字
