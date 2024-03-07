@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BirdAwayControl: typeof import('./src/components/BirdAwayControl.vue')['default']
     CameraPlayer: typeof import('./src/components/CameraPlayer.vue')['default']
+    DebugController: typeof import('./src/components/DebugController.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
@@ -38,6 +39,8 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
+    ToolbarController: typeof import('./src/components/ToolbarController.vue')['default']
+    VideoController: typeof import('./src/components/VideoController.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

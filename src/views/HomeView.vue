@@ -13,7 +13,7 @@ import {
   useLogout
 } from '@/composables'
 
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { currentCar, cameraList } from '@/shared'
 import { getCameraListByCode } from '@/api'
 
@@ -36,18 +36,13 @@ onMounted(() => {
 })
 
 // 视频流地址切换
-const cameraUrl = ref('')
-const { DetailSection, detailDrawerVisible } = useDetail({ isMobile }, { cameraUrl })
+const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
 const { HistoryController } = useHistory()
 const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
 const { MapContainer } = useMap()
-
-function handleCameraUrl(url: any) {
-  cameraUrl.value = url
-}
 
 // 每次切换车辆都要重新获取对应的摄像头数据
 watch(currentCar, async () => {
@@ -81,7 +76,7 @@ watch(currentCar, async () => {
         <div ref="mainRef" class="h-full overflow-y-auto flex">
           <div class="h-full flex-1 flex flex-col">
             <div class="h-full">
-              <MapContainer @confirm="handleCameraUrl" :isMobile="isMobile" />
+              <MapContainer :isMobile="isMobile" />
             </div>
             <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
               <i-mdi-arrow-drop-up class="text-3xl" />
