@@ -57,7 +57,7 @@ export const useConfig = () => {
   async function getList() {
     let data: any[] = []
     if (configType.value === configTypes.CAMERA) {
-      const res = await getCameraList({ page: 1, limit: 9999999 })
+      const res = await getCameraList(currentCar.value, 'patroling')
       data = res.data.list || res.data
     } else if (configType.value === configTypes.DEVICE) {
       const res = await getDeviceListByCode(currentCar.value, 'patroling')
