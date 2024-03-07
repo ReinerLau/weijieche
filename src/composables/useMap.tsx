@@ -6,12 +6,11 @@ import {
   goHome,
   sendMavlinkMission
 } from '@/api'
-import { useTemplate } from '@/composables'
+import { useCreateMap, useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
-import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
@@ -39,12 +38,14 @@ export const useMap = () => {
         required: true
       }
     },
-    setup(props, { emit }) {
+    setup(props) {
       // 国际化相关
       const { t } = useI18n()
 
       //保存路线点
       const pathDataPoints = ref()
+
+      const { mapRef, initMap, getBaseLayer } = useCreateMap()
 
       // 模板相关
       const {
@@ -76,9 +77,6 @@ export const useMap = () => {
 
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      // 地图 DOM 元素
-      const mapRef: Ref<HTMLElement | undefined> = ref()
 
       // 地图实例
       // https://maptalks.org/maptalks.js/api/1.x/Map.html
@@ -125,7 +123,7 @@ export const useMap = () => {
       // https://maptalks.org/examples/cn/map/load/#map_load
       // https://maptalks.org/maptalks.js/api/1.x/TileLayer.html
       // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
-      let tileLayer: maptalks.TileLayer
+      let baseLayer: maptalks.TileLayer
 
       let pointNum: number = 0
       let clickNum: number = 0
@@ -214,46 +212,37 @@ export const useMap = () => {
         }
       }
 
-      // 初始化地图
-      function initMap() {
-        tileLayer = new maptalks.TileLayer('base', {
-          urlTemplate: '/tiles/{z}/{x}/{y}.jpg',
-          tileSystem: [1, 1, -20037508.34, -20037508.34]
-        })
-        if (mapRef.value) {
-          map = new maptalks.Map(mapRef.value, {
-            center: [113.48570073, 22.56210475],
-            zoom: 12,
-            maxZoom: 19,
-            minZoom: 11,
-            baseLayer: tileLayer
-          })
+      /**
+       * 初始化
+       */
+      function init() {
+        map = initMap()
+        baseLayer = getBaseLayer()
 
-          initMakerLayer(map)
+        initMakerLayer(map)
 
-          //警报图层
-          alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
-          alarmMarkerLayer.addTo(map)
+        //警报图层
+        alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
+        alarmMarkerLayer.addTo(map)
 
-          //返航图层
-          homePathLayer = new maptalks.VectorLayer('home-point')
-          homePathLayer.addTo(map)
+        //返航图层
+        homePathLayer = new maptalks.VectorLayer('home-point')
+        homePathLayer.addTo(map)
 
-          homePathDrawLayer = new maptalks.VectorLayer('home-line')
-          homePathDrawLayer.addTo(map)
+        homePathDrawLayer = new maptalks.VectorLayer('home-line')
+        homePathDrawLayer.addTo(map)
 
-          //路线图层
-          pathLayer = new maptalks.VectorLayer('line')
-          pathLayer.addTo(map)
+        //路线图层
+        pathLayer = new maptalks.VectorLayer('line')
+        pathLayer.addTo(map)
 
-          //任务点图层
-          taskPointLayer = new maptalks.VectorLayer('task-point')
-          taskPointLayer.addTo(map)
+        //任务点图层
+        taskPointLayer = new maptalks.VectorLayer('task-point')
+        taskPointLayer.addTo(map)
 
-          //巡逻任务路线图层
-          patrolpathLayer = new maptalks.VectorLayer('patrol')
-          patrolpathLayer.addTo(map)
-        }
+        //巡逻任务路线图层
+        patrolpathLayer = new maptalks.VectorLayer('patrol')
+        patrolpathLayer.addTo(map)
       }
 
       // 初始化绘制工具
@@ -1118,7 +1107,7 @@ export const useMap = () => {
        * @param val 调试模式开启状态
        */
       const onChangeDebugMode = (val: boolean) => {
-        tileLayer.config('debug', val)
+        baseLayer.config('debug', val)
       }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
@@ -1130,7 +1119,7 @@ export const useMap = () => {
       })
 
       onMounted(() => {
-        initMap()
+        init()
         initDrawTool()
         initMenu()
         initHomePath()
