@@ -32,6 +32,7 @@ import { usePointTask } from './usePointTask'
 import CameraPlayer from '@/components/CameraPlayer.vue'
 import { cameraList } from '@/shared'
 import { usePointConfig } from '@/composables'
+import ToolbarController from '@/components/ToolbarController.vue'
 
 //异常警报图层
 export let alarmMarkerLayer: maptalks.VectorLayer
@@ -1170,43 +1171,10 @@ export const useMap = () => {
       }
       return () => (
         <div class="h-full relative">
-          <div class="absolute top-5 right-5 z-10 w-3/4 bg-[#0c2d46] border border-[#1c91c7] rounded p-2">
-            <ElScrollbar>
-              <div class="flex">
-                {toolbarItems.map((item, index) => (
-                  <Fragment>
-                    {item.subItems ? (
-                      <ElDropdown key={item.title} class="flex-1">
-                        {{
-                          default: () => (
-                            <ElButton link class="w-full" type="primary">
-                              {item.title}
-                            </ElButton>
-                          ),
-                          dropdown: () => (
-                            <ElDropdownMenu>
-                              {item.subItems.map((subItem) => (
-                                <ElDropdownItem key={subItem.title} onClick={subItem.event}>
-                                  {subItem.title}
-                                </ElDropdownItem>
-                              ))}
-                            </ElDropdownMenu>
-                          )
-                        }}
-                      </ElDropdown>
-                    ) : (
-                      <ElButton class="flex-1" link type="primary" onClick={item.event}>
-                        {item.title}
-                      </ElButton>
-                    )}
-                    {index !== toolbarItems.length - 1 && (
-                      <span class="px-2 text-[#1c91c7]">|</span>
-                    )}
-                  </Fragment>
-                ))}
-              </div>
-            </ElScrollbar>
-          </div>
+          <ToolbarController
+            class="absolute top-5 right-5 z-10"
+            items={toolbarItems}
+          ></ToolbarController>
 
           <div class="absolute bottom-5 right-5 z-10 text-right">
             <ElSwitch
