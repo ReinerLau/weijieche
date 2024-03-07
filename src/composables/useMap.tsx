@@ -1154,11 +1154,9 @@ export const useMap = () => {
             onChange={onChangeDebugMode}
             onJump={({ x, y }) => jumpToCoordinate(x, y)}
           ></DebugController>
-          {!isConnectedWS.value ? (
-            <div class="absolute left-5 top-5 z-10 text-red-600">
-              <IconMdiSignalOff />
-            </div>
-          ) : null}
+          {!isConnectedWS.value && (
+            <IconMdiSignalOff class="absolute left-5 top-5 z-10 text-red-600" />
+          )}
           <div class="h-full" ref={mapRef}></div>
           <div
             v-show={!props.isMobile && cameraList.value.length > 0}
