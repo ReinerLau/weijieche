@@ -8,7 +8,7 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { initMap, mapRef, getMapInstance, getBaseLayer } from '@/shared/map'
+import { initMap, mapRef, getMapInstance, getBaseLayer, jumpToCoordinate } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -493,13 +493,6 @@ export const useMap = () => {
           }
         }
         missionTemplateId.value = null
-      }
-
-      // 跳转到指定坐标
-      function jumpToCoordinate(x: number, y: number) {
-        // https://maptalks.org/maptalks.js/api/1.x/Coordinate.html
-        const coordinate = new maptalks.Coordinate([x, y])
-        map.setCenter(coordinate).setZoom(18)
       }
 
       // 清空图层上的线

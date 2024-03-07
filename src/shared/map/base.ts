@@ -1,4 +1,4 @@
-import { TileLayer, Map } from 'maptalks'
+import { TileLayer, Map, Coordinate } from 'maptalks'
 import { ref } from 'vue'
 
 /**
@@ -72,4 +72,14 @@ export const getMapInstance = () => {
  */
 export const getBaseLayer = () => {
   return baseLayer
+}
+
+/**
+ * 坐标跳转
+ * @param x 经度
+ * @param y 纬度
+ */
+export const jumpToCoordinate = (x: number, y: number) => {
+  const coordinate = new Coordinate([x, y])
+  map.setCenter(coordinate).setZoom(18)
 }
