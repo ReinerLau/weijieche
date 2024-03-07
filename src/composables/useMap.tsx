@@ -6,8 +6,9 @@ import {
   goHome,
   sendMavlinkMission
 } from '@/api'
-import { useCreateMap, useTemplate } from '@/composables'
+import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
+import { initMap, mapRef, getMapInstance, getBaseLayer } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -44,8 +45,6 @@ export const useMap = () => {
 
       //保存路线点
       const pathDataPoints = ref()
-
-      const { mapRef, initMap, getBaseLayer } = useCreateMap()
 
       // 模板相关
       const {
@@ -212,8 +211,9 @@ export const useMap = () => {
        * 初始化
        */
       function init() {
-        map = initMap()
+        initMap()
         baseLayer = getBaseLayer()
+        map = getMapInstance()
 
         initMakerLayer(map)
 
