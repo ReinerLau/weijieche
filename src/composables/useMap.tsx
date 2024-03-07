@@ -8,7 +8,7 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { initMap, mapRef, getMapInstance, getBaseLayer, jumpToCoordinate } from '@/shared/map'
+import { initMap, mapRef, map, baseLayer, jumpToCoordinate, backToCenter } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -77,11 +77,6 @@ export const useMap = () => {
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
 
-      // 地图实例
-      // https://maptalks.org/maptalks.js/api/1.x/Map.html
-      // https://maptalks.org/examples/cn/map/load/#map_load
-      let map: maptalks.Map
-
       // 绘制工具实例
       // https://maptalks.org/maptalks.js/api/1.x/DrawTool.html
       // https://maptalks.org/examples/cn/interaction/draw-tool/#interaction_draw-tool
@@ -117,12 +112,6 @@ export const useMap = () => {
       // https://maptalks.org/maptalks.js/api/1.x/LineString.html
       // https://maptalks.org/examples/cn/geometry/linestring/#geometry_linestring
       let creatingHomePath: maptalks.LineString | undefined
-
-      // 瓦片图层实例
-      // https://maptalks.org/examples/cn/map/load/#map_load
-      // https://maptalks.org/maptalks.js/api/1.x/TileLayer.html
-      // https://github.com/maptalks/maptalks.js/wiki/Tile-System#tile-system-in-maptalks
-      let baseLayer: maptalks.TileLayer
 
       let pointNum: number = 0
       let clickNum: number = 0
@@ -212,8 +201,6 @@ export const useMap = () => {
        */
       function init() {
         initMap()
-        baseLayer = getBaseLayer()
-        map = getMapInstance()
 
         initMakerLayer(map)
 
@@ -427,15 +414,6 @@ export const useMap = () => {
           event: backToCenter
         }
       ]
-
-      async function backToCenter() {
-        if (haveCurrentCar() && endRecording()) {
-          const res = await getCarInfo(currentCar.value)
-          const x = res.data.longitude
-          const y = res.data.latitude
-          jumpToCoordinate(x, y)
-        }
-      }
 
       //设置速度
 

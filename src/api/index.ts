@@ -11,13 +11,13 @@ export * from './device'
 export * from './pointTask'
 
 export function getCarInfo(code: string) {
-  return request({
+  return request<{ longitude: number; latitude: number }>({
     url: `/robot-vehicle-log/v1/getone/${code}`,
     method: 'get'
   })
 }
 
-export function sendMavlinkMission(data: { x: number; y: number }[], id: string, params) {
+export function sendMavlinkMission(data: { x: number; y: number }[], id: string, params: any) {
   return request({
     url: `/robot-cruise/patrolingCruise/v2/${id}`,
     method: 'post',

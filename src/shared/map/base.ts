@@ -1,5 +1,8 @@
 import { TileLayer, Map, Coordinate } from 'maptalks'
 import { ref } from 'vue'
+import { haveCurrentCar } from '..'
+import { getCarInfo } from '@/api'
+import { currentCar } from '@/shared'
 
 /**
  * 地图容器元素
@@ -9,12 +12,12 @@ export const mapRef = ref<HTMLDivElement>()
 /**
  * 底图图层
  */
-let baseLayer: TileLayer
+export let baseLayer: TileLayer
 
 /**
  * 地图实例
  */
-let map: Map
+export let map: Map
 
 /**
  * 最大缩放等级
@@ -59,22 +62,6 @@ export const initMap = () => {
 }
 
 /**
- * 获取地图实例
- * @returns 地图实例
- */
-export const getMapInstance = () => {
-  return map
-}
-
-/**
- * 获取底图实例
- * @returns 底图实例
- */
-export const getBaseLayer = () => {
-  return baseLayer
-}
-
-/**
  * 坐标跳转
  * @param x 经度
  * @param y 纬度
@@ -82,4 +69,16 @@ export const getBaseLayer = () => {
 export const jumpToCoordinate = (x: number, y: number) => {
   const coordinate = new Coordinate([x, y])
   map.setCenter(coordinate).setZoom(18)
+}
+
+/**
+ * 回到地图中心
+ */
+export const backToCenter = async () => {
+  if (haveCurrentCar()) {
+    const res = await getCarInfo(currentCar.value)
+    const x = res.data.longitude
+    const y = res.data.latitude
+    jumpToCoordinate(x, y)
+  }
 }
