@@ -232,5 +232,14 @@
   "xia-fa-ren-wu-shi-bai": "Échec de l'envoi de la tâche !",
   "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "Fin de l'enregistrement, enregistrez le modèle d'itinéraire d'enregistrement, sélectionnez le modèle et lancez la tâche!",
   "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "Veuillez d'abord créer un nouveau chemin d'enregistrement ou appuyer sur la touche vider!",
-  "lu-xian-dian": "point d'itinéraire"
+  "lu-xian-dian": "point d'itinéraire",
+  "duan-kou": "port",
+  "ip": "PI",
+  "pin-pai": "marque",
+  "qing-shu-ru-duan-kou": "Veuillez entrer dans le port",
+  "qing-shu-ru-ip": "Veuillez entrer votre adresse IP",
+  "qing-shu-ru-mi-ma": "Veuillez entrer le mot de passe",
+  "qing-shu-ru-zhang-hao": "Veuillez saisir votre nom d'utilisateur",
+  "guan-bi": "fermeture",
+  "kai-qi": "allumer"
 }

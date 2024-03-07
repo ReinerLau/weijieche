@@ -1,10 +1,17 @@
 import { request } from '@/utils'
 
-export function getCameraList(params: any) {
+// export function getCameraList(params: any) {
+//   return request({
+//     url: '/camera/v1/',
+//     method: 'get',
+//     params: params
+//   })
+// }
+
+export function getCameraList(rid: string, rtype: string) {
   return request({
-    url: '/camera/v1/',
-    method: 'get',
-    params: params
+    url: `/camera/v1/getCameras/${rid}&${rtype}`,
+    method: 'get'
   })
 }
 

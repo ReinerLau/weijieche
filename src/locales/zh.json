@@ -232,5 +232,14 @@
   "xia-fa-ren-wu-shi-bai": "下发任务失败！",
   "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "录制结束，请保存录制路线模板，选择模板再下发任务！",
   "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "请先新建录制路径或点击清空键！",
-  "lu-xian-dian": "路线点"
+  "lu-xian-dian": "路线点",
+  "qing-shu-ru-ip": "请输入IP",
+  "qing-shu-ru-duan-kou": "请输入端口",
+  "qing-shu-ru-zhang-hao": "请输入账号",
+  "qing-shu-ru-mi-ma": "请输入密码",
+  "ip": "IP",
+  "duan-kou": "端口",
+  "pin-pai": "品牌",
+  "kai-qi": "开启",
+  "guan-bi": "关闭"
 }
