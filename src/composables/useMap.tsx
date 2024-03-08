@@ -14,7 +14,11 @@ import {
   map,
   jumpToCoordinate,
   backToCenter,
-  initAlarmMarkerLayer
+  initAlarmMarkerLayer,
+  initPathLayer,
+  pathPoints,
+  pathLayer,
+  clearPathLayer
 } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
@@ -86,11 +90,6 @@ export const useMap = () => {
       // https://maptalks.org/examples/cn/interaction/draw-tool/#interaction_draw-tool
       let drawTool: maptalks.DrawTool
 
-      // 路线图层实例
-      // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
-      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
-      let pathLayer: maptalks.VectorLayer
-
       //巡逻路线图层
       let patrolpathLayer: maptalks.VectorLayer
 
@@ -103,11 +102,6 @@ export const useMap = () => {
 
       //任务图层实例
       let taskPointLayer: maptalks.VectorLayer
-
-      // 路线所有点的组合
-      // https://maptalks.org/maptalks.js/api/1.x/Marker.html
-      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
-      const pathPoints: maptalks.Marker[] = []
 
       //入口点
       let entryPoint: maptalks.Marker | undefined
@@ -207,6 +201,7 @@ export const useMap = () => {
         initMap()
         initMakerLayer(map)
         initAlarmMarkerLayer()
+        initPathLayer()
 
         //返航图层
         homePathLayer = new maptalks.VectorLayer('home-point')
@@ -214,10 +209,6 @@ export const useMap = () => {
 
         homePathDrawLayer = new maptalks.VectorLayer('home-line')
         homePathDrawLayer.addTo(map)
-
-        //路线图层
-        pathLayer = new maptalks.VectorLayer('line')
-        pathLayer.addTo(map)
 
         //任务点图层
         taskPointLayer = new maptalks.VectorLayer('task-point')
@@ -243,7 +234,7 @@ export const useMap = () => {
             {
               title: t('xin-jian-lu-xian'),
               event: () => {
-                clearLine()
+                clearPathLayer()
                 clearDrawTool()
                 handleCreatePath('#ff931e', drawToolEvents.PATH_POINT_DRAW_END.event)
                 isRecord.value = false
@@ -253,7 +244,7 @@ export const useMap = () => {
             {
               title: t('lu-zhi-lu-xian'),
               event: () => {
-                clearLine()
+                clearPathLayer()
                 clearDrawTool()
                 if (haveCurrentCar() && !isRecord.value) {
                   recordPathPoints.length = 0
@@ -274,7 +265,7 @@ export const useMap = () => {
               title: t('jie-shu-lu-zhi'),
               event: () => {
                 if (recordPathPoints.length > 1) {
-                  clearLine()
+                  clearPathLayer()
                   clearDrawTool()
                   isRecord.value = false
                   ElMessage({
@@ -305,7 +296,7 @@ export const useMap = () => {
           title: t('ren-wu-dian'),
           event: () => {
             if (endRecording()) {
-              clearLine()
+              clearPathLayer()
               clearDrawTool()
               handleCreatePath('#f3072f', drawToolEvents.TASK_POINT_DRAW_END.event)
             }
@@ -314,7 +305,7 @@ export const useMap = () => {
         {
           title: t('qing-kong'),
           event: () => {
-            clearLine()
+            clearPathLayer()
             clearDrawTool()
             isRecord.value = false
           }
@@ -327,7 +318,7 @@ export const useMap = () => {
               event: () => {
                 if (endRecording()) {
                   clearDrawTool()
-                  clearLine()
+                  clearPathLayer()
                   isHomePath.value = true
                   handleCreateHomePath()
                 }
@@ -460,7 +451,7 @@ export const useMap = () => {
               })
             }
             isExecutePlan.value = true
-            clearLine()
+            clearPathLayer()
             clearDrawTool()
             carSpeedData.value.length = 0
             pathPointsData.value.length = 0
@@ -471,13 +462,6 @@ export const useMap = () => {
           }
         }
         missionTemplateId.value = null
-      }
-
-      // 清空图层上的线
-      function clearLine() {
-        pathLayer.clear()
-        pathPoints.length = 0
-        creatingHomePath = undefined
       }
 
       //清空巡逻路线
@@ -502,7 +486,7 @@ export const useMap = () => {
         })
 
         templateDialogVisible.value = false
-        clearLine()
+        clearPathLayer()
         clearDrawTool()
         isRecordPath.value = false
         recordPathPoints.length = 0
@@ -565,7 +549,7 @@ export const useMap = () => {
         onePoint = undefined
         pathPointList.length = 0
         clearDrawTool()
-        clearLine()
+        clearPathLayer()
         templateSearchDialogVisible.value = false
         missionTemplateId.value = template.id
         const coordinates: number[][] = JSON.parse(template.mission).map(
@@ -685,7 +669,7 @@ export const useMap = () => {
         pathLayer.clear()
         pathPointList.length = 0
         clearDrawTool()
-        clearLine()
+        clearPathLayer()
         fileUploadDialogVisible.value = false
         const coordinates: number[][] = data.map((item: any) => [item.y, item.x])
         coordinates.forEach((coordinate, index) => {
@@ -773,7 +757,7 @@ export const useMap = () => {
           content: `<div style="color:red">${text}</div>`
         }
         clearDrawTool()
-        clearLine()
+        clearPathLayer()
         clearDrawPatrolLine()
         patrolTaskDialogVisible.value = false
         const coordinates: number[][] = row.route.map((item: any) => [item.y, item.x])
