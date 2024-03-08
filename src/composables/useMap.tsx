@@ -8,7 +8,14 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { initMap, mapRef, map, baseLayer, jumpToCoordinate, backToCenter } from '@/shared/map'
+import {
+  initMap,
+  mapRef,
+  map,
+  jumpToCoordinate,
+  backToCenter,
+  initAlarmMarkerLayer
+} from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -22,9 +29,6 @@ import { usePointConfig } from '@/composables'
 import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
-
-//异常警报图层
-export let alarmMarkerLayer: maptalks.VectorLayer
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -201,12 +205,8 @@ export const useMap = () => {
        */
       function init() {
         initMap()
-
         initMakerLayer(map)
-
-        //警报图层
-        alarmMarkerLayer = new maptalks.VectorLayer('alarm-marker')
-        alarmMarkerLayer.addTo(map)
+        initAlarmMarkerLayer()
 
         //返航图层
         homePathLayer = new maptalks.VectorLayer('home-point')

@@ -17,11 +17,11 @@ import { useI18n } from 'vue-i18n'
 import { deleteLog, getAllLog } from '@/api'
 import { useVirtualList } from '@vueuse/core'
 import { useTemplate } from './useTemplate'
-import { alarmMarkerLayer } from './useMap'
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
 import { Marker } from 'maptalks'
+import { alarmMarkerLayer } from '@/shared/map'
 
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
@@ -38,7 +38,7 @@ interface websocketData {
 // 警报通知相关
 export const useNotification = () => {
   // 警报弹窗组件
-  const { TemplateAlarmDialog, alarmDialogVisible, handleAlarm } = useTemplate()
+  const { TemplateAlarmDialog, alarmDialogVisible } = useTemplate()
 
   // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
@@ -227,7 +227,7 @@ export const useNotification = () => {
         onScroll={containerProps.onScroll}
       >
         <div {...wrapperProps.value}>
-          {list.value.map((item, index) => (
+          {list.value.map((item) => (
             <ElCard key={item.data.id} class="mb-5">
               {{
                 header: () => (
