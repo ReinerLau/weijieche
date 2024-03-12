@@ -27,7 +27,9 @@ onMounted(() => {
   initPlay()
 })
 
-// 拉流
+/**
+ * 拉流
+ */
 function initPlay() {
   srs.close()
   srs = new SrsRtcPlayerAsync()
@@ -42,5 +44,9 @@ onBeforeUnmount(() => {
   if (srs) {
     srs.close()
   }
+})
+
+defineExpose({
+  initPlay
 })
 </script>
