@@ -60,3 +60,18 @@ export function getCameraListByCode(code: string, type: string) {
     method: 'get'
   })
 }
+
+/**
+ * 开始推流
+ * @param url 推流 rtsp 地址
+ * @returns 拉流 webrtc 地址
+ */
+export function openStream(url: string): Promise<{ message: string }> {
+  return request({
+    url: '/v1/monitor/rtsp/stream/open',
+    method: 'post',
+    data: {
+      url
+    }
+  })
+}

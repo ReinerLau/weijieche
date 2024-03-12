@@ -77,7 +77,7 @@ export const useConfig = () => {
           prop: 'name'
         },
         {
-          label: t('la-liu-di-zhi'),
+          label: t('rtsp-di-zhi'),
           prop: 'rtsp'
         },
         {
