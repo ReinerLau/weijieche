@@ -1,11 +1,4 @@
-import {
-  createHomePath,
-  createMissionTemplate,
-  deleteHomePath,
-  getHomePath,
-  goHome,
-  sendMavlinkMission
-} from '@/api'
+import { createHomePath, createMissionTemplate, goHome, sendMavlinkMission } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElMessage } from 'element-plus'
@@ -39,7 +32,19 @@ import {
   handlePointConfigEvent,
   pointConfigDrawerVisible
 } from '@/shared/map/pointConfig'
-import { entryPoint, setEntryPoint } from '@/shared/map/home'
+import {
+  clearCreatingHomePath,
+  creatingHomePath,
+  entryPoint,
+  haveHomePath,
+  homePathDrawLayer,
+  initHomePath,
+  initHomePathDrawLayer,
+  initHomePathLayer,
+  isHomePath,
+  setCreatingHomePath,
+  setEntryPoint
+} from '@/shared/map/home'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -93,20 +98,8 @@ export const useMap = () => {
       //巡逻路线图层
       let patrolpathLayer: maptalks.VectorLayer
 
-      // 返航路线图层实例
-      // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
-      // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
-      let homePathLayer: maptalks.VectorLayer
-      // 绘制返航路线图层实例
-      let homePathDrawLayer: maptalks.VectorLayer
-
       //任务图层实例
       let taskPointLayer: maptalks.VectorLayer
-
-      // 当前正在创建的返航路线
-      // https://maptalks.org/maptalks.js/api/1.x/LineString.html
-      // https://maptalks.org/examples/cn/geometry/linestring/#geometry_linestring
-      let creatingHomePath: maptalks.LineString | undefined
 
       // 每次点击地图新建任务点的事件
       async function taskPointDrawEndEvent(e: any) {
@@ -154,13 +147,8 @@ export const useMap = () => {
         initMakerLayer(map)
         initAlarmMarkerLayer()
         initPathLayer()
-
-        //返航图层
-        homePathLayer = new maptalks.VectorLayer('home-point')
-        homePathLayer.addTo(map)
-
-        homePathDrawLayer = new maptalks.VectorLayer('home-line')
-        homePathDrawLayer.addTo(map)
+        initHomePathLayer()
+        initHomePathDrawLayer()
 
         //任务点图层
         taskPointLayer = new maptalks.VectorLayer('task-point')
@@ -177,7 +165,6 @@ export const useMap = () => {
         drawTool.addTo(map).disable()
       }
 
-      const isHomePath = ref(false)
       // 按钮组
       const toolbarItems = [
         {
@@ -789,20 +776,6 @@ export const useMap = () => {
         drawTool.on('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
       }
 
-      // 保存返航路线之前校验地图上是否存在返航路线
-      function haveHomePath() {
-        // https://maptalks.org/maptalks.js/api/1.x/LineString.html#getCoordinates
-        if (creatingHomePath && creatingHomePath.getCoordinates().length > 0) {
-          return true
-        } else {
-          ElMessage({
-            type: 'error',
-            message: t('xian-xin-jian-fan-hang-lu-jing')
-          })
-          return false
-        }
-      }
-
       // 返航路线绘制结束之后
       function homePathDrawEndEvent(e: any) {
         // https://maptalks.org/maptalks.js/api/1.x/LineString.html#config
@@ -813,7 +786,7 @@ export const useMap = () => {
         e.geometry.startEdit()
         drawTool.disable()
         drawTool.off('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
-        creatingHomePath = e.geometry
+        setCreatingHomePath(e.geometry)
       }
 
       // 初始化右键菜单
@@ -869,7 +842,7 @@ export const useMap = () => {
             }
             const res: any = await createHomePath(data)
             ElMessage({ type: 'success', message: res.message })
-            creatingHomePath = undefined
+            clearCreatingHomePath()
             initHomePath()
             isHomePath.value = false
           } else if (p) {
@@ -887,7 +860,7 @@ export const useMap = () => {
             }
             const res: any = await createHomePath(data)
             ElMessage({ type: 'success', message: res.message })
-            creatingHomePath = undefined
+            clearCreatingHomePath()
             initHomePath()
           } else {
             ElMessage.error(t('qing-cong-lu-xian-dian-kai-shi-hui-zhi'))
@@ -895,68 +868,6 @@ export const useMap = () => {
         } else {
           ElMessage.error(t('bao-cun-fan-hang-lu-xian-chu-cuo'))
         }
-      }
-
-      // 当前预览的返航路线实例
-      let previewHomePath: maptalks.LineString | undefined
-
-      // 初始化所有返航路线
-      async function initHomePath() {
-        homePathLayer.clear()
-        const res = await getHomePath({ limit: 99999 })
-        const homePaths = res.data.list || []
-        homePaths.forEach((item: any) => {
-          const menuOptions = {
-            items: [
-              {
-                item: t('shan-chu'),
-                click: async () => {
-                  await deleteHomePath(item.id)
-                  initHomePath()
-                }
-              }
-            ]
-          }
-          const entryPointCoord = JSON.parse(item.enterGps)
-          // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
-          // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
-          // https://maptalks.org/maptalks.js/api/1.x/Marker.html
-          new maptalks.Marker([entryPointCoord.y, entryPointCoord.x], {
-            symbol: {
-              markerType: 'ellipse',
-              markerWidth: 13,
-              markerHeight: 13,
-              markerFillOpacity: 0.5
-            }
-          })
-            .on('click', (e: { target: Marker }) => {
-              setEntryPoint(e.target)
-            })
-            .on('mouseenter', () => {
-              const coordinates = [
-                [entryPointCoord.y, entryPointCoord.x],
-                ...JSON.parse(item.mission).map((i: any) => [i.y, i.x])
-              ]
-              const line = new maptalks.LineString(coordinates, {
-                symbol: {
-                  lineColor: '#ff931e',
-                  lineDasharray: [5, 5, 5]
-                }
-              })
-              previewHomePath = line
-              homePathLayer.addGeometry(previewHomePath)
-            })
-            .on('mouseout', () => {
-              previewHomePath?.remove()
-              previewHomePath = undefined
-            })
-            .setMenu(menuOptions)
-            .addTo(homePathLayer)
-          const homePointCoord = JSON.parse(item.gps)
-          new maptalks.Marker([homePointCoord.y, homePointCoord.x])
-            .setMenu(menuOptions)
-            .addTo(homePathLayer)
-        })
       }
 
       // 清空并禁用绘制工具所有状态，包括对事件的监听
