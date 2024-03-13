@@ -286,7 +286,7 @@ export const useMap = () => {
               event: () => {
                 if (endRecording()) {
                   clearDrawTool()
-                  clearPathLayer()
+                  // clearPathLayer()
                   isHomePath.value = true
                   handleCreateHomePath()
                 }
