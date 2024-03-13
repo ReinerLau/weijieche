@@ -9,7 +9,6 @@ import {
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import {
-  initAlarmMarkerLayer,
   initPathLayer,
   pathPoints,
   pathLayer,
@@ -39,6 +38,7 @@ import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfig/PointConfigDrawer.vue'
 import { Marker } from 'maptalks'
 import { backToCenter, initMap, jumpToCoordinate, map } from '@/shared/map/base'
+import { initAlarmMarkerLayer } from '@/shared/map/alarm'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
