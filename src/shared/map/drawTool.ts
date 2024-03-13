@@ -13,3 +13,10 @@ export const initDrawTool = () => {
   drawTool = new DrawTool({ mode: 'Point' })
   drawTool.addTo(map).disable()
 }
+/**
+ * 清空并禁用绘制工具所有状态，包括对事件的监听
+ */
+export const clearDrawTool = () => {
+  drawTool.disable()
+  initDrawTool()
+}

@@ -48,7 +48,7 @@ import {
   setEntryPoint,
   setOnePoint
 } from '@/shared/map/home'
-import { drawTool, initDrawTool } from '@/shared/map/drawTool'
+import { clearDrawTool, drawTool, initDrawTool } from '@/shared/map/drawTool'
 import {
   addPatrolPathPointToLayer,
   clearDrawPatrolLine,
@@ -760,16 +760,6 @@ export const useMap = () => {
             }
           ]
         })
-      }
-
-      // 清空并禁用绘制工具所有状态，包括对事件的监听
-      function clearDrawTool() {
-        drawTool.disable()
-        for (const key in drawToolEvents) {
-          const event = drawToolEvents[key as keyof typeof drawToolEvents].event
-          const type = drawToolEvents[key as keyof typeof drawToolEvents].type
-          drawTool.off(type, event)
-        }
       }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
