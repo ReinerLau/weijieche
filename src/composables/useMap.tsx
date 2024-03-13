@@ -1,4 +1,4 @@
-import { createHomePath, createMissionTemplate, goHome, sendMavlinkMission } from '@/api'
+import { createMissionTemplate, goHome, sendMavlinkMission } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElMessage } from 'element-plus'
@@ -33,17 +33,20 @@ import {
   pointConfigDrawerVisible
 } from '@/shared/map/pointConfig'
 import {
-  clearCreatingHomePath,
-  creatingHomePath,
+  clearOnePoint,
   entryPoint,
+  handleCreateHomePath,
+  handleSaveHomePath,
   haveHomePath,
+  homePathDrawEndEvent,
   homePathDrawLayer,
   initHomePath,
   initHomePathDrawLayer,
   initHomePathLayer,
   isHomePath,
-  setCreatingHomePath,
-  setEntryPoint
+  onePoint,
+  setEntryPoint,
+  setOnePoint
 } from '@/shared/map/home'
 import { drawTool, initDrawTool } from '@/shared/map/drawTool'
 
@@ -457,14 +460,13 @@ export const useMap = () => {
         }
       }
 
-      let onePoint: maptalks.Marker | undefined
       const pathPointList: any = []
       // 确定选择模板路线在地图上显示
       const missionTemplateId = ref<number | null | undefined>()
 
       function handleConfirmTemplate(template: any) {
         setEntryPoint(null)
-        onePoint = undefined
+        clearOnePoint()
         pathPointList.length = 0
         clearDrawTool()
         clearPathLayer()
@@ -540,7 +542,7 @@ export const useMap = () => {
             })
             .on('click', (e: { target: Marker }) => {
               setEntryPoint(e.target)
-              onePoint = e.target
+              setOnePoint(e.target)
             })
           addPathPointToLayer(pathPoint)
           const pointCoordinates = {
@@ -557,7 +559,7 @@ export const useMap = () => {
       //上传文件后路线显示地图上
       function handleConfirmFilePath(data: any) {
         setEntryPoint(null)
-        onePoint = undefined
+        clearOnePoint()
         pathLayer.clear()
         pathPointList.length = 0
         clearDrawTool()
@@ -622,7 +624,7 @@ export const useMap = () => {
             })
             .on('click', (e: { target: Marker }) => {
               setEntryPoint(null)
-              onePoint = e.target
+              setOnePoint(e.target)
             })
           addPathPointToLayer(pathPoint)
           const pointCoordinates = {
@@ -755,31 +757,6 @@ export const useMap = () => {
         drawTool.on('drawend', event)
       }
 
-      // 开始新建返航路线
-      function handleCreateHomePath() {
-        onePoint = undefined
-        drawTool.setMode('LineString')
-        // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
-        drawTool.setSymbol({
-          lineColor: 'blue'
-        })
-        drawTool.enable()
-        drawTool.on('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
-      }
-
-      // 返航路线绘制结束之后
-      function homePathDrawEndEvent(e: any) {
-        // https://maptalks.org/maptalks.js/api/1.x/LineString.html#config
-        e.geometry.config({
-          arrowStyle: 'classic'
-        })
-        homePathDrawLayer.addGeometry(e.geometry)
-        e.geometry.startEdit()
-        drawTool.disable()
-        drawTool.off('drawend', drawToolEvents.HOME_PATH_DRAW_END.event)
-        setCreatingHomePath(e.geometry)
-      }
-
       // 初始化右键菜单
       function initMenu() {
         // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
@@ -812,54 +789,6 @@ export const useMap = () => {
             }
           ]
         })
-      }
-
-      // 保存返航路线
-      async function handleSaveHomePath(p: any) {
-        homePathDrawLayer.clear()
-
-        if (creatingHomePath) {
-          if (isHomePath.value) {
-            const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
-            const entryPoint = coordinates[0]
-            const homePoint = coordinates.slice(-1)[0]
-            const data = {
-              enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
-              gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
-              mission: JSON.stringify(
-                coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))
-              ),
-              name: new Date().toString(),
-              carStop: 1
-            }
-            const res: any = await createHomePath(data)
-            ElMessage({ type: 'success', message: res.message })
-            clearCreatingHomePath()
-            initHomePath()
-            isHomePath.value = false
-          } else if (p) {
-            const coordinates = creatingHomePath.getCoordinates() as maptalks.Coordinate[]
-            const entryPoint = p.getCoordinates()
-            const homePoint = coordinates.slice(-1)[0]
-            const data = {
-              enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
-              gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
-              mission: JSON.stringify(
-                coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))
-              ),
-              name: new Date().toString(),
-              carStop: 1
-            }
-            const res: any = await createHomePath(data)
-            ElMessage({ type: 'success', message: res.message })
-            clearCreatingHomePath()
-            initHomePath()
-          } else {
-            ElMessage.error(t('qing-cong-lu-xian-dian-kai-shi-hui-zhi'))
-          }
-        } else {
-          ElMessage.error(t('bao-cun-fan-hang-lu-xian-chu-cuo'))
-        }
       }
 
       // 清空并禁用绘制工具所有状态，包括对事件的监听

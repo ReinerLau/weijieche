@@ -1,10 +1,11 @@
-import { LineString, Marker } from 'maptalks'
+import { Coordinate, LineString, Marker } from 'maptalks'
 import { VectorLayer } from 'maptalks'
 import { map } from './base'
-import { deleteHomePath, getHomePath } from '@/api'
+import { createHomePath, deleteHomePath, getHomePath } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
+import { drawTool } from './drawTool'
 
 /**
  * 当前鼠标点击的入口点
@@ -160,3 +161,88 @@ export const haveHomePath = () => {
  * 是否为返航路线？
  */
 export const isHomePath = ref(false)
+
+/**
+ * 保存返航路线
+ * @param p 点实例
+ */
+export const handleSaveHomePath = async (p: Marker | null) => {
+  homePathDrawLayer.clear()
+
+  if (creatingHomePath) {
+    if (isHomePath.value) {
+      const coordinates = creatingHomePath.getCoordinates() as Coordinate[]
+      const entryPoint = coordinates[0]
+      const homePoint = coordinates.slice(-1)[0]
+      const data = {
+        enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
+        gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
+        mission: JSON.stringify(coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))),
+        name: new Date().toString(),
+        carStop: 1
+      }
+      const res: any = await createHomePath(data)
+      ElMessage({ type: 'success', message: res.message })
+      clearCreatingHomePath()
+      initHomePath()
+      isHomePath.value = false
+    } else if (p) {
+      const coordinates = creatingHomePath.getCoordinates() as Coordinate[]
+      const entryPoint = p.getCoordinates()
+      const homePoint = coordinates.slice(-1)[0]
+      const data = {
+        enterGps: JSON.stringify({ x: entryPoint.y, y: entryPoint.x }),
+        gps: JSON.stringify({ x: homePoint.y, y: homePoint.x }),
+        mission: JSON.stringify(coordinates.slice(1).map((item) => ({ x: item.y, y: item.x }))),
+        name: new Date().toString(),
+        carStop: 1
+      }
+      const res: any = await createHomePath(data)
+      ElMessage({ type: 'success', message: res.message })
+      clearCreatingHomePath()
+      initHomePath()
+    } else {
+      ElMessage.error(i18n.global.t('qing-cong-lu-xian-dian-kai-shi-hui-zhi'))
+    }
+  } else {
+    ElMessage.error(i18n.global.t('bao-cun-fan-hang-lu-xian-chu-cuo'))
+  }
+}
+
+/**
+ * 开始新建返航路线
+ */
+export const handleCreateHomePath = () => {
+  clearOnePoint()
+  drawTool.setMode('LineString')
+  drawTool.setSymbol({
+    lineColor: 'blue'
+  })
+  drawTool.enable()
+  drawTool.on('drawend', homePathDrawEndEvent)
+}
+
+/**
+ * 返航路线绘制结束事件
+ * @param e 事件对象
+ */
+export const homePathDrawEndEvent = (e: { geometry: LineString }) => {
+  e.geometry.config({
+    arrowStyle: 'classic'
+  })
+  homePathDrawLayer.addGeometry(e.geometry)
+  e.geometry.startEdit()
+  drawTool.disable()
+  drawTool.off('drawend', homePathDrawEndEvent)
+  setCreatingHomePath(e.geometry)
+}
+
+export let onePoint: Marker | null
+
+export const setOnePoint = (val: Marker) => {
+  onePoint = val
+}
+
+export const clearOnePoint = () => {
+  onePoint = null
+}
