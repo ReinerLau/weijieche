@@ -59,6 +59,7 @@ import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import { handleConfirm, handleConfirmTemplate, templateDialogVisible } from '@/shared/map/template'
 import { getLineCoordinates, handleCreatePath, handleCreatePlan, havePath } from '@/shared/map'
 import { endRecording, isRecord, isRecordPath, recordPathPoints } from '@/shared/map/record'
+import { fileUploadDialogVisible } from '@/shared/map/file'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -89,8 +90,7 @@ export const useMap = () => {
         ScheduleDialog,
         ScheduleSearchDialog,
         PatrolTaskDialog,
-        FileUploadDialog,
-        fileUploadVisible: fileUploadDialogVisible
+        FileUploadDialog
       } = useSchedule(handleCreatePlan)
 
       // 车辆标记相关

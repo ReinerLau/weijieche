@@ -31,6 +31,7 @@ import { getPatrolTask } from '@/api'
 import { getToken, parseTime } from '@/utils'
 import { useVideoTemplate, useShowCamera } from '@/composables'
 import { patrolTaskDialogVisible } from '@/shared/map/patrolPath'
+import { fileUploadDialogVisible } from '@/shared/map/file'
 
 // 重置表单数据
 const defaultFormData = {
@@ -628,8 +629,6 @@ export const useSchedule = (handleCreatePlan: any) => {
     }
   })
 
-  //上传文件
-  const fileUploadVisible = ref(false)
   const FileUploadDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
@@ -664,11 +663,11 @@ export const useSchedule = (handleCreatePlan: any) => {
         if (uploadRef.value) {
           uploadRef.value.clearFiles() // 清空上传的文件
         }
-        fileUploadVisible.value = false // 关闭弹窗
+        fileUploadDialogVisible.value = false // 关闭弹窗
       }
       return () => (
         <ElDialog
-          v-model={fileUploadVisible.value}
+          v-model={fileUploadDialogVisible.value}
           title={t('shang-chuan-wen-jian')}
           width="50vw"
           align-center
@@ -704,7 +703,6 @@ export const useSchedule = (handleCreatePlan: any) => {
     ScheduleSearchDialog,
     searchDialogVisible,
     PatrolTaskDialog,
-    FileUploadDialog,
-    fileUploadVisible
+    FileUploadDialog
   }
 }
