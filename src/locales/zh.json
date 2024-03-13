@@ -10,7 +10,6 @@
   "qing-kong": "清空",
   "jie-shu": "结束",
   "xian-xin-jian-lu-jing": "先新建路径",
-  "xian-xin-jian-fan-hang-lu-jing": "先新建返航路径",
   "shan-chu": "删除",
   "tiao-shi": "调试",
   "zheng-chang": "正常",
@@ -215,8 +214,6 @@
   "qing-shang-chuan-zheng-que-de-lu-xian-wen-jian": "请上传正确的路线文件",
   "she-zhi-wei-ren-wu-dian": "设置为任务点",
   "she-zhi-wei-fan-hang-dian": "设置为返航点",
-  "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "请从路线点开始绘制！",
-  "bao-cun-fan-hang-lu-xian-chu-cuo": "保存返航路线出错",
   "shou-ye-fen-xi": "首页分析",
   "hua-mian": "画面",
   "cha-kan-jing-bao-xiang-qing": "查看警报详情",
@@ -243,5 +240,7 @@
   "yi-kai-shi-lu-zhi-zhong": "已开始录制中",
   "rtsp-di-zhi": "rtsp 地址",
   "shua-xin": "刷新",
-  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "已结束录制,未存在路线！"
+  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "已结束录制,未存在路线！",
+  "xiang-qing": "详情",
+  "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "请填写x,y值,逗号分隔，如：1,2"
 }

@@ -241,7 +241,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   // 底部抽屉组件
   const DetailSection = () => (
     <ElDrawer
-      title="详情"
+      title={t('xiang-qing')}
       class="select-none"
       v-model={detailDrawerVisible.value}
       direction="btt"

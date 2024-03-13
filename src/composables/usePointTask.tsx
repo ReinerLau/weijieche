@@ -147,7 +147,7 @@ export const usePointTask = () => {
                 allow-create
                 default-first-option
                 reserve-keyword={false}
-                placeholder="请填写x,y值,逗号分隔，如：1,2"
+                placeholder={t('qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12')}
               >
                 {cameraAngleList.map((item: any) => (
                   <ElOption key={item} label={item.label} value={item.value}></ElOption>
