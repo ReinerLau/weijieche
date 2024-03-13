@@ -22,6 +22,7 @@ import {
   initPathLayer,
   pathLayer,
   pathPointDrawendEvent,
+  pathPointList,
   pathPoints,
   pathPointsData
 } from '@/shared/map/path'
@@ -58,6 +59,7 @@ import {
   taskPointDrawEndEvent
 } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
+import { handleConfirmTemplate, missionTemplateId } from '@/shared/map/template'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -366,100 +368,9 @@ export const useMap = () => {
         recordPathPoints.length = 0
       }
 
-      const pathPointList: any = []
-      // 确定选择模板路线在地图上显示
-      const missionTemplateId = ref<number | null | undefined>()
-
-      function handleConfirmTemplate(template: any) {
-        setEntryPoint(null)
-        clearOnePoint()
-        pathPointList.length = 0
-        clearDrawTool()
-        clearPathLayer()
+      function handleConfirmTemplateTest(template: { id: number; mission: string }) {
+        handleConfirmTemplate(template)
         templateSearchDialogVisible.value = false
-        missionTemplateId.value = template.id
-        const coordinates: number[][] = JSON.parse(template.mission).map(
-          (item: { x: number; y: number }) => [item.y, item.x]
-        )
-        coordinates.forEach((coordinate, index) => {
-          // https://maptalks.org/examples/cn/geometry/marker/#geometry_marker
-          // https://maptalks.org/maptalks.js/api/1.x/Marker.html
-          // https://github.com/maptalks/maptalks.js/wiki/Symbol-Reference
-          const pathPoint = new maptalks.Marker(coordinate, {
-            symbol: {
-              markerType: index === 0 ? 'diamond' : 'ellipse',
-              markerFill: (() => {
-                if (index === 0) {
-                  return '#FF0070'
-                } else if (index === coordinates.length - 1) {
-                  return '#FF0070'
-                } else {
-                  return '#8D70DD'
-                }
-              })(),
-              markerWidth: 15,
-              markerHeight: 15
-            }
-          })
-            .setMenu({
-              items: [
-                {
-                  item: t('xin-zeng-ren-wu-dian'),
-                  click: () => {
-                    const pointCoordinates = {
-                      x: pathPoint.getCoordinates().y,
-                      y: pathPoint.getCoordinates().x
-                    }
-                    handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-                      pathLayer.addGeometry(pathPoint)
-                      clearDrawTool()
-                      initTaskPoints()
-                    })
-                  }
-                },
-                {
-                  item: t('tian-jia-fan-hang-dian'),
-                  click: handleCreateHomePath
-                },
-                {
-                  item: t('bian-ji-che-su'),
-                  click: () => {
-                    const pointCoordinates: {
-                      x: number
-                      y: number
-                    } = {
-                      x: pathPoint.getCoordinates().y,
-                      y: pathPoint.getCoordinates().x
-                    }
-                    currentSelectedPointIndex.value = index
-                    //保存已有车速值
-                    let carNum: string = carSpeedData.value[index] || ''
-                    if (!carSpeedData.value[index]) {
-                      const templateData: any = JSON.parse(template.mission)[index]
-                      if (templateData.speed) {
-                        carNum = templateData.speed.toString()
-                      }
-                    }
-                    pointConfigDrawerVisible.value = true
-                    handlePointConfigEvent(pointCoordinates, carNum)
-                  }
-                }
-              ]
-            })
-            .on('click', (e: { target: Marker }) => {
-              setEntryPoint(e.target)
-              setOnePoint(e.target)
-            })
-          addPathPointToLayer(pathPoint)
-          const pointCoordinates = {
-            x: pathPoint.getCoordinates().y,
-            y: pathPoint.getCoordinates().x
-          }
-          pathPointList.push(pointCoordinates)
-          pathPointsData.value = JSON.parse(template.mission)
-        })
-
-        jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
       }
 
       //上传文件后路线显示地图上
@@ -655,7 +566,7 @@ export const useMap = () => {
           <div class="h-full" ref={mapRef}></div>
           <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
           <TemplateDialog onConfirm={handleConfirm} />
-          <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
+          <TemplateSearchDialog onConfirm={handleConfirmTemplateTest} />
           <ScheduleDialog pointsdata={pathDataPoints} />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />

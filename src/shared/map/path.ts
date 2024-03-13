@@ -99,3 +99,5 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
     .setMenu(pointMenuOptions)
   addPathPointToLayer(pathPoint)
 }
+
+export const pathPointList: { x: number; y: number }[] = []
