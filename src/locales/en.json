@@ -230,8 +230,6 @@
   "che-liang-su-du-ms": "Vehicle speed m/s",
   "lu-xian-dian-zuo-biao": "route point coordinates",
   "xia-fa-ren-wu-shi-bai": "Failed to send task!",
-  "lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu": "Recording completed, please save the recording route template, select the template, and then issue the task!",
-  "qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian": "Please create a new recording path or click the clear button first!",
   "lu-xian-dian": "route point",
   "duan-kou": "port",
   "ip": "IP",
@@ -244,5 +242,6 @@
   "kai-qi": "turn on",
   "yi-kai-shi-lu-zhi-zhong": "Started recording",
   "rtsp-di-zhi": "rtsp address",
-  "shua-xin": "refresh"
+  "shua-xin": "refresh",
+  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "Recording has ended, no route exists!"
 }
