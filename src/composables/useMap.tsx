@@ -1,4 +1,4 @@
-import { createMissionTemplate, goHome, sendMavlinkMission } from '@/api'
+import { createMissionTemplate, goHome } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElMessage } from 'element-plus'
@@ -14,7 +14,7 @@ import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfigDrawer.vue'
 import { Marker } from 'maptalks'
-import { backToCenter, initMap, jumpToCoordinate, map } from '@/shared/map/base'
+import { backToCenter, initMap, initMenu, jumpToCoordinate, map } from '@/shared/map/base'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
 import {
   addPathPointToLayer,
@@ -35,18 +35,14 @@ import {
 import {
   clearOnePoint,
   handleCreateHomePath,
-  handleSaveHomePath,
-  haveHomePath,
-  homePathDrawLayer,
   initHomePath,
   initHomePathDrawLayer,
   initHomePathLayer,
   isHomePath,
-  onePoint,
   setEntryPoint,
   setOnePoint
 } from '@/shared/map/home'
-import { clearDrawTool, drawTool, initDrawTool } from '@/shared/map/drawTool'
+import { clearDrawTool, initDrawTool } from '@/shared/map/drawTool'
 import {
   clearDrawPatrolLine,
   handleConfirmPatrolTaskPath,
@@ -59,12 +55,10 @@ import {
   taskPointDrawEndEvent
 } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
-import { handleConfirmTemplate, missionTemplateId } from '@/shared/map/template'
-import { getLineCoordinates } from '@/shared/map'
+import { handleConfirmTemplate } from '@/shared/map/template'
+import { getLineCoordinates, handleCreatePath, handleCreatePlan, havePath } from '@/shared/map'
 import { endRecording, isRecord, isRecordPath, recordPathPoints } from '@/shared/map/record'
 
-//判断任务是否下发
-export const isExecutePlan = ref(false)
 export const useMap = () => {
   const MapContainer = defineComponent({
     emits: ['confirm'],
@@ -316,36 +310,6 @@ export const useMap = () => {
         }
       ]
 
-      // 下发任务
-      async function handleCreatePlan() {
-        isExecutePlan.value = false
-        if (haveCurrentCar() && havePath()) {
-          try {
-            let res: any
-            if (pathPointsData.value.length !== 0) {
-              const params = missionTemplateId.value
-                ? {
-                    missionTemplateId: missionTemplateId.value
-                  }
-                : {}
-              res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
-              ElMessage.success({
-                message: res.message
-              })
-            }
-            isExecutePlan.value = true
-            clearPathLayer()
-            clearDrawTool()
-            pathPointsData.value.length = 0
-          } catch (error) {
-            ElMessage.error({
-              message: t('xia-fa-ren-wu-shi-bai')
-            })
-          }
-        }
-        missionTemplateId.value = null
-      }
-
       // 确定保存路线模板
       async function handleConfirm(formData: { name?: string; memo?: string }) {
         const data = {
@@ -459,65 +423,6 @@ export const useMap = () => {
       function handleConfirmPatrolTaskPathTest(row: any) {
         handleConfirmPatrolTaskPath(row)
         patrolTaskDialogVisible.value = false
-      }
-
-      // 校验地图是否已存在路线
-      function havePath() {
-        if (pathPoints.length > 1 || recordPathPoints.length > 1) {
-          return true
-        } else {
-          ElMessage({
-            type: 'error',
-            message: t('xian-xin-jian-lu-jing')
-          })
-          return false
-        }
-      }
-
-      // 开始新建路线/任务点
-      function handleCreatePath(color: string, event: any) {
-        setEntryPoint(null)
-        drawTool.setMode('Point')
-        drawTool.setSymbol({
-          markerType: 'ellipse',
-          markerFill: color
-        })
-        drawTool.enable()
-        drawTool.on('drawend', event)
-      }
-
-      // 初始化右键菜单
-      function initMenu() {
-        // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
-
-        map.setMenu({
-          width: 250,
-          items: [
-            {
-              item: t('jie-shu'),
-              click: () => {
-                clearDrawTool()
-                pathPointsData.value = getLineCoordinates(pathPoints)
-              }
-            },
-            {
-              item: t('qu-xiao-fan-hang-lu-xian-hui-zhi'),
-              click: () => {
-                clearDrawTool()
-                homePathDrawLayer.clear()
-              }
-            },
-            {
-              item: t('bao-cun-fan-hang-lu-xian'),
-              click: () => {
-                if (haveHomePath()) {
-                  clearDrawTool()
-                  handleSaveHomePath(onePoint)
-                }
-              }
-            }
-          ]
-        })
       }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
