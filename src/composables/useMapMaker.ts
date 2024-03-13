@@ -77,7 +77,7 @@ export const useMapMaker = () => {
   async function initCar() {
     markerLayer.clear()
     const { data } = await getCarList()
-    carList.value = data.list || []
+    carList.value = data?.list || []
     for (const { longitude, latitude, heading } of carList.value) {
       if (longitude && latitude) {
         const point = new Marker([longitude as number, latitude as number], {

@@ -9,11 +9,6 @@ import {
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import {
-  initMap,
-  mapRef,
-  map,
-  jumpToCoordinate,
-  backToCenter,
   initAlarmMarkerLayer,
   initPathLayer,
   pathPoints,
@@ -43,6 +38,7 @@ import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfig/PointConfigDrawer.vue'
 import { Marker } from 'maptalks'
+import { backToCenter, initMap, jumpToCoordinate, map } from '@/shared/map/base'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -147,11 +143,13 @@ export const useMap = () => {
         }
       }
 
+      const mapRef = ref<HTMLDivElement>()
+
       /**
        * 初始化
        */
       function init() {
-        initMap()
+        initMap(mapRef.value!)
         initMakerLayer(map)
         initAlarmMarkerLayer()
         initPathLayer()
