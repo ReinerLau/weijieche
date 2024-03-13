@@ -18,6 +18,7 @@ import {
 import { jumpToCoordinate } from './base'
 import { i18n } from '@/utils'
 import { ref } from 'vue'
+import { endRecording } from './record'
 
 export const fileUploadDialogVisible = ref(false)
 
@@ -101,4 +102,11 @@ export const handleConfirmFilePath = (data: any) => {
   })
 
   jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
+}
+
+export const fileUploadToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawTool()
+    fileUploadDialogVisible.value = true
+  }
 }

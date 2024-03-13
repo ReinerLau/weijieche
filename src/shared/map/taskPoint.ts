@@ -6,6 +6,9 @@ import { deletePointTask, getPointTaskList } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { clearDrawTool } from './drawTool'
+import { endRecording } from './record'
+import { clearPathLayer } from './path'
+import { handleCreatePath } from '.'
 
 /**
  * 任务点图层实例
@@ -139,4 +142,12 @@ export const taskPointDrawEndEvent = (e: { geometry: Marker }) => {
     clearDrawTool()
     initTaskPoints()
   })
+}
+
+export const taskPointToolbarEvent = () => {
+  if (endRecording()) {
+    clearPathLayer()
+    clearDrawTool()
+    handleCreatePath('#f3072f', taskPointDrawEndEvent)
+  }
 }

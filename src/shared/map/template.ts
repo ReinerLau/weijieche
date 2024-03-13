@@ -18,8 +18,8 @@ import {
   pointConfigDrawerVisible
 } from './pointConfig'
 import { jumpToCoordinate } from './base'
-import { isRecordPath, recordPathPoints } from './record'
-import { getLineCoordinates } from '.'
+import { endRecording, isRecordPath, recordPathPoints } from './record'
+import { getLineCoordinates, havePath } from '.'
 import { createMissionTemplate } from '@/api'
 import { ElMessage } from 'element-plus'
 
@@ -140,3 +140,17 @@ export const handleConfirm = async (formData: { name?: string; memo?: string }) 
 
 // 搜索模板弹窗是否可见
 export const templateSearchDialogVisible = ref(false)
+
+export const saveTemplateToolbarEvent = () => {
+  if (havePath() && endRecording()) {
+    clearDrawTool()
+    templateDialogVisible.value = true
+  }
+}
+
+export const searchTemplateToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawTool()
+    templateSearchDialogVisible.value = true
+  }
+}

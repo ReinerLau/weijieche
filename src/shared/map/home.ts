@@ -1,11 +1,13 @@
 import { Coordinate, LineString, Marker } from 'maptalks'
 import { VectorLayer } from 'maptalks'
 import { map } from './base'
-import { createHomePath, deleteHomePath, getHomePath } from '@/api'
+import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
-import { drawTool } from './drawTool'
+import { clearDrawTool, drawTool } from './drawTool'
+import { endRecording } from './record'
+import { currentCar, haveCurrentCar } from '..'
 
 /**
  * 当前鼠标点击的入口点
@@ -245,4 +247,22 @@ export const setOnePoint = (val: Marker) => {
 
 export const clearOnePoint = () => {
   onePoint = null
+}
+
+export const createHomePathToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawTool()
+    isHomePath.value = true
+    handleCreateHomePath()
+  }
+}
+
+export const startHomeToolbarEvent = async () => {
+  if (haveCurrentCar() && endRecording()) {
+    const res: any = await goHome(currentCar.value)
+    ElMessage({
+      type: 'success',
+      message: res.message
+    })
+  }
 }
