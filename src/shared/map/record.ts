@@ -1,12 +1,13 @@
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { i18n } from '@/utils'
-import { Marker, VectorLayer } from 'maptalks'
+import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { initMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
 import { haveCurrentCar } from '..'
 import { templateDialogVisible } from './template'
+import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
@@ -79,5 +80,37 @@ export const recordPathToolbarEvent = () => {
       type: 'warning',
       message: i18n.global.t('yi-kai-shi-lu-zhi-zhong')
     })
+  }
+}
+
+export const initRecordPath = (data: CarInfo) => {
+  // markerLayer.clear()
+  if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
+    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
+      symbol: {
+        // markerType: 'ellipse',
+        // markerFill: 'red',
+        // markerWidth: 13,
+        // markerHeight: 13
+      }
+    })
+
+    recordPathLayer.addGeometry(pathPoint)
+
+    recordPathPoints.push(pathPoint)
+
+    if (recordPathPoints.length >= 2) {
+      const lastTwoPoints = recordPathPoints.slice(-2)
+      const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+        showOn: 'always',
+        symbol: {
+          lineColor: 'red',
+          lineWidth: 2
+        },
+        zIndex: -1
+      })
+
+      recordPathLayer.addGeometry(connectLine)
+    }
   }
 }

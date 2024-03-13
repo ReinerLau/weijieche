@@ -16,12 +16,10 @@ export function initWebSocket(
   }
 ) {
   const token = getToken()
-  if (token) {
-    const websocket = new WebSocket(`ws://${window.location.host}${url}`, [token])
-    websocket.onmessage = onmessage
-    websocket.onopen = onopen || null
-    websocket.onclose = onclose || null
-    websocket.onerror = onerror || null
-    return websocket
-  }
+  const websocket = new WebSocket(`ws://${window.location.host}${url}`, [token!])
+  websocket.onmessage = onmessage
+  websocket.onopen = onopen || null
+  websocket.onclose = onclose || null
+  websocket.onerror = onerror || null
+  return websocket
 }
