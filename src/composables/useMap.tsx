@@ -29,6 +29,7 @@ import {
   tryCloseWS
 } from '@/shared/map/carMarker'
 import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
+import TemplateDialog from '@/components/TemplateDialog.vue'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -41,7 +42,7 @@ export const useMap = () => {
     },
     setup(props) {
       // 模板相关
-      const { TemplateDialog, TemplateSearchDialog } = useTemplate()
+      const { TemplateSearchDialog } = useTemplate()
 
       // 定时任务相关
       const { ScheduleDialog, ScheduleSearchDialog, PatrolTaskDialog, FileUploadDialog } =

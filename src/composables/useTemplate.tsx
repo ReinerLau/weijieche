@@ -1,10 +1,8 @@
 import { deleteTemplate, getTemplatePathList } from '@/api'
-import { templateDialogVisible, templateSearchDialogVisible } from '@/shared/map/template'
+import { templateSearchDialogVisible } from '@/shared/map/template'
 import {
   ElButton,
   ElDialog,
-  ElForm,
-  ElFormItem,
   ElImage,
   ElInput,
   ElPagination,
@@ -12,16 +10,9 @@ import {
   ElTable,
   ElTableColumn
 } from 'element-plus'
-import { cloneDeep } from 'lodash'
 import { defineComponent, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-// 重置表单数据
-const defaultFormData = {
-  name: '',
-  memo: ''
-}
 
 // 模板相关
 export const useTemplate = () => {
@@ -29,59 +20,8 @@ export const useTemplate = () => {
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
 
-  // 新建模板的表单数据
-  const formData: Ref<{
-    name?: string
-    memo?: string
-  }> = ref(cloneDeep(defaultFormData))
-
   // 警告弹窗是否可见
   const alarmDialogVisible = ref(false)
-
-  watch(templateDialogVisible, () => {
-    if (templateDialogVisible.value === false) {
-      formData.value = cloneDeep(defaultFormData)
-    }
-  })
-
-  // 新建模板弹窗组件
-  // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
-  const TemplateDialog = defineComponent({
-    emits: ['confirm'],
-    setup(props, { emit }) {
-      return () => (
-        <ElDialog
-          v-model={templateDialogVisible.value}
-          title={t('mo-ban')}
-          width="50vw"
-          align-center
-        >
-          {{
-            default: () => (
-              <ElForm label-width={100} model={formData.value}>
-                <ElFormItem prop="name" label={t('mo-ban-ming-cheng')}>
-                  <ElInput v-model={formData.value.name} clearable></ElInput>
-                </ElFormItem>
-                <ElFormItem prop="memo" label={t('bei-zhu')}>
-                  <ElInput v-model={formData.value.memo} clearable></ElInput>
-                </ElFormItem>
-              </ElForm>
-            ),
-            footer: () => (
-              <ElButton
-                size="large"
-                type="primary"
-                class="w-full"
-                onClick={() => emit('confirm', formData.value)}
-              >
-                {t('que-ding')}
-              </ElButton>
-            )
-          }}
-        </ElDialog>
-      )
-    }
-  })
 
   // 搜索模板弹窗组件
   // https://cn.vuejs.org/guide/typescript/composition-api.html#without-script-setup
@@ -299,9 +239,7 @@ export const useTemplate = () => {
     }
   })
   return {
-    TemplateDialog,
     TemplateSearchDialog,
-    searchDialogVisible: templateSearchDialogVisible,
     TemplateAlarmDialog,
     alarmDialogVisible,
     handleAlarm
