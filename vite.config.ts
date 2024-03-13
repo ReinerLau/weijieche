@@ -38,7 +38,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/rtc': {
-        target: 'http://localhost:1985',
+        target: 'http://192.168.18.233:1985',
         changeOrigin: true
       },
       '/websocket': {
