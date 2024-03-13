@@ -49,6 +49,12 @@ import {
   setOnePoint
 } from '@/shared/map/home'
 import { drawTool, initDrawTool } from '@/shared/map/drawTool'
+import {
+  addPatrolPathPointToLayer,
+  clearDrawPatrolLine,
+  initPatrolpathLayer,
+  pathPointArray
+} from '@/shared/map/patrolPath'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -93,9 +99,6 @@ export const useMap = () => {
 
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      //巡逻路线图层
-      let patrolpathLayer: maptalks.VectorLayer
 
       //任务图层实例
       let taskPointLayer: maptalks.VectorLayer
@@ -148,14 +151,11 @@ export const useMap = () => {
         initPathLayer()
         initHomePathLayer()
         initHomePathDrawLayer()
+        initPatrolpathLayer()
 
         //任务点图层
         taskPointLayer = new maptalks.VectorLayer('task-point')
         taskPointLayer.addTo(map)
-
-        //巡逻任务路线图层
-        patrolpathLayer = new maptalks.VectorLayer('patrol')
-        patrolpathLayer.addTo(map)
       }
 
       // 按钮组
@@ -383,12 +383,6 @@ export const useMap = () => {
           }
         }
         missionTemplateId.value = null
-      }
-
-      //清空巡逻路线
-      function clearDrawPatrolLine() {
-        patrolpathLayer.clear()
-        patrolpathPoints.length = 0
       }
 
       // 确定保存路线模板
@@ -638,7 +632,6 @@ export const useMap = () => {
         jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
       }
 
-      const pathPointArray: any = []
       //选择巡逻任务路线按钮后显示路线在地图上
       function handleConfirmPatrolTaskPath(row: any) {
         pathPointArray.length = 0
@@ -678,28 +671,6 @@ export const useMap = () => {
           pathPointArray.push(pointCoordinates)
         })
         jumpToCoordinate(pathPointArray[0].y, pathPointArray[0].x)
-      }
-
-      const patrolpathPoints: maptalks.Marker[] = []
-      // 添加巡逻路线到图层中
-      function addPatrolPathPointToLayer(pathPoint: maptalks.Marker) {
-        patrolpathLayer.addGeometry(pathPoint)
-        if (entryPoint) {
-          pathPoint.setCoordinates(entryPoint.getCenter())
-          setEntryPoint(null)
-        }
-        patrolpathPoints.push(pathPoint)
-        if (patrolpathPoints.length >= 2) {
-          const lastTwoPoints = patrolpathPoints.slice(-2)
-          const connectLine = new maptalks.ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
-            showOn: 'always',
-            symbol: {
-              lineColor: '#DC00FE'
-            },
-            zIndex: -1
-          })
-          patrolpathLayer.addGeometry(connectLine)
-        }
       }
 
       // 添加任务点到图层中
