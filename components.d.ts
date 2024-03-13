@@ -19,7 +19,7 @@ declare module 'vue' {
     IMdiArrowDropUp: typeof import('~icons/mdi/arrow-drop-up')['default']
     IVaadinTimeBackward: typeof import('~icons/vaadin/time-backward')['default']
     PantiltControl: typeof import('./src/components/PantiltControl.vue')['default']
-    PointConfigDrawer: typeof import('./src/components/PointConfig/PointConfigDrawer.vue')['default']
+    PointConfigDrawer: typeof import('./src/components/PointConfigDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
