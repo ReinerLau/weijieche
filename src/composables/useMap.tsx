@@ -186,11 +186,13 @@ export const useMap = () => {
             {
               title: t('xin-jian-lu-xian'),
               event: () => {
-                clearPathLayer()
-                clearDrawTool()
-                handleCreatePath('#ff931e', drawToolEvents.PATH_POINT_DRAW_END.event)
-                isRecord.value = false
-                isRecordPath.value = false
+                if (endRecording()) {
+                  clearPathLayer()
+                  clearDrawTool()
+                  handleCreatePath('#ff931e', drawToolEvents.PATH_POINT_DRAW_END.event)
+                  isRecord.value = false
+                  isRecordPath.value = false
+                }
               }
             },
             {
@@ -204,6 +206,38 @@ export const useMap = () => {
                   ElMessage({
                     type: 'success',
                     message: t('kai-shi-lu-zhi')
+                  })
+                  map.removeMenu()
+                  map.setMenu({
+                    items: [
+                      {
+                        item: t('jie-shu-lu-zhi'),
+                        click: () => {
+                          if (recordPathPoints.length > 1) {
+                            clearPathLayer()
+                            clearDrawTool()
+                            isRecord.value = false
+                            ElMessage({
+                              type: 'success',
+                              message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+                            })
+                            isRecordPath.value = true
+                            templateDialogVisible.value = true
+                          } else {
+                            ElMessage({
+                              type: 'warning',
+                              message: t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
+                            })
+                            clearPathLayer()
+                            clearDrawTool()
+                            isRecord.value = false
+                            isRecordPath.value = false
+                            map.removeMenu()
+                            initMenu()
+                          }
+                        }
+                      }
+                    ]
                   })
                 } else if (isRecord.value) {
                   ElMessage({
@@ -268,7 +302,7 @@ export const useMap = () => {
             {
               title: t('kai-shi-zhi-hang-fan-hang'),
               event: async () => {
-                if (haveCurrentCar()) {
+                if (haveCurrentCar() && endRecording()) {
                   const res: any = await goHome(currentCar.value)
                   ElMessage({
                     type: 'success',
@@ -327,7 +361,9 @@ export const useMap = () => {
             {
               title: t('qing-kong-lu-xian'),
               event: () => {
-                clearDrawPatrolLine()
+                if (endRecording()) {
+                  clearDrawPatrolLine()
+                }
               }
             }
           ]
@@ -341,18 +377,10 @@ export const useMap = () => {
       // 下发任务
       async function handleCreatePlan() {
         isExecutePlan.value = false
-
-        if (haveCurrentCar() && havePath() && endRecording()) {
+        if (haveCurrentCar() && havePath()) {
           try {
             let res: any
-            if (isRecordPath.value) {
-              ElMessage({
-                type: 'error',
-                message: t(
-                  'lu-zhi-jie-shu-qing-bao-cun-lu-zhi-lu-xian-mo-ban-xuan-ze-mo-ban-zai-xia-fa-ren-wu'
-                )
-              })
-            } else if (pathPointsData.value.length !== 0) {
+            if (pathPointsData.value.length !== 0) {
               const params = missionTemplateId.value
                 ? {
                     missionTemplateId: missionTemplateId.value
@@ -791,6 +819,7 @@ export const useMap = () => {
       // 初始化右键菜单
       function initMenu() {
         // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
+
         map.setMenu({
           items: [
             {
@@ -798,27 +827,6 @@ export const useMap = () => {
               click: () => {
                 clearDrawTool()
                 pathPointsData.value = getLineCoordinates(pathPoints)
-              }
-            },
-            {
-              item: t('jie-shu-lu-zhi'),
-              click: () => {
-                if (recordPathPoints.length > 1) {
-                  clearPathLayer()
-                  clearDrawTool()
-                  isRecord.value = false
-                  ElMessage({
-                    type: 'success',
-                    message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
-                  })
-                  isRecordPath.value = true
-                  templateDialogVisible.value = true
-                } else {
-                  ElMessage({
-                    type: 'error',
-                    message: t('qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian')
-                  })
-                }
               }
             },
             {
