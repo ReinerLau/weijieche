@@ -4,6 +4,9 @@ import { ref } from 'vue'
 import { entryPoint, setEntryPoint } from './home'
 import { i18n } from '@/utils'
 import { configCarSpeed } from './pointConfig'
+import { endRecording, isRecord, isRecordPath } from './record'
+import { clearDrawTool } from './drawTool'
+import { handleCreatePath } from '.'
 
 /**
  * 通用路线图层
@@ -98,4 +101,22 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
     })
     .setMenu(pointMenuOptions)
   addPathPointToLayer(pathPoint)
+}
+
+export const pathPointList: { x: number; y: number }[] = []
+
+export const drawPathToolbarEvent = () => {
+  if (endRecording()) {
+    clearPathLayer()
+    clearDrawTool()
+    handleCreatePath('#ff931e', pathPointDrawendEvent)
+    isRecord.value = false
+    isRecordPath.value = false
+  }
+}
+
+export const clearToolbarEvent = () => {
+  clearPathLayer()
+  clearDrawTool()
+  isRecord.value = false
 }

@@ -3,9 +3,15 @@ import { currentCar } from '@/shared'
 import { initWebSocket } from '@/utils'
 import { ConnectorLine, Map, Marker, VectorLayer } from 'maptalks'
 import { watch, ref, onBeforeUnmount, type Ref } from 'vue'
-import { isRecord, isRecordPath } from './useMap'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import {
+  initRecordPathLayer,
+  isRecord,
+  isRecordPath,
+  recordPathLayer,
+  recordPathPoints
+} from '@/shared/map/record'
 
 export const useMapMaker = () => {
   // 国际化相关
@@ -14,8 +20,6 @@ export const useMapMaker = () => {
   // 车辆标记图层
   // https://maptalks.org/maptalks.js/api/1.x/VectorLayer.html
   let markerLayer: VectorLayer
-  //录制路线图层实例
-  let recordPathLayer: VectorLayer // https://zh.javascript.info/websocket
   let ws: WebSocket | undefined
 
   // 监听到选择车辆后连接 websocket
@@ -65,8 +69,7 @@ export const useMapMaker = () => {
   async function initMakerLayer(map: Map) {
     markerLayer = new VectorLayer('marker')
     markerLayer.addTo(map)
-    recordPathLayer = new VectorLayer('record-point')
-    recordPathLayer.addTo(map)
+    initRecordPathLayer()
     initCar()
   }
 
@@ -103,8 +106,6 @@ export const useMapMaker = () => {
     heading?: number | string
     robotCode?: string
   }
-
-  const recordPathPoints: Marker[] = []
 
   //录制路线
   function initRecordPath(data: CarInfo) {
@@ -214,7 +215,6 @@ export const useMapMaker = () => {
 
   return {
     isConnectedWS,
-    initMakerLayer,
-    recordPathPoints
+    initMakerLayer
   }
 }

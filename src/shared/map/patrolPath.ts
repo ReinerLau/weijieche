@@ -2,8 +2,11 @@ import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { jumpToCoordinate, map } from './base'
 import { entryPoint, setEntryPoint } from './home'
 import { clearDrawTool } from './drawTool'
-import { clearPathLayer } from './path'
+import { clearPathLayer, pathPoints } from './path'
 import { i18n } from '@/utils'
+import { ref } from 'vue'
+import { endRecording } from './record'
+import { getLineCoordinates, pathDataPoints } from '.'
 
 /**
  * 巡逻路线图层实例
@@ -100,4 +103,30 @@ export const handleConfirmPatrolTaskPath = (row: {
     pathPointArray.push(pointCoordinates)
   })
   jumpToCoordinate(pathPointArray[0].y, pathPointArray[0].x)
+  patrolTaskDialogVisible.value = false
+}
+
+export const patrolTaskDialogVisible = ref(false)
+
+export const assignTaskToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawTool()
+    pathDataPoints.value = JSON.stringify(getLineCoordinates(pathPoints))
+    scheduleDialogVisible.value = true
+  }
+}
+
+export const scheduleDialogVisible = ref(false)
+
+export const taskListToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawTool()
+    patrolTaskDialogVisible.value = true
+  }
+}
+
+export const clearPathToolbarEvent = () => {
+  if (endRecording()) {
+    clearDrawPatrolLine()
+  }
 }

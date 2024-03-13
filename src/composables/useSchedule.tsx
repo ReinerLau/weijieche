@@ -30,6 +30,8 @@ import { useI18n } from 'vue-i18n'
 import { getPatrolTask } from '@/api'
 import { getToken, parseTime } from '@/utils'
 import { useVideoTemplate, useShowCamera } from '@/composables'
+import { patrolTaskDialogVisible, scheduleDialogVisible } from '@/shared/map/patrolPath'
+import { fileUploadDialogVisible } from '@/shared/map/file'
 
 // 重置表单数据
 const defaultFormData = {
@@ -46,9 +48,6 @@ export const useSchedule = (handleCreatePlan: any) => {
   // 国际化
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
-
-  // 新建定时任务弹窗组件是否可见
-  const dialogVisible = ref(false)
 
   // 下发任务弹窗组件
   const ScheduleDialog = defineComponent({
@@ -100,7 +99,7 @@ export const useSchedule = (handleCreatePlan: any) => {
           } else {
             handleCreatePlan()
           }
-          dialogVisible.value = false
+          scheduleDialogVisible.value = false
           formData.value = cloneDeep(defaultFormData)
         }
       }
@@ -146,7 +145,7 @@ export const useSchedule = (handleCreatePlan: any) => {
       const templateList = ref([])
 
       // 监听弹窗加载获取模板数据
-      watch(dialogVisible, async (val) => {
+      watch(scheduleDialogVisible, async (val) => {
         isChange.value = false
         formData.value = cloneDeep(defaultFormData)
         if (val) {
@@ -165,7 +164,7 @@ export const useSchedule = (handleCreatePlan: any) => {
         formData.value = cloneDeep(defaultFormData)
       })
       return () => (
-        <ElDialog v-model={dialogVisible.value} width="50vw" align-center>
+        <ElDialog v-model={scheduleDialogVisible.value} width="50vw" align-center>
           {{
             header: () => (
               <div class=" flex flex-col ">
@@ -341,15 +340,13 @@ export const useSchedule = (handleCreatePlan: any) => {
     }
   })
 
-  const patrolTaskVisible = ref(false)
-
   //巡逻任务列表
   const PatrolTaskDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
       const list: Ref<any[]> = ref([])
       // 每次打开弹窗组件获取列表
-      watch(patrolTaskVisible, async (val) => {
+      watch(patrolTaskDialogVisible, async (val) => {
         if (val) {
           getList()
         }
@@ -541,7 +538,7 @@ export const useSchedule = (handleCreatePlan: any) => {
       return () => (
         <div>
           <ElDialog
-            v-model={patrolTaskVisible.value}
+            v-model={patrolTaskDialogVisible.value}
             onClose={handleVisible}
             title={t('xun-luo-ren-wu')}
             width="50vw"
@@ -629,8 +626,6 @@ export const useSchedule = (handleCreatePlan: any) => {
     }
   })
 
-  //上传文件
-  const fileUploadVisible = ref(false)
   const FileUploadDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
@@ -665,11 +660,11 @@ export const useSchedule = (handleCreatePlan: any) => {
         if (uploadRef.value) {
           uploadRef.value.clearFiles() // 清空上传的文件
         }
-        fileUploadVisible.value = false // 关闭弹窗
+        fileUploadDialogVisible.value = false // 关闭弹窗
       }
       return () => (
         <ElDialog
-          v-model={fileUploadVisible.value}
+          v-model={fileUploadDialogVisible.value}
           title={t('shang-chuan-wen-jian')}
           width="50vw"
           align-center
@@ -701,12 +696,10 @@ export const useSchedule = (handleCreatePlan: any) => {
   })
   return {
     ScheduleDialog,
-    dialogVisible,
+    dialogVisible: scheduleDialogVisible,
     ScheduleSearchDialog,
     searchDialogVisible,
     PatrolTaskDialog,
-    patrolTaskVisible,
-    FileUploadDialog,
-    fileUploadVisible
+    FileUploadDialog
   }
 }
