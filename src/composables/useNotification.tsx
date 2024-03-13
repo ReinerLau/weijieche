@@ -21,7 +21,7 @@ import { useTemplate } from './useTemplate'
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
 import { Marker } from 'maptalks'
-import { alarmMarkerLayer } from '@/shared/map'
+import { alarmMarkerLayer } from '@/shared/map/alarm'
 
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
