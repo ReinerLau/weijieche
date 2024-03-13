@@ -60,6 +60,7 @@ import {
 } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import { handleConfirmTemplate, missionTemplateId } from '@/shared/map/template'
+import { getLineCoordinates } from '@/shared/map'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -459,14 +460,6 @@ export const useMap = () => {
       function handleConfirmPatrolTaskPathTest(row: any) {
         handleConfirmPatrolTaskPath(row)
         patrolTaskDialogVisible.value = false
-      }
-
-      // 获取路线上各个点的坐标信息
-      function getLineCoordinates(list: any) {
-        return list.map((item: any) => ({
-          x: item.getCoordinates().y,
-          y: item.getCoordinates().x
-        }))
       }
 
       // 校验地图是否已存在路线
