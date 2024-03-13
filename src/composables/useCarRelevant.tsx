@@ -30,7 +30,9 @@ export const useCarRelevant = ({
   const carSettingDrawerVisible = ref(false)
 
   // 可选车辆数据
-  const carList: Ref<{ id: number; code: string; name: string; status: number }[]> = ref([])
+  const carList: Ref<
+    { id: number; code: string; name: string; status: number; battery: number }[]
+  > = ref([])
 
   // 获取车辆数据
   async function getList() {
@@ -48,7 +50,15 @@ export const useCarRelevant = ({
     return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
   }
 
-  const { NewCurrentCarStatus } = useCarStatus(currentCarStatus())
+  // 当前车辆电量
+  const currentCarBattery = () => {
+    return carList.value.find((item) => item.code === currentCar.value)?.battery
+  }
+
+  const { NewCurrentCarStatus, NewCurrentCarBattery } = useCarStatus(
+    currentCarStatus(),
+    currentCarBattery()
+  )
 
   // 监听切换车辆后重新激活车辆
   watch(currentCar, (code: string) => {
@@ -112,11 +122,14 @@ export const useCarRelevant = ({
 
   // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
-    <div>
+    <div class="flex items-center">
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton>
-      <span>{NewCurrentCarStatus.value}</span>
+      <div class="flex">
+        <span class=" mr-6">{NewCurrentCarStatus.value}</span>
+        <span>电量 {NewCurrentCarBattery.value || 0}%</span>
+      </div>
     </div>
   )
 
