@@ -4,18 +4,21 @@ import { initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
-export const useCarStatus = (status: any) => {
+export const useCarStatus = (status: any, battery: any) => {
   // 国际化
   const { t } = useI18n()
 
   const NewCurrentCarStatus = ref(status)
+
+  //电量
+  const NewCurrentCarBattery = ref(battery)
   // 标记是否已经连接 websocket
   const isConnectedWS = ref(false)
 
   let ws: WebSocket | undefined
 
   //断开重连定时器
-  let reconnectInterval: number | null = null
+  let reconnectInterval: number | NodeJS.Timer | null = null
 
   // 监听到选择车辆后连接 websocket
   watch(currentCar, () => {
@@ -49,8 +52,12 @@ export const useCarStatus = (status: any) => {
       onmessage: (event: MessageEvent<any>) => {
         const data = JSON.parse(event.data)
         const status = data.status
-        // 更新currentCarStatus的值
+        const battery = data.battery
+        console.log(data)
+
+        // 更新currentCarStatus NewCurrentCarBattery的值
         NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
+        NewCurrentCarBattery.value = battery
       },
       onopen: () => {
         isConnectedWS.value = true
@@ -96,6 +103,7 @@ export const useCarStatus = (status: any) => {
   }
 
   return {
-    NewCurrentCarStatus
+    NewCurrentCarStatus,
+    NewCurrentCarBattery
   }
 }
