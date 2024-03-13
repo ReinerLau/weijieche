@@ -8,7 +8,6 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { entryPoint, setEntryPoint } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -40,6 +39,7 @@ import {
   handlePointConfigEvent,
   pointConfigDrawerVisible
 } from '@/shared/map/pointConfig'
+import { entryPoint, setEntryPoint } from '@/shared/map/home'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
