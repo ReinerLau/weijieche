@@ -1,4 +1,4 @@
-import { createMissionTemplate, goHome } from '@/api'
+import { goHome } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ElMessage } from 'element-plus'
@@ -55,7 +55,7 @@ import {
   taskPointDrawEndEvent
 } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
-import { handleConfirmTemplate } from '@/shared/map/template'
+import { handleConfirm, handleConfirmTemplate, templateDialogVisible } from '@/shared/map/template'
 import { getLineCoordinates, handleCreatePath, handleCreatePlan, havePath } from '@/shared/map'
 import { endRecording, isRecord, isRecordPath, recordPathPoints } from '@/shared/map/record'
 
@@ -78,7 +78,6 @@ export const useMap = () => {
       // 模板相关
       const {
         TemplateDialog,
-        dialogVisible: templateDialogVisible,
         searchDialogVisible: templateSearchDialogVisible,
         TemplateSearchDialog
       } = useTemplate()
@@ -310,33 +309,6 @@ export const useMap = () => {
         }
       ]
 
-      // 确定保存路线模板
-      async function handleConfirm(formData: { name?: string; memo?: string }) {
-        const data = {
-          mission: isRecordPath.value
-            ? JSON.stringify(getLineCoordinates(recordPathPoints))
-            : JSON.stringify(pathPointsData.value),
-          name: formData.name,
-          memo: formData.memo,
-          rtype: 'patroling'
-        }
-        const res: any = await createMissionTemplate(data)
-        ElMessage.success({
-          message: res.message
-        })
-
-        templateDialogVisible.value = false
-        clearPathLayer()
-        clearDrawTool()
-        isRecordPath.value = false
-        recordPathPoints.length = 0
-      }
-
-      function handleConfirmTemplateTest(template: { id: number; mission: string }) {
-        handleConfirmTemplate(template)
-        templateSearchDialogVisible.value = false
-      }
-
       //上传文件后路线显示地图上
       function handleConfirmFilePath(data: any) {
         setEntryPoint(null)
@@ -450,7 +422,7 @@ export const useMap = () => {
           <div class="h-full" ref={mapRef}></div>
           <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
           <TemplateDialog onConfirm={handleConfirm} />
-          <TemplateSearchDialog onConfirm={handleConfirmTemplateTest} />
+          <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
           <ScheduleDialog pointsdata={pathDataPoints} />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />

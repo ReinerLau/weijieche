@@ -18,6 +18,10 @@ import {
   pointConfigDrawerVisible
 } from './pointConfig'
 import { jumpToCoordinate } from './base'
+import { isRecordPath, recordPathPoints } from './record'
+import { getLineCoordinates } from '.'
+import { createMissionTemplate } from '@/api'
+import { ElMessage } from 'element-plus'
 
 // 确定选择模板路线在地图上显示
 export const missionTemplateId = ref<number | null | undefined>()
@@ -105,7 +109,34 @@ export const handleConfirmTemplate = (template: { id: number; mission: string })
     }
     pathPointList.push(pointCoordinates)
     pathPointsData.value = JSON.parse(template.mission)
+    templateSearchDialogVisible.value = false
   })
 
   jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
 }
+
+export const templateDialogVisible = ref(false)
+// 确定保存路线模板
+export const handleConfirm = async (formData: { name?: string; memo?: string }) => {
+  const data = {
+    mission: isRecordPath.value
+      ? JSON.stringify(getLineCoordinates(recordPathPoints))
+      : JSON.stringify(pathPointsData.value),
+    name: formData.name,
+    memo: formData.memo,
+    rtype: 'patroling'
+  }
+  const res: any = await createMissionTemplate(data)
+  ElMessage.success({
+    message: res.message
+  })
+
+  templateDialogVisible.value = false
+  clearPathLayer()
+  clearDrawTool()
+  isRecordPath.value = false
+  recordPathPoints.length = 0
+}
+
+// 搜索模板弹窗是否可见
+export const templateSearchDialogVisible = ref(false)

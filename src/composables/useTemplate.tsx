@@ -1,4 +1,5 @@
 import { deleteTemplate, getTemplatePathList } from '@/api'
+import { templateDialogVisible, templateSearchDialogVisible } from '@/shared/map/template'
 import {
   ElButton,
   ElDialog,
@@ -28,23 +29,17 @@ export const useTemplate = () => {
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
 
-  // 弹窗是否可见
-  const dialogVisible = ref(false)
-
   // 新建模板的表单数据
   const formData: Ref<{
     name?: string
     memo?: string
   }> = ref(cloneDeep(defaultFormData))
 
-  // 搜索模板弹窗是否可见
-  const searchDialogVisible = ref(false)
-
   // 警告弹窗是否可见
   const alarmDialogVisible = ref(false)
 
-  watch(dialogVisible, () => {
-    if (dialogVisible.value === false) {
+  watch(templateDialogVisible, () => {
+    if (templateDialogVisible.value === false) {
       formData.value = cloneDeep(defaultFormData)
     }
   })
@@ -55,7 +50,12 @@ export const useTemplate = () => {
     emits: ['confirm'],
     setup(props, { emit }) {
       return () => (
-        <ElDialog v-model={dialogVisible.value} title={t('mo-ban')} width="50vw" align-center>
+        <ElDialog
+          v-model={templateDialogVisible.value}
+          title={t('mo-ban')}
+          width="50vw"
+          align-center
+        >
           {{
             default: () => (
               <ElForm label-width={100} model={formData.value}>
@@ -101,7 +101,7 @@ export const useTemplate = () => {
       }
 
       // 每次打开搜索弹窗重新获取数据
-      watch(searchDialogVisible, async (val) => {
+      watch(templateSearchDialogVisible, async (val) => {
         if (val) {
           getList()
         }
@@ -144,7 +144,12 @@ export const useTemplate = () => {
       }
 
       return () => (
-        <ElDialog v-model={searchDialogVisible.value} title={t('mo-ban')} width="50vw" align-center>
+        <ElDialog
+          v-model={templateSearchDialogVisible.value}
+          title={t('mo-ban')}
+          width="50vw"
+          align-center
+        >
           {{
             header: () => (
               <div class=" flex flex-col h">
@@ -239,7 +244,7 @@ export const useTemplate = () => {
         required: true
       }
     },
-    setup(props, { emit }) {
+    setup(props) {
       const srcList: string[] = []
       const imgUrl = ref<string>('')
       watch(props, (val) => {
@@ -295,9 +300,8 @@ export const useTemplate = () => {
   })
   return {
     TemplateDialog,
-    dialogVisible,
     TemplateSearchDialog,
-    searchDialogVisible,
+    searchDialogVisible: templateSearchDialogVisible,
     TemplateAlarmDialog,
     alarmDialogVisible,
     handleAlarm
