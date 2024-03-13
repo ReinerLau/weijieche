@@ -1,6 +1,9 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
+import { jumpToCoordinate, map } from './base'
 import { entryPoint, setEntryPoint } from './home'
+import { clearDrawTool } from './drawTool'
+import { clearPathLayer } from './path'
+import { i18n } from '@/utils'
 
 /**
  * 巡逻路线图层实例
@@ -52,3 +55,49 @@ export const addPatrolPathPointToLayer = (pathPoint: Marker) => {
 }
 
 export const pathPointArray: { x: number; y: number }[] = []
+
+/**
+ * 选择巡逻任务路线按钮后显示路线在地图上
+ * @param row 单条巡逻路线数据
+ */
+export const handleConfirmPatrolTaskPath = (row: {
+  name: string
+  route: { x: number; y: number }[]
+}) => {
+  pathPointArray.length = 0
+  const text = i18n.global.t('ren-wu-ming-cheng') + ':' + row.name
+  const options = {
+    autoPan: true,
+    dx: -3,
+    dy: -12,
+    content: `<div style="color:red">${text}</div>`
+  }
+  clearDrawTool()
+  clearPathLayer()
+  clearDrawPatrolLine()
+  const coordinates: number[][] = row.route.map((item) => [item.y, item.x])
+
+  coordinates.forEach((coordinate, index) => {
+    const pathPoint = new Marker(coordinate, {
+      symbol: {
+        textName: index + 1,
+        markerType: 'ellipse',
+        markerFill: '#DC00FE',
+        markerWidth: 13,
+        markerHeight: 13
+      }
+    })
+      .on('click', (e: { target: Marker }) => {
+        setEntryPoint(e.target)
+      })
+      .setInfoWindow(options)
+    addPatrolPathPointToLayer(pathPoint)
+
+    const pointCoordinates = {
+      x: pathPoint.getCoordinates().y,
+      y: pathPoint.getCoordinates().x
+    }
+    pathPointArray.push(pointCoordinates)
+  })
+  jumpToCoordinate(pathPointArray[0].y, pathPointArray[0].x)
+}
