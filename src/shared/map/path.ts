@@ -99,6 +99,9 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
       markerWidth: 13,
       markerHeight: 13
     })
+    .on('click', (e: { target: Marker }) => {
+      setEntryPoint(e.target)
+    })
     .setMenu(pointMenuOptions)
   addPathPointToLayer(pathPoint)
 }
