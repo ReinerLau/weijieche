@@ -11,7 +11,6 @@
   "qing-kong": "Clear",
   "shan-chu": "Delete",
   "tiao-shi": "Debugging",
-  "xian-xin-jian-fan-hang-lu-jing": "First, create a return path.",
   "xian-xin-jian-lu-jing": "Create a new path first.",
   "zheng-chang": "Normal",
   "xuan-ze-che-liang": "Select a car.",
@@ -212,8 +211,6 @@
   "qie-huan-cheng-gong": "Switch successful",
   "zi-zhu-jie-suo": "Autonomous unlocking",
   "ting-zhi-shang-suo": "Stop locking",
-  "bao-cun-fan-hang-lu-xian-chu-cuo": "Error saving return route",
-  "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "Please start drawing from the route point!",
   "qing-shang-chuan-zheng-que-de-lu-xian-wen-jian": "Please upload the correct route file",
   "she-zhi-wei-fan-hang-dian": "Set as home point",
   "she-zhi-wei-ren-wu-dian": "Set as mission point",
@@ -243,5 +240,7 @@
   "yi-kai-shi-lu-zhi-zhong": "Started recording",
   "rtsp-di-zhi": "rtsp address",
   "shua-xin": "refresh",
-  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "Recording has ended, no route exists!"
+  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "Recording has ended, no route exists!",
+  "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "Please fill in the x and y values, separated by commas, such as: 1,2",
+  "xiang-qing": "Details"
 }

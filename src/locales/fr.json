@@ -11,7 +11,6 @@
   "qing-kong": "Vider",
   "shan-chu": "Supprimer",
   "tiao-shi": "Déboguer",
-  "xian-xin-jian-fan-hang-lu-jing": "Créer d'abord une trajectoire de retour.",
   "xian-xin-jian-lu-jing": "Créer d'abord un nouveau chemin.",
   "zheng-chang": "Normal",
   "xuan-ze-che-liang": "Choisir un véhicule",
@@ -212,8 +211,6 @@
   "qie-huan-cheng-gong": "Switch avec succès",
   "zi-zhu-jie-suo": "Déverrouillage autonome",
   "ting-zhi-shang-suo": "Arrêter de verrouiller",
-  "bao-cun-fan-hang-lu-xian-chu-cuo": "Erreur lors de l'enregistrement de l'itinéraire de retour",
-  "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "Veuillez commencer à dessiner à partir du point d'itinéraire !",
   "qing-shang-chuan-zheng-que-de-lu-xian-wen-jian": "Veuillez télécharger le fichier d'itinéraire correct",
   "she-zhi-wei-fan-hang-dian": "Définir comme point d'origine",
   "she-zhi-wei-ren-wu-dian": "Définir comme point de mission",
@@ -243,5 +240,7 @@
   "yi-kai-shi-lu-zhi-zhong": "L'enregistrement a commencé",
   "rtsp-di-zhi": "adresse RTSP",
   "shua-xin": "rafraîchir",
-  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "L'enregistrement est terminé, aucun itinéraire n'existe !"
+  "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "L'enregistrement est terminé, aucun itinéraire n'existe !",
+  "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "Veuillez remplir les valeurs x et y, séparées par des virgules, telles que : 1,2",
+  "xiang-qing": "Détails"
 }
