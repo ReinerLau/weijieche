@@ -2,9 +2,9 @@
 import {
   handleConfirmPointCarConfig,
   pointConfigDrawerVisible,
-  pointCoordinates,
-  pointSpeed
-} from '@/shared/map'
+  pointSpeed,
+  pointCoordinates
+} from '@/shared/map/pointConfig'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

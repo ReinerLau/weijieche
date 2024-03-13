@@ -8,21 +8,7 @@ import {
 } from '@/api'
 import { useTemplate } from '@/composables'
 import { currentCar, haveCurrentCar } from '@/shared'
-import {
-  initPathLayer,
-  pathPoints,
-  pathLayer,
-  clearPathLayer,
-  pointConfigDrawerVisible,
-  handlePointConfigEvent,
-  pathPointsData,
-  currentSelectedPointIndex,
-  carSpeedData,
-  entryPoint,
-  setEntryPoint,
-  addPathPointToLayer,
-  pathPointDrawendEvent
-} from '@/shared/map'
+import { entryPoint, setEntryPoint } from '@/shared/map'
 import { ElMessage } from 'element-plus'
 import * as maptalks from 'maptalks'
 import { defineComponent, onMounted, ref, watch } from 'vue'
@@ -39,6 +25,21 @@ import PointConfigDrawer from '@/components/PointConfig/PointConfigDrawer.vue'
 import { Marker } from 'maptalks'
 import { backToCenter, initMap, jumpToCoordinate, map } from '@/shared/map/base'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
+import {
+  addPathPointToLayer,
+  clearPathLayer,
+  initPathLayer,
+  pathLayer,
+  pathPointDrawendEvent,
+  pathPoints,
+  pathPointsData
+} from '@/shared/map/path'
+import {
+  carSpeedData,
+  currentSelectedPointIndex,
+  handlePointConfigEvent,
+  pointConfigDrawerVisible
+} from '@/shared/map/pointConfig'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
