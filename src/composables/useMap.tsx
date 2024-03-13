@@ -34,7 +34,6 @@ import {
 } from '@/shared/map/pointConfig'
 import {
   clearOnePoint,
-  entryPoint,
   handleCreateHomePath,
   handleSaveHomePath,
   haveHomePath,
@@ -50,12 +49,11 @@ import {
 } from '@/shared/map/home'
 import { clearDrawTool, drawTool, initDrawTool } from '@/shared/map/drawTool'
 import {
-  addPatrolPathPointToLayer,
   clearDrawPatrolLine,
   handleConfirmPatrolTaskPath,
-  initPatrolpathLayer,
-  pathPointArray
+  initPatrolpathLayer
 } from '@/shared/map/patrolPath'
+import { addTaskPointToLayer, initTaskPointLayer, taskPointLayer } from '@/shared/map/taskPoint'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -100,9 +98,6 @@ export const useMap = () => {
 
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      //任务图层实例
-      let taskPointLayer: maptalks.VectorLayer
 
       // 每次点击地图新建任务点的事件
       async function taskPointDrawEndEvent(e: any) {
@@ -153,10 +148,7 @@ export const useMap = () => {
         initHomePathLayer()
         initHomePathDrawLayer()
         initPatrolpathLayer()
-
-        //任务点图层
-        taskPointLayer = new maptalks.VectorLayer('task-point')
-        taskPointLayer.addTo(map)
+        initTaskPointLayer()
       }
 
       // 按钮组
@@ -637,15 +629,6 @@ export const useMap = () => {
       function handleConfirmPatrolTaskPathTest(row: any) {
         handleConfirmPatrolTaskPath(row)
         patrolTaskDialogVisible.value = false
-      }
-
-      // 添加任务点到图层中
-      function addTaskPointToLayer(taskPoint: maptalks.Marker) {
-        taskPointLayer.addGeometry(taskPoint)
-        if (entryPoint) {
-          taskPoint.setCoordinates(entryPoint.getCenter())
-          setEntryPoint(null)
-        }
       }
 
       // 获取路线上各个点的坐标信息
