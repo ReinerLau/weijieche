@@ -4,6 +4,7 @@ import { entryPoint, setEntryPoint } from './home'
 import { clearDrawTool } from './drawTool'
 import { clearPathLayer } from './path'
 import { i18n } from '@/utils'
+import { ref } from 'vue'
 
 /**
  * 巡逻路线图层实例
@@ -100,4 +101,7 @@ export const handleConfirmPatrolTaskPath = (row: {
     pathPointArray.push(pointCoordinates)
   })
   jumpToCoordinate(pathPointArray[0].y, pathPointArray[0].x)
+  patrolTaskDialogVisible.value = false
 }
+
+export const patrolTaskDialogVisible = ref(false)

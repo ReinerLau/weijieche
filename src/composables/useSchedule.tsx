@@ -30,6 +30,7 @@ import { useI18n } from 'vue-i18n'
 import { getPatrolTask } from '@/api'
 import { getToken, parseTime } from '@/utils'
 import { useVideoTemplate, useShowCamera } from '@/composables'
+import { patrolTaskDialogVisible } from '@/shared/map/patrolPath'
 
 // 重置表单数据
 const defaultFormData = {
@@ -341,15 +342,13 @@ export const useSchedule = (handleCreatePlan: any) => {
     }
   })
 
-  const patrolTaskVisible = ref(false)
-
   //巡逻任务列表
   const PatrolTaskDialog = defineComponent({
     emits: ['confirm'],
     setup(props, { emit }) {
       const list: Ref<any[]> = ref([])
       // 每次打开弹窗组件获取列表
-      watch(patrolTaskVisible, async (val) => {
+      watch(patrolTaskDialogVisible, async (val) => {
         if (val) {
           getList()
         }
@@ -541,7 +540,7 @@ export const useSchedule = (handleCreatePlan: any) => {
       return () => (
         <div>
           <ElDialog
-            v-model={patrolTaskVisible.value}
+            v-model={patrolTaskDialogVisible.value}
             onClose={handleVisible}
             title={t('xun-luo-ren-wu')}
             width="50vw"
@@ -705,7 +704,6 @@ export const useSchedule = (handleCreatePlan: any) => {
     ScheduleSearchDialog,
     searchDialogVisible,
     PatrolTaskDialog,
-    patrolTaskVisible,
     FileUploadDialog,
     fileUploadVisible
   }

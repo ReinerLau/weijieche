@@ -46,7 +46,8 @@ import { clearDrawTool, initDrawTool } from '@/shared/map/drawTool'
 import {
   clearDrawPatrolLine,
   handleConfirmPatrolTaskPath,
-  initPatrolpathLayer
+  initPatrolpathLayer,
+  patrolTaskDialogVisible
 } from '@/shared/map/patrolPath'
 import {
   handleTaskEvent,
@@ -88,7 +89,6 @@ export const useMap = () => {
         ScheduleDialog,
         ScheduleSearchDialog,
         PatrolTaskDialog,
-        patrolTaskVisible: patrolTaskDialogVisible,
         FileUploadDialog,
         fileUploadVisible: fileUploadDialogVisible
       } = useSchedule(handleCreatePlan)
@@ -391,12 +391,6 @@ export const useMap = () => {
         jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
       }
 
-      //选择巡逻任务路线按钮后显示路线在地图上
-      function handleConfirmPatrolTaskPathTest(row: any) {
-        handleConfirmPatrolTaskPath(row)
-        patrolTaskDialogVisible.value = false
-      }
-
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
       watch(currentCar, async (code: string) => {
         const res = await getCarInfo(code)
@@ -426,7 +420,7 @@ export const useMap = () => {
           <ScheduleDialog pointsdata={pathDataPoints} />
           <ScheduleSearchDialog />
           <PointSettingFormDialog />
-          <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPathTest} />
+          <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
           <FileUploadDialog onConfirm={handleConfirmFilePath} />
           <PointConfigDrawer />
         </div>
