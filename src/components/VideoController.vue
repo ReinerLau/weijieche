@@ -11,11 +11,6 @@ import type { CameraPlayerInstance } from '@/types/components'
  */
 const selectedCameraUrl = ref('')
 
-watch(selectedCameraUrl, async () => {
-  const res = await openStream(selectedCameraUrl.value)
-  cameraUrl.value = res.message
-})
-
 const { t } = useI18n()
 
 defineProps<{
@@ -23,11 +18,22 @@ defineProps<{
 }>()
 
 /**
- * 重新拉流
+ * 重新推拉流
  */
-const onRefresh = () => {
+const onRefresh = async () => {
+  getWebRTCUrl()
   cameraRef.value?.initPlay()
 }
+
+/**
+ * 获取 webrtc 拉流地址
+ */
+const getWebRTCUrl = async () => {
+  const res = await openStream(selectedCameraUrl.value)
+  cameraUrl.value = res.message
+}
+
+watch(selectedCameraUrl, getWebRTCUrl)
 
 /**
  * 播放器实例
@@ -52,7 +58,9 @@ const cameraRef = ref<CameraPlayerInstance>()
             :value="item.rtsp"
           />
         </el-select>
-        <el-button size="large" @click="onRefresh">{{ t('shua-xin') }}</el-button>
+        <el-button size="large" @click="onRefresh">
+          <i-vaadin-time-backward />
+        </el-button>
       </div>
       <CamerPlayer ref="cameraRef" :url="cameraUrl"></CamerPlayer>
     </div>
