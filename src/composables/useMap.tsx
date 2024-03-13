@@ -196,6 +196,7 @@ export const useMap = () => {
                   })
                   map.removeMenu()
                   map.setMenu({
+                    width: 'auto',
                     items: [
                       {
                         item: t('jie-shu-lu-zhi'),
@@ -271,7 +272,7 @@ export const useMap = () => {
               event: () => {
                 if (endRecording()) {
                   clearDrawTool()
-                  clearPathLayer()
+                  // clearPathLayer()
                   isHomePath.value = true
                   handleCreateHomePath()
                 }
@@ -794,6 +795,7 @@ export const useMap = () => {
         // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
 
         map.setMenu({
+          width: 250,
           items: [
             {
               item: t('jie-shu'),
