@@ -209,27 +209,7 @@ export const useMap = () => {
                 } else if (isRecord.value) {
                   ElMessage({
                     type: 'warning',
-                    message: '已开始录制中'
-                  })
-                }
-              }
-            },
-            {
-              title: t('jie-shu-lu-zhi'),
-              event: () => {
-                if (recordPathPoints.length > 1) {
-                  clearPathLayer()
-                  clearDrawTool()
-                  isRecord.value = false
-                  ElMessage({
-                    type: 'success',
-                    message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
-                  })
-                  isRecordPath.value = true
-                } else {
-                  ElMessage({
-                    type: 'error',
-                    message: t('qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian')
+                    message: t('yi-kai-shi-lu-zhi-zhong')
                   })
                 }
               }
@@ -819,6 +799,27 @@ export const useMap = () => {
               click: () => {
                 clearDrawTool()
                 pathPointsData.value = getLineCoordinates(pathPoints)
+              }
+            },
+            {
+              item: t('jie-shu-lu-zhi'),
+              click: () => {
+                if (recordPathPoints.length > 1) {
+                  clearPathLayer()
+                  clearDrawTool()
+                  isRecord.value = false
+                  ElMessage({
+                    type: 'success',
+                    message: t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+                  })
+                  isRecordPath.value = true
+                  templateDialogVisible.value = true
+                } else {
+                  ElMessage({
+                    type: 'error',
+                    message: t('qing-xian-xin-jian-lu-zhi-lu-jing-huo-dian-ji-qing-kong-jian')
+                  })
+                }
               }
             },
             {
