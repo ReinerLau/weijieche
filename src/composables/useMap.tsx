@@ -1,15 +1,14 @@
 import { useTemplate } from '@/composables'
 import { currentCar } from '@/shared'
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
-import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
 import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfigDrawer.vue'
-import { initMap, initMenu, jumpToCoordinate, map } from '@/shared/map/base'
+import { initMap, initMenu, jumpToCoordinate } from '@/shared/map/base'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
 import { initHomePath, initHomePathDrawLayer, initHomePathLayer } from '@/shared/map/home'
 import { initDrawTool } from '@/shared/map/drawTool'
@@ -20,6 +19,16 @@ import { handleConfirm, handleConfirmTemplate } from '@/shared/map/template'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initPathLayer } from '@/shared/map/path'
 import { handleCreatePlan, pathDataPoints, toolbarItems } from '@/shared/map'
+import {
+  addMarker,
+  initMakerLayer,
+  initMarker,
+  isConnectedWS,
+  newCarData,
+  onCarPoisition,
+  tryCloseWS
+} from '@/shared/map/carMarker'
+import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -38,24 +47,7 @@ export const useMap = () => {
       const { ScheduleDialog, ScheduleSearchDialog, PatrolTaskDialog, FileUploadDialog } =
         useSchedule(handleCreatePlan)
 
-      // 车辆标记相关
-      const { isConnectedWS, initMakerLayer } = useMapMaker()
-
       const mapRef = ref<HTMLDivElement>()
-
-      /**
-       * 初始化
-       */
-      function init() {
-        initMap(mapRef.value!)
-        initMakerLayer(map)
-        initAlarmMarkerLayer()
-        initPathLayer()
-        initHomePathLayer()
-        initHomePathDrawLayer()
-        initPatrolpathLayer()
-        initTaskPointLayer()
-      }
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
       watch(currentCar, async (code: string) => {
@@ -66,12 +58,47 @@ export const useMap = () => {
       })
 
       onMounted(() => {
-        init()
+        initMap(mapRef.value!)
+        initMakerLayer()
+        initAlarmMarkerLayer()
+        initPathLayer()
+        initHomePathLayer()
+        initHomePathDrawLayer()
+        initPatrolpathLayer()
+        initTaskPointLayer()
         initDrawTool()
         initMenu()
         initHomePath()
         initTaskPoints()
       })
+
+      // 监听到选择车辆后连接 websocket
+      watch(currentCar, (code: string) => {
+        recordPathPoints.length = 0
+        addMarker(code)
+        tryCloseWS()
+        onCarPoisition()
+      })
+
+      // 关闭页面前先关闭 websocket
+      onBeforeUnmount(tryCloseWS)
+
+      // 监听是否处于录制状态
+      watch(isRecordPath, () => {
+        initMarker(newCarData.value)
+        if (!isRecord.value && !isRecordPath.value) {
+          recordPathLayer.clear()
+          initMarker(newCarData.value)
+        }
+      })
+
+      watch(isRecord, () => {
+        if (!isRecord.value) {
+          recordPathLayer.clear()
+          initMarker(newCarData.value)
+        }
+      })
+
       return () => (
         <div class="h-full relative">
           <ToolbarController class="absolute top-5 right-5 z-10" items={toolbarItems} />
