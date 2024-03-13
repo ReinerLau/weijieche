@@ -9,7 +9,6 @@ import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { useMapMaker } from '@/composables'
 import { getCarInfo } from '@/api'
-import { usePointTask } from './usePointTask'
 import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
@@ -37,7 +36,6 @@ import {
   handleCreateHomePath,
   handleSaveHomePath,
   haveHomePath,
-  homePathDrawEndEvent,
   homePathDrawLayer,
   initHomePath,
   initHomePathDrawLayer,
@@ -53,7 +51,13 @@ import {
   handleConfirmPatrolTaskPath,
   initPatrolpathLayer
 } from '@/shared/map/patrolPath'
-import { addTaskPointToLayer, initTaskPointLayer, taskPointLayer } from '@/shared/map/taskPoint'
+import {
+  handleTaskEvent,
+  initTaskPointLayer,
+  initTaskPoints,
+  taskPointDrawEndEvent
+} from '@/shared/map/taskPoint'
+import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -94,46 +98,8 @@ export const useMap = () => {
         fileUploadVisible: fileUploadDialogVisible
       } = useSchedule(handleCreatePlan)
 
-      const { handleTaskEvent, deleteTaskEvent, PointSettingFormDialog, getList } = usePointTask()
-
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      // 每次点击地图新建任务点的事件
-      async function taskPointDrawEndEvent(e: any) {
-        const taskPoint = e.geometry as maptalks.Marker
-        taskPoint.setSymbol({
-          markerType: 'ellipse',
-          markerFill: '#138C46',
-          markerWidth: 13,
-          markerHeight: 13
-        })
-        const pointCoordinates = {
-          x: taskPoint.getCoordinates().y,
-          y: taskPoint.getCoordinates().x
-        }
-        handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-          addTaskPointToLayer(taskPoint)
-          clearDrawTool()
-          initTaskPoints()
-        })
-      }
-
-      // 绘制工具相关的事件
-      const drawToolEvents = {
-        PATH_POINT_DRAW_END: {
-          type: 'drawend',
-          event: pathPointDrawendEvent
-        },
-        HOME_PATH_DRAW_END: {
-          type: 'drawend',
-          event: homePathDrawEndEvent
-        },
-        TASK_POINT_DRAW_END: {
-          type: 'drawend',
-          event: taskPointDrawEndEvent
-        }
-      }
 
       const mapRef = ref<HTMLDivElement>()
 
@@ -162,7 +128,7 @@ export const useMap = () => {
                 if (endRecording()) {
                   clearPathLayer()
                   clearDrawTool()
-                  handleCreatePath('#ff931e', drawToolEvents.PATH_POINT_DRAW_END.event)
+                  handleCreatePath('#ff931e', pathPointDrawendEvent)
                   isRecord.value = false
                   isRecordPath.value = false
                 }
@@ -238,7 +204,7 @@ export const useMap = () => {
             if (endRecording()) {
               clearPathLayer()
               clearDrawTool()
-              handleCreatePath('#f3072f', drawToolEvents.TASK_POINT_DRAW_END.event)
+              handleCreatePath('#f3072f', taskPointDrawEndEvent)
             }
           }
         },
@@ -398,53 +364,6 @@ export const useMap = () => {
         clearDrawTool()
         isRecordPath.value = false
         recordPathPoints.length = 0
-      }
-
-      // 在地图上显示所有任务点
-      async function initTaskPoints() {
-        taskPointLayer.clear()
-        try {
-          const taskPointList = await getList()
-          for (const coordinate of taskPointList) {
-            const taskMenuOptions = {
-              items: [
-                {
-                  item: t('bian-ji'),
-                  click: () => {
-                    handleTaskEvent(coordinate, () => {
-                      initTaskPoints()
-                    })
-                  }
-                },
-                {
-                  item: t('shan-chu'),
-                  click: async () => {
-                    await deleteTaskEvent(coordinate.id)
-                    initTaskPoints()
-                  }
-                }
-              ]
-            }
-            const coordinateGps = JSON.parse(coordinate.gps)
-            const taskPoint = new maptalks.Marker([coordinateGps.y, coordinateGps.x], {
-              symbol: {
-                // textName: index + 1,
-                markerType: 'ellipse',
-                markerFill: '#138C46',
-                markerWidth: 13,
-                markerHeight: 13
-              }
-            })
-              .on('click', (e: { target: Marker }) => {
-                setEntryPoint(e.target)
-              })
-              .setMenu(taskMenuOptions)
-
-            addTaskPointToLayer(taskPoint)
-          }
-        } catch (error) {
-          ElMessage({ type: 'error', message: '异常' })
-        }
       }
 
       const pathPointList: any = []
