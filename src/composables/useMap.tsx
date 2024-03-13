@@ -61,11 +61,10 @@ import {
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import { handleConfirmTemplate, missionTemplateId } from '@/shared/map/template'
 import { getLineCoordinates } from '@/shared/map'
+import { endRecording, isRecord, isRecordPath, recordPathPoints } from '@/shared/map/record'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
-export const isRecord = ref(false)
-export const isRecordPath = ref(false)
 export const useMap = () => {
   const MapContainer = defineComponent({
     emits: ['confirm'],
@@ -102,7 +101,7 @@ export const useMap = () => {
       } = useSchedule(handleCreatePlan)
 
       // 车辆标记相关
-      const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
+      const { isConnectedWS, initMakerLayer } = useMapMaker()
 
       const mapRef = ref<HTMLDivElement>()
 
@@ -472,19 +471,6 @@ export const useMap = () => {
             message: t('xian-xin-jian-lu-jing')
           })
           return false
-        }
-      }
-
-      // 校验地图是否已结束录制路线
-      function endRecording() {
-        if (isRecord.value) {
-          ElMessage({
-            type: 'error',
-            message: t('qing-xian-jie-shu-lu-zhi')
-          })
-          return false
-        } else {
-          return true
         }
       }
 
