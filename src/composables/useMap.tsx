@@ -45,6 +45,7 @@ import {
   setCreatingHomePath,
   setEntryPoint
 } from '@/shared/map/home'
+import { drawTool, initDrawTool } from '@/shared/map/drawTool'
 
 //判断任务是否下发
 export const isExecutePlan = ref(false)
@@ -89,11 +90,6 @@ export const useMap = () => {
 
       // 车辆标记相关
       const { isConnectedWS, initMakerLayer, recordPathPoints } = useMapMaker()
-
-      // 绘制工具实例
-      // https://maptalks.org/maptalks.js/api/1.x/DrawTool.html
-      // https://maptalks.org/examples/cn/interaction/draw-tool/#interaction_draw-tool
-      let drawTool: maptalks.DrawTool
 
       //巡逻路线图层
       let patrolpathLayer: maptalks.VectorLayer
@@ -157,12 +153,6 @@ export const useMap = () => {
         //巡逻任务路线图层
         patrolpathLayer = new maptalks.VectorLayer('patrol')
         patrolpathLayer.addTo(map)
-      }
-
-      // 初始化绘制工具
-      function initDrawTool() {
-        drawTool = new maptalks.DrawTool({ mode: 'Point' })
-        drawTool.addTo(map).disable()
       }
 
       // 按钮组
