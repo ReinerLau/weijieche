@@ -12,6 +12,7 @@ export const useCarStatus = (status: any, battery: any) => {
 
   //电量
   const NewCurrentCarBattery = ref(battery)
+
   // 标记是否已经连接 websocket
   const isConnectedWS = ref(false)
 
@@ -53,8 +54,6 @@ export const useCarStatus = (status: any, battery: any) => {
         const data = JSON.parse(event.data)
         const status = data.status
         const battery = data.battery
-        console.log(data)
-
         // 更新currentCarStatus NewCurrentCarBattery的值
         NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
         NewCurrentCarBattery.value = battery
