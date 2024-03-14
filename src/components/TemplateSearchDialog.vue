@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import { deleteTemplate, getTemplatePathList } from '@/api'
-import { templateSearchDialogVisible } from '@/shared/map/template'
+import { jumpToCoordinate } from '@/shared/map/base'
+import { clearDrawTool } from '@/shared/map/drawTool'
+import { clearOnePoint, handleCreateHomePath, setEntryPoint, setOnePoint } from '@/shared/map/home'
+import {
+  addPathPointToLayer,
+  clearPathLayer,
+  pathLayer,
+  pathPointList,
+  pathPointsData
+} from '@/shared/map/path'
+import {
+  carSpeedData,
+  currentSelectedPointIndex,
+  handlePointConfigEvent,
+  pointConfigDrawerVisible
+} from '@/shared/map/pointConfig'
+import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
+import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
+import type { TemplateData } from '@/types'
+import { ElMessage } from 'element-plus'
+import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -44,10 +64,10 @@ function handleReset() {
   getList()
 }
 
-const currentTemplate = ref()
+let currentTemplate: TemplateData | null
 
-function onCurrentChange(val: any) {
-  currentTemplate.value = val
+function onCurrentChange(val: TemplateData) {
+  currentTemplate = val
 }
 // 删除模板
 async function handleDelete(id: number) {
@@ -55,16 +75,112 @@ async function handleDelete(id: number) {
   getList()
 }
 
-const emit = defineEmits<{
-  confirm: [any]
-}>()
-
 const onComfirm = () => {
-  emit('confirm', currentTemplate.value)
+  if (currentTemplate) {
+    handleConfirmTemplate(currentTemplate)
+    templateSearchDialogVisible.value = false
+  } else {
+    ElMessage({
+      type: 'warning',
+      message: t('wei-xuan-ze-mo-ban')
+    })
+  }
+}
+const handleConfirmTemplate = (template: TemplateData) => {
+  setEntryPoint(null)
+  clearOnePoint()
+  pathPointList.length = 0
+  clearDrawTool()
+  clearPathLayer()
+  missionTemplateId.value = template.id
+  const coordinates: number[][] = JSON.parse(template.mission).map(
+    (item: { x: number; y: number }) => [item.y, item.x]
+  )
+  coordinates.forEach((coordinate, index) => {
+    const pathPoint = new Marker(coordinate, {
+      symbol: {
+        markerType: index === 0 ? 'diamond' : 'ellipse',
+        markerFill: (() => {
+          if (index === 0) {
+            return '#FF0070'
+          } else if (index === coordinates.length - 1) {
+            return '#FF0070'
+          } else {
+            return '#8D70DD'
+          }
+        })(),
+        markerWidth: 15,
+        markerHeight: 15
+      }
+    })
+      .setMenu({
+        items: [
+          {
+            item: t('xin-zeng-ren-wu-dian'),
+            click: () => {
+              const pointCoordinates = {
+                x: pathPoint.getCoordinates().y,
+                y: pathPoint.getCoordinates().x
+              }
+              handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+                pathLayer.addGeometry(pathPoint)
+                clearDrawTool()
+                initTaskPoints()
+              })
+            }
+          },
+          {
+            item: t('tian-jia-fan-hang-dian'),
+            click: handleCreateHomePath
+          },
+          {
+            item: t('bian-ji-che-su'),
+            click: () => {
+              const pointCoordinates: {
+                x: number
+                y: number
+              } = {
+                x: pathPoint.getCoordinates().y,
+                y: pathPoint.getCoordinates().x
+              }
+              currentSelectedPointIndex.value = index
+              //保存已有车速值
+              let carNum: string = carSpeedData.value[index] || ''
+              if (!carSpeedData.value[index]) {
+                const templateData: any = JSON.parse(template.mission)[index]
+                if (templateData.speed) {
+                  carNum = templateData.speed.toString()
+                }
+              }
+              pointConfigDrawerVisible.value = true
+              handlePointConfigEvent(pointCoordinates, carNum)
+            }
+          }
+        ]
+      })
+      .on('click', (e: { target: Marker }) => {
+        setEntryPoint(e.target)
+        setOnePoint(e.target)
+      })
+    addPathPointToLayer(pathPoint)
+    const pointCoordinates = {
+      x: pathPoint.getCoordinates().y,
+      y: pathPoint.getCoordinates().x
+    }
+    pathPointList.push(pointCoordinates)
+    pathPointsData.value = JSON.parse(template.mission)
+  })
+
+  jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
+}
+
+const clearCurrentTemplate = () => {
+  currentTemplate = null
 }
 
 // 每次打开搜索弹窗重新获取数据
 watch(templateSearchDialogVisible, async (val) => {
+  clearCurrentTemplate()
   if (val) {
     getList()
   }

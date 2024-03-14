@@ -13,7 +13,7 @@ import { initDrawTool } from '@/shared/map/drawTool'
 import { handleConfirmPatrolTaskPath, initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
-import { handleConfirm, handleConfirmTemplate } from '@/shared/map/template'
+import { handleConfirm } from '@/shared/map/template'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initPathLayer } from '@/shared/map/path'
 import { pathDataPoints, toolbarItems } from '@/shared/map'
@@ -105,7 +105,7 @@ export default defineComponent({
         <div class="h-full" ref={mapRef}></div>
         <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
         <TemplateDialog onConfirm={handleConfirm} />
-        <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
+        <TemplateSearchDialog />
         <ScheduleDialog pointsdata={pathDataPoints} />
         <ScheduleSearchDialog />
         <PointSettingFormDialog />
