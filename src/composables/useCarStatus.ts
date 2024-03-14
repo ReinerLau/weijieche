@@ -50,14 +50,16 @@ export const useCarStatus = (status: any, battery: any) => {
   function connectWebSocket() {
     ws = initWebSocket('/websocket/patroling/status', {
       onmessage: (event: MessageEvent<any>) => {
-        const data = JSON.parse(event.data)
-        const status = data.status
-        const battery = data.battery
-        console.log(data)
+        if (event.data !== 'heartbeat') {
+          const data = JSON.parse(event.data)
+          const status = data.status
+          const battery = data.battery
+          console.log(data)
 
-        // 更新currentCarStatus NewCurrentCarBattery的值
-        NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
-        NewCurrentCarBattery.value = battery
+          // 更新currentCarStatus NewCurrentCarBattery的值
+          NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
+          NewCurrentCarBattery.value = battery
+        }
       },
       onopen: () => {
         isConnectedWS.value = true

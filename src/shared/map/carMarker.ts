@@ -69,16 +69,18 @@ export const initMarker = (data: CarInfo) => {
 export const newCarData = ref({})
 
 export const updateMarker = (e: MessageEvent<any>) => {
-  const data = JSON.parse(e.data)
+  if (e.data !== 'heartbeat') {
+    const data = JSON.parse(e.data)
 
-  initMarker(data)
+    initMarker(data)
 
-  //保存车最新数据
-  newCarData.value = data
+    //保存车最新数据
+    newCarData.value = data
 
-  // 判断是否开启录制
-  if (isRecord.value) {
-    initRecordPath(data)
+    // 判断是否开启录制
+    if (isRecord.value) {
+      initRecordPath(data)
+    }
   }
 }
 
