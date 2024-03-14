@@ -86,6 +86,17 @@ const onComfirm = () => {
     })
   }
 }
+
+const getMarkerFill = (index: number, thelastIndex: number) => {
+  if (index === 0) {
+    return '#FF0070'
+  } else if (index === thelastIndex) {
+    return '#FF0070'
+  } else {
+    return '#8D70DD'
+  }
+}
+
 const handleConfirmTemplate = (template: TemplateData) => {
   setEntryPoint(null)
   clearOnePoint()
@@ -96,19 +107,12 @@ const handleConfirmTemplate = (template: TemplateData) => {
   const coordinates: number[][] = JSON.parse(template.mission).map(
     (item: { x: number; y: number }) => [item.y, item.x]
   )
+  const theLastIndex = coordinates.length - 1
   coordinates.forEach((coordinate, index) => {
     const pathPoint = new Marker(coordinate, {
       symbol: {
         markerType: index === 0 ? 'diamond' : 'ellipse',
-        markerFill: (() => {
-          if (index === 0) {
-            return '#FF0070'
-          } else if (index === coordinates.length - 1) {
-            return '#FF0070'
-          } else {
-            return '#8D70DD'
-          }
-        })(),
+        markerFill: getMarkerFill(index, theLastIndex),
         markerWidth: 15,
         markerHeight: 15
       }
