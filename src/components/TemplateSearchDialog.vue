@@ -188,13 +188,8 @@ const handleConfirmTemplate = (template: TemplateData) => {
   jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
 }
 
-const clearCurrentTemplate = () => {
-  currentTemplate = null
-}
-
 // 每次打开搜索弹窗重新获取数据
 watch(templateSearchDialogVisible, async (val) => {
-  clearCurrentTemplate()
   if (val) {
     getList()
   }
