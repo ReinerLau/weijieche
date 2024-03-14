@@ -16,12 +16,12 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { deleteLog, getAllLog } from '@/api'
 import { useVirtualList } from '@vueuse/core'
-import { useTemplate } from './useTemplate'
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
 import { remove } from 'lodash'
 import { Marker } from 'maptalks'
-import { alarmMarkerLayer } from '@/shared/map/alarm'
+import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
+import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
 
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
@@ -37,9 +37,6 @@ interface websocketData {
 
 // 警报通知相关
 export const useNotification = () => {
-  // 警报弹窗组件
-  const { TemplateAlarmDialog, alarmDialogVisible } = useTemplate()
-
   // 通知列表抽屉是否可见
   const notificationDrawerVisible = ref(false)
 
@@ -83,7 +80,10 @@ export const useNotification = () => {
   // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
 
-  const wsData = ref({})
+  const wsData = ref({
+    picPath: '',
+    message: ''
+  })
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     if (e.data !== 'heartbeat') {

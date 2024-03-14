@@ -1,3 +1,4 @@
+import { alarmDialogVisible } from '@/shared/map/alarm'
 import { ElButton, ElDialog, ElImage } from 'element-plus'
 import { defineComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -7,9 +8,6 @@ export const useTemplate = () => {
   // 国际化
   // https://vue-i18n.intlify.dev/guide/advanced/composition.html#basic-usage
   const { t } = useI18n()
-
-  // 警告弹窗是否可见
-  const alarmDialogVisible = ref(false)
 
   //警报弹窗
 
