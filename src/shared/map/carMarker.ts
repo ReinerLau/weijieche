@@ -70,6 +70,7 @@ export const newCarData = ref({})
 
 export const updateMarker = (e: MessageEvent<any>) => {
   const data = JSON.parse(e.data)
+  console.log(data)
 
   initMarker(data)
 
@@ -79,6 +80,10 @@ export const updateMarker = (e: MessageEvent<any>) => {
   // 判断是否开启录制
   if (isRecord.value) {
     initRecordPath(data)
+  }
+
+  if (data.taskStatus === 'start') {
+    console.log(data.taskStatus)
   }
 }
 
