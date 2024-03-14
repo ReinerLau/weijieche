@@ -63,7 +63,7 @@ export const useCarStatus = (status: any, battery: any) => {
         isConnectedWS.value = true
         ElMessage({
           type: 'success',
-          message: t('websocket-lian-jie-cheng-gong')
+          message: t('jian-ting-zhuang-tai-lian-jie-cheng-gong')
         })
         clearReconnectInterval()
       },
@@ -71,7 +71,7 @@ export const useCarStatus = (status: any, battery: any) => {
         isConnectedWS.value = false
         ElMessage({
           type: 'warning',
-          message: t('websocket-duan-kai-lian-jie')
+          message: t('jian-ting-zhuang-tai-lian-jie-duan-kai')
         })
         // 断开后每隔一段时间重新连接
         startReconnectInterval()
@@ -80,7 +80,7 @@ export const useCarStatus = (status: any, battery: any) => {
         isConnectedWS.value = false
         ElMessage({
           type: 'warning',
-          message: t('websocket-chu-cuo-duan-lian')
+          message: t('jian-ting-zhuang-tai-lian-jie-cuo-wu')
         })
         // 出错后每隔一段时间重新连接
         startReconnectInterval()

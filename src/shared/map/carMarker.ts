@@ -128,21 +128,21 @@ export const onCarPoisition = () => {
       isConnectedWS.value = true
       ElMessage({
         type: 'success',
-        message: i18n.global.t('websocket-lian-jie-cheng-gong')
+        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cheng-gong')
       })
     },
     onclose: () => {
       isConnectedWS.value = false
       ElMessage({
         type: 'warning',
-        message: i18n.global.t('websocket-duan-kai-lian-jie')
+        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-duan-kai')
       })
     },
     onerror: () => {
       isConnectedWS.value = false
       ElMessage({
         type: 'error',
-        message: i18n.global.t('websocket-chu-cuo-duan-lian')
+        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cuo-wu')
       })
     }
   })

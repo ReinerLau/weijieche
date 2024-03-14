@@ -1,4 +1,4 @@
-import { getToken } from '@/utils'
+import { initWebSocket } from '@/utils'
 import {
   ElAlert,
   ElBadge,
@@ -45,37 +45,6 @@ export const useNotification = () => {
 
   // 国际化
   const { t } = useI18n()
-
-  // 连接 websocket
-  function initWebsocket() {
-    const token = getToken()
-    if (token) {
-      const websocket = new WebSocket(`ws://${window.location.host}/websocket`, [token])
-      websocket.onmessage = onMessage
-      websocket.onopen = () => {
-        isOpen.value = true
-        ElMessage({
-          type: 'success',
-          message: t('websocket-lian-jie-cheng-gong')
-        })
-      }
-      websocket.onclose = () => {
-        isOpen.value = false
-        ElMessage({
-          type: 'warning',
-          message: t('websocket-duan-kai-lian-jie')
-        })
-      }
-      websocket.onerror = () => {
-        isOpen.value = false
-        ElMessage({
-          type: 'error',
-          message: t('websocket-chu-cuo-duan-lian')
-        })
-      }
-      return websocket
-    }
-  }
 
   // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
@@ -172,7 +141,30 @@ export const useNotification = () => {
     if (alarmRef.value) {
       alarmRef.value.load() // 预加载音频
     }
-    websocket = initWebsocket()
+    websocket = initWebSocket('/websocket', {
+      onmessage: onMessage,
+      onopen: () => {
+        isOpen.value = true
+        ElMessage({
+          type: 'success',
+          message: t('jian-ting-jing-bao-lian-jie-cheng-gong')
+        })
+      },
+      onclose: () => {
+        isOpen.value = false
+        ElMessage({
+          type: 'warning',
+          message: t('jian-ting-jing-bao-lian-jie-duan-kai')
+        })
+      },
+      onerror: () => {
+        isOpen.value = false
+        ElMessage({
+          type: 'error',
+          message: t('jian-ting-jing-bao-lian-jie-cuo-wu')
+        })
+      }
+    })
   })
   // 关闭页面同时关闭 websocket
   onBeforeUnmount(() => {
