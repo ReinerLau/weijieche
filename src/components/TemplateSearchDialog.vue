@@ -161,6 +161,13 @@ const setPointMenu = (index: number, pathPoint: Marker) => {
   })
 }
 
+const onPointClikEvent = (pathPoint: Marker) => {
+  pathPoint.on('click', (e: { target: Marker }) => {
+    setEntryPoint(e.target)
+    setOnePoint(e.target)
+  })
+}
+
 const handleConfirmTemplate = (template: TemplateData) => {
   setEntryPoint(null)
   clearOnePoint()
@@ -172,10 +179,7 @@ const handleConfirmTemplate = (template: TemplateData) => {
   coordinates.forEach((coordinate, index) => {
     const pathPoint = getPointInstance(index, coordinate)
     setPointMenu(index, pathPoint)
-    pathPoint.on('click', (e: { target: Marker }) => {
-      setEntryPoint(e.target)
-      setOnePoint(e.target)
-    })
+    onPointClikEvent(pathPoint)
     addPathPointToLayer(pathPoint)
     const pointCoordinates = {
       x: pathPoint.getCoordinates().y,
