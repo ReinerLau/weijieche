@@ -32,6 +32,7 @@ import TemplateDialog from '@/components/TemplateDialog.vue'
 import TemplateSearchDialog from '@/components/TemplateSearchDialog.vue'
 import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
+import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -44,7 +45,7 @@ export const useMap = () => {
     },
     setup(props) {
       // 定时任务相关
-      const { PatrolTaskDialog, FileUploadDialog } = useSchedule()
+      const { FileUploadDialog } = useSchedule()
 
       const mapRef = ref<HTMLDivElement>()
 
