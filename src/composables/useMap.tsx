@@ -17,7 +17,7 @@ import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import { handleConfirm, handleConfirmTemplate } from '@/shared/map/template'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initPathLayer } from '@/shared/map/path'
-import { handleCreatePlan, pathDataPoints, toolbarItems } from '@/shared/map'
+import { pathDataPoints, toolbarItems } from '@/shared/map'
 import {
   addMarker,
   initMakerLayer,
@@ -30,6 +30,8 @@ import {
 import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
 import TemplateDialog from '@/components/TemplateDialog.vue'
 import TemplateSearchDialog from '@/components/TemplateSearchDialog.vue'
+import ScheduleDialog from '@/components/ScheduleDialog'
+import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -41,12 +43,8 @@ export const useMap = () => {
       }
     },
     setup(props) {
-      // 模板相关
-      // const { TemplateSearchDialog } = useTemplate()
-
       // 定时任务相关
-      const { ScheduleDialog, ScheduleSearchDialog, PatrolTaskDialog, FileUploadDialog } =
-        useSchedule(handleCreatePlan)
+      const { PatrolTaskDialog, FileUploadDialog } = useSchedule()
 
       const mapRef = ref<HTMLDivElement>()
 
