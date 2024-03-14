@@ -12,6 +12,7 @@ export const useCarStatus = (status: any, battery: any) => {
 
   //电量
   const NewCurrentCarBattery = ref(battery)
+
   // 标记是否已经连接 websocket
   const isConnectedWS = ref(false)
 

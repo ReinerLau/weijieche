@@ -243,6 +243,8 @@
   "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "Recording has ended, no route exists!",
   "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "Please fill in the x and y values, separated by commas, such as: 1,2",
   "xiang-qing": "Details",
+  "yi-duan-kai-lian-jie": "Disconnected!",
+  "yi-lian-jie": "connected!",
   "jian-ting-jing-bao-lian-jie-cheng-gong": "Listening alarm connection successful",
   "jian-ting-jing-bao-lian-jie-duan-kai": "Listening alarm connection disconnected",
   "jian-ting-jing-bao-lian-jie-cuo-wu": "Listen alert connection error",
