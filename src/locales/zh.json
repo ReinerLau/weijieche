@@ -242,5 +242,14 @@
   "shua-xin": "刷新",
   "yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian": "已结束录制,未存在路线！",
   "xiang-qing": "详情",
-  "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "请填写x,y值,逗号分隔，如：1,2"
+  "qing-tian-xie-xy-zhi-dou-hao-fen-ge-ru-12": "请填写x,y值,逗号分隔，如：1,2",
+  "jian-ting-jing-bao-lian-jie-cheng-gong": "监听警报连接成功",
+  "jian-ting-jing-bao-lian-jie-duan-kai": "监听警报连接断开",
+  "jian-ting-jing-bao-lian-jie-cuo-wu": "监听警报连接错误",
+  "jian-ting-zhuang-tai-lian-jie-cheng-gong": "监听状态连接成功",
+  "jian-ting-zhuang-tai-lian-jie-duan-kai": "监听状态连接断开",
+  "jian-ting-zhuang-tai-lian-jie-cuo-wu": "监听状态连接错误",
+  "jian-ting-wei-zhi-lian-jie-cheng-gong": "监听位置连接成功",
+  "jian-ting-wei-zhi-lian-jie-duan-kai": "监听位置连接断开",
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "监听位置连接错误"
 }
