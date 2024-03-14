@@ -1,10 +1,19 @@
 import { connectCar } from '@/api'
 import { getCarList } from '@/api/list'
+import { openCarWs, offCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { currentCar } from '@/shared'
-import { ElButton, ElDivider, ElDrawer, ElOption, ElScrollbar, ElSelect } from 'element-plus'
+import { currentCar, haveCurrentCar } from '@/shared'
+import {
+  ElButton,
+  ElDivider,
+  ElDrawer,
+  ElMessage,
+  ElOption,
+  ElScrollbar,
+  ElSelect
+} from 'element-plus'
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -54,6 +63,27 @@ export const useCarRelevant = ({
   const currentCarBattery = () => {
     return carList.value.find((item) => item.code === currentCar.value)?.battery
   }
+
+  //是否断开连接
+  const isConnection = ref(false)
+
+  watch(isConnection, async () => {
+    if (haveCurrentCar()) {
+      if (isConnection.value) {
+        await openCarWs(currentCar.value)
+        ElMessage({
+          type: 'success',
+          message: t('yi-lian-jie')
+        })
+      } else {
+        await offCarWs(currentCar.value)
+        ElMessage({
+          type: 'success',
+          message: t('yi-duan-kai-lian-jie')
+        })
+      }
+    }
+  })
 
   const { NewCurrentCarStatus, NewCurrentCarBattery } = useCarStatus(
     currentCarStatus(),
@@ -129,6 +159,14 @@ export const useCarRelevant = ({
       <div class="flex">
         <span class=" mr-6">{NewCurrentCarStatus.value}</span>
         <span>电量 {NewCurrentCarBattery.value || 0}%</span>
+      </div>
+      <div class="m-6">
+        <el-switch
+          v-model={isConnection.value}
+          active-text={t('kai-qi')}
+          inactive-text={t('guan-bi')}
+          style=" --el-switch-off-color: #ff4949"
+        />
       </div>
     </div>
   )
