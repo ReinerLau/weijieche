@@ -18,7 +18,7 @@ import {
 } from '@/shared/map/pointConfig'
 import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
-import type { Coordinate, TemplateData } from '@/types'
+import type { Coordinate, PointData, TemplateData } from '@/types'
 import { ElMessage } from 'element-plus'
 import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
@@ -109,8 +109,56 @@ const getPointInstance = (index: number, coordinate: Coordinate) => {
   })
 }
 
-const getCoordinates = (): Coordinate[] => {
+const getCoordinates = (): PointData[] => {
   return JSON.parse(currentTemplate!.mission)
+}
+
+const setPointMenu = (index: number, pathPoint: Marker) => {
+  pathPoint.setMenu({
+    items: [
+      {
+        item: t('xin-zeng-ren-wu-dian'),
+        click: () => {
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+            pathLayer.addGeometry(pathPoint)
+            clearDrawTool()
+            initTaskPoints()
+          })
+        }
+      },
+      {
+        item: t('tian-jia-fan-hang-dian'),
+        click: handleCreateHomePath
+      },
+      {
+        item: t('bian-ji-che-su'),
+        click: () => {
+          const pointCoordinates: {
+            x: number
+            y: number
+          } = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          currentSelectedPointIndex.value = index
+          //保存已有车速值
+          let carNum: string = carSpeedData.value[index] || ''
+          if (!carSpeedData.value[index]) {
+            const templateData = getCoordinates()[index]
+            if (templateData.speed) {
+              carNum = templateData.speed.toString()
+            }
+          }
+          pointConfigDrawerVisible.value = true
+          handlePointConfigEvent(pointCoordinates, carNum)
+        }
+      }
+    ]
+  })
 }
 
 const handleConfirmTemplate = (template: TemplateData) => {
@@ -123,56 +171,11 @@ const handleConfirmTemplate = (template: TemplateData) => {
   const coordinates = getCoordinates()
   coordinates.forEach((coordinate, index) => {
     const pathPoint = getPointInstance(index, coordinate)
-    pathPoint
-      .setMenu({
-        items: [
-          {
-            item: t('xin-zeng-ren-wu-dian'),
-            click: () => {
-              const pointCoordinates = {
-                x: pathPoint.getCoordinates().y,
-                y: pathPoint.getCoordinates().x
-              }
-              handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-                pathLayer.addGeometry(pathPoint)
-                clearDrawTool()
-                initTaskPoints()
-              })
-            }
-          },
-          {
-            item: t('tian-jia-fan-hang-dian'),
-            click: handleCreateHomePath
-          },
-          {
-            item: t('bian-ji-che-su'),
-            click: () => {
-              const pointCoordinates: {
-                x: number
-                y: number
-              } = {
-                x: pathPoint.getCoordinates().y,
-                y: pathPoint.getCoordinates().x
-              }
-              currentSelectedPointIndex.value = index
-              //保存已有车速值
-              let carNum: string = carSpeedData.value[index] || ''
-              if (!carSpeedData.value[index]) {
-                const templateData: any = JSON.parse(template.mission)[index]
-                if (templateData.speed) {
-                  carNum = templateData.speed.toString()
-                }
-              }
-              pointConfigDrawerVisible.value = true
-              handlePointConfigEvent(pointCoordinates, carNum)
-            }
-          }
-        ]
-      })
-      .on('click', (e: { target: Marker }) => {
-        setEntryPoint(e.target)
-        setOnePoint(e.target)
-      })
+    setPointMenu(index, pathPoint)
+    pathPoint.on('click', (e: { target: Marker }) => {
+      setEntryPoint(e.target)
+      setOnePoint(e.target)
+    })
     addPathPointToLayer(pathPoint)
     const pointCoordinates = {
       x: pathPoint.getCoordinates().y,

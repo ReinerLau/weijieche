@@ -13,3 +13,7 @@ export interface Coordinate {
    */
   y: number
 }
+
+export interface PointData extends Coordinate {
+  speed?: number
+}
