@@ -130,3 +130,5 @@ export const clearPathToolbarEvent = () => {
     clearDrawPatrolLine()
   }
 }
+// 搜索定时任务弹窗是否可见
+export const searchDialogVisible = ref(false)

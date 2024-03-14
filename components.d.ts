@@ -22,6 +22,7 @@ declare module 'vue' {
     PointConfigDrawer: typeof import('./src/components/PointConfigDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TemplateAlarmDialog: typeof import('./src/components/TemplateAlarmDialog.vue')['default']
     TemplateDialog: typeof import('./src/components/TemplateDialog.vue')['default']
     TemplateSearchDialog: typeof import('./src/components/TemplateSearchDialog.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
