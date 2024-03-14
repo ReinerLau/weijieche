@@ -5,7 +5,6 @@ import {
   useControlSection,
   useDetail,
   useInternational,
-  useMap,
   useNotification,
   useResponsive,
   useTheme,
@@ -16,6 +15,7 @@ import {
 import { onMounted, watch } from 'vue'
 import { currentCar, cameraList } from '@/shared'
 import { getCameraListByCode } from '@/api'
+import MapContainer from '@/components/MapContainer'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
@@ -42,7 +42,6 @@ const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
-const { MapContainer } = useMap()
 
 // 每次切换车辆都要重新获取对应的摄像头数据
 watch(currentCar, async () => {
