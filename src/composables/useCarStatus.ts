@@ -51,18 +51,22 @@ export const useCarStatus = (status: any, battery: any) => {
   function connectWebSocket() {
     ws = initWebSocket('/websocket/patroling/status', {
       onmessage: (event: MessageEvent<any>) => {
-        const data = JSON.parse(event.data)
-        const status = data.status
-        const battery = data.battery
-        // 更新currentCarStatus NewCurrentCarBattery的值
-        NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
-        NewCurrentCarBattery.value = battery
+        if (event.data !== 'heartbeat') {
+          const data = JSON.parse(event.data)
+          const status = data.status
+          const battery = data.battery
+          console.log(data)
+
+          // 更新currentCarStatus NewCurrentCarBattery的值
+          NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
+          NewCurrentCarBattery.value = battery
+        }
       },
       onopen: () => {
         isConnectedWS.value = true
         ElMessage({
           type: 'success',
-          message: t('websocket-lian-jie-cheng-gong')
+          message: t('jian-ting-zhuang-tai-lian-jie-cheng-gong')
         })
         clearReconnectInterval()
       },
@@ -70,7 +74,7 @@ export const useCarStatus = (status: any, battery: any) => {
         isConnectedWS.value = false
         ElMessage({
           type: 'warning',
-          message: t('websocket-duan-kai-lian-jie')
+          message: t('jian-ting-zhuang-tai-lian-jie-duan-kai')
         })
         // 断开后每隔一段时间重新连接
         startReconnectInterval()
@@ -79,7 +83,7 @@ export const useCarStatus = (status: any, battery: any) => {
         isConnectedWS.value = false
         ElMessage({
           type: 'warning',
-          message: t('websocket-chu-cuo-duan-lian')
+          message: t('jian-ting-zhuang-tai-lian-jie-cuo-wu')
         })
         // 出错后每隔一段时间重新连接
         startReconnectInterval()

@@ -15,7 +15,7 @@
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(keyMap.SWITCH)">
+            <el-button size="large" class="w-full" @click="onClick(keyMap.STOP)">
               <i-icomoon-free-switch />
             </el-button>
           </el-col>
@@ -39,8 +39,8 @@
           v-model="horizonAngle"
           class="flex-1"
           :step="1"
-          :min="-180"
-          :max="180"
+          :min="-179"
+          :max="179"
           :show-input-controls="false"
           @change="handleChangeAngle(angleTypes.HORIZON)"
         />
@@ -51,8 +51,8 @@
           v-model="verticalAngle"
           class="flex-1"
           :step="1"
-          :min="-180"
-          :max="180"
+          :min="-179"
+          :max="179"
           :show-input-controls="false"
           @change="handleChangeAngle(angleTypes.VERTICAL)"
         />
@@ -79,27 +79,27 @@ const horizonAngle = ref(0)
 const verticalAngle = ref(0)
 
 const angleTypes = {
-  HORIZON: 'horizon',
-  VERTICAL: 'vertical'
+  HORIZON: 3,
+  VERTICAL: 4
 }
 
 // 不同功能映射值
 const keyMap = {
-  UP: '08',
-  LEFT: '04',
-  SWITCH: '255',
-  RIGHT: '02',
-  DOWN: '16'
+  UP: 8,
+  LEFT: 4,
+  STOP: 255,
+  RIGHT: 2,
+  DOWN: 16
 }
 
 // 点击触发不同个功能
-function onClick(value: string) {
+function onClick(param3: number) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
-      param1: '02',
-      param2: value,
-      param3: 0,
+      param1: 6,
+      param2: 5,
+      param3,
       param4: 0
     }
     patrolingCruise(data)
@@ -107,21 +107,21 @@ function onClick(value: string) {
 }
 
 // 修改水平角度
-const changeHorizonAngle = createDebouce('75', horizonAngle)
+const changeHorizonAngle = createDebouce(angleTypes.HORIZON, horizonAngle)
 
 // 修改垂直角度
-const changeVerticalAngle = createDebouce('77', verticalAngle)
+const changeVerticalAngle = createDebouce(angleTypes.VERTICAL, verticalAngle)
 
 // 转换成防抖函数，防止过多调度
-function createDebouce(param2: string, ref: Ref<number>) {
+function createDebouce(param2: number, ref: Ref<number>) {
   return debounce(async () => {
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
-        param1: '01',
-        param2: param2,
-        param3: ref.value.toString(),
-        param4: 'ff'
+        param1: 6,
+        param2,
+        param3: ref.value,
+        param4: 0
       }
       patrolingCruise(data)
     }
@@ -129,7 +129,7 @@ function createDebouce(param2: string, ref: Ref<number>) {
 }
 
 // 修改角度
-function handleChangeAngle(type: string) {
+function handleChangeAngle(type: number) {
   if (type === angleTypes.HORIZON) {
     changeHorizonAngle()
   } else if (type === angleTypes.VERTICAL) {
