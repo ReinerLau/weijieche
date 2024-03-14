@@ -1,6 +1,5 @@
 import { currentCar } from '@/shared'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useSchedule } from './useSchedule'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
 import { getCarInfo } from '@/api'
 import ToolbarController from '@/components/ToolbarController.vue'
@@ -33,6 +32,7 @@ import TemplateSearchDialog from '@/components/TemplateSearchDialog.vue'
 import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
+import FileUploadDialog from '@/components/FileUploadDialog'
 
 export const useMap = () => {
   const MapContainer = defineComponent({
@@ -44,9 +44,6 @@ export const useMap = () => {
       }
     },
     setup(props) {
-      // 定时任务相关
-      const { FileUploadDialog } = useSchedule()
-
       const mapRef = ref<HTMLDivElement>()
 
       // 监听到当前车辆切换之后地图中心跳转到车辆位置
