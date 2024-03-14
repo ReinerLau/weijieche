@@ -18,7 +18,7 @@ import {
 } from '@/shared/map/pointConfig'
 import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
-import type { TemplateData } from '@/types'
+import type { Coordinate, TemplateData } from '@/types'
 import { ElMessage } from 'element-plus'
 import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
@@ -97,6 +97,17 @@ const getMarkerFill = (index: number, thelastIndex: number) => {
   }
 }
 
+const getPointInstance = (index: number, coordinate: Coordinate, theLastIndex: number) => {
+  return new Marker([coordinate.y, coordinate.x], {
+    symbol: {
+      markerType: index === 0 ? 'diamond' : 'ellipse',
+      markerFill: getMarkerFill(index, theLastIndex),
+      markerWidth: 15,
+      markerHeight: 15
+    }
+  })
+}
+
 const handleConfirmTemplate = (template: TemplateData) => {
   setEntryPoint(null)
   clearOnePoint()
@@ -104,19 +115,11 @@ const handleConfirmTemplate = (template: TemplateData) => {
   clearDrawTool()
   clearPathLayer()
   missionTemplateId.value = template.id
-  const coordinates: number[][] = JSON.parse(template.mission).map(
-    (item: { x: number; y: number }) => [item.y, item.x]
-  )
+  const coordinates: Coordinate[] = JSON.parse(template.mission)
   const theLastIndex = coordinates.length - 1
   coordinates.forEach((coordinate, index) => {
-    const pathPoint = new Marker(coordinate, {
-      symbol: {
-        markerType: index === 0 ? 'diamond' : 'ellipse',
-        markerFill: getMarkerFill(index, theLastIndex),
-        markerWidth: 15,
-        markerHeight: 15
-      }
-    })
+    const pathPoint = getPointInstance(index, coordinate, theLastIndex)
+    pathPoint
       .setMenu({
         items: [
           {
