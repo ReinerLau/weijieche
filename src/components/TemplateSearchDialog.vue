@@ -87,25 +87,30 @@ const onComfirm = () => {
   }
 }
 
-const getMarkerFill = (index: number, thelastIndex: number) => {
+const getMarkerFill = (index: number) => {
+  const theLastIndex = getCoordinates().length - 1
   if (index === 0) {
     return '#FF0070'
-  } else if (index === thelastIndex) {
+  } else if (index === theLastIndex) {
     return '#FF0070'
   } else {
     return '#8D70DD'
   }
 }
 
-const getPointInstance = (index: number, coordinate: Coordinate, theLastIndex: number) => {
+const getPointInstance = (index: number, coordinate: Coordinate) => {
   return new Marker([coordinate.y, coordinate.x], {
     symbol: {
       markerType: index === 0 ? 'diamond' : 'ellipse',
-      markerFill: getMarkerFill(index, theLastIndex),
+      markerFill: getMarkerFill(index),
       markerWidth: 15,
       markerHeight: 15
     }
   })
+}
+
+const getCoordinates = (): Coordinate[] => {
+  return JSON.parse(currentTemplate!.mission)
 }
 
 const handleConfirmTemplate = (template: TemplateData) => {
@@ -115,10 +120,9 @@ const handleConfirmTemplate = (template: TemplateData) => {
   clearDrawTool()
   clearPathLayer()
   missionTemplateId.value = template.id
-  const coordinates: Coordinate[] = JSON.parse(template.mission)
-  const theLastIndex = coordinates.length - 1
+  const coordinates = getCoordinates()
   coordinates.forEach((coordinate, index) => {
-    const pathPoint = getPointInstance(index, coordinate, theLastIndex)
+    const pathPoint = getPointInstance(index, coordinate)
     pathPoint
       .setMenu({
         items: [
