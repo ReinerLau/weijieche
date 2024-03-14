@@ -15,5 +15,5 @@ export interface Coordinate {
 }
 
 export interface PointData extends Coordinate {
-  speed?: number
+  speed: string
 }

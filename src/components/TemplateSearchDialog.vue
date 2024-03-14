@@ -64,7 +64,7 @@ function handleReset() {
   getList()
 }
 
-let currentTemplate: TemplateData | null
+let currentTemplate: TemplateData
 
 function onCurrentChange(val: TemplateData) {
   currentTemplate = val
@@ -77,7 +77,11 @@ async function handleDelete(id: number) {
 
 const onComfirm = () => {
   if (currentTemplate) {
-    handleConfirmTemplate(currentTemplate)
+    clearStatus()
+    initPath()
+    initData()
+    beFocus()
+    missionTemplateId.value = currentTemplate.id
     templateSearchDialogVisible.value = false
   } else {
     ElMessage({
@@ -85,6 +89,19 @@ const onComfirm = () => {
       message: t('wei-xuan-ze-mo-ban')
     })
   }
+}
+
+const clearStatus = () => {
+  setEntryPoint(null)
+  clearOnePoint()
+  pathPointList.length = 0
+  clearDrawTool()
+  clearPathLayer()
+}
+
+const beFocus = () => {
+  const coordinates = getCoordinates()
+  jumpToCoordinate(coordinates[0].y, coordinates[0].x)
 }
 
 const getMarkerFill = (index: number) => {
@@ -168,28 +185,22 @@ const onPointClikEvent = (pathPoint: Marker) => {
   })
 }
 
-const handleConfirmTemplate = (template: TemplateData) => {
-  setEntryPoint(null)
-  clearOnePoint()
-  pathPointList.length = 0
-  clearDrawTool()
-  clearPathLayer()
-  missionTemplateId.value = template.id
+const initPath = () => {
   const coordinates = getCoordinates()
   coordinates.forEach((coordinate, index) => {
     const pathPoint = getPointInstance(index, coordinate)
     setPointMenu(index, pathPoint)
     onPointClikEvent(pathPoint)
     addPathPointToLayer(pathPoint)
-    const pointCoordinates = {
-      x: pathPoint.getCoordinates().y,
-      y: pathPoint.getCoordinates().x
-    }
-    pathPointList.push(pointCoordinates)
-    pathPointsData.value = JSON.parse(template.mission)
   })
+}
 
-  jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
+const initData = () => {
+  const coordinates = getCoordinates()
+  coordinates.forEach((coordinate) => {
+    pathPointList.push(coordinate)
+  })
+  pathPointsData.value = coordinates
 }
 
 // 每次打开搜索弹窗重新获取数据
@@ -226,7 +237,9 @@ watch(templateSearchDialogVisible, async (val) => {
           <el-table-column property="createTime" :label="t('chuang-jian-shi-jian')" />
           <el-table-column :label="t('cao-zuo')">
             <template #default="{ row }">
-              <el-button link @click="() => handleDelete(row.id)"></el-button>
+              <el-button link @click="() => handleDelete(row.id)">
+                {{ t('shan-chu') }}
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
