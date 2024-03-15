@@ -5,7 +5,8 @@ import {
   clearPathLayer,
   pathLayer,
   pathPointList,
-  pathPointsData
+  pathPointsData,
+  setDrawEndMenu
 } from './path'
 import { clearDrawTool } from './drawTool'
 import { handleTaskEvent, initTaskPoints } from './taskPoint'
@@ -98,8 +99,9 @@ export const handleConfirmFilePath = (data: any) => {
     pathPointList.push(pointCoordinates)
     pathPointsData.value = data
   })
-
   jumpToCoordinate(pathPointList[0].y, pathPointList[0].x)
+
+  setDrawEndMenu()
 }
 
 export const fileUploadToolbarEvent = () => {

@@ -141,7 +141,7 @@ const setPointMenu = () => {
   })
 }
 
-const setDrawEndMenu = () => {
+export const setDrawEndMenu = () => {
   map.setMenuItems([
     {
       item: '清空路径',
