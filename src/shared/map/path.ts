@@ -126,8 +126,20 @@ export const setDrawPathMenu = () => {
       item: '结束绘制',
       click: () => {
         clearDrawTool()
-        clearMenu()
         pathPointsData.value = getLineCoordinates(pathPoints)
+        setDrawEndMenu()
+      }
+    }
+  ])
+}
+
+export const setDrawEndMenu = () => {
+  map.setMenuItems([
+    {
+      item: '清空路径',
+      click: () => {
+        clearDrawTool()
+        clearPathLayer()
       }
     }
   ])

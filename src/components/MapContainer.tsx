@@ -62,7 +62,6 @@ export default defineComponent({
       initPatrolpathLayer()
       initTaskPointLayer()
       initDrawTool()
-      // initMenu()
       initHomePath()
       initTaskPoints()
     })
