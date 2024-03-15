@@ -34,6 +34,7 @@ import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import FileUploadDialog from '@/components/FileUploadDialog'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
+import { onMapDBClick } from '@/shared/map/debug'
 
 export default defineComponent({
   emits: ['confirm'],
@@ -66,6 +67,7 @@ export default defineComponent({
       initHomePath()
       initTaskPoints()
       initTaskpathLayer()
+      onMapDBClick()
     })
 
     // 监听到选择车辆后连接 websocket
