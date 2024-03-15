@@ -1,5 +1,5 @@
 import { Marker } from 'maptalks'
-import { clearOnePoint, handleCreateHomePath, setEntryPoint, setOnePoint } from './home'
+import { handleCreateHomePath, setEntryPoint } from './home'
 import {
   addPathPointToLayer,
   clearPathLayer,
@@ -25,7 +25,6 @@ export const fileUploadDialogVisible = ref(false)
 //上传文件后路线显示地图上
 export const handleConfirmFilePath = (data: any) => {
   setEntryPoint(null)
-  clearOnePoint()
   pathLayer.clear()
   pathPointList.length = 0
   clearDrawTool()
@@ -88,9 +87,8 @@ export const handleConfirmFilePath = (data: any) => {
           }
         ]
       })
-      .on('click', (e: { target: Marker }) => {
+      .on('click', () => {
         setEntryPoint(null)
-        setOnePoint(e.target)
       })
     addPathPointToLayer(pathPoint)
     const pointCoordinates = {

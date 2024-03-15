@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import { deleteTemplate, getTemplatePathList } from '@/api'
-import { templateSearchDialogVisible } from '@/shared/map/template'
+import { jumpToCoordinate } from '@/shared/map/base'
+import { clearDrawTool } from '@/shared/map/drawTool'
+import { handleCreateHomePath, setEntryPoint } from '@/shared/map/home'
+import {
+  addPathPointToLayer,
+  clearPathLayer,
+  pathLayer,
+  pathPointList,
+  pathPointsData
+} from '@/shared/map/path'
+import {
+  carSpeedData,
+  currentSelectedPointIndex,
+  handlePointConfigEvent,
+  pointConfigDrawerVisible
+} from '@/shared/map/pointConfig'
+import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
+import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
+import type { Coordinate, PointData, TemplateData } from '@/types'
+import { ElMessage } from 'element-plus'
+import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -44,10 +64,10 @@ function handleReset() {
   getList()
 }
 
-const currentTemplate = ref()
+let currentTemplate: TemplateData
 
-function onCurrentChange(val: any) {
-  currentTemplate.value = val
+function onCurrentChange(val: TemplateData) {
+  currentTemplate = val
 }
 // 删除模板
 async function handleDelete(id: number) {
@@ -55,12 +75,132 @@ async function handleDelete(id: number) {
   getList()
 }
 
-const emit = defineEmits<{
-  confirm: [any]
-}>()
-
 const onComfirm = () => {
-  emit('confirm', currentTemplate.value)
+  if (currentTemplate) {
+    clearStatus()
+    initPath()
+    initData()
+    beFocus()
+    missionTemplateId.value = currentTemplate.id
+    templateSearchDialogVisible.value = false
+  } else {
+    ElMessage({
+      type: 'warning',
+      message: t('wei-xuan-ze-mo-ban')
+    })
+  }
+}
+
+const clearStatus = () => {
+  setEntryPoint(null)
+  pathPointList.length = 0
+  clearDrawTool()
+  clearPathLayer()
+}
+
+const beFocus = () => {
+  const coordinates = getCoordinates()
+  jumpToCoordinate(coordinates[0].y, coordinates[0].x)
+}
+
+const getMarkerFill = (index: number) => {
+  const theLastIndex = getCoordinates().length - 1
+  if (index === 0) {
+    return '#FF0070'
+  } else if (index === theLastIndex) {
+    return '#FF0070'
+  } else {
+    return '#8D70DD'
+  }
+}
+
+const getPointInstance = (index: number, coordinate: Coordinate) => {
+  return new Marker([coordinate.y, coordinate.x], {
+    symbol: {
+      markerType: index === 0 ? 'diamond' : 'ellipse',
+      markerFill: getMarkerFill(index),
+      markerWidth: 15,
+      markerHeight: 15
+    }
+  })
+}
+
+const getCoordinates = (): PointData[] => {
+  return JSON.parse(currentTemplate!.mission)
+}
+
+const setPointMenu = (index: number, pathPoint: Marker) => {
+  pathPoint.setMenu({
+    items: [
+      {
+        item: t('xin-zeng-ren-wu-dian'),
+        click: () => {
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+            pathLayer.addGeometry(pathPoint)
+            clearDrawTool()
+            initTaskPoints()
+          })
+        }
+      },
+      {
+        item: t('tian-jia-fan-hang-dian'),
+        click: () => {
+          handleCreateHomePath(pathPoint)
+        }
+      },
+      {
+        item: t('bian-ji-che-su'),
+        click: () => {
+          const pointCoordinates: {
+            x: number
+            y: number
+          } = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          currentSelectedPointIndex.value = index
+          //保存已有车速值
+          let carNum: string = carSpeedData.value[index] || ''
+          if (!carSpeedData.value[index]) {
+            const templateData = getCoordinates()[index]
+            if (templateData.speed) {
+              carNum = templateData.speed.toString()
+            }
+          }
+          pointConfigDrawerVisible.value = true
+          handlePointConfigEvent(pointCoordinates, carNum)
+        }
+      }
+    ]
+  })
+}
+
+const onPointClikEvent = (pathPoint: Marker) => {
+  pathPoint.on('click', (e: { target: Marker }) => {
+    setEntryPoint(e.target)
+  })
+}
+
+const initPath = () => {
+  const coordinates = getCoordinates()
+  coordinates.forEach((coordinate, index) => {
+    const pathPoint = getPointInstance(index, coordinate)
+    setPointMenu(index, pathPoint)
+    onPointClikEvent(pathPoint)
+    addPathPointToLayer(pathPoint)
+  })
+}
+
+const initData = () => {
+  const coordinates = getCoordinates()
+  coordinates.forEach((coordinate) => {
+    pathPointList.push(coordinate)
+  })
+  pathPointsData.value = coordinates
 }
 
 // 每次打开搜索弹窗重新获取数据
@@ -97,7 +237,9 @@ watch(templateSearchDialogVisible, async (val) => {
           <el-table-column property="createTime" :label="t('chuang-jian-shi-jian')" />
           <el-table-column :label="t('cao-zuo')">
             <template #default="{ row }">
-              <el-button link @click="() => handleDelete(row.id)"></el-button>
+              <el-button link @click="() => handleDelete(row.id)">
+                {{ t('shan-chu') }}
+              </el-button>
             </template>
           </el-table-column>
         </el-table>

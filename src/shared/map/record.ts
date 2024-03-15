@@ -2,7 +2,7 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { initMenu, map } from './base'
+import { clearMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
 import { haveCurrentCar } from '..'
@@ -59,8 +59,7 @@ export const recordPathToolbarEvent = () => {
               })
               isRecordPath.value = true
               templateDialogVisible.value = true
-              map.removeMenu()
-              initMenu()
+              clearMenu()
             } else {
               ElMessage({
                 type: 'warning',
@@ -70,8 +69,7 @@ export const recordPathToolbarEvent = () => {
               clearDrawTool()
               isRecord.value = false
               isRecordPath.value = false
-              map.removeMenu()
-              initMenu()
+              clearMenu()
             }
           }
         }
