@@ -246,5 +246,16 @@
   "wei-xuan-ze-mo-ban": "No template selected",
   "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "Please start drawing from route point",
   "bao-cun-fan-hang-lu-xian-chu-cuo": "Error saving return route",
-  "xian-xin-jian-fan-hang-lu-jing": "Create a new return route first"
+  "xian-xin-jian-fan-hang-lu-jing": "Create a new return route first",
+  "yi-duan-kai-lian-jie": "Disconnected!",
+  "yi-lian-jie": "connected!",
+  "jian-ting-jing-bao-lian-jie-cheng-gong": "Listening alarm connection successful",
+  "jian-ting-jing-bao-lian-jie-duan-kai": "Listening alarm connection disconnected",
+  "jian-ting-jing-bao-lian-jie-cuo-wu": "Listen alert connection error",
+  "jian-ting-zhuang-tai-lian-jie-cheng-gong": "Listening status connection successful",
+  "jian-ting-zhuang-tai-lian-jie-duan-kai": "Monitoring status connection disconnected",
+  "jian-ting-zhuang-tai-lian-jie-cuo-wu": "Listening status connection error",
+  "jian-ting-wei-zhi-lian-jie-cheng-gong": "Listening location connected successfully",
+  "jian-ting-wei-zhi-lian-jie-duan-kai": "Listening location connection disconnected",
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "Listening location connection error"
 }

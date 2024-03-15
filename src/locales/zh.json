@@ -246,5 +246,16 @@
   "wei-xuan-ze-mo-ban": "未选择模板",
   "qing-cong-lu-xian-dian-kai-shi-hui-zhi": "请从路线点开始绘制",
   "bao-cun-fan-hang-lu-xian-chu-cuo": "保存返航路线出错",
-  "xian-xin-jian-fan-hang-lu-jing": "先新建返航路径"
+  "xian-xin-jian-fan-hang-lu-jing": "先新建返航路径",
+  "yi-lian-jie": "已连接！",
+  "yi-duan-kai-lian-jie": "已断开连接！",
+  "jian-ting-jing-bao-lian-jie-cheng-gong": "监听警报连接成功",
+  "jian-ting-jing-bao-lian-jie-duan-kai": "监听警报连接断开",
+  "jian-ting-jing-bao-lian-jie-cuo-wu": "监听警报连接错误",
+  "jian-ting-zhuang-tai-lian-jie-cheng-gong": "监听状态连接成功",
+  "jian-ting-zhuang-tai-lian-jie-duan-kai": "监听状态连接断开",
+  "jian-ting-zhuang-tai-lian-jie-cuo-wu": "监听状态连接错误",
+  "jian-ting-wei-zhi-lian-jie-cheng-gong": "监听位置连接成功",
+  "jian-ting-wei-zhi-lian-jie-duan-kai": "监听位置连接断开",
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "监听位置连接错误"
 }
