@@ -8,14 +8,9 @@ import {
   clearPathLayer,
   pathLayer,
   pathPointList,
+  pathPoints,
   pathPointsData
 } from '@/shared/map/path'
-import {
-  carSpeedData,
-  currentSelectedPointIndex,
-  handlePointConfigEvent,
-  pointConfigDrawerVisible
-} from '@/shared/map/pointConfig'
 import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
 import type { Coordinate, PointData, TemplateData } from '@/types'
@@ -23,6 +18,7 @@ import { ElMessage } from 'element-plus'
 import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { configCarSpeed } from '../shared/map/pointConfig'
 
 const { t } = useI18n()
 
@@ -129,53 +125,38 @@ const getCoordinates = (): PointData[] => {
   return JSON.parse(currentTemplate!.mission)
 }
 
-const setPointMenu = (index: number, pathPoint: Marker) => {
-  pathPoint.setMenu({
-    items: [
-      {
-        item: t('xin-zeng-ren-wu-dian'),
-        click: () => {
-          const pointCoordinates = {
-            x: pathPoint.getCoordinates().y,
-            y: pathPoint.getCoordinates().x
-          }
-          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-            pathLayer.addGeometry(pathPoint)
-            clearDrawTool()
-            initTaskPoints()
-          })
-        }
-      },
-      {
-        item: t('tian-jia-fan-hang-dian'),
-        click: () => {
-          handleCreateHomePath(pathPoint)
-        }
-      },
-      {
-        item: t('bian-ji-che-su'),
-        click: () => {
-          const pointCoordinates: {
-            x: number
-            y: number
-          } = {
-            x: pathPoint.getCoordinates().y,
-            y: pathPoint.getCoordinates().x
-          }
-          currentSelectedPointIndex.value = index
-          //保存已有车速值
-          let carNum: string = carSpeedData.value[index] || ''
-          if (!carSpeedData.value[index]) {
-            const templateData = getCoordinates()[index]
-            if (templateData.speed) {
-              carNum = templateData.speed.toString()
+const setPointMenu = () => {
+  pathPoints.forEach((pathPoint, index) => {
+    pathPoint.setMenu({
+      items: [
+        {
+          item: t('xin-zeng-ren-wu-dian'),
+          click: () => {
+            const pointCoordinates = {
+              x: pathPoint.getCoordinates().y,
+              y: pathPoint.getCoordinates().x
             }
+            handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+              pathLayer.addGeometry(pathPoint)
+              clearDrawTool()
+              initTaskPoints()
+            })
           }
-          pointConfigDrawerVisible.value = true
-          handlePointConfigEvent(pointCoordinates, carNum)
+        },
+        {
+          item: t('tian-jia-fan-hang-dian'),
+          click: () => {
+            handleCreateHomePath(pathPoint)
+          }
+        },
+        {
+          item: t('bian-ji-che-su'),
+          click: () => {
+            configCarSpeed(pathPoint, index)
+          }
         }
-      }
-    ]
+      ]
+    })
   })
 }
 
@@ -189,10 +170,10 @@ const initPath = () => {
   const coordinates = getCoordinates()
   coordinates.forEach((coordinate, index) => {
     const pathPoint = getPointInstance(index, coordinate)
-    setPointMenu(index, pathPoint)
     onPointClikEvent(pathPoint)
     addPathPointToLayer(pathPoint)
   })
+  setPointMenu()
 }
 
 const initData = () => {
