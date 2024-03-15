@@ -3,9 +3,11 @@ import { map } from './base'
 import { currentCar } from '..'
 import { ref } from 'vue'
 import { initRecordPath, initRecordPathLayer, isRecord, recordPathLayer } from './record'
-import { getCarInfo, getCarList } from '@/api'
+import { getCarInfo, getCarList, getPatrolTaskById } from '@/api'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { initRealPath, initRealPathLayer, isReal, realPathLayer } from './realRoute'
+import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from './taskPath'
 
 export let carMarkerLayer: VectorLayer
 export let ws: WebSocket | undefined
@@ -68,24 +70,47 @@ export const initMarker = (data: CarInfo) => {
 
 export const newCarData = ref({})
 
-export const updateMarker = (e: MessageEvent<any>) => {
+export const updateMarker = async (e: MessageEvent<any>) => {
   if (e.data !== 'heartbeat') {
     const data = JSON.parse(e.data)
+    if (data.latitude && data.longitude) {
+      //保存车最新数据
+      newCarData.value = data
+    }
 
     initMarker(data)
-
-    //保存车最新数据
-    newCarData.value = data
 
     // 判断是否开启录制
     if (isRecord.value) {
       initRecordPath(data)
     }
-  }
 
-  // if (data.taskStatus === 'start') {
-  //   console.log(data.taskStatus)
-  // }
+    if (data.taskStatus === 'start') {
+      initMarker(newCarData.value)
+      isReal.value = true
+      ElMessage.success({
+        message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
+      })
+      const route = ref<any[]>([])
+      const res = await getPatrolTaskById(data.taskID)
+      route.value = res.data?.route || []
+      handleConfirmPatrolTaskPath(route.value)
+    }
+    if (data.taskStatus === 'end') {
+      isReal.value = false
+      realPathLayer.clear()
+      ElMessage.success({
+        message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
+      })
+      taskPathLayer.clear()
+      taskpathPoints.length = 0
+      initMarker(newCarData.value)
+    }
+
+    if (isReal.value) {
+      initRealPath(data)
+    }
+  }
 }
 
 export const carList = ref<
@@ -111,11 +136,14 @@ export const initCar = async () => {
     }
   }
 }
+
 // 根据车辆编号获取车辆坐标
 export const addMarker = async (code: string) => {
   const res: any = await getCarInfo(code)
   const data = res.data || {}
   isRecord.value = false
+  isReal.value = false
+  realPathLayer.clear()
   recordPathLayer.clear()
   newCarData.value = data
   initMarker(data)
@@ -124,6 +152,7 @@ export const addMarker = async (code: string) => {
 export const initMakerLayer = () => {
   initCarMarkerLayer()
   initRecordPathLayer()
+  initRealPathLayer()
   initCar()
 }
 

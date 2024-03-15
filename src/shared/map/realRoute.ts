@@ -1,16 +1,11 @@
-import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { map } from './base'
-import { clearPathLayer } from './path'
-import { clearDrawTool } from './drawTool'
-import { haveCurrentCar } from '..'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 
 export const isReal = ref(false)
-// export const isRecordPath = ref(false)
-//录制路线图层实例
+//实时路线图层实例
 export let realPathLayer: VectorLayer
 
 export const initRealPathLayer = () => {
@@ -19,21 +14,7 @@ export const initRealPathLayer = () => {
 }
 export const realPathPoints: Marker[] = []
 
-export const recordPathToolbarEvent = () => {
-  clearPathLayer()
-  clearDrawTool()
-  if (haveCurrentCar() && !isReal.value) {
-    realPathPoints.length = 0
-    isReal.value = true
-    ElMessage({
-      type: 'success',
-      message: '开始'
-    })
-  }
-}
-
-export const initRecordPath = (data: CarInfo) => {
-  // markerLayer.clear()
+export const initRealPath = (data: CarInfo) => {
   if (hasCoordinate(data) && isTheCar(data) && isReal.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
       symbol: {
@@ -61,5 +42,7 @@ export const initRecordPath = (data: CarInfo) => {
 
       realPathLayer.addGeometry(connectLine)
     }
+  } else {
+    return
   }
 }
