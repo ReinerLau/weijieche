@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { baseLayer, jumpToCoordinate } from '@/shared/map/base'
-import { reactive, ref } from 'vue'
+import { mouseCoordinate } from '@/shared/map/debug'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -9,14 +10,6 @@ const { t } = useI18n()
  * 调试模式开启状态
  */
 const debugMode = ref(false)
-
-/**
- * 要跳转的坐标
- */
-const mouseCoordinate = reactive({
-  x: 0,
-  y: 0
-})
 
 /**
  * 开启调试模式显示网格
