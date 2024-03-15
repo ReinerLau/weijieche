@@ -109,6 +109,7 @@ export const drawPathToolbarEvent = () => {
 }
 
 const setDrawPathMenu = () => {
+  clearMenu()
   map.setMenuItems([
     {
       item: '结束绘制',

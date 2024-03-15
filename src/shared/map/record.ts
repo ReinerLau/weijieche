@@ -2,7 +2,7 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
+import { clearMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
 import { haveCurrentCar } from '..'
@@ -42,45 +42,48 @@ export const recordPathToolbarEvent = () => {
       type: 'success',
       message: i18n.global.t('kai-shi-lu-zhi')
     })
-    map.removeMenu()
-    map.setMenu({
-      width: 'auto',
-      items: [
-        {
-          item: i18n.global.t('jie-shu-lu-zhi'),
-          click: () => {
-            if (recordPathPoints.length > 1) {
-              clearPathLayer()
-              clearDrawTool()
-              isRecord.value = false
-              ElMessage({
-                type: 'success',
-                message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
-              })
-              isRecordPath.value = true
-              templateDialogVisible.value = true
-            } else {
-              ElMessage({
-                type: 'warning',
-                message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
-              })
-              clearPathLayer()
-              clearDrawTool()
-              isRecord.value = false
-              isRecordPath.value = false
-              map.removeMenu()
-              // initMenu()
-            }
-          }
-        }
-      ]
-    })
+    setRecordMenu()
   } else if (isRecord.value) {
     ElMessage({
       type: 'warning',
       message: i18n.global.t('yi-kai-shi-lu-zhi-zhong')
     })
   }
+}
+
+const setRecordMenu = () => {
+  clearMenu()
+  map.setMenu({
+    width: 'auto',
+    items: [
+      {
+        item: i18n.global.t('jie-shu-lu-zhi'),
+        click: () => {
+          clearMenu()
+          if (recordPathPoints.length > 1) {
+            clearPathLayer()
+            clearDrawTool()
+            isRecord.value = false
+            ElMessage({
+              type: 'success',
+              message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+            })
+            isRecordPath.value = true
+            templateDialogVisible.value = true
+          } else {
+            ElMessage({
+              type: 'warning',
+              message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
+            })
+            clearPathLayer()
+            clearDrawTool()
+            isRecord.value = false
+            isRecordPath.value = false
+          }
+        }
+      }
+    ]
+  })
 }
 
 export const initRecordPath = (data: CarInfo) => {
