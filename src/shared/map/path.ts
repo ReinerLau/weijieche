@@ -1,12 +1,12 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
+import { clearMenu, map } from './base'
 import { ref } from 'vue'
 import { entryPoint, setEntryPoint } from './home'
 import { i18n } from '@/utils'
 import { configCarSpeed } from './pointConfig'
 import { endRecording, isRecord, isRecordPath } from './record'
 import { clearDrawTool } from './drawTool'
-import { handleCreatePath } from '.'
+import { getLineCoordinates, handleCreatePath } from '.'
 import type { Coordinate, PointData } from '@/types'
 
 /**
@@ -116,7 +116,21 @@ export const drawPathToolbarEvent = () => {
     handleCreatePath('#ff931e', pathPointDrawendEvent)
     isRecord.value = false
     isRecordPath.value = false
+    setDrawPathMenu()
   }
+}
+
+export const setDrawPathMenu = () => {
+  map.setMenuItems([
+    {
+      item: '结束绘制',
+      click: () => {
+        clearDrawTool()
+        clearMenu()
+        pathPointsData.value = getLineCoordinates(pathPoints)
+      }
+    }
+  ])
 }
 
 export const clearToolbarEvent = () => {
