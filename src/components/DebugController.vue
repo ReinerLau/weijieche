@@ -40,7 +40,7 @@ const onJump = () => {
     <div v-if="debugMode" class="flex">
       <el-input type="number" v-model="mouseCoordinate.x" class="mr-1"></el-input>
       <el-input type="number" v-model="mouseCoordinate.y" class="mr-1"></el-input>
-      <el-button type="primary" @click="onJump">确定</el-button>
+      <el-button type="primary" @click="onJump">{{ t('que-ding') }}</el-button>
     </div>
   </div>
 </template>

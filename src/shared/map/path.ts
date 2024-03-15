@@ -111,7 +111,7 @@ const setDrawPathMenu = () => {
   clearMenu()
   map.setMenuItems([
     {
-      item: '结束绘制',
+      item: i18n.global.t('jie-shu'),
       click: () => {
         clearDrawTool()
         pathPointsData.value = getLineCoordinates(pathPoints)
@@ -163,7 +163,7 @@ export const setPointMenu = () => {
 export const setDrawEndMenu = () => {
   map.setMenuItems([
     {
-      item: '清空路径',
+      item: i18n.global.t('qing-kong'),
       click: () => {
         clearPathLayer()
         clearMenu()

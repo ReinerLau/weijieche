@@ -158,7 +158,7 @@ export const useCarRelevant = ({
       </ElButton>
       <div class="flex">
         <span class=" mr-6">{NewCurrentCarStatus.value}</span>
-        <span>电量 {NewCurrentCarBattery.value || 0}%</span>
+        <span>t('dian-liang') {NewCurrentCarBattery.value || 0}%</span>
       </div>
       <div class="m-6">
         <el-switch

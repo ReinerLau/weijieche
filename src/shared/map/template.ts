@@ -6,7 +6,7 @@ import { getLineCoordinates, havePath } from '.'
 import { createMissionTemplate } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { i18n } from '@/utils'
-import { clearMenu, map } from './base'
+import { clearMenu } from './base'
 
 // 确定选择模板路线在地图上显示
 export const missionTemplateId = ref<number | null | undefined>()
