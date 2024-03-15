@@ -77,17 +77,6 @@ export const addPathPointToLayer = (pathPoint: Marker) => {
  */
 export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
   const pathPoint = e.geometry
-  const index = pathPoints.length
-  const pointMenuOptions = {
-    items: [
-      {
-        item: i18n.global.t('she-zhi-che-su'),
-        click: () => {
-          configCarSpeed(pathPoint, index)
-        }
-      }
-    ]
-  }
 
   pathPoint.config({
     draggable: true
@@ -103,7 +92,6 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
     .on('click', (e: { target: Marker }) => {
       setEntryPoint(e.target)
     })
-    .setMenu(pointMenuOptions)
   addPathPointToLayer(pathPoint)
 }
 
@@ -120,7 +108,7 @@ export const drawPathToolbarEvent = () => {
   }
 }
 
-export const setDrawPathMenu = () => {
+const setDrawPathMenu = () => {
   map.setMenuItems([
     {
       item: '结束绘制',
@@ -132,12 +120,27 @@ export const setDrawPathMenu = () => {
         } else {
           clearMenu()
         }
+        setPointMenu()
       }
     }
   ])
 }
 
-export const setDrawEndMenu = () => {
+const setPointMenu = () => {
+  pathPoints.forEach((pathPoint, index) => {
+    const pointMenuOptions = [
+      {
+        item: i18n.global.t('she-zhi-che-su'),
+        click: () => {
+          configCarSpeed(pathPoint, index)
+        }
+      }
+    ]
+    pathPoint.setMenuItems(pointMenuOptions)
+  })
+}
+
+const setDrawEndMenu = () => {
   map.setMenuItems([
     {
       item: '清空路径',
