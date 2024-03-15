@@ -2,23 +2,20 @@
 import { deleteTemplate, getTemplatePathList } from '@/api'
 import { jumpToCoordinate } from '@/shared/map/base'
 import { clearDrawTool } from '@/shared/map/drawTool'
-import { handleCreateHomePath, setEntryPoint } from '@/shared/map/home'
+import { setEntryPoint } from '@/shared/map/home'
 import {
   addPathPointToLayer,
   clearPathLayer,
-  pathLayer,
   pathPointList,
-  pathPoints,
-  pathPointsData
+  pathPointsData,
+  setPointMenu
 } from '@/shared/map/path'
-import { handleTaskEvent, initTaskPoints } from '@/shared/map/taskPoint'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
 import type { Coordinate, PointData, TemplateData } from '@/types'
 import { ElMessage } from 'element-plus'
 import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { configCarSpeed } from '../shared/map/pointConfig'
 
 const { t } = useI18n()
 
@@ -123,41 +120,6 @@ const getPointInstance = (index: number, coordinate: Coordinate) => {
 
 const getCoordinates = (): PointData[] => {
   return JSON.parse(currentTemplate!.mission)
-}
-
-const setPointMenu = () => {
-  pathPoints.forEach((pathPoint, index) => {
-    pathPoint.setMenu({
-      items: [
-        {
-          item: t('xin-zeng-ren-wu-dian'),
-          click: () => {
-            const pointCoordinates = {
-              x: pathPoint.getCoordinates().y,
-              y: pathPoint.getCoordinates().x
-            }
-            handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-              pathLayer.addGeometry(pathPoint)
-              clearDrawTool()
-              initTaskPoints()
-            })
-          }
-        },
-        {
-          item: t('tian-jia-fan-hang-dian'),
-          click: () => {
-            handleCreateHomePath(pathPoint)
-          }
-        },
-        {
-          item: t('bian-ji-che-su'),
-          click: () => {
-            configCarSpeed(pathPoint, index)
-          }
-        }
-      ]
-    })
-  })
 }
 
 const onPointClikEvent = (pathPoint: Marker) => {

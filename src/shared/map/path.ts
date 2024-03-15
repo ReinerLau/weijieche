@@ -1,13 +1,14 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { clearMenu, map } from './base'
 import { ref } from 'vue'
-import { entryPoint, setEntryPoint } from './home'
+import { entryPoint, handleCreateHomePath, setEntryPoint } from './home'
 import { i18n } from '@/utils'
 import { configCarSpeed } from './pointConfig'
 import { endRecording, isRecord, isRecordPath } from './record'
 import { clearDrawTool } from './drawTool'
 import { getLineCoordinates, handleCreatePath } from '.'
 import type { Coordinate, PointData } from '@/types'
+import { handleTaskEvent, initTaskPoints } from './taskPoint'
 
 /**
  * 通用路线图层
@@ -127,17 +128,37 @@ const setDrawPathMenu = () => {
   ])
 }
 
-const setPointMenu = () => {
+export const setPointMenu = () => {
   pathPoints.forEach((pathPoint, index) => {
-    const pointMenuOptions = [
+    const pointMenuItems = [
       {
-        item: i18n.global.t('she-zhi-che-su'),
+        item: i18n.global.t('xin-zeng-ren-wu-dian'),
+        click: () => {
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+            pathLayer.addGeometry(pathPoint)
+            clearDrawTool()
+            initTaskPoints()
+          })
+        }
+      },
+      {
+        item: i18n.global.t('tian-jia-fan-hang-dian'),
+        click: () => {
+          handleCreateHomePath(pathPoint)
+        }
+      },
+      {
+        item: i18n.global.t('bian-ji-che-su'),
         click: () => {
           configCarSpeed(pathPoint, index)
         }
       }
     ]
-    pathPoint.setMenuItems(pointMenuOptions)
+    pathPoint.setMenuItems(pointMenuItems)
   })
 }
 
