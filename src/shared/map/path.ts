@@ -96,8 +96,6 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
   addPathPointToLayer(pathPoint)
 }
 
-export const pathPointList: Coordinate[] = []
-
 export const drawPathToolbarEvent = () => {
   if (endRecording()) {
     clearPathLayer()
@@ -210,9 +208,6 @@ export const initPath = (coordinates: PointData[]) => {
   setPointMenu()
 }
 export const initPathData = (coordinates: PointData[]) => {
-  coordinates.forEach((coordinate) => {
-    pathPointList.push(coordinate)
-  })
   pathPointsData.value = coordinates
 }
 

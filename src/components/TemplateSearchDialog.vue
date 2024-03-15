@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { deleteTemplate, getTemplatePathList } from '@/api'
-import { clearDrawTool } from '@/shared/map/drawTool'
-import { setEntryPoint } from '@/shared/map/home'
-import { clearPathLayer, pathPointList, showPath } from '@/shared/map/path'
+import { clearStatus } from '@/shared/map'
+import { showPath } from '@/shared/map/path'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
 import type { PointData, TemplateData } from '@/types'
 import { ElMessage } from 'element-plus'
@@ -73,13 +72,6 @@ const onComfirm = () => {
       message: t('wei-xuan-ze-mo-ban')
     })
   }
-}
-
-const clearStatus = () => {
-  setEntryPoint(null)
-  pathPointList.length = 0
-  clearDrawTool()
-  clearPathLayer()
 }
 
 const getCoordinates = (): PointData[] => {

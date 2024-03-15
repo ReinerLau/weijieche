@@ -8,6 +8,7 @@ import { clearDrawTool } from './drawTool'
 import { haveCurrentCar } from '..'
 import { templateDialogVisible } from './template'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
+import { clearStatus } from '.'
 
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
@@ -61,8 +62,7 @@ const setRecordMenu = () => {
         click: () => {
           clearMenu()
           if (recordPathPoints.length > 1) {
-            clearPathLayer()
-            clearDrawTool()
+            clearStatus()
             isRecord.value = false
             ElMessage({
               type: 'success',
@@ -75,8 +75,7 @@ const setRecordMenu = () => {
               type: 'warning',
               message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
             })
-            clearPathLayer()
-            clearDrawTool()
+            clearStatus()
             isRecord.value = false
             isRecordPath.value = false
           }
