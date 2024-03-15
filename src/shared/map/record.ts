@@ -59,6 +59,8 @@ export const recordPathToolbarEvent = () => {
               })
               isRecordPath.value = true
               templateDialogVisible.value = true
+              map.removeMenu()
+              initMenu()
             } else {
               ElMessage({
                 type: 'warning',
