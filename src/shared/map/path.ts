@@ -140,6 +140,7 @@ export const setDrawEndMenu = () => {
       click: () => {
         clearDrawTool()
         clearPathLayer()
+        clearMenu()
       }
     }
   ])
