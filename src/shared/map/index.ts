@@ -156,3 +156,9 @@ export const toolbarItems = [
     event: () => backToCenter()
   }
 ]
+
+export const clearStatus = () => {
+  setEntryPoint(null)
+  clearDrawTool()
+  clearPathLayer()
+}

@@ -1,13 +1,14 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
+import { clearMenu, jumpToCoordinate, map } from './base'
 import { ref } from 'vue'
-import { entryPoint, setEntryPoint } from './home'
+import { entryPoint, handleCreateHomePath, setEntryPoint } from './home'
 import { i18n } from '@/utils'
 import { configCarSpeed } from './pointConfig'
 import { endRecording, isRecord, isRecordPath } from './record'
 import { clearDrawTool } from './drawTool'
 import { getLineCoordinates, handleCreatePath } from '.'
 import type { Coordinate, PointData } from '@/types'
+import { handleTaskEvent, initTaskPoints } from './taskPoint'
 
 /**
  * 通用路线图层
@@ -26,7 +27,7 @@ export let pathLayer: VectorLayer
 export const pathPoints: Marker[] = []
 
 /**
- * 路线图层上所有点实例数据
+ * 路线图层上所有点数据
  */
 export const pathPointsData = ref<PointData[]>([])
 
@@ -77,17 +78,6 @@ export const addPathPointToLayer = (pathPoint: Marker) => {
  */
 export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
   const pathPoint = e.geometry
-  const index = pathPoints.length
-  const pointMenuOptions = {
-    items: [
-      {
-        item: i18n.global.t('she-zhi-che-su'),
-        click: () => {
-          configCarSpeed(pathPoint, index)
-        }
-      }
-    ]
-  }
 
   pathPoint.config({
     draggable: true
@@ -103,11 +93,8 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
     .on('click', (e: { target: Marker }) => {
       setEntryPoint(e.target)
     })
-    .setMenu(pointMenuOptions)
   addPathPointToLayer(pathPoint)
 }
-
-export const pathPointList: Coordinate[] = []
 
 export const drawPathToolbarEvent = () => {
   if (endRecording()) {
@@ -120,14 +107,66 @@ export const drawPathToolbarEvent = () => {
   }
 }
 
-export const setDrawPathMenu = () => {
+const setDrawPathMenu = () => {
+  clearMenu()
   map.setMenuItems([
     {
       item: '结束绘制',
       click: () => {
         clearDrawTool()
-        clearMenu()
         pathPointsData.value = getLineCoordinates(pathPoints)
+        if (pathPoints.length > 0) {
+          setDrawEndMenu()
+        } else {
+          clearMenu()
+        }
+        setPointMenu()
+      }
+    }
+  ])
+}
+
+export const setPointMenu = () => {
+  pathPoints.forEach((pathPoint, index) => {
+    const pointMenuItems = [
+      {
+        item: i18n.global.t('xin-zeng-ren-wu-dian'),
+        click: () => {
+          const pointCoordinates = {
+            x: pathPoint.getCoordinates().y,
+            y: pathPoint.getCoordinates().x
+          }
+          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+            pathLayer.addGeometry(pathPoint)
+            clearDrawTool()
+            initTaskPoints()
+          })
+        }
+      },
+      {
+        item: i18n.global.t('tian-jia-fan-hang-dian'),
+        click: () => {
+          handleCreateHomePath(pathPoint)
+        }
+      },
+      {
+        item: i18n.global.t('bian-ji-che-su'),
+        click: () => {
+          configCarSpeed(pathPoint, index)
+        }
+      }
+    ]
+    pathPoint.setMenuItems(pointMenuItems)
+  })
+}
+
+export const setDrawEndMenu = () => {
+  map.setMenuItems([
+    {
+      item: '清空路径',
+      click: () => {
+        clearPathLayer()
+        clearMenu()
       }
     }
   ])
@@ -137,4 +176,44 @@ export const clearToolbarEvent = () => {
   clearPathLayer()
   clearDrawTool()
   isRecord.value = false
+}
+export const getMarkerFill = (index: number, coordinates: Coordinate[]) => {
+  if (index === 0) {
+    return '#FF0070'
+  } else if (index === coordinates.length - 1) {
+    return '#FF0070'
+  } else {
+    return '#8D70DD'
+  }
+}
+
+export const getPoints = (coordinates: PointData[]) => {
+  return coordinates.map((coordinate, index) => {
+    return new Marker([coordinate.y, coordinate.x], {
+      symbol: {
+        markerType: index === 0 ? 'diamond' : 'ellipse',
+        markerFill: getMarkerFill(index, coordinates),
+        markerWidth: 15,
+        markerHeight: 15
+      }
+    })
+  })
+}
+
+export const initPath = (coordinates: PointData[]) => {
+  const pathPoints = getPoints(coordinates)
+  pathPoints.forEach((pathPoint) => {
+    addPathPointToLayer(pathPoint)
+  })
+  setPointMenu()
+}
+export const initPathData = (coordinates: PointData[]) => {
+  pathPointsData.value = coordinates
+}
+
+export const showPath = (coordinates: PointData[]) => {
+  initPath(coordinates)
+  initPathData(coordinates)
+  jumpToCoordinate(coordinates[0].y, coordinates[0].x)
+  setDrawEndMenu()
 }

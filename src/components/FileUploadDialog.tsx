@@ -1,4 +1,5 @@
 import { fileUploadDialogVisible } from '@/shared/map/file'
+import type { PointData } from '@/types'
 import { getToken } from '@/utils'
 import { ElButton, ElDialog, ElMessage, ElUpload, type UploadInstance } from 'element-plus'
 import { defineComponent, ref } from 'vue'
@@ -15,8 +16,8 @@ export default defineComponent({
       }
     }
 
-    const fileData = ref({})
-    const handleSuccess = (response: any) => {
+    const fileData = ref<PointData[]>([])
+    const handleSuccess = (response: { data: PointData[] }) => {
       fileData.value = response.data
       emit('confirm', fileData.value)
     }
