@@ -20,3 +20,10 @@ export function getPatrolTask(params: object) {
     params
   })
 }
+
+export function getPatrolTaskById(id: number) {
+  return request({
+    url: `/vehicle-task/v1/${id}`,
+    method: 'get'
+  })
+}

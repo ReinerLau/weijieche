@@ -33,6 +33,7 @@ import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import FileUploadDialog from '@/components/FileUploadDialog'
+import { initTaskpathLayer } from '@/shared/map/taskPath'
 
 export default defineComponent({
   emits: ['confirm'],
@@ -64,6 +65,7 @@ export default defineComponent({
       initDrawTool()
       initHomePath()
       initTaskPoints()
+      initTaskpathLayer()
     })
 
     // 监听到选择车辆后连接 websocket
@@ -79,7 +81,6 @@ export default defineComponent({
 
     // 监听是否处于录制状态
     watch(isRecordPath, () => {
-      initMarker(newCarData.value)
       if (!isRecord.value && !isRecordPath.value) {
         recordPathLayer.clear()
         initMarker(newCarData.value)
