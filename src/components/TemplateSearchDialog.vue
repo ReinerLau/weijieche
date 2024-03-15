@@ -2,7 +2,7 @@
 import { deleteTemplate, getTemplatePathList } from '@/api'
 import { jumpToCoordinate } from '@/shared/map/base'
 import { clearDrawTool } from '@/shared/map/drawTool'
-import { clearOnePoint, handleCreateHomePath, setEntryPoint, setOnePoint } from '@/shared/map/home'
+import { handleCreateHomePath, setEntryPoint } from '@/shared/map/home'
 import {
   addPathPointToLayer,
   clearPathLayer,
@@ -93,7 +93,6 @@ const onComfirm = () => {
 
 const clearStatus = () => {
   setEntryPoint(null)
-  clearOnePoint()
   pathPointList.length = 0
   clearDrawTool()
   clearPathLayer()
@@ -149,7 +148,9 @@ const setPointMenu = (index: number, pathPoint: Marker) => {
       },
       {
         item: t('tian-jia-fan-hang-dian'),
-        click: handleCreateHomePath
+        click: () => {
+          handleCreateHomePath(pathPoint)
+        }
       },
       {
         item: t('bian-ji-che-su'),
@@ -181,7 +182,6 @@ const setPointMenu = (index: number, pathPoint: Marker) => {
 const onPointClikEvent = (pathPoint: Marker) => {
   pathPoint.on('click', (e: { target: Marker }) => {
     setEntryPoint(e.target)
-    setOnePoint(e.target)
   })
 }
 

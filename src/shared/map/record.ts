@@ -2,7 +2,7 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { initMenu, map } from './base'
+import { map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
 import { haveCurrentCar } from '..'
@@ -69,7 +69,7 @@ export const recordPathToolbarEvent = () => {
               isRecord.value = false
               isRecordPath.value = false
               map.removeMenu()
-              initMenu()
+              // initMenu()
             }
           }
         }

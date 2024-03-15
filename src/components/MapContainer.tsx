@@ -6,9 +6,9 @@ import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfigDrawer.vue'
-import { initMap, initMenu, jumpToCoordinate } from '@/shared/map/base'
+import { initMap, jumpToCoordinate } from '@/shared/map/base'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
-import { initHomePath, initHomePathDrawLayer, initHomePathLayer } from '@/shared/map/home'
+import { initHomePath, initHomePathLayer } from '@/shared/map/home'
 import { initDrawTool } from '@/shared/map/drawTool'
 import { handleConfirmPatrolTaskPath, initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
@@ -55,15 +55,14 @@ export default defineComponent({
 
     onMounted(() => {
       initMap(mapRef.value!)
+      initHomePathLayer()
       initMakerLayer()
       initAlarmMarkerLayer()
       initPathLayer()
-      initHomePathLayer()
-      initHomePathDrawLayer()
       initPatrolpathLayer()
       initTaskPointLayer()
       initDrawTool()
-      initMenu()
+      // initMenu()
       initHomePath()
       initTaskPoints()
     })
