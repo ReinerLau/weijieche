@@ -238,7 +238,7 @@ export const startHomeToolbarEvent = async () => {
 export const setHomePathDrawingMenu = () => {
   map.setMenuItems([
     {
-      item: '结束绘制',
+      item: i18n.global.t('jie-shu'),
       click: () => {
         clearDrawTool()
         setHomePathDrawendMenu()
@@ -250,7 +250,7 @@ export const setHomePathDrawingMenu = () => {
 export const setHomePathDrawendMenu = () => {
   map.setMenuItems([
     {
-      item: '清空返航路线',
+      item: i18n.global.t('qing-kong'),
       click: clearDrawingHomePath
     },
     {

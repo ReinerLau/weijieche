@@ -15,7 +15,7 @@ export const useVideoTemplate = (url: Ref<string>) => {
     setup() {
       const videoElement = ref<HTMLVideoElement | null>(null)
       // 监听 url.value 的变化
-      watch(url, (newUrl, oldUrl) => {
+      watch(url, (newUrl) => {
         // 在变化时停止原先的视频播放
         if (videoElement.value) {
           videoElement.value.pause()
