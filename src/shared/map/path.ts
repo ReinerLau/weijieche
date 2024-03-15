@@ -1,5 +1,5 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
+import { clearMenu, jumpToCoordinate, map } from './base'
 import { ref } from 'vue'
 import { entryPoint, handleCreateHomePath, setEntryPoint } from './home'
 import { i18n } from '@/utils'
@@ -27,7 +27,7 @@ export let pathLayer: VectorLayer
 export const pathPoints: Marker[] = []
 
 /**
- * 路线图层上所有点实例数据
+ * 路线图层上所有点数据
  */
 export const pathPointsData = ref<PointData[]>([])
 
@@ -178,4 +178,47 @@ export const clearToolbarEvent = () => {
   clearPathLayer()
   clearDrawTool()
   isRecord.value = false
+}
+export const getMarkerFill = (index: number, coordinates: Coordinate[]) => {
+  if (index === 0) {
+    return '#FF0070'
+  } else if (index === coordinates.length - 1) {
+    return '#FF0070'
+  } else {
+    return '#8D70DD'
+  }
+}
+
+export const getPoints = (coordinates: PointData[]) => {
+  return coordinates.map((coordinate, index) => {
+    return new Marker([coordinate.y, coordinate.x], {
+      symbol: {
+        markerType: index === 0 ? 'diamond' : 'ellipse',
+        markerFill: getMarkerFill(index, coordinates),
+        markerWidth: 15,
+        markerHeight: 15
+      }
+    })
+  })
+}
+
+export const initPath = (coordinates: PointData[]) => {
+  const pathPoints = getPoints(coordinates)
+  pathPoints.forEach((pathPoint) => {
+    addPathPointToLayer(pathPoint)
+  })
+  setPointMenu()
+}
+export const initPathData = (coordinates: PointData[]) => {
+  coordinates.forEach((coordinate) => {
+    pathPointList.push(coordinate)
+  })
+  pathPointsData.value = coordinates
+}
+
+export const showPath = (coordinates: PointData[]) => {
+  initPath(coordinates)
+  initPathData(coordinates)
+  jumpToCoordinate(coordinates[0].y, coordinates[0].x)
+  setDrawEndMenu()
 }

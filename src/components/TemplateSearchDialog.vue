@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import { deleteTemplate, getTemplatePathList } from '@/api'
-import { jumpToCoordinate } from '@/shared/map/base'
 import { clearDrawTool } from '@/shared/map/drawTool'
 import { setEntryPoint } from '@/shared/map/home'
-import {
-  addPathPointToLayer,
-  clearPathLayer,
-  pathPointList,
-  pathPointsData,
-  setPointMenu
-} from '@/shared/map/path'
+import { clearPathLayer, pathPointList, showPath } from '@/shared/map/path'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
-import type { Coordinate, PointData, TemplateData } from '@/types'
+import type { PointData, TemplateData } from '@/types'
 import { ElMessage } from 'element-plus'
-import { Marker } from 'maptalks'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -71,9 +63,8 @@ async function handleDelete(id: number) {
 const onComfirm = () => {
   if (currentTemplate) {
     clearStatus()
-    initPath()
-    initData()
-    beFocus()
+    const coordinates = getCoordinates()
+    showPath(coordinates)
     missionTemplateId.value = currentTemplate.id
     templateSearchDialogVisible.value = false
   } else {
@@ -91,59 +82,8 @@ const clearStatus = () => {
   clearPathLayer()
 }
 
-const beFocus = () => {
-  const coordinates = getCoordinates()
-  jumpToCoordinate(coordinates[0].y, coordinates[0].x)
-}
-
-const getMarkerFill = (index: number) => {
-  const theLastIndex = getCoordinates().length - 1
-  if (index === 0) {
-    return '#FF0070'
-  } else if (index === theLastIndex) {
-    return '#FF0070'
-  } else {
-    return '#8D70DD'
-  }
-}
-
-const getPointInstance = (index: number, coordinate: Coordinate) => {
-  return new Marker([coordinate.y, coordinate.x], {
-    symbol: {
-      markerType: index === 0 ? 'diamond' : 'ellipse',
-      markerFill: getMarkerFill(index),
-      markerWidth: 15,
-      markerHeight: 15
-    }
-  })
-}
-
 const getCoordinates = (): PointData[] => {
   return JSON.parse(currentTemplate!.mission)
-}
-
-const onPointClikEvent = (pathPoint: Marker) => {
-  pathPoint.on('click', (e: { target: Marker }) => {
-    setEntryPoint(e.target)
-  })
-}
-
-const initPath = () => {
-  const coordinates = getCoordinates()
-  coordinates.forEach((coordinate, index) => {
-    const pathPoint = getPointInstance(index, coordinate)
-    onPointClikEvent(pathPoint)
-    addPathPointToLayer(pathPoint)
-  })
-  setPointMenu()
-}
-
-const initData = () => {
-  const coordinates = getCoordinates()
-  coordinates.forEach((coordinate) => {
-    pathPointList.push(coordinate)
-  })
-  pathPointsData.value = coordinates
 }
 
 // 每次打开搜索弹窗重新获取数据
