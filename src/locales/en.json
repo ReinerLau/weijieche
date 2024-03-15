@@ -253,5 +253,10 @@
   "jian-ting-zhuang-tai-lian-jie-cuo-wu": "Listening status connection error",
   "jian-ting-wei-zhi-lian-jie-cheng-gong": "Listening location connected successfully",
   "jian-ting-wei-zhi-lian-jie-duan-kai": "Listening location connection disconnected",
-  "jian-ting-wei-zhi-lian-jie-cuo-wu": "Listening location connection error"
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "Listening location connection error",
+  "kai-shi-zhi-hang-ren-wu": "Start task",
+  "qu-xiao": "Cancel",
+  "que-ding-bu-bao-cun-lu-xian-ma": "Are you sure you don't want to save the route?",
+  "ren-wu-zhi-hang-jie-shu": "Mission execution is over!",
+  "yi-qu-xiao-bao-cun-lu-xian": "Saved route canceled"
 }

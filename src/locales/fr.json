@@ -253,5 +253,10 @@
   "jian-ting-zhuang-tai-lian-jie-cuo-wu": "Erreur de connexion de l'état d'écoute",
   "jian-ting-wei-zhi-lian-jie-cheng-gong": "Lieu d'écoute connecté avec succès",
   "jian-ting-wei-zhi-lian-jie-duan-kai": "Connexion du lieu d'écoute déconnectée",
-  "jian-ting-wei-zhi-lian-jie-cuo-wu": "Erreur de connexion au lieu d'écoute"
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "Erreur de connexion au lieu d'écoute",
+  "kai-shi-zhi-hang-ren-wu": "Démarrer la tâche",
+  "qu-xiao": "Annuler",
+  "que-ding-bu-bao-cun-lu-xian-ma": "Êtes-vous sûr de ne pas vouloir enregistrer l'itinéraire ?",
+  "ren-wu-zhi-hang-jie-shu": "L'exécution de la mission est terminée !",
+  "yi-qu-xiao-bao-cun-lu-xian": "Itinéraire enregistré annulé"
 }
