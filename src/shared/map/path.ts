@@ -1,12 +1,13 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
+import { clearMenu, map } from './base'
 import { ref } from 'vue'
 import { entryPoint, setEntryPoint } from './home'
 import { i18n } from '@/utils'
 import { configCarSpeed } from './pointConfig'
 import { endRecording, isRecord, isRecordPath } from './record'
 import { clearDrawTool } from './drawTool'
-import { handleCreatePath } from '.'
+import { getLineCoordinates, handleCreatePath } from '.'
+import type { Coordinate, PointData } from '@/types'
 
 /**
  * 通用路线图层
@@ -27,7 +28,7 @@ export const pathPoints: Marker[] = []
 /**
  * 路线图层上所有点实例数据
  */
-export const pathPointsData = ref<{ x: number; y: number; speed: string }[]>([])
+export const pathPointsData = ref<PointData[]>([])
 
 /**
  * 初始化路线图层
@@ -106,7 +107,7 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
   addPathPointToLayer(pathPoint)
 }
 
-export const pathPointList: { x: number; y: number }[] = []
+export const pathPointList: Coordinate[] = []
 
 export const drawPathToolbarEvent = () => {
   if (endRecording()) {
@@ -115,7 +116,21 @@ export const drawPathToolbarEvent = () => {
     handleCreatePath('#ff931e', pathPointDrawendEvent)
     isRecord.value = false
     isRecordPath.value = false
+    setDrawPathMenu()
   }
+}
+
+export const setDrawPathMenu = () => {
+  map.setMenuItems([
+    {
+      item: '结束绘制',
+      click: () => {
+        clearDrawTool()
+        clearMenu()
+        pathPointsData.value = getLineCoordinates(pathPoints)
+      }
+    }
+  ])
 }
 
 export const clearToolbarEvent = () => {

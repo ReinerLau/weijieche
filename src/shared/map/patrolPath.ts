@@ -7,6 +7,7 @@ import { i18n } from '@/utils'
 import { ref } from 'vue'
 import { endRecording } from './record'
 import { getLineCoordinates, pathDataPoints } from '.'
+import type { Coordinate } from '@/types'
 
 /**
  * 巡逻路线图层实例
@@ -57,16 +58,13 @@ export const addPatrolPathPointToLayer = (pathPoint: Marker) => {
   }
 }
 
-export const pathPointArray: { x: number; y: number }[] = []
+export const pathPointArray: Coordinate[] = []
 
 /**
  * 选择巡逻任务路线按钮后显示路线在地图上
  * @param row 单条巡逻路线数据
  */
-export const handleConfirmPatrolTaskPath = (row: {
-  name: string
-  route: { x: number; y: number }[]
-}) => {
+export const handleConfirmPatrolTaskPath = (row: { name: string; route: Coordinate[] }) => {
   pathPointArray.length = 0
   const text = i18n.global.t('ren-wu-ming-cheng') + ':' + row.name
   const options = {

@@ -2,11 +2,6 @@ import { TileLayer, Map, Coordinate } from 'maptalks'
 import { haveCurrentCar } from '..'
 import { getCarInfo } from '@/api'
 import { currentCar } from '@/shared'
-import { i18n } from '@/utils'
-import { clearDrawTool } from './drawTool'
-import { getLineCoordinates } from '.'
-import { pathPoints, pathPointsData } from './path'
-import { handleSaveHomePath, haveHomePath, homePathDrawLayer, onePoint } from './home'
 
 /**
  * 底图图层
@@ -80,36 +75,7 @@ export const backToCenter = async () => {
     jumpToCoordinate(x, y)
   }
 }
-// 初始化右键菜单
-export const initMenu = () => {
-  // https://maptalks.org/examples/cn/ui-control/ui-map-menu/#ui-control_ui-map-menu
 
-  map.setMenu({
-    width: 250,
-    items: [
-      {
-        item: i18n.global.t('jie-shu'),
-        click: () => {
-          clearDrawTool()
-          pathPointsData.value = getLineCoordinates(pathPoints)
-        }
-      },
-      {
-        item: i18n.global.t('qu-xiao-fan-hang-lu-xian-hui-zhi'),
-        click: () => {
-          clearDrawTool()
-          homePathDrawLayer.clear()
-        }
-      },
-      {
-        item: i18n.global.t('bao-cun-fan-hang-lu-xian'),
-        click: () => {
-          if (haveHomePath()) {
-            clearDrawTool()
-            handleSaveHomePath(onePoint)
-          }
-        }
-      }
-    ]
-  })
+export const clearMenu = () => {
+  map.removeMenu()
 }

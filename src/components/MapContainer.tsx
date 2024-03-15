@@ -6,14 +6,14 @@ import ToolbarController from '@/components/ToolbarController.vue'
 import DebugController from '@/components/DebugController.vue'
 import VideoController from '@/components/VideoController.vue'
 import PointConfigDrawer from '@/components/PointConfigDrawer.vue'
-import { initMap, initMenu, jumpToCoordinate } from '@/shared/map/base'
+import { initMap, jumpToCoordinate } from '@/shared/map/base'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
-import { initHomePath, initHomePathDrawLayer, initHomePathLayer } from '@/shared/map/home'
+import { initHomePath, initHomePathLayer } from '@/shared/map/home'
 import { initDrawTool } from '@/shared/map/drawTool'
 import { handleConfirmPatrolTaskPath, initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
-import { handleConfirm, handleConfirmTemplate } from '@/shared/map/template'
+import { handleConfirm } from '@/shared/map/template'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initPathLayer } from '@/shared/map/path'
 import { pathDataPoints, toolbarItems } from '@/shared/map'
@@ -55,15 +55,14 @@ export default defineComponent({
 
     onMounted(() => {
       initMap(mapRef.value!)
+      initHomePathLayer()
       initMakerLayer()
       initAlarmMarkerLayer()
       initPathLayer()
-      initHomePathLayer()
-      initHomePathDrawLayer()
       initPatrolpathLayer()
       initTaskPointLayer()
       initDrawTool()
-      initMenu()
+      // initMenu()
       initHomePath()
       initTaskPoints()
     })
@@ -105,7 +104,7 @@ export default defineComponent({
         <div class="h-full" ref={mapRef}></div>
         <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
         <TemplateDialog onConfirm={handleConfirm} />
-        <TemplateSearchDialog onConfirm={handleConfirmTemplate} />
+        <TemplateSearchDialog />
         <ScheduleDialog pointsdata={pathDataPoints} />
         <ScheduleSearchDialog />
         <PointSettingFormDialog />
