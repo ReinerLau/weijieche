@@ -156,17 +156,19 @@ export const useCarRelevant = ({
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton>
-      <div class="flex">
-        <span class=" mr-6">{NewCurrentCarStatus.value}</span>
-        <span>t('dian-liang') {NewCurrentCarBattery.value || 0}%</span>
-      </div>
-      <div class="m-6">
-        <el-switch
-          v-model={isConnection.value}
-          active-text={t('kai-qi')}
-          inactive-text={t('guan-bi')}
-          style=" --el-switch-off-color: #ff4949"
-        />
+      <div class="flex items-center">
+        <span class="mr-6">{NewCurrentCarStatus.value}</span>
+        <div class="mr-6">
+          <el-switch
+            v-model={isConnection.value}
+            active-text={t('kai-qi')}
+            inactive-text={t('guan-bi')}
+            style=" --el-switch-off-color: #ff4949"
+          />
+        </div>
+        <span class="text-sm">
+          {t('dian-liang')} {NewCurrentCarBattery.value || 0}%
+        </span>
       </div>
     </div>
   )
