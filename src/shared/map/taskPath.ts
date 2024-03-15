@@ -33,7 +33,7 @@ export const addTaskPathPointToLayer = (pathPoint: Marker) => {
     const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
       showOn: 'always',
       symbol: {
-        lineColor: '#DC00FE'
+        lineColor: '#F096BC'
       },
       zIndex: -1
     })
@@ -56,7 +56,7 @@ export const handleConfirmPatrolTaskPath = (route: { x: number; y: number }[]) =
     const pathPoint = new Marker(coordinate, {
       symbol: {
         markerType: 'ellipse',
-        markerFill: '#DC00FE',
+        markerFill: '#F096BC',
         markerWidth: 13,
         markerHeight: 13
       }
