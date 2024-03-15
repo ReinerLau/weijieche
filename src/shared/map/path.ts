@@ -127,7 +127,11 @@ export const setDrawPathMenu = () => {
       click: () => {
         clearDrawTool()
         pathPointsData.value = getLineCoordinates(pathPoints)
-        setDrawEndMenu()
+        if (pathPoints.length > 0) {
+          setDrawEndMenu()
+        } else {
+          clearMenu()
+        }
       }
     }
   ])
@@ -138,7 +142,6 @@ export const setDrawEndMenu = () => {
     {
       item: '清空路径',
       click: () => {
-        clearDrawTool()
         clearPathLayer()
         clearMenu()
       }
