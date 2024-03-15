@@ -257,5 +257,10 @@
   "jian-ting-zhuang-tai-lian-jie-cuo-wu": "监听状态连接错误",
   "jian-ting-wei-zhi-lian-jie-cheng-gong": "监听位置连接成功",
   "jian-ting-wei-zhi-lian-jie-duan-kai": "监听位置连接断开",
-  "jian-ting-wei-zhi-lian-jie-cuo-wu": "监听位置连接错误"
+  "jian-ting-wei-zhi-lian-jie-cuo-wu": "监听位置连接错误",
+  "ren-wu-zhi-hang-jie-shu": "任务执行结束！",
+  "kai-shi-zhi-hang-ren-wu": "开始执行任务",
+  "que-ding-bu-bao-cun-lu-xian-ma": "确定不保存路线吗？",
+  "yi-qu-xiao-bao-cun-lu-xian": "已取消保存路线",
+  "qu-xiao": "取消"
 }
