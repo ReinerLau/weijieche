@@ -215,5 +215,6 @@ export const showPath = (coordinates: PointData[]) => {
   initPath(coordinates)
   initPathData(coordinates)
   jumpToCoordinate(coordinates[0].y, coordinates[0].x)
+  clearMenu()
   setDrawEndMenu()
 }

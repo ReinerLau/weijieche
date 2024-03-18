@@ -1,5 +1,5 @@
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { clearMenu, map } from './base'
@@ -85,8 +85,25 @@ const setRecordMenu = () => {
   })
 }
 
+let recordData: any = null
+
 export const initRecordPath = (data: CarInfo) => {
-  // markerLayer.clear()
+  // 筛选绘制保存录制路线
+  if (recordData !== null) {
+    if (!(recordData.latitude === data.latitude && recordData.longitude === data.longitude)) {
+      drawRecordPath(data)
+      // 保存上一个值
+      recordData = data
+    } else {
+      return
+    }
+  } else {
+    drawRecordPath(data)
+    recordData = data
+  }
+}
+
+function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
       symbol: {
@@ -116,3 +133,9 @@ export const initRecordPath = (data: CarInfo) => {
     }
   }
 }
+
+watch(isRecord, () => {
+  if (!isRecord.value) {
+    recordData = null
+  }
+})
