@@ -66,8 +66,8 @@ const { t } = useI18n()
 
 // 不同功能对应映射值
 const keyMap = {
-  SWITCH: '01',
-  BACK: '02',
+  SWITCH: 13,
+  BACK: 1,
   UP: '03',
   LEFT: '06',
   CONFIRM: '07',
@@ -81,7 +81,7 @@ const keyMap = {
 }
 
 // 开启功能
-async function onClick(value: string) {
+async function onClick(value: string | number) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
