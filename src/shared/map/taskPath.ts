@@ -1,5 +1,5 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { jumpToCoordinate, map } from './base'
+import { clearMenu, jumpToCoordinate, map } from './base'
 import { clearDrawTool } from './drawTool'
 import { clearPathLayer } from './path'
 
@@ -51,6 +51,7 @@ export const handleConfirmPatrolTaskPath = (route: { x: number; y: number }[]) =
   taskPathPointArray.length = 0
   clearDrawTool()
   clearPathLayer()
+  clearMenu()
   const coordinates: number[][] = route.map((item) => [item.y, item.x])
   coordinates.forEach((coordinate) => {
     const pathPoint = new Marker(coordinate, {

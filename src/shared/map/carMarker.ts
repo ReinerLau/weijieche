@@ -6,7 +6,7 @@ import { initRecordPath, initRecordPathLayer, isRecord, recordPathLayer } from '
 import { getCarInfo, getCarList, getPatrolTaskById } from '@/api'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { initRealPath, initRealPathLayer, isReal, realPathLayer } from './realRoute'
+import { initRealPath, initRealPathLayer, isReal, realPathLayer, realPathPoints } from './realRoute'
 import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from './taskPath'
 
 export let carMarkerLayer: VectorLayer
@@ -86,6 +86,7 @@ export const updateMarker = async (e: MessageEvent<any>) => {
     }
 
     if (data.taskStatus === 'start') {
+      clearRealPathLayer()
       initMarker(newCarData.value)
       isReal.value = true
       ElMessage.success({
@@ -98,12 +99,10 @@ export const updateMarker = async (e: MessageEvent<any>) => {
     }
     if (data.taskStatus === 'end') {
       isReal.value = false
-      realPathLayer.clear()
+      clearRealPathLayer()
       ElMessage.success({
         message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
       })
-      taskPathLayer.clear()
-      taskpathPoints.length = 0
       initMarker(newCarData.value)
     }
 
@@ -111,6 +110,13 @@ export const updateMarker = async (e: MessageEvent<any>) => {
       initRealPath(data)
     }
   }
+}
+
+export const clearRealPathLayer = () => {
+  realPathLayer.clear()
+  taskPathLayer.clear()
+  taskpathPoints.length = 0
+  realPathPoints.length = 0
 }
 
 export const carList = ref<
@@ -143,7 +149,7 @@ export const addMarker = async (code: string) => {
   const data = res.data || {}
   isRecord.value = false
   isReal.value = false
-  realPathLayer.clear()
+  clearRealPathLayer()
   recordPathLayer.clear()
   newCarData.value = data
   initMarker(data)

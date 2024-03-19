@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import { i18n } from '@/utils'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { map } from './base'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
@@ -12,6 +11,7 @@ export const initRealPathLayer = () => {
   realPathLayer = new VectorLayer('real-point')
   realPathLayer.addTo(map)
 }
+
 export const realPathPoints: Marker[] = []
 
 export const initRealPath = (data: CarInfo) => {
