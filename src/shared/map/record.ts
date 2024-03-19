@@ -92,15 +92,12 @@ export const initRecordPath = (data: CarInfo) => {
   if (recordData !== null) {
     if (!(recordData.latitude === data.latitude && recordData.longitude === data.longitude)) {
       drawRecordPath(data)
-      // 保存上一个值
-      recordData = data
-    } else {
-      return
     }
   } else {
     drawRecordPath(data)
-    recordData = data
   }
+  // 保存上一个值
+  recordData = data
 }
 
 function drawRecordPath(data: CarInfo) {
