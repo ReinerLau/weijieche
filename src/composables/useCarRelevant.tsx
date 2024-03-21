@@ -82,6 +82,8 @@ export const useCarRelevant = ({
           message: t('yi-duan-kai-lian-jie')
         })
       }
+    } else {
+      isConnection.value = false
     }
   })
 
@@ -93,6 +95,7 @@ export const useCarRelevant = ({
   // 监听切换车辆后重新激活车辆
   watch(currentCar, (code: string) => {
     connectCar(code)
+    isConnection.value = false
   })
 
   // 车辆相关抽屉
@@ -161,8 +164,8 @@ export const useCarRelevant = ({
         <div class="mr-6">
           <el-switch
             v-model={isConnection.value}
-            active-text={t('kai-qi')}
-            inactive-text={t('guan-bi')}
+            active-text={t('lian-jie')}
+            inactive-text={t('duan-kai')}
             style=" --el-switch-off-color: #ff4949"
           />
         </div>
