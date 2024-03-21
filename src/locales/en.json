@@ -265,5 +265,7 @@
   "yi-qu-xiao-bao-cun-lu-xian": "Saved route canceled",
   "wei-fa-xian-yun-tai-huo-sun-huai": "No gimbal found or damaged",
   "yun-tai-chui-zhi-jiao-du": "PTZ vertical angle",
-  "yun-tai-shui-ping-jiao-du": "PTZ horizontal angle"
+  "yun-tai-shui-ping-jiao-du": "PTZ horizontal angle",
+  "duan-kai": "disconnect",
+  "lian-jie": "connect"
 }
