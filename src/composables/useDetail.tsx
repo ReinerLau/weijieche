@@ -178,6 +178,22 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     {
       title: t('yu-liang-ji'),
       value: `${statusData.value.rainfallNum || 0}ppm`
+    },
+    {
+      title: t('yun-tai-shui-ping-jiao-du'),
+      value: `${
+        statusData.value.ptzAngleHorizontal === -3
+          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
+          : statusData.value.ptzAngleHorizontal || 0
+      }°`
+    },
+    {
+      title: t('yun-tai-chui-zhi-jiao-du'),
+      value: `${
+        statusData.value.ptzAngleVertical === -3
+          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
+          : statusData.value.ptzAngleHorizontal || 0
+      }°`
     }
   ])
 

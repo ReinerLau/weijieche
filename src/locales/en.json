@@ -262,5 +262,8 @@
   "qu-xiao": "Cancel",
   "que-ding-bu-bao-cun-lu-xian-ma": "Are you sure you don't want to save the route?",
   "ren-wu-zhi-hang-jie-shu": "Mission execution is over!",
-  "yi-qu-xiao-bao-cun-lu-xian": "Saved route canceled"
+  "yi-qu-xiao-bao-cun-lu-xian": "Saved route canceled",
+  "wei-fa-xian-yun-tai-huo-sun-huai": "No gimbal found or damaged",
+  "yun-tai-chui-zhi-jiao-du": "PTZ vertical angle",
+  "yun-tai-shui-ping-jiao-du": "PTZ horizontal angle"
 }
