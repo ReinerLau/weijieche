@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { i18n } from '@/utils'
-import { ConnectorLine, DistanceTool, Marker, VectorLayer } from 'maptalks'
+import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { clearMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
