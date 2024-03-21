@@ -24,8 +24,8 @@ export const setWS = (val: WebSocket) => {
 export interface CarInfo {
   robotid?: string
   rid?: string
-  longitude?: number | string
-  latitude?: number | string
+  longitude: number
+  latitude: number
   heading?: number | string
   robotCode?: string
 }
@@ -68,7 +68,7 @@ export const initMarker = (data: CarInfo) => {
   }
 }
 
-export const newCarData = ref({})
+export const newCarData = ref()
 
 export const updateMarker = async (e: MessageEvent<any>) => {
   if (e.data !== 'heartbeat') {

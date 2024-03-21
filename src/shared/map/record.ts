@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { i18n } from '@/utils'
-import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { ConnectorLine, DistanceTool, Marker, VectorLayer } from 'maptalks'
 import { clearMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
@@ -9,7 +9,7 @@ import { haveCurrentCar } from '..'
 import { templateDialogVisible } from './template'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 import { clearStatus } from '.'
-
+import * as turf from '@turf/turf'
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
 //录制路线图层实例
@@ -90,7 +90,13 @@ let recordData: any = null
 export const initRecordPath = (data: CarInfo) => {
   // 筛选绘制保存录制路线
   if (recordData !== null) {
-    if (!(recordData.latitude === data.latitude && recordData.longitude === data.longitude)) {
+    const line = turf.lineString([
+      [recordData.longitude, recordData.latitude],
+      [data.longitude, data.latitude]
+    ])
+    const pointLength = turf.length(line) * 1000
+    //两点距离大于1米录制
+    if (pointLength > 1) {
       drawRecordPath(data)
     }
   } else {
@@ -102,14 +108,7 @@ export const initRecordPath = (data: CarInfo) => {
 
 function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
-    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
-      symbol: {
-        // markerType: 'ellipse',
-        // markerFill: 'red',
-        // markerWidth: 13,
-        // markerHeight: 13
-      }
-    })
+    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {})
 
     recordPathLayer.addGeometry(pathPoint)
 

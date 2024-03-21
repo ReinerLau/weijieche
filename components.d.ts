@@ -25,9 +25,7 @@ declare module 'vue' {
     TemplateAlarmDialog: typeof import('./src/components/TemplateAlarmDialog.vue')['default']
     TemplateDialog: typeof import('./src/components/TemplateDialog.vue')['default']
     TemplateSearchDialog: typeof import('./src/components/TemplateSearchDialog.vue')['default']
-    TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     ToolbarController: typeof import('./src/components/ToolbarController.vue')['default']
     VideoController: typeof import('./src/components/VideoController.vue')['default']
-    WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }
