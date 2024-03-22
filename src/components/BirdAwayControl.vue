@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-white mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
-    <div class="grid gap-2 grid-cols-5 grid-rows-2 w-full h-14 mr-4">
+    <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full h-14 mr-4">
       <template v-for="item in buttonList" :key="item.value">
         <el-button size="large" @click="onClick(item.value)">
           {{ item.content }}
@@ -61,15 +61,15 @@ const buttonList = [
   {
     value: '08',
     content: t('jie-shu-bo-fang')
-  },
-  {
-    value: '05',
-    content: t('shi-neng')
-  },
-  {
-    value: '06',
-    content: t('shi-neng-0')
   }
+  // {
+  //   value: '05',
+  //   content: t('shi-neng')
+  // },
+  // {
+  //   value: '06',
+  //   content: t('shi-neng-0')
+  // }
 ]
 
 // 点击按钮
