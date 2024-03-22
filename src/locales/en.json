@@ -267,5 +267,6 @@
   "yun-tai-chui-zhi-jiao-du": "PTZ vertical angle",
   "yun-tai-shui-ping-jiao-du": "PTZ horizontal angle",
   "duan-kai": "disconnect",
-  "lian-jie": "connect"
+  "lian-jie": "connect",
+  "jie-shu-bo-fang": "end playback"
 }

@@ -32,3 +32,11 @@ export function patrolingSetMode(code: string, mode: number) {
     method: 'post'
   })
 }
+
+//调用指定音频
+export function playAudioById(audioId: number) {
+  return request({
+    url: `/robot-remote-control/playAudio/${audioId}`,
+    method: 'get'
+  })
+}
