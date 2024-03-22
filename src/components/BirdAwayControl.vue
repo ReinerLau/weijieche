@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-white mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
-    <div class="grid gap-2 grid-cols-5 grid-rows-1 w-full h-14 mr-4">
+    <div class="grid gap-2 grid-cols-5 grid-rows-2 w-full h-14 mr-4">
       <template v-for="item in buttonList" :key="item.value">
         <el-button size="large" @click="onClick(item.value)">
           {{ item.content }}
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 // 驱鸟器控制
-import { patrolingCruise } from '@/api'
+import { patrolingCruise, playAudioById } from '@/api'
 import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
 import { computed, ref, watch } from 'vue'
@@ -38,17 +38,29 @@ const { t } = useI18n()
 
 // 按钮组合
 const buttonList = [
+  // {
+  //   value: '01',
+  //   content: t('qu-niao')
+  // },
   {
-    value: '01',
+    value: '9',
     content: t('qu-niao')
   },
+  // {
+  //   value: '02',
+  //   content: t('qu-ren')
+  // },
   {
-    value: '02',
+    value: '10',
     content: t('qu-ren')
   },
+  // {
+  //   value: '08',
+  //   content: t('zan-ting')
+  // },
   {
-    value: '03',
-    content: t('zan-ting')
+    value: '08',
+    content: t('jie-shu-bo-fang')
   },
   {
     value: '05',
@@ -63,14 +75,18 @@ const buttonList = [
 // 点击按钮
 async function onClick(value: string) {
   if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: '05',
-      param2: value,
-      param3: '255',
-      param4: 'ff'
+    if (value === '9' || value === '10') {
+      playAudioById(parseInt(value))
+    } else {
+      const data = {
+        code: currentCar.value,
+        param1: '05',
+        param2: value,
+        param3: '255',
+        param4: 'ff'
+      }
+      patrolingCruise(data)
     }
-    patrolingCruise(data)
   }
 }
 
@@ -100,17 +116,21 @@ const switchEvent = {
   PERSON: () => {
     playPersonAway.value = !playPersonAway.value
     if (playPersonAway.value) {
-      onClick('02')
+      if (haveCurrentCar()) {
+        onClick('10')
+      }
     } else {
-      onClick('03')
+      onClick('08')
     }
   },
   BIRD: () => {
     playBirdAway.value = !playBirdAway.value
     if (playPersonAway.value) {
-      onClick('01')
+      if (haveCurrentCar()) {
+        onClick('9')
+      }
     } else {
-      onClick('03')
+      onClick('08')
     }
   }
 }
