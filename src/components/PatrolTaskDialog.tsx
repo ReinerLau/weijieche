@@ -268,10 +268,16 @@ export default defineComponent({
                   {{
                     default: ({ row }: { row: any }) => (
                       <div class="felx flex-col">
-                        <ElButton onClick={() => emit('confirm', row)}>{'查看路线'}</ElButton>
-                        <ElButton onClick={() => handleConfirmCamera(row)}>{'任务画面'}</ElButton>
-                        <ElButton onClick={() => handleConfirmVideo(row)}>{'任务视频'}</ElButton>
-                        <ElButton onClick={handleUploadVideo}>{'存储视频'}</ElButton>
+                        <ElButton onClick={() => emit('confirm', row)}>
+                          {t('cha-kan-lu-xian')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmCamera(row)}>
+                          {t('ren-wu-hua-mian')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmVideo(row)}>
+                          {t('ren-wu-shi-pin')}
+                        </ElButton>
+                        <ElButton onClick={handleUploadVideo}>{t('cun-chu-shi-pin')}</ElButton>
                       </div>
                     )
                   }}
