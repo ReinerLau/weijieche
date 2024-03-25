@@ -17,7 +17,7 @@ export const pointCoordinates = ref('')
 /**
  * 当前设置的速度
  */
-export const pointSpeed = ref('')
+export const pointSpeed = ref('5')
 
 /**
  * 回显坐标和速度

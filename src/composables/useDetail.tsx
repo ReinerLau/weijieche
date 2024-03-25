@@ -14,6 +14,7 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElDrawer,
+  ElInputNumber,
   ElOption,
   ElScrollbar,
   ElSelect
@@ -23,6 +24,7 @@ import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { haveCurrentCar, cameraUrl } from '@/shared'
+import { pointSpeed } from '@/shared/map/pointConfig'
 
 // 底部状态相关
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
@@ -82,6 +84,9 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     }
   })
 
+  //设置默认车速
+  function settingCarSpeed(pointSpeed: any): any {}
+
   // 所有状态值
   const status = computed(() => [
     {
@@ -115,6 +120,17 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
           </ElSelect>
           <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>
             {t('she-zhi-ying-she')}
+          </ElButton>
+        </div>
+      )
+    },
+    {
+      title: t('mo-ren-che-su'),
+      slot: () => (
+        <div class="flex ">
+          <ElInputNumber v-model={pointSpeed.value} min={0} />
+          <ElButton onClick={() => settingCarSpeed(pointSpeed.value)}>
+            {t('she-zhi-mo-ren-che-su')}
           </ElButton>
         </div>
       )
