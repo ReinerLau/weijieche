@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { i18n } from '@/utils'
-import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { LineString, Marker, VectorLayer } from 'maptalks'
 import { clearMenu, map } from './base'
 import { clearPathLayer } from './path'
 import { clearDrawTool } from './drawTool'
@@ -106,27 +106,21 @@ export const initRecordPath = (data: CarInfo) => {
   recordData = data
 }
 
+const recordPath = ref<[number, number][]>([])
 function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
-    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {})
-
-    recordPathLayer.addGeometry(pathPoint)
+    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
+      symbol: {}
+    })
+    recordPath.value.push([Number(data.longitude), Number(data.latitude)])
 
     recordPathPoints.push(pathPoint)
-
-    if (recordPathPoints.length >= 2) {
-      const lastTwoPoints = recordPathPoints.slice(-2)
-      const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
-        showOn: 'always',
-        symbol: {
-          lineColor: 'red',
-          lineWidth: 2
-        },
-        zIndex: -1
-      })
-
-      recordPathLayer.addGeometry(connectLine)
-    }
+    const connectLine = new LineString(recordPath.value, {
+      symbol: {
+        lineColor: 'red'
+      }
+    })
+    recordPathLayer.addGeometry(connectLine)
   }
 }
 
