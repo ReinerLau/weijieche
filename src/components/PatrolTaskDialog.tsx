@@ -196,6 +196,9 @@ export default defineComponent({
       cameraUrl.value = row.videoPath
     }
 
+    //保存视频
+    function handleUploadVideo() {}
+
     //打开摄像画面
     const cameraList: any = ref([])
 
@@ -217,7 +220,7 @@ export default defineComponent({
           v-model={patrolTaskDialogVisible.value}
           onClose={handleVisible}
           title={t('xun-luo-ren-wu')}
-          width="50vw"
+          width="70vw"
           align-center
         >
           {{
@@ -264,12 +267,11 @@ export default defineComponent({
                 <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
-                      <div>
-                        <ElButton onClick={() => emit('confirm', row)}>{t('lu-xian')}</ElButton>
-                        <ElButton onClick={() => handleConfirmVideo(row)}>{t('shi-pin')}</ElButton>
-                        <ElButton onClick={() => handleConfirmCamera(row)}>
-                          {t('hua-mian')}
-                        </ElButton>
+                      <div class="felx flex-col">
+                        <ElButton onClick={() => emit('confirm', row)}>{'查看路线'}</ElButton>
+                        <ElButton onClick={() => handleConfirmCamera(row)}>{'任务画面'}</ElButton>
+                        <ElButton onClick={() => handleConfirmVideo(row)}>{'任务视频'}</ElButton>
+                        <ElButton onClick={handleUploadVideo}>{'存储视频'}</ElButton>
                       </div>
                     )
                   }}
