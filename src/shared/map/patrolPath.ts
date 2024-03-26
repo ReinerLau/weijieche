@@ -2,11 +2,11 @@ import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { jumpToCoordinate, map } from './base'
 import { entryPoint, setEntryPoint } from './home'
 import { clearDrawTool } from './drawTool'
-import { clearPathLayer, pathPoints } from './path'
+import { clearPathLayer, pathPointsData } from './path'
 import { i18n } from '@/utils'
 import { ref } from 'vue'
 import { endRecording } from './record'
-import { getLineCoordinates, pathDataPoints } from '.'
+import { pathDataPoints } from '.'
 import type { Coordinate } from '@/types'
 
 /**
@@ -109,7 +109,7 @@ export const patrolTaskDialogVisible = ref(false)
 export const assignTaskToolbarEvent = () => {
   if (endRecording()) {
     clearDrawTool()
-    pathDataPoints.value = JSON.stringify(getLineCoordinates(pathPoints))
+    pathDataPoints.value = JSON.stringify(pathPointsData.value)
     scheduleDialogVisible.value = true
   }
 }

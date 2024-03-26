@@ -268,5 +268,9 @@
   "yun-tai-chui-zhi-jiao-du": "云台垂直角度",
   "lian-jie": "连接",
   "duan-kai": "断开",
-  "jie-shu-bo-fang": "结束播放"
+  "jie-shu-bo-fang": "结束播放",
+  "she-zhi-mo-ren-che-su": "设置默认车速",
+  "mo-ren-che-su": "默认车速",
+  "che-su-xiu-gai-shi-bai": "车速修改失败",
+  "qing-xian-she-zhi-mo-ren-che-su": "请先设置默认车速！"
 }

@@ -31,7 +31,7 @@ const handleConfirm = () => {
           <el-input v-model="pointCoordinates" disabled />
         </el-form-item>
         <el-form-item :label="t('che-liang-su-du-ms')">
-          <el-input v-model="pointSpeed" clearable />
+          <el-input-number :min="0" v-model="pointSpeed" clearable />
         </el-form-item>
       </el-form>
     </template>

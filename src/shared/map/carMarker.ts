@@ -1,6 +1,6 @@
 import { Marker, VectorLayer } from 'maptalks'
 import { map } from './base'
-import { currentCar } from '..'
+import { currentCar } from '@/shared'
 import { ref } from 'vue'
 import { initRecordPath, initRecordPathLayer, isRecord, recordPathLayer } from './record'
 import { getCarInfo, getCarList, getPatrolTaskById } from '@/api'
@@ -8,6 +8,7 @@ import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { initRealPath, initRealPathLayer, isReal, realPathLayer, realPathPoints } from './realRoute'
 import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from './taskPath'
+import { carSpeed } from '@/composables'
 
 export let carMarkerLayer: VectorLayer
 export let ws: WebSocket | undefined
@@ -147,6 +148,8 @@ export const initCar = async () => {
 export const addMarker = async (code: string) => {
   const res: any = await getCarInfo(code)
   const data = res.data || {}
+  //获取车速
+  carSpeed.value = data.speed
   isRecord.value = false
   isReal.value = false
   clearRealPathLayer()
