@@ -19,15 +19,17 @@ import { backToCenter } from './base'
 import { assignTaskToolbarEvent, clearPathToolbarEvent, taskListToolbarEvent } from './patrolPath'
 import { taskPointToolbarEvent } from './taskPoint'
 import { fileUploadToolbarEvent } from './file'
-import { pointSpeed } from '@/shared/map/pointConfig'
+import { carSpeed } from '@/composables'
+
 // 获取路线上各个点的坐标信息
 export const getLineCoordinates = (list: Marker[]) => {
   return list.map((item) => ({
     x: item.getCoordinates().y,
     y: item.getCoordinates().x,
-    speed: pointSpeed.value
+    speed: carSpeed.value || 0
   }))
 }
+
 // 校验地图是否已存在路线
 export const havePath = () => {
   if (pathPoints.length > 1 || recordPathPoints.length > 1) {

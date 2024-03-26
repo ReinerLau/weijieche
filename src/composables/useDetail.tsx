@@ -1,4 +1,4 @@
-import { getCarInfo } from '@/api'
+import { getCarInfo, updateCarSpeed } from '@/api'
 import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
   baseModes,
@@ -15,6 +15,7 @@ import {
   ElDescriptionsItem,
   ElDrawer,
   ElInputNumber,
+  ElMessage,
   ElOption,
   ElScrollbar,
   ElSelect
@@ -24,7 +25,11 @@ import { useController } from './useController'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { haveCurrentCar, cameraUrl } from '@/shared'
-import { pointSpeed } from '@/shared/map/pointConfig'
+import { pathPoints, pathPointsData } from '@/shared/map/path'
+import { getLineCoordinates } from '@/shared/map'
+
+//默认车速变量
+export const carSpeed = ref()
 
 // 底部状态相关
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
@@ -85,7 +90,26 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   })
 
   //设置默认车速
-  function settingCarSpeed(pointSpeed: any): any {}
+  async function settingCarSpeed(speed: number) {
+    carSpeed.value = speed
+    try {
+      const res: any = await updateCarSpeed({ code: currentCar.value, speed: carSpeed.value })
+      ElMessage({
+        type: 'success',
+        message: res.message
+      })
+    } catch {
+      ElMessage({
+        type: 'error',
+        message: t('che-su-xiu-gai-shi-bai')
+      })
+    }
+  }
+
+  //默认速度改变，路线默认速度重置
+  watch(carSpeed, () => {
+    pathPointsData.value = getLineCoordinates(pathPoints)
+  })
 
   // 所有状态值
   const status = computed(() => [
@@ -128,8 +152,8 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       title: t('mo-ren-che-su'),
       slot: () => (
         <div class="flex ">
-          <ElInputNumber v-model={pointSpeed.value} min={0} />
-          <ElButton onClick={() => settingCarSpeed(pointSpeed.value)}>
+          <ElInputNumber v-model={carSpeed.value} min={0} />
+          <ElButton onClick={() => settingCarSpeed(carSpeed.value)}>
             {t('she-zhi-mo-ren-che-su')}
           </ElButton>
         </div>

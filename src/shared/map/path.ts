@@ -9,6 +9,7 @@ import { clearDrawTool } from './drawTool'
 import { getLineCoordinates, handleCreatePath } from '.'
 import type { Coordinate, PointData } from '@/types'
 import { handleTaskEvent, initTaskPoints } from './taskPoint'
+import { haveCurrentCar } from '@/shared'
 
 /**
  * 通用路线图层
