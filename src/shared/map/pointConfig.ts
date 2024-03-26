@@ -3,8 +3,6 @@ import { pathPointsData } from './path'
 import { ElMessage } from 'element-plus'
 import { i18n } from '@/utils'
 import type { Marker } from 'maptalks'
-import { haveCurrentCar } from '@/shared'
-import { carSpeed } from '@/composables'
 /**
  * 点编辑抽屉是否可见
  */
@@ -18,17 +16,14 @@ export const pointCoordinates = ref('')
 /**
  * 当前设置的速度
  */
-export const pointSpeed = ref()
+export const pointSpeed = ref(0)
 
 /**
  * 回显坐标和速度
  * @param coordinates 坐标
  * @param speed 速度
  */
-export const handlePointConfigEvent = (
-  coordinates: { x: number; y: number },
-  speed: string | 0
-) => {
+export const handlePointConfigEvent = (coordinates: { x: number; y: number }, speed: number) => {
   pointCoordinates.value = JSON.stringify(coordinates)
   pointSpeed.value = speed
 }
@@ -42,7 +37,7 @@ export const currentSelectedPointIndex = ref(0)
  * 设置点速度
  * @param speed 速度
  */
-export const handleConfirmPointCarConfig = (speed: string) => {
+export const handleConfirmPointCarConfig = (speed: number) => {
   if (pathPointsData.value.length !== 0) {
     pathPointsData.value[currentSelectedPointIndex.value].speed = speed
   } else {

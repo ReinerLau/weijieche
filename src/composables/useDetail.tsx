@@ -29,7 +29,7 @@ import { pathPoints, pathPointsData } from '@/shared/map/path'
 import { getLineCoordinates } from '@/shared/map'
 
 //默认车速变量
-export const carSpeed = ref()
+export const carSpeed = ref(0)
 
 // 底部状态相关
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
