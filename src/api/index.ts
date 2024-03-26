@@ -39,3 +39,11 @@ export function getCarList() {
     method: 'get'
   })
 }
+
+export function updateCarSpeed(data: any) {
+  return request({
+    url: `/robot-vehicle-log/v1/defaultSpeed`,
+    method: 'put',
+    data
+  })
+}
