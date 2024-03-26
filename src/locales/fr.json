@@ -270,5 +270,7 @@
   "lian-jie": "connecter",
   "jie-shu-bo-fang": "terminer la lecture",
   "mo-ren-che-su": "Vitesse par défaut",
-  "she-zhi-mo-ren-che-su": "Définir la vitesse par défaut"
+  "she-zhi-mo-ren-che-su": "Définir la vitesse par défaut",
+  "che-su-xiu-gai-shi-bai": "La modification de la vitesse du véhicule a échoué",
+  "qing-xian-she-zhi-mo-ren-che-su": "Veuillez d'abord définir la vitesse par défaut !"
 }

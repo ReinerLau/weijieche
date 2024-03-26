@@ -270,5 +270,7 @@
   "lian-jie": "connect",
   "jie-shu-bo-fang": "end playback",
   "mo-ren-che-su": "Default speed",
-  "she-zhi-mo-ren-che-su": "Set default speed"
+  "she-zhi-mo-ren-che-su": "Set default speed",
+  "che-su-xiu-gai-shi-bai": "Vehicle speed modification failed",
+  "qing-xian-she-zhi-mo-ren-che-su": "Please set the default speed first!"
 }
