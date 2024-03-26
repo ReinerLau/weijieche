@@ -2,7 +2,7 @@
   <div>
     <div class="text-white mb-7">{{ t('quan-ping-hua-mian-qie-huan') }}</div>
     <div class="flex justify-between">
-      <el-button size="large" circle @click="onClick(keyMap.SWITCH)">
+      <el-button size="large" circle @click="onClick(keyMap.BATTERY)">
         <i-icomoon-free-switch />
       </el-button>
       <el-button size="large" @click="onClick(keyMap.BACK)">{{ t('fan-hui') }}</el-button>
@@ -22,7 +22,8 @@
           </el-col>
           <el-col :span="8">
             <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
-              <i-icomoon-free-switch />
+              <!-- <i-icomoon-free-switch /> -->
+              {{ t('que-ding') }}
             </el-button>
           </el-col>
           <el-col :span="8">
@@ -66,18 +67,18 @@ const { t } = useI18n()
 
 // 不同功能对应映射值
 const keyMap = {
-  SWITCH: 13,
-  BACK: 1,
-  UP: '03',
-  LEFT: '06',
-  CONFIRM: '07',
-  RIGHT: '04',
-  DOWN: '05',
+  BATTERY: 1,
+  UP: 2,
+  BACK: 3,
+  LEFT: 4,
+  CONFIRM: 5,
+  RIGHT: 6,
+  DOWN: 8,
   PREV: '12',
-  AV1: '08',
-  AV2: '09',
-  AV3: '10',
-  AV4: '11'
+  AV1: 13,
+  AV2: 14,
+  AV3: 15,
+  AV4: 16
 }
 
 // 开启功能
@@ -85,10 +86,10 @@ async function onClick(value: string | number) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
-      param1: '08',
+      param1: 8,
       param2: value,
-      param3: '0',
-      param4: '0'
+      param3: 0,
+      param4: 0
     }
     patrolingCruise(data)
   }
