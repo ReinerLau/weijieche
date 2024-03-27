@@ -8,8 +8,8 @@ import {
   // modes,
   pressedButtons
 } from '@/shared'
-import { ElMenu, ElMenuItem, ElMessage, ElScrollbar, ElSwitch } from 'element-plus'
-import { Fragment, computed, ref, watch, type ComputedRef, type Ref } from 'vue'
+import { ElMenu, ElMenuItem, ElMessage, ElScrollbar } from 'element-plus'
+import { Fragment, computed, ref, watch, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { haveCurrentCar } from '@/shared'
 export const carMode = ref('')
@@ -23,7 +23,7 @@ export const useControlSection = () => {
     <ElScrollbar always={true}>
       <ElMenu mode="horizontal" ellipsis={false}>
         <Menus />
-        <Switchs />
+        {/* <Switchs /> */}
       </ElMenu>
     </ElScrollbar>
   )
@@ -55,12 +55,12 @@ export const useControlSection = () => {
     // }
   ])
 
-  interface SwitchGroup {
-    title: string
-    ref: Ref<boolean>
-    disabled?: Ref<boolean> | boolean
-    event?: (value: any) => any
-  }
+  // interface SwitchGroup {
+  //   title: string
+  //   ref: Ref<boolean>
+  //   disabled?: Ref<boolean> | boolean
+  //   event?: (value: any) => any
+  // }
 
   // 近灯是否开启
   const lowLight = ref(false)
@@ -69,7 +69,7 @@ export const useControlSection = () => {
   const highLight = ref(false)
 
   //自动灯是否开启
-  const autoLight = ref(false)
+  // const autoLight = ref(false)
 
   // 近远灯映射值
   const lightModes = {
@@ -144,87 +144,34 @@ export const useControlSection = () => {
     }
   }
 
-  // 切换按钮组
-  const switchGroup: ComputedRef<SwitchGroup[]> = computed(() => [
-    {
-      title: t('jin-guang-deng'),
-      ref: lowLight,
-      event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.LOWBEAM)
-        } else {
-          lowLight.value = false
-        }
-      },
-      disabled: highLight.value || autoLight.value ? true : false
-    },
-    {
-      title: t('yuan-guang-deng'),
-      ref: highLight,
-      event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.HIGHBEAM)
-        } else {
-          highLight.value = false
-        }
-      },
-      disabled: lowLight.value || autoLight.value ? true : false
-    },
-    {
-      title: t('zi-dong-yuan-guang-deng'),
-      ref: autoLight,
-      event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.AUTOBEAM)
-        } else {
-          autoLight.value = false
-        }
-      },
-      disabled: lowLight.value || highLight.value ? true : false
-    },
-    // {
-    //   title: t('yu-yin'),
-    //   ref: voice,
-    //   event: toggleVoice
-    // },
-
-    {
-      title: t('ji-guang-fa-san-qi'),
-      ref: disperseMode,
-      event: controlLaser
-    }
-  ])
-
   // 模式切换组件
   const Menus = () => (
-    <Fragment>
-      <Fragment>
-        {menuItems.value.map((item) => (
-          <ElMenuItem index={item.title} onClick={item.event}>
-            {item.title}
-          </ElMenuItem>
-        ))}
-      </Fragment>
-    </Fragment>
-  )
-
-  // 各种开关按钮组件
-  const Switchs = () => (
-    <Fragment>
-      {switchGroup.value.map((item) => (
-        <ElMenuItem index={item.title}>
-          <div class="flex items-center w-full justify-between">
-            <span class="mr-2">{item.title}</span>
-            <ElSwitch
-              v-model={item.ref.value}
-              onChange={item.event}
-              disabled={Boolean(item.disabled)}
-            />
-          </div>
+    <div class="flex w-full">
+      {menuItems.value.map((item) => (
+        <ElMenuItem class="flex-1 flex justify-center" index={item.title} onClick={item.event}>
+          {item.title}
         </ElMenuItem>
       ))}
-    </Fragment>
+    </div>
   )
+
+  // // 各种开关按钮组件
+  // const Switchs = () => (
+  //   <Fragment>
+  //     {switchGroup.value.map((item) => (
+  //       <ElMenuItem index={item.title}>
+  //         <div class="flex items-center w-full justify-between">
+  //           <span class="mr-2">{item.title}</span>
+  //           <ElSwitch
+  //             v-model={item.ref.value}
+  //             onChange={item.event}
+  //             disabled={Boolean(item.disabled)}
+  //           />
+  //         </div>
+  //       </ElMenuItem>
+  //     ))}
+  //   </Fragment>
+  // )
 
   // 开关按钮相关事件
   const switchEvent = {
