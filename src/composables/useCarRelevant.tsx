@@ -108,28 +108,6 @@ export const useCarRelevant = ({
       size="80%"
     >
       <ElScrollbar>
-        <ElButton
-          class="w-full mb-5"
-          size="large"
-          onClick={() => {
-            isConfig.value = true
-            configType.value = configTypes.CAMERA
-            carSettingDrawerVisible.value = false
-          }}
-        >
-          {t('pei-zhi-jian-kong')}
-        </ElButton>
-        <ElButton
-          class="w-full"
-          size="large"
-          onClick={() => {
-            isConfig.value = true
-            configType.value = configTypes.DEVICE
-            carSettingDrawerVisible.value = false
-          }}
-        >
-          {t('pei-zhi-wai-she')}{' '}
-        </ElButton>
         <ElDivider />
         <FrameSwitchOver />
         <ElDivider />
@@ -166,9 +144,30 @@ export const useCarRelevant = ({
         style="--el-switch-off-color: #ff4949"
         size="small"
       />
-      <span class="text-sm">
+      <span class="text-sm mr-6">
         {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
       </span>
+      <ElButton
+        class="mr-6"
+        size="small"
+        onClick={() => {
+          isConfig.value = true
+          configType.value = configTypes.CAMERA
+          carSettingDrawerVisible.value = false
+        }}
+      >
+        {t('pei-zhi-jian-kong')}
+      </ElButton>
+      <ElButton
+        size="small"
+        onClick={() => {
+          isConfig.value = true
+          configType.value = configTypes.DEVICE
+          carSettingDrawerVisible.value = false
+        }}
+      >
+        {t('pei-zhi-wai-she')}
+      </ElButton>
       {/* <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton> */}
