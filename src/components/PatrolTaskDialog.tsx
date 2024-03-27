@@ -1,6 +1,11 @@
 import { getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
-import { patrolTaskDialogVisible } from '@/shared/map/patrolPath'
+import { handleConfirmAlarmPoint, setAlarmMenu } from '@/shared/map/alarmPoint'
+import {
+  clearDrawPatrolLine,
+  handleConfirmPatrolTaskPath,
+  patrolTaskDialogVisible
+} from '@/shared/map/patrolPath'
 import { parseTime } from '@/utils'
 import {
   ElButton,
@@ -211,8 +216,13 @@ export default defineComponent({
       }
     }
 
+    //打开展示异常位置
     async function handleConfirmAlarm(row: any) {
-      const res = await getTaskWarning(1)
+      const { data } = await getTaskWarning(1)
+      clearDrawPatrolLine()
+      handleConfirmPatrolTaskPath(row)
+      handleConfirmAlarmPoint(data)
+      setAlarmMenu()
     }
     return () => (
       <div>
@@ -273,7 +283,9 @@ export default defineComponent({
                         <ElButton onClick={() => handleConfirmCamera(row)}>
                           {t('hua-mian')}
                         </ElButton>
-                        <ElButton onClick={() => handleConfirmAlarm(row)}>{'异常位置'}</ElButton>
+                        <ElButton onClick={() => handleConfirmAlarm(row)}>
+                          {t('yi-chang-wei-zhi')}
+                        </ElButton>
                       </div>
                     )
                   }}

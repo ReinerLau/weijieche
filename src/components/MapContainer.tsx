@@ -35,6 +35,7 @@ import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import FileUploadDialog from '@/components/FileUploadDialog'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
 import { onMapDBClick } from '@/shared/map/debug'
+import { initAlarmPointLayer } from '@/shared/map/alarmPoint'
 
 export default defineComponent({
   emits: ['confirm'],
@@ -62,6 +63,7 @@ export default defineComponent({
       initAlarmMarkerLayer()
       initPathLayer()
       initPatrolpathLayer()
+      initAlarmPointLayer()
       initTaskPointLayer()
       initDrawTool()
       initHomePath()
