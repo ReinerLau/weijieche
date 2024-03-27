@@ -272,5 +272,6 @@
   "mo-ren-che-su": "Default speed",
   "she-zhi-mo-ren-che-su": "Set default speed",
   "che-su-xiu-gai-shi-bai": "Vehicle speed modification failed",
-  "qing-xian-she-zhi-mo-ren-che-su": "Please set the default speed first!"
+  "qing-xian-she-zhi-mo-ren-che-su": "Please set the default speed first!",
+  "shang-zhuang-kong-zhi": "Bodywork control"
 }

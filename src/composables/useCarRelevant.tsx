@@ -153,7 +153,7 @@ export const useCarRelevant = ({
           carSettingDrawerVisible.value = true
         }}
       >
-        {'上装控制'}
+        {t('shang-zhuang-kong-zhi')}
       </ElButton>
       <ElButton
         class="mr-4"
