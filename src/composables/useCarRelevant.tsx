@@ -108,7 +108,6 @@ export const useCarRelevant = ({
       size="80%"
     >
       <ElScrollbar>
-        <ElDivider />
         <FrameSwitchOver />
         <ElDivider />
         <BirdAwayControl />
@@ -135,20 +134,29 @@ export const useCarRelevant = ({
           </ElOption>
         ))}
       </ElSelect>
-      <span class="mr-6">{NewCurrentCarStatus.value}</span>
+      <span class="mr-4">{NewCurrentCarStatus.value}</span>
       <ElSwitch
-        class="mr-6"
+        class="mr-4"
         v-model={isConnection.value}
         active-text={t('lian-jie')}
         inactive-text={t('duan-kai')}
         style="--el-switch-off-color: #ff4949"
         size="small"
       />
-      <span class="text-sm mr-6">
+      <span class="text-sm mr-4">
         {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
       </span>
       <ElButton
-        class="mr-6"
+        class="mr-4"
+        size="small"
+        onClick={() => {
+          carSettingDrawerVisible.value = true
+        }}
+      >
+        {'上装控制'}
+      </ElButton>
+      <ElButton
+        class="mr-4"
         size="small"
         onClick={() => {
           isConfig.value = true
@@ -168,9 +176,6 @@ export const useCarRelevant = ({
       >
         {t('pei-zhi-wai-she')}
       </ElButton>
-      {/* <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
-        {currentCarName.value || t('wei-xuan-ze-che-liang')}
-      </ElButton> */}
     </div>
   )
 
