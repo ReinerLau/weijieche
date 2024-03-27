@@ -12,7 +12,8 @@ import {
   ElMessage,
   ElOption,
   ElScrollbar,
-  ElSelect
+  ElSelect,
+  ElSwitch
 } from 'element-plus'
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
@@ -147,6 +148,7 @@ export const useCarRelevant = ({
         placeholder={t('xuan-ze-che-liang')}
         size="small"
         onVisible-change={(visible: boolean) => visible && getList()}
+        class="mr-2"
       >
         {carList.value.map((item) => (
           <ElOption key={item.id} value={item.code}>
@@ -155,23 +157,21 @@ export const useCarRelevant = ({
           </ElOption>
         ))}
       </ElSelect>
-      <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
+      <span class="mr-6">{NewCurrentCarStatus.value}</span>
+      <ElSwitch
+        class="mr-6"
+        v-model={isConnection.value}
+        active-text={t('lian-jie')}
+        inactive-text={t('duan-kai')}
+        style="--el-switch-off-color: #ff4949"
+        size="small"
+      />
+      <span class="text-sm">
+        {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
+      </span>
+      {/* <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
-      </ElButton>
-      <div class="flex items-center">
-        <span class="mr-6">{NewCurrentCarStatus.value}</span>
-        <div class="mr-6">
-          <el-switch
-            v-model={isConnection.value}
-            active-text={t('lian-jie')}
-            inactive-text={t('duan-kai')}
-            style=" --el-switch-off-color: #ff4949"
-          />
-        </div>
-        <span class="text-sm">
-          {t('dian-liang')} {NewCurrentCarBattery.value || 0}%
-        </span>
-      </div>
+      </ElButton> */}
     </div>
   )
 
