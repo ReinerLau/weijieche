@@ -1,4 +1,4 @@
-import { getPatrolTask } from '@/api'
+import { getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
 import { patrolTaskDialogVisible } from '@/shared/map/patrolPath'
 import { parseTime } from '@/utils'
@@ -211,6 +211,9 @@ export default defineComponent({
       }
     }
 
+    async function handleConfirmAlarm(row: any) {
+      const res = await getTaskWarning(1)
+    }
     return () => (
       <div>
         <ElDialog
@@ -270,6 +273,7 @@ export default defineComponent({
                         <ElButton onClick={() => handleConfirmCamera(row)}>
                           {t('hua-mian')}
                         </ElButton>
+                        <ElButton onClick={() => handleConfirmAlarm(row)}>{'异常位置'}</ElButton>
                       </div>
                     )
                   }}
