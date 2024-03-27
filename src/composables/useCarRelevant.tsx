@@ -107,20 +107,6 @@ export const useCarRelevant = ({
       size="80%"
     >
       <ElScrollbar>
-        <ElSelect
-          v-model={currentCar.value}
-          class="mb-5 w-full"
-          placeholder={t('xuan-ze-che-liang')}
-          size="large"
-          onVisible-change={(visible: boolean) => visible && getList()}
-        >
-          {carList.value.map((item) => (
-            <ElOption key={item.id} value={item.code}>
-              <span>{item.name}</span>
-              <span>{item.status === 1 ? '✅' : '🚫'}</span>
-            </ElOption>
-          ))}
-        </ElSelect>
         <ElButton
           class="w-full mb-5"
           size="large"
@@ -156,6 +142,19 @@ export const useCarRelevant = ({
   // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
     <div class="flex items-center">
+      <ElSelect
+        v-model={currentCar.value}
+        placeholder={t('xuan-ze-che-liang')}
+        size="small"
+        onVisible-change={(visible: boolean) => visible && getList()}
+      >
+        {carList.value.map((item) => (
+          <ElOption key={item.id} value={item.code}>
+            <span>{item.name}</span>
+            <span>{item.status === 1 ? '✅' : '🚫'}</span>
+          </ElOption>
+        ))}
+      </ElSelect>
       <ElButton link onClick={() => (carSettingDrawerVisible.value = true)}>
         {currentCarName.value || t('wei-xuan-ze-che-liang')}
       </ElButton>
