@@ -61,8 +61,12 @@ export default defineComponent({
         type: 1
       },
       {
-        name: t('shi-bie-ren-wu'),
+        name: t('tie-si-wang-shi-bie'),
         type: 2
+      },
+      {
+        name: t('jing-li-shi-bie'),
+        type: 3
       }
     ]
 

@@ -33,9 +33,17 @@ export function connectCar(code: string) {
   })
 }
 
-export function getCarList() {
+export function getCarLog() {
   return request({
     url: `/robot-vehicle-log/v1`,
     method: 'get'
+  })
+}
+
+export function updateCarSpeed(data: any) {
+  return request({
+    url: `/robot-vehicle-log/v1/defaultSpeed`,
+    method: 'put',
+    data
   })
 }
