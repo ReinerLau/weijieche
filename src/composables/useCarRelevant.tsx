@@ -1,4 +1,4 @@
-import { connectCar } from '@/api'
+import { connectCar, patrolingCruise } from '@/api'
 import { getCarList } from '@/api/list'
 import { openCarWs, offCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
@@ -7,15 +7,17 @@ import PantiltControl from '@/components/PantiltControl.vue'
 import { currentCar, haveCurrentCar } from '@/shared'
 import {
   ElButton,
+  ElCol,
   ElDivider,
   ElDrawer,
   ElMessage,
   ElOption,
+  ElRow,
   ElScrollbar,
   ElSelect,
   ElSwitch
 } from 'element-plus'
-import { computed, ref, watch } from 'vue'
+import { computed, Fragment, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
@@ -49,11 +51,6 @@ export const useCarRelevant = ({
     const { data } = await getCarList('patroling')
     carList.value = data || []
   }
-
-  // 当前车辆名字
-  const currentCarName = computed(() => {
-    return carList.value.find((item) => item.code === currentCar.value)?.name
-  })
 
   // 当前车辆状态
   const currentCarStatus = () => {
@@ -98,16 +95,144 @@ export const useCarRelevant = ({
     connectCar(code)
     isConnection.value = false
   })
+  interface SwitchGroup {
+    title: string
+    ref: Ref<boolean>
+    disabled?: Ref<boolean> | boolean
+    event?: (value: any) => any
+  }
 
-  // 车辆相关抽屉
+  // 近灯是否开启
+  const lowLight = ref(false)
+
+  // 远灯是否开启
+  const highLight = ref(false)
+
+  //自动灯是否开启
+  const autoLight = ref(false)
+
+  // 切换近远灯相关事件
+  function toggleLight(value: boolean, mode: string) {
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: '07',
+        param2: value ? mode : '00',
+        param3: 255,
+        param4: 255
+      }
+      patrolingCruise(data)
+    }
+  }
+
+  // 近远灯映射值
+  const lightModes = {
+    HIGHBEAM: '01',
+    LOWBEAM: '02',
+    AUTOBEAM: '03'
+  }
+
+  // 激光发散器是否开启
+  const disperseMode = ref(false)
+
+  // 切换激光发散器
+  function controlLaser(value: boolean) {
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: '01',
+        param2: value ? '01' : '00',
+        param3: 255,
+        param4: 'ff'
+      }
+      patrolingCruise(data)
+    } else {
+      disperseMode.value = false
+    }
+  }
+
+  // 切换按钮组
+  const switchGroup = computed<SwitchGroup[]>(() => [
+    {
+      title: t('jin-guang-deng'),
+      ref: lowLight,
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.LOWBEAM)
+        } else {
+          lowLight.value = false
+        }
+      },
+      disabled: highLight.value || autoLight.value ? true : false
+    },
+    {
+      title: t('yuan-guang-deng'),
+      ref: highLight,
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.HIGHBEAM)
+        } else {
+          highLight.value = false
+        }
+      },
+      disabled: lowLight.value || autoLight.value ? true : false
+    },
+    {
+      title: t('zi-dong-yuan-guang-deng'),
+      ref: autoLight,
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          toggleLight(value, lightModes.AUTOBEAM)
+        } else {
+          autoLight.value = false
+        }
+      },
+      disabled: lowLight.value || highLight.value ? true : false
+    }
+    // {
+    //   title: t('ji-guang-fa-san-qi'),
+    //   ref: disperseMode,
+    //   event: controlLaser
+    // }
+  ])
+
+  /**
+   * 各种开关按钮组件
+   */
+  const Switchs = () => (
+    <Fragment>
+      <div class="text-white mb-7">{'灯光控制'}</div>
+      <ElRow gutter={24} class="w-full">
+        {switchGroup.value.map((item) => (
+          <ElCol xs={24} sm={12}>
+            <div class="flex items-center justify-between">
+              <span class="mr-2">{item.title}</span>
+              <ElSwitch
+                v-model={item.ref.value}
+                onChange={item.event}
+                disabled={Boolean(item.disabled)}
+              />
+            </div>
+          </ElCol>
+        ))}
+      </ElRow>
+    </Fragment>
+  )
+
+  /**
+   * 上装控制抽屉
+   */
   const CarRelevantDrawer = () => (
     <ElDrawer
       class="select-none"
       v-model={carSettingDrawerVisible.value}
-      direction="ltr"
-      size="80%"
+      direction="rtl"
+      size="40%"
+      modal={false}
     >
       <ElScrollbar>
+        <Switchs />
+        <ElDivider />
         <FrameSwitchOver />
         <ElDivider />
         <BirdAwayControl />
