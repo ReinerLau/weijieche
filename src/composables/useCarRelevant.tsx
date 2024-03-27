@@ -133,23 +133,23 @@ export const useCarRelevant = ({
   }
 
   // 激光发散器是否开启
-  const disperseMode = ref(false)
+  // const disperseMode = ref(false)
 
   // 切换激光发散器
-  function controlLaser(value: boolean) {
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: '01',
-        param2: value ? '01' : '00',
-        param3: 255,
-        param4: 'ff'
-      }
-      patrolingCruise(data)
-    } else {
-      disperseMode.value = false
-    }
-  }
+  // function controlLaser(value: boolean) {
+  //   if (haveCurrentCar()) {
+  //     const data = {
+  //       code: currentCar.value,
+  //       param1: '01',
+  //       param2: value ? '01' : '00',
+  //       param3: 255,
+  //       param4: 'ff'
+  //     }
+  //     patrolingCruise(data)
+  //   } else {
+  //     disperseMode.value = false
+  //   }
+  // }
 
   // 切换按钮组
   const switchGroup = computed<SwitchGroup[]>(() => [
