@@ -3,7 +3,7 @@ import { map } from './base'
 import { currentCar } from '@/shared'
 import { ref } from 'vue'
 import { initRecordPath, initRecordPathLayer, isRecord, recordPathLayer } from './record'
-import { getCarInfo, getCarList, getPatrolTaskById } from '@/api'
+import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { initRealPath, initRealPathLayer, isReal, realPathLayer, realPathPoints } from './realRoute'
@@ -126,7 +126,7 @@ export const carList = ref<
 
 export const initCar = async () => {
   carMarkerLayer.clear()
-  const { data } = await getCarList()
+  const { data } = await getCarLog()
   carList.value = data?.list || []
   for (const { longitude, latitude, heading } of carList.value) {
     if (longitude && latitude) {
