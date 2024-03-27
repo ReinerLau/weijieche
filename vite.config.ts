@@ -34,7 +34,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://192.168.18.233:8081',
+        target: 'http://192.168.18.134:8091',
         changeOrigin: true
       },
       '/rtc': {
@@ -42,7 +42,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/websocket': {
-        target: 'ws://192.168.18.233',
+        target: 'ws://192.168.18.134:8091',
         ws: true
       },
       '/tiles': {
