@@ -35,7 +35,8 @@ import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import FileUploadDialog from '@/components/FileUploadDialog'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
 import { onMapDBClick } from '@/shared/map/debug'
-import { initAlarmPointLayer } from '@/shared/map/alarmPoint'
+import { alarmMessageData, initAlarmPointLayer } from '@/shared/map/alarmPoint'
+import ShowAlarmMessageDialog from './ShowAlarmMessageDialog'
 
 export default defineComponent({
   emits: ['confirm'],
@@ -115,6 +116,7 @@ export default defineComponent({
         <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
         <FileUploadDialog onConfirm={handleConfirmFilePath} />
         <PointConfigDrawer />
+        <ShowAlarmMessageDialog alarmMessage={alarmMessageData.value} />
       </div>
     )
   }

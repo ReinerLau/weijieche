@@ -1,11 +1,11 @@
 import { Marker, VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
+import { map } from './base'
 import { entryPoint, setEntryPoint } from './home'
 import { clearDrawTool } from './drawTool'
 import { clearPathLayer } from './path'
 import { i18n } from '@/utils'
 import { patrolTaskDialogVisible } from './patrolPath'
-
+import { ref } from 'vue'
 /**
  * 异常位置图层实例
  */
@@ -48,6 +48,8 @@ export const addAlarmPointToLayer = (alarmPoint: Marker) => {
  * 选择异常位置按钮后显示路线在地图上
  * @param data 单条异常位置数据
  */
+
+export const alarmMessageData: any = ref({})
 export const handleConfirmAlarmPoint = (data: any) => {
   clearDrawTool()
   clearPathLayer()
@@ -65,23 +67,28 @@ export const handleConfirmAlarmPoint = (data: any) => {
       }
     })
 
+    alarmPoints.push(alarmPoint)
+    alarmPoints.forEach((alarmPoint, index) => {
+      const alarmPointMenuItems = [
+        {
+          item: i18n.global.t('cha-kan-xiang-qing'),
+          click: () => {
+            showAlarmDialogVisible.value = true
+            showMoreAlarm(data, index)
+          }
+        }
+      ]
+      alarmPoint.setMenuItems(alarmPointMenuItems)
+    })
     addAlarmPointToLayer(alarmPoint)
   })
 
   patrolTaskDialogVisible.value = false
 }
 
-export const setAlarmMenu = () => {
-  clearMenu()
-  map.setMenu({
-    width: 'auto',
-    items: [
-      {
-        item: i18n.global.t('cha-kan-geng-duo'),
-        click: () => {
-          //展示异常的更多数据
-        }
-      }
-    ]
-  })
+export const showAlarmDialogVisible = ref(false)
+
+export const showMoreAlarm = (data: any, index: number) => {
+  showAlarmDialogVisible.value = true
+  alarmMessageData.value = data[index]
 }

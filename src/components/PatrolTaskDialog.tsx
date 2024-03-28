@@ -1,6 +1,6 @@
 import { getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
-import { handleConfirmAlarmPoint, setAlarmMenu } from '@/shared/map/alarmPoint'
+import { handleConfirmAlarmPoint } from '@/shared/map/alarmPoint'
 import {
   clearDrawPatrolLine,
   handleConfirmPatrolTaskPath,
@@ -222,7 +222,6 @@ export default defineComponent({
       clearDrawPatrolLine()
       handleConfirmPatrolTaskPath(row)
       handleConfirmAlarmPoint(data)
-      setAlarmMenu()
     }
     return () => (
       <div>
