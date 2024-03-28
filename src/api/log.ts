@@ -27,3 +27,10 @@ export function getPatrolTaskById(id: number) {
     method: 'get'
   })
 }
+
+export function getTaskWarning(taskId: number) {
+  return request({
+    url: `/opencv-record/v1/getWarning/${taskId}`,
+    method: 'get'
+  })
+}
