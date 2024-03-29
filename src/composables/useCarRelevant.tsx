@@ -231,13 +231,15 @@ export const useCarRelevant = ({
       modal={false}
     >
       <ElScrollbar>
-        <Switchs />
-        <ElDivider />
-        <FrameSwitchOver />
-        <ElDivider />
-        <BirdAwayControl />
-        <ElDivider />
-        <PantiltControl />
+        <div class="w-full px-2">
+          <Switchs />
+          <ElDivider />
+          <PantiltControl />
+          <ElDivider />
+          <BirdAwayControl />
+          <ElDivider />
+          <FrameSwitchOver />
+        </div>
       </ElScrollbar>
     </ElDrawer>
   )
