@@ -34,3 +34,10 @@ export function getTaskWarning(taskId: number) {
     method: 'get'
   })
 }
+
+export function downloadVideo(id: number) {
+  return request({
+    url: `/vehicle-task/v1/download/${id}`,
+    method: 'get'
+  })
+}

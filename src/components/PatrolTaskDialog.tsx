@@ -1,4 +1,4 @@
-import { getPatrolTask, getTaskWarning } from '@/api'
+import { downloadVideo, getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
 import { handleConfirmAlarmPoint } from '@/shared/map/alarmPoint'
 import {
@@ -11,6 +11,7 @@ import {
   ElButton,
   ElDatePicker,
   ElDialog,
+  ElMessage,
   ElOption,
   ElPagination,
   ElScrollbar,
@@ -201,6 +202,18 @@ export default defineComponent({
       cameraUrl.value = row.videoPath
     }
 
+    //保存视频
+    async function handleUploadVideo(row: any) {
+      console.log(row)
+
+      await downloadVideo(row.id)
+      ElMessage({
+        type: 'success',
+        message: t('cao-zuo-cheng-gong')
+      })
+      // patrolTaskDialogVisible.value = false
+    }
+
     //打开摄像画面
     const cameraList: any = ref([])
 
@@ -229,7 +242,7 @@ export default defineComponent({
           v-model={patrolTaskDialogVisible.value}
           onClose={handleVisible}
           title={t('xun-luo-ren-wu')}
-          width="50vw"
+          width="70vw"
           align-center
         >
           {{
@@ -276,14 +289,21 @@ export default defineComponent({
                 <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
-                      <div>
-                        <ElButton onClick={() => emit('confirm', row)}>{t('lu-xian')}</ElButton>
-                        <ElButton onClick={() => handleConfirmVideo(row)}>{t('shi-pin')}</ElButton>
+                      <div class="felx flex-col">
+                        <ElButton onClick={() => emit('confirm', row)}>
+                          {t('cha-kan-lu-xian')}
+                        </ElButton>
                         <ElButton onClick={() => handleConfirmCamera(row)}>
-                          {t('hua-mian')}
+                          {t('ren-wu-hua-mian')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmVideo(row)}>
+                          {t('ren-wu-shi-pin')}
                         </ElButton>
                         <ElButton onClick={() => handleConfirmAlarm(row)}>
                           {t('yi-chang-wei-zhi')}
+                        </ElButton>
+                        <ElButton onClick={() => handleUploadVideo(row)}>
+                          {t('cun-chu-shi-pin')}
                         </ElButton>
                       </div>
                     )
