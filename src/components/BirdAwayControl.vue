@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-white mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
+    <div class="mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
     <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full h-14 mr-4">
       <template v-for="item in buttonList" :key="item.value">
         <el-button size="large" @click="onClick(item.value)">
@@ -9,7 +9,7 @@
       </template>
     </div>
     <div class="flex justify-center items-center mb-2">
-      <span class="text-white mr-5">{{ t('yin-liang') }}</span>
+      <span class="mr-5">{{ t('yin-liang') }}</span>
       <el-slider
         v-model="volume"
         class="flex-1"
@@ -173,7 +173,7 @@ function handleChange() {
 const disperseMode = ref(false)
 
 // 切换激光发散器
-function controlLaser(value: boolean) {
+function controlLaser(value: any) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,

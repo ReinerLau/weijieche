@@ -201,7 +201,7 @@ export const useCarRelevant = ({
    */
   const Switchs = () => (
     <Fragment>
-      <div class="text-white mb-7">{'灯光控制'}</div>
+      <div class="mb-7">{t('deng-guang-kong-zhi')}</div>
       <ElRow gutter={24} class="w-full">
         {switchGroup.value.map((item) => (
           <ElCol xs={24} sm={12}>
