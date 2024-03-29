@@ -1,13 +1,14 @@
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { jumpToCoordinate, map } from './base'
+import { clearMenu, jumpToCoordinate, map } from './base'
 import { entryPoint, setEntryPoint } from './home'
 import { clearDrawTool } from './drawTool'
-import { clearPathLayer, pathPoints } from './path'
+import { clearPathLayer, pathPointsData } from './path'
 import { i18n } from '@/utils'
 import { ref } from 'vue'
 import { endRecording } from './record'
-import { getLineCoordinates, pathDataPoints } from '.'
+import { pathDataPoints } from '.'
 import type { Coordinate } from '@/types'
+import { clearDrawAlarmPoint } from './alarmPoint'
 
 /**
  * 巡逻路线图层实例
@@ -65,6 +66,9 @@ export const pathPointArray: Coordinate[] = []
  * @param row 单条巡逻路线数据
  */
 export const handleConfirmPatrolTaskPath = (row: { name: string; route: Coordinate[] }) => {
+  clearDrawTool()
+  clearPathLayer()
+  clearPathToolbarEvent()
   pathPointArray.length = 0
   const text = i18n.global.t('ren-wu-ming-cheng') + ':' + row.name
   const options = {
@@ -73,9 +77,6 @@ export const handleConfirmPatrolTaskPath = (row: { name: string; route: Coordina
     dy: -12,
     content: `<div style="color:red">${text}</div>`
   }
-  clearDrawTool()
-  clearPathLayer()
-  clearDrawPatrolLine()
   const coordinates: number[][] = row.route.map((item) => [item.y, item.x])
 
   coordinates.forEach((coordinate, index) => {
@@ -109,7 +110,7 @@ export const patrolTaskDialogVisible = ref(false)
 export const assignTaskToolbarEvent = () => {
   if (endRecording()) {
     clearDrawTool()
-    pathDataPoints.value = JSON.stringify(getLineCoordinates(pathPoints))
+    pathDataPoints.value = JSON.stringify(pathPointsData.value)
     scheduleDialogVisible.value = true
   }
 }
@@ -126,6 +127,8 @@ export const taskListToolbarEvent = () => {
 export const clearPathToolbarEvent = () => {
   if (endRecording()) {
     clearDrawPatrolLine()
+    clearDrawAlarmPoint()
+    clearMenu()
   }
 }
 // 搜索定时任务弹窗是否可见

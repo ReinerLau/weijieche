@@ -1,6 +1,11 @@
-import { getPatrolTask } from '@/api'
+import { getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
-import { patrolTaskDialogVisible } from '@/shared/map/patrolPath'
+import { handleConfirmAlarmPoint } from '@/shared/map/alarmPoint'
+import {
+  clearDrawPatrolLine,
+  handleConfirmPatrolTaskPath,
+  patrolTaskDialogVisible
+} from '@/shared/map/patrolPath'
 import { parseTime } from '@/utils'
 import {
   ElButton,
@@ -214,6 +219,13 @@ export default defineComponent({
       }
     }
 
+    //打开展示异常位置
+    async function handleConfirmAlarm(row: any) {
+      const { data } = await getTaskWarning(1)
+      clearDrawPatrolLine()
+      handleConfirmPatrolTaskPath(row)
+      handleConfirmAlarmPoint(data)
+    }
     return () => (
       <div>
         <ElDialog
@@ -267,11 +279,19 @@ export default defineComponent({
                 <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
-                      <div class="felx flex-col">
-                        <ElButton onClick={() => emit('confirm', row)}>{'查看路线'}</ElButton>
-                        <ElButton onClick={() => handleConfirmCamera(row)}>{'任务画面'}</ElButton>
-                        <ElButton onClick={() => handleConfirmVideo(row)}>{'任务视频'}</ElButton>
-                        <ElButton onClick={handleUploadVideo}>{'存储视频'}</ElButton>
+                      <div>
+                        <ElButton onClick={() => emit('confirm', row)}>
+                          {t('cha-kan-lu-xian')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmCamera(row)}>
+                          {t('ren-wu-hua-mian')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmVideo(row)}>
+                          {t('ren-wu-shi-pin')}
+                        </ElButton>
+                        <ElButton onClick={() => handleConfirmAlarm(row)}>
+                          {t('yi-chang-wei-zhi')}
+                        </ElButton>
                       </div>
                     )
                   }}

@@ -8,7 +8,7 @@
         </el-button>
       </template>
     </div>
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center mb-2">
       <span class="text-white mr-5">{{ t('yin-liang') }}</span>
       <el-slider
         v-model="volume"
@@ -19,6 +19,10 @@
         :show-input-controls="false"
         @change="handleChange"
       />
+    </div>
+    <div class="flex justify-between items-center">
+      <span>{{ t('ji-guang-fa-san-qi') }}</span>
+      <el-switch v-model="disperseMode" @change="controlLaser"></el-switch>
     </div>
   </div>
 </template>
@@ -163,5 +167,24 @@ watch(pressedButtons, (val) => {
 // 修改音量
 function handleChange() {
   changeVolumn()
+}
+
+// 激光发散器是否开启
+const disperseMode = ref(false)
+
+// 切换激光发散器
+function controlLaser(value: boolean) {
+  if (haveCurrentCar()) {
+    const data = {
+      code: currentCar.value,
+      param1: '01',
+      param2: value ? '01' : '00',
+      param3: 255,
+      param4: 'ff'
+    }
+    patrolingCruise(data)
+  } else {
+    disperseMode.value = false
+  }
 }
 </script>

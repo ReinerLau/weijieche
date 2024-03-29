@@ -9,6 +9,7 @@ export * from './user'
 export * from './log'
 export * from './device'
 export * from './pointTask'
+export * from './alarm'
 
 export function getCarInfo(code: string) {
   return request<{ longitude: number; latitude: number }>({
@@ -33,9 +34,17 @@ export function connectCar(code: string) {
   })
 }
 
-export function getCarList() {
+export function getCarLog() {
   return request({
     url: `/robot-vehicle-log/v1`,
     method: 'get'
+  })
+}
+
+export function updateCarSpeed(data: any) {
+  return request({
+    url: `/robot-vehicle-log/v1/defaultSpeed`,
+    method: 'put',
+    data
   })
 }

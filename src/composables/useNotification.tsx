@@ -14,7 +14,7 @@ import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import IconCloseFill from '~icons/mingcute/close-fill'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { deleteLog, getAllLog } from '@/api'
+import { deleteLog, getAllLog, getHandleAlarm } from '@/api'
 import { useVirtualList } from '@vueuse/core'
 // 删除数组元素
 // https://lodash.com/docs/4.17.15#remove
@@ -22,6 +22,7 @@ import { remove } from 'lodash'
 import { Marker } from 'maptalks'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
+import { i18n } from '@/utils'
 
 // 收到的 websocket 数据结构类型声明
 interface websocketData {
@@ -33,6 +34,28 @@ interface websocketData {
   latitude: number
   heading: number
   createTime?: string
+}
+
+const messageBox = ref<any>(null)
+
+//处理警报相关逻辑
+export const handleAlarmAction = async (data: any, mode: number) => {
+  let type = null
+  const messageToType: {
+    [key: string]: number
+    人员入侵: number
+    铁丝网识别: number
+    敬礼识别: number
+  } = {
+    人员入侵: 1,
+    铁丝网识别: 2,
+    敬礼识别: 3
+  }
+  type = messageToType[data.message]
+  await getHandleAlarm(data.code, type, mode)
+  ElMessage({ type: 'success', message: i18n.global.t('cao-zuo-cheng-gong') })
+  messageBox.value.close()
+  alarmDialogVisible.value = false
 }
 
 // 警报通知相关
@@ -51,31 +74,59 @@ export const useNotification = () => {
 
   const wsData = ref({
     picPath: '',
-    message: ''
+    message: '',
+    code: '',
+    type: ''
   })
+
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     if (e.data !== 'heartbeat') {
       const data: websocketData = JSON.parse(e.data)
       const { message, longitude, latitude, heading } = data
-      const messageBox = ref<any>(null)
       const btn = resolveComponent('el-button')
       messageBox.value = ElNotification({
         type: 'warning',
         title: t('jing-bao'),
         dangerouslyUseHTMLString: true,
+        duration: 300000,
+        onClose: () => {},
         message: h('div', [
-          h('p', {}, message),
-          h(
-            btn,
-            {
-              style: 'color: #409EFF;cursor: pointer;',
-              onClick: () => {
-                handleAlarmAll(data)
-              }
-            },
-            t('cha-kan-jing-bao-xiang-qing')
-          )
+          h('div', { style: 'display: flex; justify-content: space-between;' }, [
+            h('p', {}, message),
+            h(
+              btn,
+              {
+                style: 'color: #A0A0A0;cursor: pointer;',
+                onClick: () => {
+                  handleAlarmAll(data)
+                }
+              },
+              t('cha-kan-jing-bao-xiang-qing')
+            )
+          ]),
+          h('div', { style: 'display: flex; justify-content: space-around;' }, [
+            h(
+              btn,
+              {
+                style: 'color: #ff931e;cursor: pointer;width: 6rem',
+                onClick: () => {
+                  handleAlarmAction(data, 1)
+                }
+              },
+              t('shou-dong-chu-li')
+            ),
+            h(
+              btn,
+              {
+                style: 'color: #409EFF;cursor: pointer;width: 6rem',
+                onClick: () => {
+                  handleAlarmAction(data, 0)
+                }
+              },
+              t('bu-zuo-chu-li')
+            )
+          ])
         ])
 
         // message: code + ': ' + message,
@@ -91,7 +142,7 @@ export const useNotification = () => {
         //     wsData.value = data
         //   } else if (action === 'cancel') {
         //     // 点击关闭按钮时的逻辑
-        //     await handleAlarm()
+        //     await handleAlarmAction()
         //   }
         //   done()
         //   alarmMarkerLayer.clear()
