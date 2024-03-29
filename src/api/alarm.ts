@@ -7,3 +7,15 @@ export function getHandleAlarm(code: string, type: number, mode: number) {
     method: 'get'
   })
 }
+
+/**
+ * 获取超时未处理警报
+ * @returns
+ */
+export function fetchTimeoutAlarm(params: { page: number; limit: number }) {
+  return request<{ list: any[] }>({
+    url: '/opencv-out-time/v1/list',
+    method: 'get',
+    params
+  })
+}
