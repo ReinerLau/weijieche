@@ -1,4 +1,4 @@
-import { getPatrolTask, getTaskWarning } from '@/api'
+import { downloadVideo, getPatrolTask, getTaskWarning } from '@/api'
 import { useShowCamera, useVideoTemplate } from '@/composables'
 import { handleConfirmAlarmPoint } from '@/shared/map/alarmPoint'
 import {
@@ -11,6 +11,7 @@ import {
   ElButton,
   ElDatePicker,
   ElDialog,
+  ElMessage,
   ElOption,
   ElPagination,
   ElScrollbar,
@@ -202,7 +203,16 @@ export default defineComponent({
     }
 
     //保存视频
-    function handleUploadVideo() {}
+    async function handleUploadVideo(row: any) {
+      console.log(row)
+
+      await downloadVideo(row.id)
+      ElMessage({
+        type: 'success',
+        message: t('cao-zuo-cheng-gong')
+      })
+      // patrolTaskDialogVisible.value = false
+    }
 
     //打开摄像画面
     const cameraList: any = ref([])
@@ -292,7 +302,9 @@ export default defineComponent({
                         <ElButton onClick={() => handleConfirmAlarm(row)}>
                           {t('yi-chang-wei-zhi')}
                         </ElButton>
-                        <ElButton onClick={handleUploadVideo}>{t('cun-chu-shi-pin')}</ElButton>
+                        <ElButton onClick={() => handleUploadVideo(row)}>
+                          {t('cun-chu-shi-pin')}
+                        </ElButton>
                       </div>
                     )
                   }}
