@@ -279,7 +279,7 @@ export default defineComponent({
                 <ElTableColumn label={t('cao-zuo')}>
                   {{
                     default: ({ row }: { row: any }) => (
-                      <div>
+                      <div class="felx flex-col">
                         <ElButton onClick={() => emit('confirm', row)}>
                           {t('cha-kan-lu-xian')}
                         </ElButton>
@@ -292,6 +292,7 @@ export default defineComponent({
                         <ElButton onClick={() => handleConfirmAlarm(row)}>
                           {t('yi-chang-wei-zhi')}
                         </ElButton>
+                        <ElButton onClick={handleUploadVideo}>{t('cun-chu-shi-pin')}</ElButton>
                       </div>
                     )
                   }}
