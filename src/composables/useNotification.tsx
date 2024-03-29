@@ -1,24 +1,19 @@
 import { initWebSocket } from '@/utils'
 import {
-  ElAlert,
-  ElBadge,
   ElButton,
   ElCard,
   ElDrawer,
+  ElImageViewer,
   ElMessage,
   ElNotification,
   ElTooltip
 } from 'element-plus'
-import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent } from 'vue'
+import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
-import IconCloseFill from '~icons/mingcute/close-fill'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { deleteLog, getAllLog, getHandleAlarm } from '@/api'
+import { fetchTimeoutAlarm, getHandleAlarm } from '@/api'
 import { useVirtualList } from '@vueuse/core'
-// 删除数组元素
-// https://lodash.com/docs/4.17.15#remove
-import { remove } from 'lodash'
 import { Marker } from 'maptalks'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
@@ -64,7 +59,7 @@ export const useNotification = () => {
   const notificationDrawerVisible = ref(false)
 
   // 通知列表数据
-  const notifications: Ref<websocketData[]> = ref([])
+  const notifications: Ref<any[]> = ref([])
 
   // 国际化
   const { t } = useI18n()
@@ -128,25 +123,6 @@ export const useNotification = () => {
             )
           ])
         ])
-
-        // message: code + ': ' + message,
-        // type: type as 'warning' | 'error',
-        // customClass: 'notification-message-box',
-        // showCancelButton: false,
-        // cancelButtonText: '关闭',
-        // confirmButtonText: t('cha-kan-jing-bao-xiang-qing'),
-        // beforeClose: async (action, instance, done) => {
-        //   if (action === 'confirm') {
-        //     // 点击处理按钮时的逻辑
-        //     alarmDialogVisible.value = true
-        //     wsData.value = data
-        //   } else if (action === 'cancel') {
-        //     // 点击关闭按钮时的逻辑
-        //     await handleAlarmAction()
-        //   }
-        //   done()
-        //   alarmMarkerLayer.clear()
-        // }
       })
 
       if (alarmRef.value && longitude && latitude) {
@@ -156,8 +132,6 @@ export const useNotification = () => {
         //警报闪烁
         handleAlarmEvent(longitude, latitude, heading)
       }
-
-      notifications.value.push(data)
     }
   }
 
@@ -224,49 +198,39 @@ export const useNotification = () => {
 
   // 虚拟滚动相关，防止数据过多滚动卡顿
   // https://vueuse.org/core/useVirtualList/#usevirtuallist
-  const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(notifications, {
+  const { list, containerProps, wrapperProps } = useVirtualList(notifications, {
     itemHeight: 125
   })
 
-  // 查看警报历史数据
-  async function lookMore() {
-    const res = await getAllLog()
-    notifications.value = res.data || []
-    scrollTo(0)
-  }
+  watch(notificationDrawerVisible, async (newVal: boolean) => {
+    if (newVal) {
+      const res = await fetchTimeoutAlarm({ page: 1, limit: 99999 })
+      notifications.value = res.data.list
+    }
+  })
 
-  // 删除警报数据
-  async function delLog(id: string) {
-    const res: any = await deleteLog(id)
-    ElMessage({
-      type: 'success',
-      message: res.message
-    })
-    getAllLog()
-    remove(list.value, (item) => item.data.id === id)
+  const previewSrcList = ref<string[]>([])
+
+  const showPreviewImage = ref(false)
+
+  const previewImage = (url: string) => {
+    showPreviewImage.value = true
+    previewSrcList.value = [url]
   }
 
   // 警报抽屉组件
   const NotificationDrawer = () => (
     <ElDrawer
-      title={t('tong-zhi')}
+      title={t('gao-jing')}
       class="select-none"
       v-model={notificationDrawerVisible.value}
       direction="rtl"
-      size="80%"
+      size="30%"
     >
-      {!isOpen.value && (
-        <ElAlert title={t('websocket-lian-jie-yi-duan-kai')} type="error" class="!mb-5" />
-      )}
-      <div class="text-right">
-        <ElButton class="mb-5" link onClick={lookMore}>
-          {t('cha-kan-geng-duo')}
-        </ElButton>
-      </div>
       <div
         ref={containerProps.ref}
         style={containerProps.style}
-        class="h-[90%]"
+        class="h-[95%]"
         onScroll={containerProps.onScroll}
       >
         <div {...wrapperProps.value}>
@@ -275,18 +239,29 @@ export const useNotification = () => {
               {{
                 header: () => (
                   <div class="flex justify-between">
+                    <span>{item.data.code}</span>
                     <span>{item.data.createTime}</span>
-                    <ElButton link onClick={() => delLog(item.data.id)}>
-                      <IconCloseFill />
-                    </ElButton>
                   </div>
                 ),
-                default: () => <div>{item.data.message}</div>
+                default: () => (
+                  <div class="flex justify-between">
+                    <div>{item.data.type}</div>
+                    <ElButton link onClick={() => previewImage(item.data.picPath)}>
+                      {t('cha-kan-tu-pian')}
+                    </ElButton>
+                  </div>
+                )
               }}
             </ElCard>
           ))}
         </div>
       </div>
+      {showPreviewImage.value && (
+        <ElImageViewer
+          onClose={() => (showPreviewImage.value = false)}
+          urlList={previewSrcList.value}
+        ></ElImageViewer>
+      )}
     </ElDrawer>
   )
 
@@ -295,13 +270,7 @@ export const useNotification = () => {
     <Fragment>
       <ElTooltip content={t('tong-zhi')}>
         <ElButton link onClick={() => (notificationDrawerVisible.value = true)} class="ml-3">
-          <ElBadge
-            value={notifications.value.length}
-            hidden={notifications.value.length === 0}
-            isDot={true}
-          >
-            <IconMdiBellOutline />
-          </ElBadge>
+          <IconMdiBellOutline />
         </ElButton>
       </ElTooltip>
 
