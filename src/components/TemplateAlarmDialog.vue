@@ -2,17 +2,14 @@
 import { alarmDialogVisible } from '@/shared/map/alarm'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { handleAlarmAction } from '@/composables'
 
 const srcList: string[] = []
 const imgUrl = ref<string>('')
 
 const props = defineProps<{
-  wsdata: { picPath: string; message: string }
+  wsdata: { picPath: string; message: string; code: string }
 }>()
-
-const handleAlarm = () => {
-  alarmDialogVisible.value = false
-}
 
 const { t } = useI18n()
 
@@ -25,14 +22,32 @@ watch(
     srcList.push(val)
   }
 )
+// let type = null
+// const messageToType: {
+//   [key: string]: number
+//   人员入侵: number
+//   铁丝网识别: number
+//   敬礼识别: number
+// } = {
+//   人员入侵: 1,
+//   铁丝网识别: 2,
+//   敬礼识别: 3
+// }
+// async function handleAlarmAction(mode: number) {
+//   type = messageToType[props.wsdata.message]
+//   await getHandleAlarm(props.wsdata.code, type, mode)
+//   ElMessage({ type: 'success', message: t('cao-zuo-cheng-gong') })
+//   alarmDialogVisible.value = false
+// }
 </script>
 
 <template>
   <el-dialog
     v-model="alarmDialogVisible"
-    :title="wsdata.message"
-    width="500"
-    class="!mr-[1vw]"
+    :title="props.wsdata.message"
+    width="50vw"
+    align-center
+    class="flex flex-col"
     draggable
   >
     <template #default>
@@ -50,19 +65,15 @@ watch(
       </div>
     </template>
     <template #footer>
-      <div class="flex justify-between">
-        <el-button size="large" class="w-full" @click="handleAlarm">{{
+      <div class="flex justify-around">
+        <el-button size="large" class="w-full mr-4" @click="handleAlarmAction(props.wsdata, 0)">{{
           t('bu-zuo-chu-li')
         }}</el-button>
         <el-button
           size="large"
           type="primary"
           class="w-full"
-          @click="
-            () => {
-              alarmDialogVisible = false
-            }
-          "
+          @click="handleAlarmAction(props.wsdata, 1)"
           >{{ t('shou-dong-chu-li') }}</el-button
         >
       </div>
