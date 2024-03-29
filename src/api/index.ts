@@ -9,6 +9,7 @@ export * from './user'
 export * from './log'
 export * from './device'
 export * from './pointTask'
+export * from './alarm'
 
 export function getCarInfo(code: string) {
   return request<{ longitude: number; latitude: number }>({
