@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="text-white mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
-    <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full h-14 mr-4">
+    <div class="mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
+    <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full mb-4">
       <template v-for="item in buttonList" :key="item.value">
         <el-button size="large" @click="onClick(item.value)">
           {{ item.content }}
         </el-button>
       </template>
+      <el-select size="large" :placeholder="t('xuan-ze-yin-pin')" @change="changeAudio">
+        <el-option :label="t('yin-pin') + item" :value="item" v-for="item in 8" :key="item">
+        </el-option>
+      </el-select>
     </div>
     <div class="flex justify-center items-center mb-2">
-      <span class="text-white mr-5">{{ t('yin-liang') }}</span>
+      <span class="mr-5">{{ t('yin-liang') }}</span>
       <el-slider
         v-model="volume"
         class="flex-1"
@@ -65,15 +69,15 @@ const buttonList = [
   {
     value: '08',
     content: t('jie-shu-bo-fang')
+  },
+  {
+    value: '05',
+    content: t('shi-neng')
+  },
+  {
+    value: '06',
+    content: t('shi-neng-0')
   }
-  // {
-  //   value: '05',
-  //   content: t('shi-neng')
-  // },
-  // {
-  //   value: '06',
-  //   content: t('shi-neng-0')
-  // }
 ]
 
 // 点击按钮
@@ -185,6 +189,12 @@ function controlLaser(value: boolean) {
     patrolingCruise(data)
   } else {
     disperseMode.value = false
+  }
+}
+
+function changeAudio(val: number) {
+  if (haveCurrentCar()) {
+    playAudioById(val)
   }
 }
 </script>
