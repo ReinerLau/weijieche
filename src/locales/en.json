@@ -273,5 +273,11 @@
   "cao-zuo-cheng-gong": "Successful operation",
   "gao-jing": "Alarm",
   "cha-kan-tu-pian": "view image",
-  "deng-guang-kong-zhi": "Lighting control"
+  "deng-guang-kong-zhi": "Lighting control",
+  "zuo": "Left",
+  "you-0": "right",
+  "qian": "forward",
+  "hou": "back",
+  "xuan-ze-yin-pin": "Select audio",
+  "yin-pin": "Audio"
 }

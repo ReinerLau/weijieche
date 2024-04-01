@@ -31,30 +31,18 @@
       </el-col>
     </el-row>
   </div>
-  <el-row :gutter="8">
-    <el-col :span="8">
-      <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
-        {{ t('que-ding') }}
-      </el-button>
-    </el-col>
-    <el-col :span="8">
-      <el-button class="w-full mb-2" size="large" @click="onClick(keyMap.BACK)">{{
-        t('fan-hui')
-      }}</el-button>
-    </el-col>
-    <el-col :span="8">
-      <el-button class="w-full mb-2" size="large" @click="onClick(keyMap.AV1)">AV1</el-button>
-    </el-col>
-    <el-col :span="8">
-      <el-button class="w-full" size="large" @click="onClick(keyMap.AV2)">AV2</el-button>
-    </el-col>
-    <el-col :span="8">
-      <el-button class="w-full" size="large" @click="onClick(keyMap.AV3)">AV3</el-button>
-    </el-col>
-    <el-col :span="8">
-      <el-button class="w-full" size="large" @click="onClick(keyMap.AV4)">AV4</el-button>
-    </el-col>
-  </el-row>
+  <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full">
+    <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
+      {{ t('que-ding') }}
+    </el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.BACK)">{{
+      t('fan-hui')
+    }}</el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.AV1)">{{ t('zuo') }}</el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.AV2)">{{ t('you-0') }}</el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.AV3)">{{ t('qian') }}</el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.AV4)">{{ t('hou') }}</el-button>
+  </div>
 </template>
 
 <script setup lang="ts">

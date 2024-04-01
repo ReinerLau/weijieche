@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>{{ t('yun-tai-kong-zhi') }}</div>
-    <div class="flex justify-center">
+    <div class="flex justify-center mb-2">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
           <el-button size="large" class="w-full" @click="onClick(keyMap.UP)">

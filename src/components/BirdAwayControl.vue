@@ -7,6 +7,10 @@
           {{ item.content }}
         </el-button>
       </template>
+      <el-select size="large" :placeholder="t('xuan-ze-yin-pin')" @change="changeAudio">
+        <el-option :label="t('yin-pin') + item" :value="item" v-for="item in 8" :key="item">
+        </el-option>
+      </el-select>
     </div>
     <div class="flex justify-center items-center mb-2">
       <span class="mr-5">{{ t('yin-liang') }}</span>
@@ -173,7 +177,7 @@ function handleChange() {
 const disperseMode = ref(false)
 
 // 切换激光发散器
-function controlLaser(value: any) {
+function controlLaser(value: boolean) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
@@ -185,6 +189,12 @@ function controlLaser(value: any) {
     patrolingCruise(data)
   } else {
     disperseMode.value = false
+  }
+}
+
+function changeAudio(val: number) {
+  if (haveCurrentCar()) {
+    playAudioById(val)
   }
 }
 </script>
