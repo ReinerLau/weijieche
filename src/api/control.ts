@@ -40,3 +40,12 @@ export function playAudioById(audioId: number) {
     method: 'get'
   })
 }
+
+//警告灯控制
+export function controlAlarmLight(data: any) {
+  return request({
+    url: '/robot-remote-control/v1/VoiceAlarmLightControl',
+    method: 'post',
+    data: data
+  })
+}
