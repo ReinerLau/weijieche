@@ -7,7 +7,14 @@
           {{ item.content }}
         </el-button>
       </template>
-      <el-select size="large" :placeholder="t('xuan-ze-yin-pin')" @change="changeAudio">
+    </div>
+    <div class="grid mb-4 w-full">
+      <el-select
+        size="large"
+        v-model="audioValue"
+        :placeholder="t('xuan-ze-yin-pin')"
+        @change="changeAudio"
+      >
         <el-option :label="t('yin-pin') + item" :value="item" v-for="item in 8" :key="item">
         </el-option>
       </el-select>
@@ -62,10 +69,6 @@ const buttonList = [
     value: '10',
     content: t('qu-ren')
   },
-  // {
-  //   value: '08',
-  //   content: t('zan-ting')
-  // },
   {
     value: '08',
     content: t('jie-shu-bo-fang')
@@ -77,6 +80,10 @@ const buttonList = [
   {
     value: '06',
     content: t('shi-neng-0')
+  },
+  {
+    value: '07',
+    content: t('dui-jiang')
   }
 ]
 
@@ -90,8 +97,8 @@ async function onClick(value: string) {
         code: currentCar.value,
         param1: '05',
         param2: value,
-        param3: '255',
-        param4: 'ff'
+        param3: '0',
+        param4: '0'
       }
       patrolingCruise(data)
     }
@@ -192,9 +199,12 @@ function controlLaser(value: boolean) {
   }
 }
 
+const audioValue = ref()
+
 function changeAudio(val: number) {
   if (haveCurrentCar()) {
     playAudioById(val)
+    audioValue.value = val
   }
 }
 </script>
