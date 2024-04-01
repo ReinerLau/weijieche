@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="text-white">{{ t('yun-tai-kong-zhi') }}</div>
-    <div class="flex justify-center">
+    <div>{{ t('yun-tai-kong-zhi') }}</div>
+    <div class="flex justify-center mb-2">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
           <el-button size="large" class="w-full" @click="onClick(keyMap.UP)">
@@ -33,7 +33,7 @@
       </el-row>
     </div>
     <div class="flex-1 flex flex-col justify-around">
-      <div class="flex text-white items-center">
+      <div class="flex items-center">
         <span class="mr-2">{{ t('shui-ping-jiao-du') }}</span>
         <el-slider
           v-model="horizonAngle"
@@ -45,7 +45,7 @@
           @change="handleChangeAngle(angleTypes.HORIZON)"
         />
       </div>
-      <div class="flex text-white items-center">
+      <div class="flex items-center">
         <span class="mr-2">{{ t('chui-zhi-jiao-du') }}</span>
         <el-slider
           v-model="verticalAngle"
