@@ -14,8 +14,8 @@
           </el-button>
         </el-col>
         <el-col :span="8">
-          <el-button class="w-full" size="large" @click="onClick(keyMap.BATTERY)">
-            <i-icomoon-free-switch />
+          <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
+            {{ t('que-ding') }}
           </el-button>
         </el-col>
         <el-col :span="8">
@@ -32,9 +32,9 @@
     </el-row>
   </div>
   <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full">
-    <el-button size="large" class="w-full" @click="onClick(keyMap.CONFIRM)">
-      {{ t('que-ding') }}
-    </el-button>
+    <el-button class="w-full" size="large" @click="onClick(keyMap.BATTERY)">
+      {{ t('dian-yuan') }}</el-button
+    >
     <el-button class="w-full" size="large" @click="onClick(keyMap.BACK)">{{
       t('fan-hui')
     }}</el-button>
