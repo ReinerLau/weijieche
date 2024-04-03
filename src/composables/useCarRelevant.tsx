@@ -1,4 +1,4 @@
-import { connectCar, patrolingCruise } from '@/api'
+import { connectCar, controlAlarmLight, patrolingCruise } from '@/api'
 import { getCarList } from '@/api/list'
 import { openCarWs, offCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
@@ -111,6 +111,9 @@ export const useCarRelevant = ({
   //自动灯是否开启
   const autoLight = ref(false)
 
+  //警告灯是否开启
+  const alarmLight = ref(false)
+
   // 切换近远灯相关事件
   function toggleLight(value: boolean, mode: string) {
     if (haveCurrentCar()) {
@@ -188,6 +191,21 @@ export const useCarRelevant = ({
         }
       },
       disabled: lowLight.value || highLight.value ? true : false
+    },
+    {
+      title: t('jing-bao-deng'),
+      ref: alarmLight,
+      event: (value: boolean) => {
+        if (haveCurrentCar()) {
+          const data = {
+            code: currentCar.value,
+            type: value ? '1' : '0'
+          }
+          controlAlarmLight(data)
+        } else {
+          alarmLight.value = false
+        }
+      }
     }
     // {
     //   title: t('ji-guang-fa-san-qi'),
