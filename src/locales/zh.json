@@ -277,6 +277,7 @@
   "cun-chu-shi-pin": "存储视频",
   "gao-jing": "告警",
   "cha-kan-tu-pian": "查看图片",
+  "jing-bao-deng": "警报灯",
   "deng-guang-kong-zhi": "灯光控制",
   "zuo": "左",
   "you-0": "右",
@@ -284,5 +285,6 @@
   "hou": "后",
   "xuan-ze-yin-pin": "选择音频",
   "yin-pin": "音频",
-  "dui-jiang": "对讲"
+  "dui-jiang": "对讲",
+  "dian-yuan": "电源"
 }
