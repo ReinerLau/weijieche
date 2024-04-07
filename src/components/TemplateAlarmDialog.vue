@@ -3,12 +3,13 @@ import { alarmDialogVisible } from '@/shared/map/alarm'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { handleAlarmAction } from '@/composables'
+import type { websocketData } from '@/composables'
 
 const srcList: string[] = []
 const imgUrl = ref<string>('')
 
 const props = defineProps<{
-  wsdata: { picPath: string; message: string; code: string }
+  wsdata: websocketData
 }>()
 
 const { t } = useI18n()
@@ -18,8 +19,8 @@ watch(
   (val) => {
     imgUrl.value = ''
     srcList.length = 0
-    imgUrl.value = val
-    srcList.push(val)
+    imgUrl.value = val!
+    srcList.push(val!)
   }
 )
 // let type = null
