@@ -35,10 +35,14 @@
     <div>
       <el-row :gutter="8">
         <el-col :span="12">
-          <el-button size="large" class="w-full" @click="onClick(keyMap.RECALL)">召回</el-button>
+          <el-button size="large" class="w-full" @click="onClick(keyMap.RECALL)">{{
+            t('zhao-hui')
+          }}</el-button>
         </el-col>
         <el-col :span="12">
-          <el-button size="large" class="w-full" @click="handleCalibrate()">校准</el-button>
+          <el-button size="large" class="w-full" @click="handleCalibrate()">{{
+            t('xiao-zhun')
+          }}</el-button>
         </el-col>
       </el-row>
     </div>
