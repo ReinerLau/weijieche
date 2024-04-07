@@ -49,3 +49,11 @@ export function controlAlarmLight(data: any) {
     data: data
   })
 }
+
+export function postCalibrate(data: { code: string; waitingTime: number }) {
+  return request({
+    url: '/robot-remote-control/correction-ptz/v2',
+    method: 'post',
+    data
+  })
+}
