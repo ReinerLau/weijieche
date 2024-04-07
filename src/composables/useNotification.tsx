@@ -6,48 +6,48 @@ import {
   ElImageViewer,
   ElMessage,
   ElNotification,
+  ElTabPane,
+  ElTabs,
   ElTooltip
 } from 'element-plus'
+import type { TabPaneName } from 'element-plus'
 import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
 import IconMdiBellOutline from '~icons/mdi/bell-outline'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { fetchTimeoutAlarm, getHandleAlarm } from '@/api'
+import { fetchNotProcessAlarm, fetchTimeoutAlarm, Mode, postAlarmHandling, Type } from '@/api'
 import { useVirtualList } from '@vueuse/core'
 import { Marker } from 'maptalks'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
 import { i18n } from '@/utils'
+import { currentCar, haveCurrentCar } from '@/shared'
 
-// 收到的 websocket 数据结构类型声明
-interface websocketData {
-  id: string
-  type: string
-  message: string
-  code: string
-  longitude: number
-  latitude: number
-  heading: number
+export interface websocketData {
+  id?: string
+  type?: string
+  message?: string
+  code?: string
+  longitude?: number
+  latitude?: number
+  heading?: number
   createTime?: string
+  picPath?: string
 }
 
 const messageBox = ref<any>(null)
 
-//处理警报相关逻辑
-export const handleAlarmAction = async (data: any, mode: number) => {
-  let type = null
-  const messageToType: {
-    [key: string]: number
-    人员入侵: number
-    铁丝网识别: number
-    敬礼识别: number
-  } = {
-    人员入侵: 1,
-    铁丝网识别: 2,
-    敬礼识别: 3
+export const handleAlarmAction = async (data: websocketData, mode: Mode) => {
+  let type
+  if (data.message === '人员入侵') {
+    type = Type.PERSON
+  } else if (data.message === '铁丝网识别') {
+    type = Type.HOLE
+  } else if (data.message === '敬礼识别') {
+    type = Type.SALUTE
   }
-  type = messageToType[data.message]
-  await getHandleAlarm(data.code, type, mode)
+
+  await postAlarmHandling({ code: data.code, mode, type })
   ElMessage({ type: 'success', message: i18n.global.t('cao-zuo-cheng-gong') })
   messageBox.value.close()
   alarmDialogVisible.value = false
@@ -67,7 +67,7 @@ export const useNotification = () => {
   // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
 
-  const wsData = ref({
+  const wsData = ref<websocketData>({
     picPath: '',
     message: '',
     code: '',
@@ -106,7 +106,7 @@ export const useNotification = () => {
               {
                 style: 'color: #ff931e;cursor: pointer;width: 6rem',
                 onClick: () => {
-                  handleAlarmAction(data, 1)
+                  handleAlarmAction(data, Mode.PROCESS)
                 }
               },
               t('shou-dong-chu-li')
@@ -116,7 +116,7 @@ export const useNotification = () => {
               {
                 style: 'color: #409EFF;cursor: pointer;width: 6rem',
                 onClick: () => {
-                  handleAlarmAction(data, 0)
+                  handleAlarmAction(data, Mode.NOT_PROCESS)
                 }
               },
               t('bu-zuo-chu-li')
@@ -130,7 +130,7 @@ export const useNotification = () => {
         // 声音设置
         alarmRef.value.volume = 1
         //警报闪烁
-        handleAlarmEvent(longitude, latitude, heading)
+        handleAlarmEvent(longitude, latitude, heading!)
       }
     }
   }
@@ -204,10 +204,18 @@ export const useNotification = () => {
 
   watch(notificationDrawerVisible, async (newVal: boolean) => {
     if (newVal) {
-      const res = await fetchTimeoutAlarm({ page: 1, limit: 99999 })
-      notifications.value = res.data.list
+      if (currentTab.value === TabNames.FIRST) {
+        getTimeoutAlarm()
+      } else if (currentTab.value === TabNames.SECOND) {
+        getNotProcessAlarm()
+      }
     }
   })
+
+  const getTimeoutAlarm = async () => {
+    const res = await fetchTimeoutAlarm({ page: 1, limit: 99999 })
+    notifications.value = res.data.list
+  }
 
   const previewSrcList = ref<string[]>([])
 
@@ -216,6 +224,37 @@ export const useNotification = () => {
   const previewImage = (url: string) => {
     showPreviewImage.value = true
     previewSrcList.value = [url]
+  }
+
+  const TabNames = {
+    FIRST: 'first',
+    SECOND: 'second'
+  }
+
+  const currentTab = ref(TabNames.FIRST)
+
+  const handleTabChange = (name: TabPaneName) => {
+    if (name === TabNames.FIRST) {
+      getTimeoutAlarm()
+    } else if (name === TabNames.SECOND) {
+      getNotProcessAlarm()
+    }
+  }
+
+  const notProcessData = ref<{ createTime?: string; picPath?: string; code?: string; id?: number }>(
+    {}
+  )
+
+  const getNotProcessAlarm = async () => {
+    const res = await fetchNotProcessAlarm()
+    notProcessData.value = res.data
+  }
+
+  const activeNoProcessAlarm = async () => {
+    if (haveCurrentCar()) {
+      await postAlarmHandling({ code: currentCar.value, mode: Mode.ACTIVE, type: 1 })
+      getNotProcessAlarm()
+    }
   }
 
   // 警报抽屉组件
@@ -227,35 +266,66 @@ export const useNotification = () => {
       direction="rtl"
       size="30%"
     >
-      <div
-        ref={containerProps.ref}
-        style={containerProps.style}
-        class="h-[95%]"
-        onScroll={containerProps.onScroll}
-      >
-        <div {...wrapperProps.value}>
-          {list.value.map((item) => (
-            <ElCard key={item.data.id} class="mb-5">
-              {{
-                header: () => (
-                  <div class="flex justify-between">
-                    <span>{item.data.code}</span>
-                    <span>{item.data.createTime}</span>
-                  </div>
-                ),
-                default: () => (
-                  <div class="flex justify-between">
-                    <div>{item.data.type}</div>
-                    <ElButton link onClick={() => previewImage(item.data.picPath)}>
-                      {t('cha-kan-tu-pian')}
-                    </ElButton>
-                  </div>
-                )
-              }}
-            </ElCard>
-          ))}
+      <ElTabs v-model={currentTab.value} onTabChange={handleTabChange}>
+        <ElTabPane label="超时未处理" name={TabNames.FIRST}></ElTabPane>
+        <ElTabPane label="不处理" name={TabNames.SECOND}></ElTabPane>
+      </ElTabs>
+      {currentTab.value === TabNames.FIRST && (
+        <div
+          ref={containerProps.ref}
+          style={containerProps.style}
+          class="h-[85%]"
+          onScroll={containerProps.onScroll}
+        >
+          <div {...wrapperProps.value}>
+            {list.value.map((item) => (
+              <ElCard key={item.data.id} class="mb-5">
+                {{
+                  header: () => (
+                    <div class="flex justify-between">
+                      <span>{item.data.code}</span>
+                      <span>{item.data.createTime}</span>
+                    </div>
+                  ),
+                  default: () => (
+                    <div class="flex justify-between">
+                      <div>{item.data.type}</div>
+                      <ElButton link onClick={() => previewImage(item.data.picPath)}>
+                        {t('cha-kan-tu-pian')}
+                      </ElButton>
+                    </div>
+                  )
+                }}
+              </ElCard>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+      {currentTab.value === TabNames.SECOND && (
+        <ElCard>
+          {{
+            header: () => (
+              <div class="flex justify-between">
+                <span>{notProcessData.value.code}</span>
+                <span>{notProcessData.value.createTime}</span>
+              </div>
+            ),
+            default: () => (
+              <div class="flex justify-between">
+                <div>人员入侵</div>
+                <div>
+                  <ElButton link onClick={() => previewImage(notProcessData.value.picPath!)}>
+                    {t('cha-kan-tu-pian')}
+                  </ElButton>
+                  <ElButton type="primary" link onClick={activeNoProcessAlarm}>
+                    激活
+                  </ElButton>
+                </div>
+              </div>
+            )
+          }}
+        </ElCard>
+      )}
       {showPreviewImage.value && (
         <ElImageViewer
           onClose={() => (showPreviewImage.value = false)}
