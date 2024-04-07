@@ -249,7 +249,7 @@ export const useCarRelevant = ({
       modal={false}
     >
       <ElScrollbar>
-        <div class="w-full px-2">
+        <div class="w-full px-5">
           <Switchs />
           <ElDivider />
           <PantiltControl />

@@ -32,7 +32,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div class="my-3">
       <el-row :gutter="8">
         <el-col :span="12">
           <el-button size="large" class="w-full" @click="onClick(keyMap.RECALL)">{{

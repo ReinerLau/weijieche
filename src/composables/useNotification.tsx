@@ -267,8 +267,8 @@ export const useNotification = () => {
       size="30%"
     >
       <ElTabs v-model={currentTab.value} onTabChange={handleTabChange}>
-        <ElTabPane label="超时未处理" name={TabNames.FIRST}></ElTabPane>
-        <ElTabPane label="不处理" name={TabNames.SECOND}></ElTabPane>
+        <ElTabPane label={t('chao-shi-wei-chu-li')} name={TabNames.FIRST}></ElTabPane>
+        <ElTabPane label={t('bu-chu-li')} name={TabNames.SECOND}></ElTabPane>
       </ElTabs>
       {currentTab.value === TabNames.FIRST && (
         <div
@@ -312,13 +312,13 @@ export const useNotification = () => {
             ),
             default: () => (
               <div class="flex justify-between">
-                <div>人员入侵</div>
+                <div>{t('ren-yuan-ru-qin')}</div>
                 <div>
                   <ElButton link onClick={() => previewImage(notProcessData.value.picPath!)}>
                     {t('cha-kan-tu-pian')}
                   </ElButton>
                   <ElButton type="primary" link onClick={activeNoProcessAlarm}>
-                    激活
+                    {t('ji-huo')}
                   </ElButton>
                 </div>
               </div>

@@ -19,7 +19,7 @@
         </el-option>
       </el-select>
     </div>
-    <div class="flex justify-center items-center mb-2">
+    <!-- <div class="flex justify-center items-center mb-2">
       <span class="mr-5">{{ t('yin-liang') }}</span>
       <el-slider
         v-model="volume"
@@ -30,7 +30,7 @@
         :show-input-controls="false"
         @change="handleChange"
       />
-    </div>
+    </div> -->
     <div class="flex justify-between items-center">
       <span>{{ t('ji-guang-fa-san-qi') }}</span>
       <el-switch v-model="disperseMode" @change="controlLaser"></el-switch>
