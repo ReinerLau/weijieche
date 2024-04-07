@@ -32,6 +32,16 @@
         </el-col>
       </el-row>
     </div>
+    <div>
+      <el-row :gutter="8">
+        <el-col :span="12">
+          <el-button size="large" class="w-full" @click="onClick(keyMap.RECALL)">召回</el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button size="large" class="w-full" @click="handleCalibrate()">校准</el-button>
+        </el-col>
+      </el-row>
+    </div>
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex items-center">
         <span class="mr-2">{{ t('shui-ping-jiao-du') }}</span>
@@ -69,6 +79,7 @@ import { currentCar } from '../shared/index'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { haveCurrentCar } from '@/shared'
+import { postCalibrate } from '../api/control'
 
 // 国际化
 const { t } = useI18n()
@@ -89,7 +100,8 @@ const keyMap = {
   LEFT: 4,
   STOP: 255,
   RIGHT: 2,
-  DOWN: 16
+  DOWN: 16,
+  RECALL: 7
 }
 
 // 点击触发不同个功能
@@ -134,6 +146,12 @@ function handleChangeAngle(type: number) {
     changeHorizonAngle()
   } else if (type === angleTypes.VERTICAL) {
     changeVerticalAngle()
+  }
+}
+
+const handleCalibrate = () => {
+  if (haveCurrentCar()) {
+    postCalibrate({ code: currentCar.value, waitingTime: 20 })
   }
 }
 </script>
