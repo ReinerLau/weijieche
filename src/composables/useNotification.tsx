@@ -241,9 +241,12 @@ export const useNotification = () => {
     }
   }
 
-  const notProcessData = ref<{ createTime?: string; picPath?: string; code?: string; id?: number }>(
-    {}
-  )
+  const notProcessData = ref<{
+    createTime?: string
+    picPath?: string
+    code?: string
+    id?: number
+  } | null>(null)
 
   const getNotProcessAlarm = async () => {
     const res = await fetchNotProcessAlarm()
@@ -252,7 +255,12 @@ export const useNotification = () => {
 
   const activeNoProcessAlarm = async () => {
     if (haveCurrentCar()) {
-      await postAlarmHandling({ code: currentCar.value, mode: Mode.ACTIVE, type: 1 })
+      await postAlarmHandling({
+        code: currentCar.value,
+        mode: Mode.ACTIVE,
+        type: 1,
+        opencvRecordId: notProcessData.value?.id
+      })
       getNotProcessAlarm()
     }
   }
@@ -301,20 +309,20 @@ export const useNotification = () => {
           </div>
         </div>
       )}
-      {currentTab.value === TabNames.SECOND && (
+      {currentTab.value === TabNames.SECOND && notProcessData.value && (
         <ElCard>
           {{
             header: () => (
               <div class="flex justify-between">
-                <span>{notProcessData.value.code}</span>
-                <span>{notProcessData.value.createTime}</span>
+                <span>{notProcessData.value!.code}</span>
+                <span>{notProcessData.value!.createTime}</span>
               </div>
             ),
             default: () => (
               <div class="flex justify-between">
                 <div>{t('ren-yuan-ru-qin')}</div>
                 <div>
-                  <ElButton link onClick={() => previewImage(notProcessData.value.picPath!)}>
+                  <ElButton link onClick={() => previewImage(notProcessData.value!.picPath!)}>
                     {t('cha-kan-tu-pian')}
                   </ElButton>
                   <ElButton type="primary" link onClick={activeNoProcessAlarm}>

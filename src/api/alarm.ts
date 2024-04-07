@@ -39,7 +39,12 @@ export enum Type {
   SALUTE = 3
 }
 
-export function postAlarmHandling(data: { code?: string; mode?: Mode; type?: Type }) {
+export function postAlarmHandling(data: {
+  code?: string
+  mode?: Mode
+  type?: Type
+  opencvRecordId?: number
+}) {
   return request({
     url: '/opencv-record/v1/alarmHandling',
     method: 'post',
