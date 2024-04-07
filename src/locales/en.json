@@ -288,5 +288,8 @@
   "dui-jiang": "intercom",
   "dian-yuan": "power supply",
   "zhao-hui": "recall",
-  "xiao-zhun": "calibration"
+  "xiao-zhun": "calibration",
+  "chao-shi-wei-chu-li": "Timeout not processed",
+  "bu-chu-li": "Not processed",
+  "ji-huo": "activation"
 }

@@ -9,7 +9,7 @@ import {
   pressedButtons
 } from '@/shared'
 import { ElMenu, ElMenuItem, ElMessage, ElScrollbar } from 'element-plus'
-import { Fragment, computed, ref, watch, type ComputedRef } from 'vue'
+import { computed, ref, watch, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { haveCurrentCar } from '@/shared'
 export const carMode = ref('')
