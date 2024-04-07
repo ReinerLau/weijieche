@@ -105,7 +105,7 @@ const keyMap = {
   STOP: 255,
   RIGHT: 2,
   DOWN: 16,
-  RECALL: 7
+  RECALL: 6
 }
 
 // 点击触发不同个功能
