@@ -291,5 +291,9 @@
   "xiao-zhun": "étalonnage",
   "chao-shi-wei-chu-li": "Délai d'attente non traité",
   "bu-chu-li": "Non traité",
-  "ji-huo": "Activation"
+  "ji-huo": "Activation",
+  "shi-pin-zhuang-tai": "Statut de la vidéo",
+  "wei-xia-zai": "Pas téléchargé",
+  "yi-xia-zai": "Téléchargé",
+  "xia-zai-zhong": "En téléchargement"
 }

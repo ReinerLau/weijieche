@@ -291,5 +291,9 @@
   "xiao-zhun": "校准",
   "chao-shi-wei-chu-li": "超时未处理",
   "bu-chu-li": "不处理",
-  "ji-huo": "激活"
+  "ji-huo": "激活",
+  "shi-pin-zhuang-tai": "视频状态",
+  "wei-xia-zai": "未下载",
+  "yi-xia-zai": "已下载",
+  "xia-zai-zhong": "下载中"
 }
