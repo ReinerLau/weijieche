@@ -6,10 +6,14 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
+import eslint from 'vite-plugin-eslint'
 
-// https://vitejs.dev/config/
+// https://vitejs.dev/configk/
 export default defineConfig({
   plugins: [
+    eslint({
+      failOnWarning: true
+    }),
     vue(),
     vueJsx(),
     Components({
@@ -34,7 +38,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://192.168.18.233:8081',
+        target: 'http://192.168.18.57:8091',
         changeOrigin: true
       },
       '/rtc': {

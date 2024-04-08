@@ -9,7 +9,7 @@ import { haveCurrentCar } from '..'
 import { templateDialogVisible } from './template'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 import { clearStatus } from '.'
-import * as turf from '@turf/turf'
+import { lineString, length } from '@turf/turf'
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
 //录制路线图层实例
@@ -90,11 +90,11 @@ let recordData: any = null
 export const initRecordPath = (data: CarInfo) => {
   // 筛选绘制保存录制路线
   if (recordData !== null) {
-    const line = turf.lineString([
+    const line = lineString([
       [recordData.longitude, recordData.latitude],
       [data.longitude, data.latitude]
     ])
-    const pointLength = turf.length(line) * 1000
+    const pointLength = length(line) * 1000
     //两点距离大于1米录制
     if (pointLength > 1) {
       drawRecordPath(data)

@@ -42,7 +42,7 @@
 // 驱鸟器控制
 import { patrolingCruise, playAudioById } from '@/api'
 import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
-import { debounce } from 'lodash'
+// import { debounce } from 'lodash'
 import { computed, ref, watch } from 'vue'
 import { pressedButtons } from '@/shared'
 import type { ComputedRef } from 'vue'
@@ -106,20 +106,20 @@ async function onClick(value: string) {
 }
 
 // 音量值
-const volume = ref(0)
+// const volume = ref(0)
 // 修改音量
-const changeVolumn = debounce(async () => {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: '05',
-      param2: '04',
-      param3: volume.value,
-      param4: 'ff'
-    }
-    patrolingCruise(data)
-  }
-}, 500)
+// const changeVolumn = debounce(async () => {
+//   if (haveCurrentCar()) {
+//     const data = {
+//       code: currentCar.value,
+//       param1: '05',
+//       param2: '04',
+//       param3: volume.value,
+//       param4: 'ff'
+//     }
+//     patrolingCruise(data)
+//   }
+// }, 500)
 
 // 驱鸟功能是否开启
 const playBirdAway = ref(false)
@@ -175,10 +175,10 @@ watch(pressedButtons, (val) => {
   }
 })
 
-// 修改音量
-function handleChange() {
-  changeVolumn()
-}
+// // 修改音量
+// function handleChange() {
+//   changeVolumn()
+// }
 
 // 激光发散器是否开启
 const disperseMode = ref(false)
