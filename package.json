@@ -13,8 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@turf/length": "^6.5.0",
-    "@turf/turf": "^6.5.0",
+    "@turf/turf": "7.0.0-alpha.114",
     "@vueuse/core": "^10.4.1",
     "axios": "^1.5.0",
     "echarts": "^5.4.3",
