@@ -291,5 +291,9 @@
   "xiao-zhun": "calibration",
   "chao-shi-wei-chu-li": "Timeout not processed",
   "bu-chu-li": "Not processed",
-  "ji-huo": "activation"
+  "ji-huo": "activation",
+  "shi-pin-zhuang-tai": "Video status",
+  "wei-xia-zai": "Not downloaded",
+  "yi-xia-zai": "Downloaded",
+  "xia-zai-zhong": "Downloading"
 }

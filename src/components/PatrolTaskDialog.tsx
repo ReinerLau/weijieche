@@ -183,6 +183,27 @@ export default defineComponent({
             }}
           </ElTableColumn>
         )
+      },
+      {
+        label: t('shi-pin-zhuang-tai'),
+        prop: 'downloadFlag',
+        slot: (row: any) => (
+          <ElTableColumn property={row.prop} label={row.label}>
+            {{
+              default: ({ row }: { row: any }) => {
+                if (row.downloadFlag === 1) {
+                  return t('wei-xia-zai')
+                } else if (row.downloadFlag === 2) {
+                  return t('yi-xia-zai')
+                } else if (row.downloadFlag === 3) {
+                  return t('xia-zai-zhong')
+                } else {
+                  return t('wu')
+                }
+              }
+            }}
+          </ElTableColumn>
+        )
       }
     ]
 
