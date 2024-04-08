@@ -56,7 +56,7 @@ export const handleConfirmAlarmPoint = (data: any) => {
   clearDrawAlarmPoint()
   const coordinates: number[][] = data.map((item: any) => [item.longitude, item.latitude])
 
-  coordinates.forEach((coordinate, index) => {
+  coordinates.forEach((coordinate) => {
     const alarmPoint = new Marker(coordinate, {
       symbol: {
         // textName: index + 1,

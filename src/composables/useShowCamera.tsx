@@ -1,5 +1,5 @@
 import { ElDialog, ElImage } from 'element-plus'
-import { defineComponent, ref, type Ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 画面模板
