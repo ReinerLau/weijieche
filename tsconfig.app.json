@@ -6,7 +6,8 @@
     "src/**/*.vue",
     "src/**/*.json",
     "node_modules/unplugin-icons/types/vue.d.ts",
-    "__tests__"
+    "__tests__",
+    "vitest.setup.ts"
   ],
   "compilerOptions": {
     "composite": true,

@@ -1,26 +1,24 @@
 import { connectCar, controlAlarmLight, patrolingCruise } from '@/api'
-import { getCarList } from '@/api/list'
 import { openCarWs, offCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { carList, currentCar, haveCurrentCar } from '@/shared'
 import {
   ElButton,
   ElCol,
   ElDivider,
   ElDrawer,
   ElMessage,
-  ElOption,
   ElRow,
   ElScrollbar,
-  ElSelect,
   ElSwitch
 } from 'element-plus'
 import { computed, Fragment, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
+import CarSelector from '@/components/CarSelector.vue'
 
 // 选择车左边抽屉相关
 export const useCarRelevant = ({
@@ -40,17 +38,6 @@ export const useCarRelevant = ({
 
   // 抽屉是否可见
   const carSettingDrawerVisible = ref(false)
-
-  // 可选车辆数据
-  const carList: Ref<
-    { id: number; code: string; name: string; status: number; battery: number }[]
-  > = ref([])
-
-  // 获取车辆数据
-  async function getList() {
-    const { data } = await getCarList('patroling')
-    carList.value = data || []
-  }
 
   // 当前车辆状态
   const currentCarStatus = () => {
@@ -265,20 +252,7 @@ export const useCarRelevant = ({
   // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
     <div class="flex items-center">
-      <ElSelect
-        v-model={currentCar.value}
-        placeholder={t('xuan-ze-che-liang')}
-        size="small"
-        onVisible-change={(visible: boolean) => visible && getList()}
-        class="mr-2"
-      >
-        {carList.value.map((item) => (
-          <ElOption key={item.id} value={item.code}>
-            <span>{item.name}</span>
-            <span>{item.status === 1 ? '✅' : '🚫'}</span>
-          </ElOption>
-        ))}
-      </ElSelect>
+      <CarSelector></CarSelector>
       <span class="mr-4">{NewCurrentCarStatus.value}</span>
       <ElSwitch
         class="mr-4"
