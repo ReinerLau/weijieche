@@ -2,6 +2,10 @@ import { ref, type Ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { i18n } from '@/utils'
 
+export const carList = ref<
+  { id: number; code: string; name: string; status: number; battery: number }[]
+>([])
+
 /**
  * 当前选择的车辆编号
  */
