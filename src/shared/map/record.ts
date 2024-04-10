@@ -52,36 +52,40 @@ export const recordPathToolbarEvent = () => {
   }
 }
 
+const endRecordPath = () => {
+  clearMenu()
+  if (recordPathPoints.length > 1) {
+    clearStatus()
+    isRecord.value = false
+    ElMessage({
+      type: 'success',
+      message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+    })
+    isRecordPath.value = true
+    templateDialogVisible.value = true
+  } else {
+    ElMessage({
+      type: 'warning',
+      message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
+    })
+    clearStatus()
+    isRecord.value = false
+    isRecordPath.value = false
+  }
+}
+
+export const recordMenu = [
+  {
+    item: i18n.global.t('jie-shu-lu-zhi'),
+    click: endRecordPath
+  }
+]
+
 const setRecordMenu = () => {
   clearMenu()
   map.setMenu({
     width: 'auto',
-    items: [
-      {
-        item: i18n.global.t('jie-shu-lu-zhi'),
-        click: () => {
-          clearMenu()
-          if (recordPathPoints.length > 1) {
-            clearStatus()
-            isRecord.value = false
-            ElMessage({
-              type: 'success',
-              message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
-            })
-            isRecordPath.value = true
-            templateDialogVisible.value = true
-          } else {
-            ElMessage({
-              type: 'warning',
-              message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
-            })
-            clearStatus()
-            isRecord.value = false
-            isRecordPath.value = false
-          }
-        }
-      }
-    ]
+    items: recordMenu
   })
 }
 

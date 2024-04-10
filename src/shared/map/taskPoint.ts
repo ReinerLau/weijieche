@@ -1,14 +1,14 @@
-import { Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
-import { entryPoint, setEntryPoint } from './home'
-import { ref, type Ref } from 'vue'
 import { deletePointTask, getPointTaskList } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { clearDrawTool } from './drawTool'
-import { endRecording } from './record'
-import { clearPathLayer } from './path'
+import { Marker, VectorLayer } from 'maptalks'
+import { ref, type Ref } from 'vue'
 import { handleCreatePath } from '.'
+import { map } from './base'
+import { clearDrawTool } from './drawTool'
+import { entryPoint, setEntryPoint } from './home'
+import { clearPathLayer } from './path'
+import { endRecording } from './record'
 
 /**
  * 任务点图层实例
@@ -48,7 +48,6 @@ export const getList = async () => {
 //处理添加/编辑
 export const handleTaskEvent = (c: any, callback: () => void) => {
   pointCoordinates.value = ''
-  taskPoint.value = () => {}
   pointSettingDialogVisible.value = true
   if (c.id) {
     pointCoordinates.value = c.gps
