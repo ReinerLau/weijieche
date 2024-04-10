@@ -1,12 +1,11 @@
-import { ConnectorLine, LineString, Marker } from 'maptalks'
-import { VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
 import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { ConnectorLine, LineString, Marker, VectorLayer } from 'maptalks'
+import { currentCar, haveCurrentCar } from '..'
+import { clearMenu, map } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
 import { endRecording } from './record'
-import { currentCar, haveCurrentCar } from '..'
 
 /**
  * 当前鼠标点击的入口点
@@ -37,12 +36,12 @@ export const initHomePathLayer = () => {
 /**
  * 绘制返航路线图层实例
  */
-let homePathDrawLayer: VectorLayer
+export let homePathDrawLayer: VectorLayer
 
 /**
  * 初始化绘制返航路线图层
  */
-const initHomePathDrawLayer = () => {
+export const initHomePathDrawLayer = () => {
   homePathDrawLayer = new VectorLayer('home-line')
   homePathDrawLayer.addTo(map)
 }
@@ -186,7 +185,7 @@ export const handleCreateHomePath = (firstPoint?: Marker) => {
   }
 }
 
-const homePathPoints: Marker[] = []
+export const homePathPoints: Marker[] = []
 
 /**
  * 返航路线绘制结束事件
