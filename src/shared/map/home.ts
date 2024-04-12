@@ -2,6 +2,7 @@ import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ConnectorLine, LineString, Marker, VectorLayer } from 'maptalks'
+import { ref } from 'vue'
 import { currentCar, haveCurrentCar } from '..'
 import { clearMenu, map } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
@@ -76,14 +77,17 @@ export const clearPreviewHomePath = () => {
   previewHomePath = null
 }
 
+export const homePaths = ref<{ id: number; enterGps: string; gps: string; mission: string }[]>([])
+
 /**
  * 初始化所有返航路线
  */
 export const initHomePath = async () => {
   homePathLayer.clear()
   const res = await getHomePath({ limit: 99999 })
-  const homePaths = res.data.list || []
-  homePaths.forEach((item: any) => {
+  homePaths.value = res.data.list || []
+
+  homePaths.value.forEach((item: any) => {
     const menuOptions = {
       items: [
         {
@@ -130,6 +134,13 @@ export const initHomePath = async () => {
     const homePointCoord = JSON.parse(item.gps)
     new Marker([homePointCoord.y, homePointCoord.x]).setMenu(menuOptions).addTo(homePathLayer)
   })
+  const testMarker = new Marker([
+    JSON.parse(homePaths.value[0].enterGps).y,
+    JSON.parse(homePaths.value[0].enterGps).x
+  ])
+  console.log(testMarker)
+
+  console.log(homePathLayer.getGeometries())
 }
 
 export const handleSaveHomePath = async () => {
@@ -234,27 +245,34 @@ export const startHomeToolbarEvent = async () => {
   }
 }
 
-export const setHomePathDrawingMenu = () => {
-  map.setMenuItems([
-    {
-      item: i18n.global.t('jie-shu'),
-      click: () => {
-        clearDrawTool()
-        setHomePathDrawendMenu()
-      }
+export const homePathDrawingMenu = [
+  {
+    item: i18n.global.t('jie-shu'),
+    click: () => {
+      clearDrawTool()
+      setHomePathDrawendMenu()
     }
-  ])
+  }
+]
+export const homePathDrawingMenuEvent = () => {
+  return homePathDrawingMenu
 }
 
+export const setHomePathDrawingMenu = () => {
+  map.setMenuItems(homePathDrawingMenu)
+}
+
+export const homePathDrawendMenu = [
+  {
+    item: i18n.global.t('qing-kong'),
+    click: clearDrawingHomePath
+  },
+  {
+    item: i18n.global.t('bao-cun-fan-hang-lu-xian'),
+    click: handleSaveHomePath
+  }
+]
+
 export const setHomePathDrawendMenu = () => {
-  map.setMenuItems([
-    {
-      item: i18n.global.t('qing-kong'),
-      click: clearDrawingHomePath
-    },
-    {
-      item: i18n.global.t('bao-cun-fan-hang-lu-xian'),
-      click: handleSaveHomePath
-    }
-  ])
+  map.setMenuItems(homePathDrawendMenu)
 }
