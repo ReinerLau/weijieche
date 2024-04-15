@@ -82,6 +82,11 @@ export const homePaths = ref<{ id: number; enterGps: string; gps: string; missio
 /**
  * 初始化所有返航路线
  */
+export const setDelet = async (id: number) => {
+  await deleteHomePath(id)
+  ElMessage({ type: 'success', message: i18n.global.t('cao-zuo-cheng-gong') })
+  initHomePath()
+}
 export const initHomePath = async () => {
   homePathLayer.clear()
   const res = await getHomePath({ limit: 99999 })
@@ -92,9 +97,8 @@ export const initHomePath = async () => {
       items: [
         {
           item: i18n.global.t('shan-chu'),
-          click: async () => {
-            await deleteHomePath(item.id)
-            initHomePath()
+          click: () => {
+            setDelet(item.id)
           }
         }
       ]
@@ -134,13 +138,6 @@ export const initHomePath = async () => {
     const homePointCoord = JSON.parse(item.gps)
     new Marker([homePointCoord.y, homePointCoord.x]).setMenu(menuOptions).addTo(homePathLayer)
   })
-  const testMarker = new Marker([
-    JSON.parse(homePaths.value[0].enterGps).y,
-    JSON.parse(homePaths.value[0].enterGps).x
-  ])
-  console.log(testMarker)
-
-  console.log(homePathLayer.getGeometries())
 }
 
 export const handleSaveHomePath = async () => {
@@ -157,6 +154,7 @@ export const handleSaveHomePath = async () => {
     }
     const res: any = await createHomePath(data)
     ElMessage({ type: 'success', message: res.message })
+
     clearDrawingHomePath()
     initHomePath()
   } else {

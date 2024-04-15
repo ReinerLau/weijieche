@@ -1,8 +1,9 @@
-import { getHomePath, goHome } from '@/api/home'
+import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api/home'
 import { currentCar, initMapLayerTool } from '@/shared'
 import { map } from '@/shared/map/base'
 import {
   clearDrawingHomePath,
+  clearPreviewHomePath,
   createHomePathToolbarEvent,
   homePathDrawEndEvent,
   homePathDrawLayer,
@@ -14,12 +15,15 @@ import {
   homePaths,
   initHomePath,
   initHomePathLayer,
+  previewHomePath,
+  setDelet,
+  setPreviewHomePath,
   startHomeToolbarEvent
 } from '@/shared/map/home'
 import { isRecord } from '@/shared/map/record'
 import { flushPromises } from '@vue/test-utils'
 import * as el from 'element-plus'
-import { ConnectorLine, Marker } from 'maptalks'
+import { ConnectorLine, LineString, Marker } from 'maptalks'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('element-plus')
@@ -59,6 +63,53 @@ describe('record', () => {
     expect(getHomePath).toHaveBeenCalled()
     expect(homePaths.value).toEqual(testHomePathData.data.list)
     expect(homePathLayer.getGeometries().length).toBe(2)
+    expect(previewHomePath).not.toBe(null)
+  })
+
+  it('删除', async () => {
+    const testEntryPointCoord = JSON.parse(homePaths.value[0].enterGps)
+    const testPoint = new Marker([testEntryPointCoord.y, testEntryPointCoord.x]).setMenu({
+      items: [
+        {
+          item: '删除',
+          click: () => {
+            setDelet(homePaths.value[0].id)
+          }
+        }
+      ]
+    })
+    expect(testPoint.getMenuItems()).toHaveLength(1)
+    vi.mocked(deleteHomePath as any).mockImplementation(async () => {
+      return {
+        code: 200,
+        data: true,
+        message: '操作成功'
+      }
+    })
+    expect(homePaths.value.length).toBe(1)
+    setDelet(homePaths.value[0].id)
+    await flushPromises()
+    expect(elSpy).toHaveBeenCalledWith({
+      type: 'success',
+      message: '操作成功'
+    })
+  })
+
+  it('setPreviewHomePath ', async () => {
+    const coordinates = [
+      [JSON.parse(homePaths.value[0].enterGps).y, JSON.parse(homePaths.value[0].enterGps).x],
+      ...JSON.parse(homePaths.value[0].mission).map((i: any) => [i.y, i.x])
+    ]
+    const line = new LineString(coordinates, {
+      symbol: {
+        lineColor: '#ff931e',
+        lineDasharray: [5, 5, 5]
+      }
+    })
+    setPreviewHomePath(line)
+    expect(previewHomePath).toBe(line)
+    clearPreviewHomePath()
+    expect(previewHomePath).toBe(null)
   })
 
   it('not data', async () => {
@@ -93,11 +144,41 @@ describe('record', () => {
   describe('返航绘制右键菜单', () => {
     let testHomePathDrawingMenu: any
     beforeEach(() => {
+      homePathPoints.length = 0
+      const eMarker = { geometry: new Marker([113.1, 22.1]) }
+      homePathDrawEndEvent(eMarker)
+      expect(homePathPoints.length).toBe(1)
+      const eMarker2 = { geometry: new Marker([113.4, 22.4]) }
+      homePathDrawEndEvent(eMarker2)
       testHomePathDrawingMenu = homePathDrawingMenuEvent()
     })
     it('结束绘制', () => {
       testHomePathDrawingMenu[0].click()
       expect(map.getMenuItems()).toEqual(homePathDrawendMenu)
+    })
+
+    it('保存返航路线', async () => {
+      vi.mocked(createHomePath as any).mockImplementation(async () => {
+        return {
+          code: 200,
+          data: true,
+          message: ''
+        }
+      })
+      homePathDrawendMenu[1].click()
+      expect(homePathPoints.length).toBe(2)
+      expect(createHomePath).toHaveBeenCalled()
+      await flushPromises()
+      expect(elSpy).toHaveBeenCalledWith({
+        type: 'success',
+        message: ''
+      })
+    })
+
+    it('no homePathPoints', async () => {
+      homePathPoints.length = 0
+      homePathDrawendMenu[1].click()
+      expect(elSpy).toHaveBeenCalled()
     })
   })
 
