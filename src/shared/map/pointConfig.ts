@@ -1,8 +1,8 @@
+import { i18n } from '@/utils'
+import { ElMessage } from 'element-plus'
+import type { Marker } from 'maptalks'
 import { computed, ref } from 'vue'
 import { pathPointsData } from './path'
-import { ElMessage } from 'element-plus'
-import { i18n } from '@/utils'
-import type { Marker } from 'maptalks'
 /**
  * 点编辑抽屉是否可见
  */
@@ -41,7 +41,8 @@ export const handleConfirmPointCarConfig = (speed: number) => {
   if (pathPointsData.value.length !== 0) {
     pathPointsData.value[currentSelectedPointIndex.value].speed = speed
   } else {
-    ElMessage.error({
+    ElMessage({
+      type: 'error',
       message: i18n.global.t('lu-xian-bu-cun-zai-qing-you-jian-jie-shu-hua-xian')
     })
   }
