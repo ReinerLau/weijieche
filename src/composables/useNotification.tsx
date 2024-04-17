@@ -1,4 +1,10 @@
-import { initWebSocket } from '@/utils'
+import { Mode, Type, fetchNotProcessAlarm, fetchTimeoutAlarm, postAlarmHandling } from '@/api'
+import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
+import { currentCar, haveCurrentCar } from '@/shared'
+import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
+import { i18n, initWebSocket } from '@/utils'
+import { useVirtualList } from '@vueuse/core'
+import type { TabPaneName } from 'element-plus'
 import {
   ElButton,
   ElCard,
@@ -10,18 +16,11 @@ import {
   ElTabs,
   ElTooltip
 } from 'element-plus'
-import type { TabPaneName } from 'element-plus'
-import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
-import IconMdiBellOutline from '~icons/mdi/bell-outline'
-import type { Ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { fetchNotProcessAlarm, fetchTimeoutAlarm, Mode, postAlarmHandling, Type } from '@/api'
-import { useVirtualList } from '@vueuse/core'
 import { Marker } from 'maptalks'
-import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
-import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
-import { i18n } from '@/utils'
-import { currentCar, haveCurrentCar } from '@/shared'
+import type { Ref } from 'vue'
+import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import IconMdiBellOutline from '~icons/mdi/bell-outline'
 
 export interface websocketData {
   id?: string
@@ -33,6 +32,19 @@ export interface websocketData {
   heading?: number
   createTime?: string
   picPath?: string
+  opencvRecordId?: number
+}
+
+const notProcessData = ref<{
+  createTime?: string
+  picPath?: string
+  code?: string
+  id?: number
+} | null>(null)
+
+const getNotProcessAlarm = async () => {
+  const res = await fetchNotProcessAlarm()
+  notProcessData.value = res.data
 }
 
 const messageBox = ref<any>(null)
@@ -47,7 +59,7 @@ export const handleAlarmAction = async (data: websocketData, mode: Mode) => {
     type = Type.SALUTE
   }
 
-  await postAlarmHandling({ code: data.code, mode, type })
+  await postAlarmHandling({ code: data.code, mode, type, opencvRecordId: data.opencvRecordId })
   ElMessage({ type: 'success', message: i18n.global.t('cao-zuo-cheng-gong') })
   messageBox.value.close()
   alarmDialogVisible.value = false
@@ -239,18 +251,6 @@ export const useNotification = () => {
     } else if (name === TabNames.SECOND) {
       getNotProcessAlarm()
     }
-  }
-
-  const notProcessData = ref<{
-    createTime?: string
-    picPath?: string
-    code?: string
-    id?: number
-  } | null>(null)
-
-  const getNotProcessAlarm = async () => {
-    const res = await fetchNotProcessAlarm()
-    notProcessData.value = res.data
   }
 
   const activeNoProcessAlarm = async () => {
