@@ -1,14 +1,14 @@
-import { Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
-import { entryPoint, setEntryPoint } from './home'
-import { ref, type Ref } from 'vue'
 import { deletePointTask, getPointTaskList } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { clearDrawTool } from './drawTool'
-import { endRecording } from './record'
-import { clearPathLayer } from './path'
+import { Marker, VectorLayer } from 'maptalks'
+import { ref, type Ref } from 'vue'
 import { handleCreatePath } from '.'
+import { map } from './base'
+import { clearDrawTool } from './drawTool'
+import { entryPoint, setEntryPoint } from './home'
+import { clearPathLayer } from './path'
+import { endRecording } from './record'
 
 /**
  * 任务点图层实例
@@ -55,11 +55,7 @@ export const handleTaskEvent = (c: any, callback: () => void) => {
     form.value = Object.assign({}, c)
     if (c.cameraAngle) {
       const cameraAngle = c.cameraAngle.map((item: any) => {
-        if (item.x & item.y) {
-          return `${item.x},${item.y}`
-        } else {
-          return item
-        }
+        return `${item.x},${item.y}`
       })
       form.value['cameraAngle'] = cameraAngle
     }

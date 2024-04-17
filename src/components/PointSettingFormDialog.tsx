@@ -5,6 +5,7 @@ import {
   pointSettingDialogVisible,
   taskPoint
 } from '@/shared/map/taskPoint'
+import type { FormInstance, FormRules } from 'element-plus'
 import {
   ElButton,
   ElDialog,
@@ -16,9 +17,9 @@ import {
   ElOption,
   ElSelect
 } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
-import { Fragment, computed, defineComponent, ref } from 'vue'
+import { cloneDeep } from 'lodash'
 import type { ComputedRef, Ref } from 'vue'
+import { Fragment, computed, defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface formField {
@@ -130,23 +131,26 @@ export default defineComponent({
 
     // 提交表单数据
     async function handleSubmit() {
+      const cameraAngleData = cloneDeep(form.value)
       await formRef.value?.validate(async (valid: boolean) => {
         if (valid) {
           loading.value = true
           try {
             let res: any
             if (form.value['cameraAngle'] !== undefined) {
-              form.value['cameraAngle'] = form.value['cameraAngle'].map((item: any) => {
-                const [x, y] = item.split(/,|、|，/).map(Number) // 将每个元素按逗号分割后转换为数字
+              cameraAngleData.cameraAngle = form.value['cameraAngle'].map((item: any) => {
+                const [x, y] = item.split(/,|、|，/).map((item: string) => {
+                  return Number(item)
+                }) // 将每个元素按逗号分割后转换为数字
                 return { x, y }
               })
             }
 
             if (form.value.id) {
-              res = await updatePointTask(form.value)
+              res = await updatePointTask(cameraAngleData)
             } else {
-              form.value.gps = pointCoordinates.value
-              res = await createPointTask(form.value)
+              cameraAngleData.gps = pointCoordinates.value
+              res = await createPointTask(cameraAngleData)
             }
             //更新数据
             if (typeof taskPoint.value === 'function') {
