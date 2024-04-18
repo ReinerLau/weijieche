@@ -54,11 +54,7 @@ export const handleTaskEvent = (c: any, callback: () => void) => {
     form.value = Object.assign({}, c)
     if (c.cameraAngle) {
       const cameraAngle = c.cameraAngle.map((item: any) => {
-        if (item.x & item.y) {
-          return `${item.x},${item.y}`
-        } else {
-          return item
-        }
+        return `${item.x},${item.y}`
       })
       form.value['cameraAngle'] = cameraAngle
     }

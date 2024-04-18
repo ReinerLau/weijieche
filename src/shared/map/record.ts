@@ -36,6 +36,7 @@ export const recordPathPoints: Marker[] = []
 export const recordPathToolbarEvent = () => {
   clearPathLayer()
   clearDrawTool()
+
   if (haveCurrentCar() && !isRecord.value) {
     recordPathPoints.length = 0
     recordPath.value.length = 0
@@ -114,11 +115,8 @@ export const initRecordPath = (data: CarInfo) => {
 export const recordPath = ref<[number, number][]>([])
 function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
-    const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
-      symbol: {}
-    })
+    const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])
-
     recordPathPoints.push(pathPoint)
     const connectLine = new LineString(recordPath.value, {
       symbol: {

@@ -252,7 +252,7 @@ export default defineComponent({
 
     //打开展示异常位置
     async function handleConfirmAlarm(row: any) {
-      const { data } = await getTaskWarning(1)
+      const { data } = await getTaskWarning(row.id)
       clearDrawPatrolLine()
       handleConfirmPatrolTaskPath(row)
       handleConfirmAlarmPoint(data)
