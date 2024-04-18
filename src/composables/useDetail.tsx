@@ -225,16 +225,16 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       value: `${
         statusData.value.ptzAngleHorizontal === -3
           ? t('wei-fa-xian-yun-tai-huo-sun-huai')
-          : statusData.value.ptzAngleHorizontal || 0
-      }°`
+          : `${statusData.value.ptzAngleHorizontal || 0}°`
+      }`
     },
     {
       title: t('yun-tai-chui-zhi-jiao-du'),
       value: `${
         statusData.value.ptzAngleVertical === -3
           ? t('wei-fa-xian-yun-tai-huo-sun-huai')
-          : statusData.value.ptzAngleVertical || 0
-      }°`
+          : ` ${statusData.value.ptzAngleVertical || 0}°`
+      }`
     }
   ])
 
