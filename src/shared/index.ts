@@ -1,8 +1,7 @@
-import { ref, type Ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import { i18n } from '@/utils'
+import { ElMessage } from 'element-plus'
+import { ref, type Ref } from 'vue'
 import { initMap } from './map/base'
-import { initPathLayer } from './map/path'
 import { initDrawTool } from './map/drawTool'
 
 export const carList = ref<
@@ -104,6 +103,5 @@ export const cameraUrl = ref('')
 export const initMapLayerTool = () => {
   const mapEl = document.createElement('div')
   initMap(mapEl)
-  initPathLayer()
   initDrawTool()
 }

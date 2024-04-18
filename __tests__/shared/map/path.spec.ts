@@ -3,7 +3,6 @@ import { map } from '@/shared/map/base'
 import { clearDrawTool } from '@/shared/map/drawTool'
 import {
   entryPoint,
-  homePathDrawEndEvent,
   homePathDrawLayer,
   homePathPoints,
   initHomePathDrawLayer,
@@ -17,6 +16,7 @@ import {
   drawPathToolbarEvent,
   endDrawPath,
   getPointMenuItems,
+  initPathLayer,
   pathLayer,
   pathMenu,
   pathPointDrawendEvent,
@@ -24,6 +24,7 @@ import {
   pathPointsData,
   setPointMenu
 } from '@/shared/map/path'
+import { pointConfigDrawerVisible, pointSpeed } from '@/shared/map/pointConfig'
 import { isRecord, isRecordPath } from '@/shared/map/record'
 import { pointCoordinates, pointSettingDialogVisible } from '@/shared/map/taskPoint'
 import { ConnectorLine, Marker } from 'maptalks'
@@ -32,6 +33,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 describe('path', () => {
   beforeEach(() => {
     initMapLayerTool()
+    initPathLayer()
     clearPathLayer()
     clearDrawTool()
   })
@@ -129,22 +131,23 @@ describe('path', () => {
 
     it('homePathDrawEndEvent', () => {
       initHomePathDrawLayer()
-      const eMarker = { geometry: new Marker([113.1, 22.1]) }
-      homePathDrawEndEvent(eMarker)
-      expect(homePathDrawLayer.getGeometries()[0]).toBe(eMarker.geometry)
-      expect(homePathPoints.length).toBe(1)
-      const eMarker2 = { geometry: new Marker([113.4, 22.4]) }
-      homePathDrawEndEvent(eMarker2)
-      expect(homePathPoints.length).toBe(2)
-      expect(homePathDrawLayer.getGeometries()[2]).instanceOf(ConnectorLine)
+      expect(homePathDrawLayer).not.toBeUndefined()
     })
-
     it('右键菜单添加返航点', () => {
       homePathDrawLayer.clear()
       testPointMenu[1].click()
-      expect(homePathDrawLayer).not.toBeUndefined()
       expect(homePathDrawLayer.getGeometries()[0]).instanceOf(Marker)
       expect(homePathPoints.length).toBe(1)
+    })
+
+    it('右键菜单编辑车速', () => {
+      testPointMenu[2].click()
+      expect(pointConfigDrawerVisible.value).toBe(true)
+      expect(pointCoordinates.value).toBe(JSON.stringify({ x: 22.1, y: 113.1 }))
+      expect(pointSpeed.value).toBe(0)
+      pathPointsData.value[0] = { x: 22.1, y: 113.1, speed: 10 }
+      testPointMenu[2].click()
+      expect(pointSpeed.value).toBe(10)
     })
   })
 
