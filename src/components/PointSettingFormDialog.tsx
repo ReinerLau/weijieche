@@ -3,8 +3,9 @@ import {
   form,
   pointCoordinates,
   pointSettingDialogVisible,
-  taskPoint
+  taskPointVoid
 } from '@/shared/map/taskPoint'
+import type { FormInstance, FormRules } from 'element-plus'
 import {
   ElButton,
   ElDialog,
@@ -16,9 +17,8 @@ import {
   ElOption,
   ElSelect
 } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
-import { Fragment, computed, defineComponent, ref } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
+import { Fragment, computed, defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface formField {
@@ -149,8 +149,8 @@ export default defineComponent({
               res = await createPointTask(form.value)
             }
             //更新数据
-            if (typeof taskPoint.value === 'function') {
-              taskPoint.value()
+            if (typeof taskPointVoid.value === 'function') {
+              taskPointVoid.value()
             }
             ElMessage({ type: 'success', message: res.message })
             handleCancel()
