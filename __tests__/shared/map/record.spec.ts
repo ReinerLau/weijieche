@@ -1,17 +1,19 @@
 import { currentCar, initMapLayerTool } from '@/shared'
 import { map } from '@/shared/map/base'
+import { initPathLayer } from '@/shared/map/path'
 import {
   endRecording,
   initRecordPathLayer,
   isRecord,
   recordMenu,
+  recordPath,
   recordPathLayer,
   recordPathPoints,
   recordPathToolbarEvent
 } from '@/shared/map/record'
+import * as el from 'element-plus'
 import { Marker } from 'maptalks'
 import { describe, expect, it, vi } from 'vitest'
-import * as el from 'element-plus'
 
 vi.mock('element-plus')
 
@@ -20,6 +22,7 @@ const elSpy = vi.spyOn(el, 'ElMessage')
 describe('record', () => {
   it('录制路线图层', () => {
     initMapLayerTool()
+    initPathLayer()
     initRecordPathLayer()
     expect(recordPathLayer).not.toBeUndefined()
   })
@@ -29,6 +32,8 @@ describe('record', () => {
     expect(recordPathPoints.length).toBe(1)
     currentCar.value = '003'
     recordPathToolbarEvent()
+    expect(recordPathPoints.length).toBe(0)
+    expect(recordPath.value.length).toBe(0)
     expect(elSpy).toHaveBeenCalled()
     expect(endRecording()).toBe(false)
     expect(recordPathPoints.length).toBe(0)

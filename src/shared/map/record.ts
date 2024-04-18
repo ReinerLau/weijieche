@@ -1,15 +1,15 @@
-import { ElMessage } from 'element-plus'
-import { ref, watch } from 'vue'
 import { i18n } from '@/utils'
+import { length, lineString } from '@turf/turf'
+import { ElMessage } from 'element-plus'
 import { LineString, Marker, VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
-import { clearPathLayer } from './path'
-import { clearDrawTool } from './drawTool'
-import { haveCurrentCar } from '..'
-import { templateDialogVisible } from './template'
-import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
+import { ref, watch } from 'vue'
 import { clearStatus } from '.'
-import { lineString, length } from '@turf/turf'
+import { haveCurrentCar } from '..'
+import { clearMenu, map } from './base'
+import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
+import { clearDrawTool } from './drawTool'
+import { clearPathLayer } from './path'
+import { templateDialogVisible } from './template'
 export const isRecord = ref(false)
 export const isRecordPath = ref(false)
 //录制路线图层实例
@@ -38,6 +38,7 @@ export const recordPathToolbarEvent = () => {
   clearDrawTool()
   if (haveCurrentCar() && !isRecord.value) {
     recordPathPoints.length = 0
+    recordPath.value.length = 0
     isRecord.value = true
     ElMessage({
       type: 'success',
@@ -110,7 +111,7 @@ export const initRecordPath = (data: CarInfo) => {
   recordData = data
 }
 
-const recordPath = ref<[number, number][]>([])
+export const recordPath = ref<[number, number][]>([])
 function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
