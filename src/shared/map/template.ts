@@ -1,25 +1,33 @@
+import { createMissionTemplate } from '@/api'
+import { i18n } from '@/utils'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
+import { getLineCoordinates, havePath } from '.'
+import { clearMenu } from './base'
 import { clearDrawTool } from './drawTool'
 import { clearPathLayer, pathPointsData } from './path'
 import { endRecording, isRecordPath, recordPathPoints } from './record'
-import { getLineCoordinates, havePath } from '.'
-import { createMissionTemplate } from '@/api'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { i18n } from '@/utils'
-import { clearMenu } from './base'
+
+export interface FormData {
+  name?: string
+  memo?: string
+}
+
+// 新建模板的表单数据
+export const formData = ref<FormData>({ name: '', memo: '' })
 
 // 确定选择模板路线在地图上显示
 export const missionTemplateId = ref<number | null | undefined>()
 
 export const templateDialogVisible = ref(false)
 // 确定保存路线模板
-export const handleConfirm = async (formData: { name?: string; memo?: string }) => {
+export const handleConfirm = async (formList: { name?: string; memo?: string }) => {
   const data = {
     mission: isRecordPath.value
       ? JSON.stringify(getLineCoordinates(recordPathPoints))
       : JSON.stringify(pathPointsData.value),
-    name: formData.name,
-    memo: formData.memo,
+    name: formList.name,
+    memo: formList.memo,
     rtype: 'patroling'
   }
   const res: any = await createMissionTemplate(data)

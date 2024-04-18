@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { templateDialogVisible, closeTemplate } from '@/shared/map/template'
-import type { FormInstance } from 'element-plus'
-import { ref, watch } from 'vue'
+import {
+  closeTemplate,
+  formData,
+  templateDialogVisible,
+  type FormData
+} from '@/shared/map/template'
+import { ElButton, ElDialog, ElForm, ElFormItem, ElInput } from 'element-plus'
+import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-interface FormData {
-  name?: string
-  memo?: string
-}
-
 const { t } = useI18n()
-// 新建模板的表单数据
-const formData = ref<FormData>({ name: '', memo: '' })
 
 const emit = defineEmits<{
   confirm: [FormData]
@@ -21,16 +19,14 @@ const onClick = () => {
   emit('confirm', formData.value)
 }
 
-const formRef = ref<FormInstance>()
-
 watch(templateDialogVisible, () => {
-  formRef.value?.resetFields()
-  formData.value = {}
+  // formRef.value?.resetFields()
+  formData.value = { name: '', memo: '' }
 })
 </script>
 
 <template>
-  <el-dialog
+  <ElDialog
     v-model="templateDialogVisible"
     :title="t('mo-ban')"
     width="50vw"
@@ -38,19 +34,19 @@ watch(templateDialogVisible, () => {
     :before-close="closeTemplate"
   >
     <template #default>
-      <el-form ref="formRef" :label-width="100" :model="formData">
-        <el-form-item prop="name" :label="t('mo-ban-ming-cheng')">
-          <el-input v-model="formData.name" clearable />
-        </el-form-item>
-        <el-form-item prop="name" :label="t('bei-zhu')">
-          <el-input v-model="formData.memo" clearable />
-        </el-form-item>
-      </el-form>
+      <ElForm :label-width="100" :model="formData">
+        <ElFormItem prop="name" :label="t('mo-ban-ming-cheng')">
+          <ElInput v-model="formData.name" clearable />
+        </ElFormItem>
+        <ElFormItem prop="memo" :label="t('bei-zhu')">
+          <ElInput v-model="formData.memo" clearable />
+        </ElFormItem>
+      </ElForm>
     </template>
     <template #footer>
-      <el-button size="large" type="primary" class="w-full" @click="onClick">{{
+      <ElButton size="large" type="primary" class="w-full" @click="onClick">{{
         t('que-ding')
-      }}</el-button>
+      }}</ElButton>
     </template>
-  </el-dialog>
+  </ElDialog>
 </template>
