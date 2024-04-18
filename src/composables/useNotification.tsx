@@ -53,9 +53,9 @@ export const handleAlarmAction = async (data: websocketData, mode: Mode) => {
   let type
   if (data.message === '人员入侵') {
     type = Type.PERSON
-  } else if (data.message === '铁丝网识别') {
+  } else if (data.message === '铁丝网破孔') {
     type = Type.HOLE
-  } else if (data.message === '敬礼识别') {
+  } else if (data.message === '无人值班') {
     type = Type.SALUTE
   }
 
