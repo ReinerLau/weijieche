@@ -3,12 +3,16 @@ import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
   baseModes,
   cameraList,
+  cameraUrl,
   currentCar,
   currentController,
   currentControllerType,
+  haveCurrentCar,
   modes,
   pressedButtons
 } from '@/shared'
+import { getLineCoordinates } from '@/shared/map'
+import { pathPoints, pathPointsData } from '@/shared/map/path'
 import {
   ElButton,
   ElDescriptions,
@@ -20,13 +24,10 @@ import {
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { Fragment, computed, ref, watch } from 'vue'
-import { useController } from './useController'
 import type { Ref } from 'vue'
+import { Fragment, computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { haveCurrentCar, cameraUrl } from '@/shared'
-import { pathPoints, pathPointsData } from '@/shared/map/path'
-import { getLineCoordinates } from '@/shared/map'
+import { useController } from './useController'
 
 //默认车速变量
 export const carSpeed = ref(0)
@@ -232,7 +233,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       value: `${
         statusData.value.ptzAngleVertical === -3
           ? t('wei-fa-xian-yun-tai-huo-sun-huai')
-          : statusData.value.ptzAngleHorizontal || 0
+          : statusData.value.ptzAngleVertical || 0
       }°`
     }
   ])
