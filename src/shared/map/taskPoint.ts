@@ -36,7 +36,7 @@ export const addTaskPointToLayer = (taskPoint: Marker) => {
  */
 export const pointSettingDialogVisible = ref(false)
 
-export const taskPoint = ref<(() => void) | null>(null)
+export const taskPointVoid = ref<(() => void) | null>(null)
 
 export const pointCoordinates: Ref<string> = ref('')
 
@@ -65,7 +65,7 @@ export const handleTaskEvent = (c: any, callback: () => void) => {
   } else {
     pointCoordinates.value = c
   }
-  taskPoint.value = callback
+  taskPointVoid.value = callback
 }
 
 //删除
