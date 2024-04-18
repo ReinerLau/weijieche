@@ -38,7 +38,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://192.168.18.57:8091',
+        target: 'http://192.168.18.233:8081',
         changeOrigin: true
       },
       '/rtc': {
