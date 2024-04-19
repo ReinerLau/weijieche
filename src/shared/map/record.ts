@@ -91,7 +91,11 @@ const setRecordMenu = () => {
   })
 }
 
-let recordData: any = null
+export let recordData: any = null
+
+export const setRecordDataValue = (val: any) => {
+  recordData = val
+}
 
 export const initRecordPath = (data: CarInfo) => {
   // 筛选绘制保存录制路线
@@ -113,7 +117,7 @@ export const initRecordPath = (data: CarInfo) => {
 }
 
 export const recordPath = ref<[number, number][]>([])
-function drawRecordPath(data: CarInfo) {
+export function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])
