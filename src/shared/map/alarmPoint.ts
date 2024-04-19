@@ -1,11 +1,11 @@
-import { Marker, VectorLayer } from 'maptalks'
-import { map } from './base'
-import { entryPoint, setEntryPoint } from './home'
-import { clearDrawTool } from './drawTool'
-import { clearPathLayer } from './path'
 import { i18n } from '@/utils'
-import { patrolTaskDialogVisible } from './patrolPath'
+import { Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
+import { map } from './base'
+import { clearDrawTool } from './drawTool'
+import { entryPoint, setEntryPoint } from './home'
+import { clearPathLayer } from './path'
+import { patrolTaskDialogVisible } from './patrolPath'
 /**
  * 异常位置图层实例
  */
@@ -49,13 +49,22 @@ export const addAlarmPointToLayer = (alarmPoint: Marker) => {
  * @param data 单条异常位置数据
  */
 
+export const alarmPointMenuItems = (data: any, index: number) => {
+  return [
+    {
+      item: i18n.global.t('cha-kan-xiang-qing'),
+      click: () => {
+        showMoreAlarm(data, index)
+      }
+    }
+  ]
+}
 export const alarmMessageData: any = ref({})
 export const handleConfirmAlarmPoint = (data: any) => {
   clearDrawTool()
   clearPathLayer()
   clearDrawAlarmPoint()
   const coordinates: number[][] = data.map((item: any) => [item.longitude, item.latitude])
-
   coordinates.forEach((coordinate) => {
     const alarmPoint = new Marker(coordinate, {
       symbol: {
@@ -69,17 +78,9 @@ export const handleConfirmAlarmPoint = (data: any) => {
 
     alarmPoints.push(alarmPoint)
     alarmPoints.forEach((alarmPoint, index) => {
-      const alarmPointMenuItems = [
-        {
-          item: i18n.global.t('cha-kan-xiang-qing'),
-          click: () => {
-            showAlarmDialogVisible.value = true
-            showMoreAlarm(data, index)
-          }
-        }
-      ]
-      alarmPoint.setMenuItems(alarmPointMenuItems)
+      alarmPoint.setMenuItems(alarmPointMenuItems(data, index))
     })
+
     addAlarmPointToLayer(alarmPoint)
   })
 

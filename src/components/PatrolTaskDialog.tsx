@@ -225,8 +225,6 @@ export default defineComponent({
 
     //保存视频
     async function handleUploadVideo(row: any) {
-      console.log(row)
-
       await downloadVideo(row.id)
       ElMessage({
         type: 'success',
@@ -254,6 +252,7 @@ export default defineComponent({
     async function handleConfirmAlarm(row: any) {
       const { data } = await getTaskWarning(row.id)
       clearDrawPatrolLine()
+
       handleConfirmPatrolTaskPath(row)
       handleConfirmAlarmPoint(data)
     }

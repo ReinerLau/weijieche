@@ -1,10 +1,13 @@
 import { initMapLayerTool } from '@/shared'
 import {
   addAlarmPointToLayer,
+  alarmMessageData,
   alarmPointLayer,
+  alarmPointMenuItems,
   alarmPoints,
   handleConfirmAlarmPoint,
-  initAlarmPointLayer
+  initAlarmPointLayer,
+  showAlarmDialogVisible
 } from '@/shared/map/alarmPoint'
 import { entryPoint, setEntryPoint } from '@/shared/map/home'
 import { initPathLayer } from '@/shared/map/path'
@@ -15,6 +18,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 describe('异常位置', () => {
   let marker: Marker
   let testEntryMarker: Marker
+  let testHomePathDrawingMenu: any
   const testdata = [
     {
       latitude: 22.560827,
@@ -40,6 +44,10 @@ describe('异常位置', () => {
     expect(alarmPoints.length).toBe(2)
     expect(alarmPoints[0].getMenuItems().length).toBe(1)
     expect(patrolTaskDialogVisible.value).toBe(false)
+    testHomePathDrawingMenu = alarmPointMenuItems(testdata, 0)
+    testHomePathDrawingMenu[0].click()
+    expect(showAlarmDialogVisible.value).toBe(true)
+    expect(alarmMessageData.value).toEqual(testdata[0])
   })
 
   it('addAlarmPointToLayer', () => {
