@@ -31,7 +31,8 @@ export const handleConfirm = async (formList: { name?: string; memo?: string }) 
     rtype: 'patroling'
   }
   const res: any = await createMissionTemplate(data)
-  ElMessage.success({
+  ElMessage({
+    type: 'success',
     message: res.message
   })
   templateDialogVisible.value = false
@@ -42,24 +43,32 @@ export const handleConfirm = async (formList: { name?: string; memo?: string }) 
   clearMenu()
 }
 
-export const closeTemplate = (done: () => void) => {
-  ElMessageBox.confirm(i18n.global.t('que-ding-bu-bao-cun-lu-xian-ma'), i18n.global.t('ti-shi'), {
-    confirmButtonText: i18n.global.t('que-ding'),
-    cancelButtonText: i18n.global.t('qu-xiao'),
-    type: 'warning'
-  })
-    .then(() => {
-      done()
-      ElMessage.warning({
-        message: i18n.global.t('yi-qu-xiao-bao-cun-lu-xian')
-      })
-      if (isRecordPath.value) {
-        clearMenu()
-        isRecordPath.value = false
-        recordPathPoints.length = 0
+export const closeTemplate = async () => {
+  try {
+    await ElMessageBox.confirm(
+      i18n.global.t('que-ding-bu-bao-cun-lu-xian-ma'),
+      i18n.global.t('ti-shi'),
+      {
+        confirmButtonText: i18n.global.t('que-ding'),
+        cancelButtonText: i18n.global.t('qu-xiao'),
+        type: 'warning'
       }
+    )
+
+    templateDialogVisible.value = false
+    ElMessage({
+      type: 'warning',
+      message: i18n.global.t('yi-qu-xiao-bao-cun-lu-xian')
     })
-    .catch(() => {})
+
+    if (isRecordPath.value) {
+      clearMenu()
+      isRecordPath.value = false
+      recordPathPoints.length = 0
+    }
+  } catch (error) {
+    return error
+  }
 }
 
 // 搜索模板弹窗是否可见
