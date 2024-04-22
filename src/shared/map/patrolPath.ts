@@ -1,14 +1,14 @@
-import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { clearMenu, jumpToCoordinate, map } from './base'
-import { entryPoint, setEntryPoint } from './home'
-import { clearDrawTool } from './drawTool'
-import { clearPathLayer, pathPointsData } from './path'
-import { i18n } from '@/utils'
-import { ref } from 'vue'
-import { endRecording } from './record'
-import { pathDataPoints } from '.'
 import type { Coordinate } from '@/types'
+import { i18n } from '@/utils'
+import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { ref } from 'vue'
+import { pathDataPoints } from '.'
 import { clearDrawAlarmPoint } from './alarmPoint'
+import { clearMenu, jumpToCoordinate, map } from './base'
+import { clearDrawTool } from './drawTool'
+import { entryPoint, setEntryPoint } from './home'
+import { clearPathLayer, pathPointsData } from './path'
+import { endRecording } from './record'
 
 /**
  * 巡逻路线图层实例
@@ -65,6 +65,10 @@ export const pathPointArray: Coordinate[] = []
  * 选择巡逻任务路线按钮后显示路线在地图上
  * @param row 单条巡逻路线数据
  */
+
+export const clickPathPoint = (e: { target: Marker }) => {
+  setEntryPoint(e.target)
+}
 export const handleConfirmPatrolTaskPath = (row: { name: string; route: Coordinate[] }) => {
   clearDrawTool()
   clearPathLayer()
@@ -89,9 +93,7 @@ export const handleConfirmPatrolTaskPath = (row: { name: string; route: Coordina
         markerHeight: 13
       }
     })
-      .on('click', (e: { target: Marker }) => {
-        setEntryPoint(e.target)
-      })
+      .on('click', clickPathPoint)
       .setInfoWindow(options)
     addPatrolPathPointToLayer(pathPoint)
 

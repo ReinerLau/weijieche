@@ -6,6 +6,7 @@ import {
   addPatrolPathPointToLayer,
   assignTaskToolbarEvent,
   clearDrawPatrolLine,
+  clickPathPoint,
   handleConfirmPatrolTaskPath,
   initPatrolpathLayer,
   pathPointArray,
@@ -66,7 +67,6 @@ describe('巡逻路线展示', () => {
       setEntryPoint(marker)
       addPatrolPathPointToLayer(testMarker)
       expect(marker.getCenter()).toEqual(testMarker.getCenter())
-
       expect(entryPoint).toBe(null)
     })
 
@@ -94,5 +94,11 @@ describe('巡逻路线展示', () => {
     isRecord.value = false
     taskListToolbarEvent()
     expect(patrolTaskDialogVisible.value).toBe(true)
+  })
+
+  it('clickPathPoint', () => {
+    const eMarker = { target: new Marker([113.1, 22.1]) }
+    clickPathPoint(eMarker)
+    expect(entryPoint).toBe(eMarker.target)
   })
 })

@@ -207,4 +207,10 @@ describe('record', () => {
     expect(map.getLayer('home-line')).toBeNull()
     expect(map.getMenuItems()).toEqual([])
   })
+
+  // it('setEntryPoint', () => {
+  //   const testMarker = new Marker([113.1, 22.1])
+  //   setEntryPoint(testMarker)
+  //   expect(entryPoint).toBe(testMarker)
+  // })
 })
