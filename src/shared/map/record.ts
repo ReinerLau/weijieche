@@ -124,8 +124,8 @@ export const filterRecordSum = computed(() => {
   return recordPath.value.length
 })
 
-const recordPath = ref<[number, number][]>([])
-function drawRecordPath(data: CarInfo) {
+export const recordPath = ref<[number, number][]>([])
+export function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])

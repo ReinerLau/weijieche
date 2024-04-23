@@ -4,6 +4,7 @@ import { initPathLayer } from '@/shared/map/path'
 import {
   drawRecordPath,
   endRecording,
+  filterRecordSum,
   initRecordPath,
   initRecordPathLayer,
   isRecord,
@@ -109,6 +110,7 @@ describe('record', () => {
     drawRecordPath(testData1)
     expect(recordPathPoints.length).toBe(2)
     expect(recordPathLayer.getGeometries()[1]).instanceOf(LineString)
+    expect(recordPath.value.length).toBe(filterRecordSum.value)
   })
 
   it('initRecordPath', () => {
