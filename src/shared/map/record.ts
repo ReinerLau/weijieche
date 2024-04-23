@@ -2,7 +2,7 @@ import { i18n } from '@/utils'
 import { length, lineString } from '@turf/turf'
 import { ElMessage } from 'element-plus'
 import { LineString, Marker, VectorLayer } from 'maptalks'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { clearStatus } from '.'
 import { haveCurrentCar } from '..'
 import { clearMenu, map } from './base'
@@ -40,6 +40,7 @@ export const recordPathToolbarEvent = () => {
   if (haveCurrentCar() && !isRecord.value) {
     recordPathPoints.length = 0
     recordPath.value.length = 0
+    allRecordSum.value = 0
     isRecord.value = true
     ElMessage({
       type: 'success',
@@ -82,6 +83,7 @@ export const recordMenu = [
     click: endRecordPath
   }
 ]
+export const allRecordSum = ref(0)
 
 const setRecordMenu = () => {
   clearMenu()
@@ -98,6 +100,8 @@ export const setRecordDataValue = (val: any) => {
 }
 
 export const initRecordPath = (data: CarInfo) => {
+  allRecordSum.value++
+
   // 筛选绘制保存录制路线
   if (recordData !== null) {
     const line = lineString([
@@ -116,8 +120,12 @@ export const initRecordPath = (data: CarInfo) => {
   recordData = data
 }
 
-export const recordPath = ref<[number, number][]>([])
-export function drawRecordPath(data: CarInfo) {
+export const filterRecordSum = computed(() => {
+  return recordPath.value.length
+})
+
+const recordPath = ref<[number, number][]>([])
+function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])

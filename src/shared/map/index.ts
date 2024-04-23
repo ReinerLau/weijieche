@@ -1,4 +1,13 @@
+import { sendMavlinkMission } from '@/api'
+import { i18n } from '@/utils'
+import { ElMessage } from 'element-plus'
 import type { Marker } from 'maptalks'
+import { ref } from 'vue'
+import { currentCar, haveCurrentCar } from '..'
+import { backToCenter } from './base'
+import { clearDrawTool, drawTool } from './drawTool'
+import { fileUploadToolbarEvent } from './file'
+import { createHomePathToolbarEvent, setEntryPoint, startHomeToolbarEvent } from './home'
 import {
   clearPathLayer,
   clearToolbarEvent,
@@ -6,27 +15,18 @@ import {
   pathPoints,
   pathPointsData
 } from './path'
-import { recordPathPoints, recordPathToolbarEvent } from './record'
-import { ElMessage } from 'element-plus'
-import { i18n } from '@/utils'
-import { currentCar, haveCurrentCar } from '..'
-import { missionTemplateId, saveTemplateToolbarEvent, searchTemplateToolbarEvent } from './template'
-import { sendMavlinkMission } from '@/api'
-import { clearDrawTool, drawTool } from './drawTool'
-import { createHomePathToolbarEvent, setEntryPoint, startHomeToolbarEvent } from './home'
-import { ref } from 'vue'
-import { backToCenter } from './base'
 import { assignTaskToolbarEvent, clearPathToolbarEvent, taskListToolbarEvent } from './patrolPath'
+import { recordPathPoints, recordPathToolbarEvent } from './record'
 import { taskPointToolbarEvent } from './taskPoint'
-import { fileUploadToolbarEvent } from './file'
-import { carSpeed } from '@/composables'
+import { missionTemplateId, saveTemplateToolbarEvent, searchTemplateToolbarEvent } from './template'
+// import { carSpeed } from '@/composables'
 
 // 获取路线上各个点的坐标信息
 export const getLineCoordinates = (list: Marker[]) => {
   return list.map((item) => ({
     x: item.getCoordinates().y,
     y: item.getCoordinates().x,
-    speed: carSpeed.value || 0
+    speed: 0
   }))
 }
 
