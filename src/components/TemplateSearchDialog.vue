@@ -1,43 +1,33 @@
 <script setup lang="ts">
-import { deleteTemplate, getTemplatePathList } from '@/api'
+import { deleteTemplate } from '@/api'
 import { clearStatus } from '@/shared/map'
 import { showPath } from '@/shared/map/path'
-import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
+import {
+  currentTemplate,
+  getList,
+  initialParams,
+  list,
+  missionTemplateId,
+  params,
+  queryFields,
+  setCurrentTemplate,
+  templateSearchDialogVisible,
+  total
+} from '@/shared/map/template'
 import type { PointData, TemplateData } from '@/types'
-import { ElMessage } from 'element-plus'
-import { ref, watch } from 'vue'
+import {
+  ElButton,
+  ElDialog,
+  ElInput,
+  ElMessage,
+  ElPagination,
+  ElScrollbar,
+  ElTable,
+  ElTableColumn
+} from 'element-plus'
+import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 const { t } = useI18n()
-
-const initialParams = {
-  limit: 10,
-  page: 1,
-  rtype: 'patroling'
-}
-
-const params: Record<string, any> = ref(Object.assign({}, initialParams))
-
-const queryFields = [
-  {
-    prop: 'name',
-    title: t('ren-wu-ming-cheng')
-  },
-  {
-    prop: 'memo',
-    title: t('bei-zhu')
-  }
-]
-
-const list = ref<any[]>([])
-const total = ref(0)
-
-// 获取列表数据
-async function getList() {
-  const res = await getTemplatePathList(params.value)
-  list.value = res.data.list || []
-  total.value = res.data ? res.data.total : 0
-}
 
 function handleQuery() {
   getList()
@@ -48,10 +38,8 @@ function handleReset() {
   getList()
 }
 
-let currentTemplate: TemplateData
-
 function onCurrentChange(val: TemplateData) {
-  currentTemplate = val
+  setCurrentTemplate(val)
 }
 // 删除模板
 async function handleDelete(id: number) {
@@ -82,45 +70,46 @@ const getCoordinates = (): PointData[] => {
 watch(templateSearchDialogVisible, async (val) => {
   if (val) {
     getList()
+    handleReset()
   }
 })
 </script>
 
 <template>
-  <el-dialog v-model="templateSearchDialogVisible" :title="t('mo-ban')" width="50vw" align-center>
+  <ElDialog v-model="templateSearchDialogVisible" :title="t('mo-ban')" width="50vw" align-center>
     <template #header>
       <div class="flex flex-col">
         <span class="mb-3">{{ t('lu-xian-mo-ban') }}</span>
-        <el-scrollbar>
+        <ElScrollbar>
           <div class="flex justify-between">
             <div v-for="item in queryFields" :key="item.prop">
-              <el-input v-model="params[item.prop]" :placeholder="item.title" clearable></el-input>
+              <ElInput v-model="params[item.prop]" :placeholder="item.title" clearable></ElInput>
             </div>
           </div>
-        </el-scrollbar>
+        </ElScrollbar>
         <div class="flex pt-2">
-          <el-button type="primary" class="mr-2" @click="handleQuery">{{ t('cha-xun') }}</el-button>
-          <el-button type="info" @click="handleReset">{{ t('zhong-zhi') }}</el-button>
+          <ElButton type="primary" class="mr-2" @click="handleQuery">{{ t('cha-xun') }}</ElButton>
+          <ElButton type="info" @click="handleReset">{{ t('zhong-zhi') }}</ElButton>
         </div>
       </div>
     </template>
     <template #default>
       <div class="flex flex-col">
-        <el-table height="50vh" :data="list" highlight-current-row @currentChange="onCurrentChange">
-          <el-table-column property="name" :label="t('ming-cheng')" />
-          <el-table-column property="memo" :label="t('bei-zhu')" />
-          <el-table-column property="createTime" :label="t('chuang-jian-shi-jian')" />
-          <el-table-column :label="t('cao-zuo')">
+        <ElTable height="50vh" :data="list" highlight-current-row @currentChange="onCurrentChange">
+          <ElTableColumn property="name" :label="t('ming-cheng')" />
+          <ElTableColumn property="memo" :label="t('bei-zhu')" />
+          <ElTableColumn property="createTime" :label="t('chuang-jian-shi-jian')" />
+          <ElTableColumn :label="t('cao-zuo')">
             <template #default="{ row }">
-              <el-button link @click="() => handleDelete(row.id)">
+              <ElButton link @click="() => handleDelete(row.id)">
                 {{ t('shan-chu') }}
-              </el-button>
+              </ElButton>
             </template>
-          </el-table-column>
-        </el-table>
+          </ElTableColumn>
+        </ElTable>
         <div class="flex justify-end mt-2">
-          <el-scrollbar class="mt-2">
-            <el-pagination
+          <ElScrollbar class="mt-2">
+            <ElPagination
               layout="sizes, prev, pager, next"
               :total="total"
               v-model:current-page="params.page"
@@ -129,14 +118,14 @@ watch(templateSearchDialogVisible, async (val) => {
               @sizeChange="getList"
               @currentChange="getList"
             />
-          </el-scrollbar>
+          </ElScrollbar>
         </div>
       </div>
     </template>
     <template #footer>
-      <el-button size="large" type="primary" class="w-full" @click="onComfirm">{{
+      <ElButton size="large" type="primary" class="w-full" @click="onComfirm">{{
         t('que-ding')
-      }}</el-button>
+      }}</ElButton>
     </template>
-  </el-dialog>
+  </ElDialog>
 </template>

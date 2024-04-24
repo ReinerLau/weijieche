@@ -1,4 +1,5 @@
-import { createMissionTemplate } from '@/api'
+import { createMissionTemplate, getTemplatePathList } from '@/api'
+import type { TemplateData } from '@/types'
 import { i18n } from '@/utils'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
@@ -11,6 +12,43 @@ import { endRecording, isRecordPath, recordPathPoints } from './record'
 export interface FormData {
   name?: string
   memo?: string
+}
+
+//搜索模板列表
+
+export let currentTemplate: TemplateData
+
+export const setCurrentTemplate = (val: TemplateData) => {
+  currentTemplate = val
+}
+
+export const initialParams = {
+  limit: 10,
+  page: 1,
+  rtype: 'patroling'
+}
+
+export const queryFields = [
+  {
+    prop: 'name',
+    title: i18n.global.t('ren-wu-ming-cheng')
+  },
+  {
+    prop: 'memo',
+    title: i18n.global.t('bei-zhu')
+  }
+]
+
+export const params: Record<string, any> = ref(Object.assign({}, initialParams))
+
+export const list = ref<any[]>([])
+export const total = ref(0)
+
+// 获取列表数据
+export async function getList() {
+  const res = await getTemplatePathList(params.value)
+  list.value = res.data.list || []
+  total.value = res.data ? res.data.total : 0
 }
 
 // 新建模板的表单数据
