@@ -91,14 +91,10 @@ export const useNotification = () => {
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     if (e.data !== 'heartbeat') {
-      console.log(e.data)
-
       const data: websocketData = JSON.parse(e.data)
-      const { message, longitude, latitude, heading, errorType } = data
+      const { message, longitude, latitude, heading } = data
       const btn = resolveComponent('el-button')
-      console.log(errorType)
-
-      if (errorType === 2) {
+      if (data.errorType === 2) {
         messageBox.value = ElNotification({
           type: 'warning',
           title: t('jing-bao'),
@@ -143,7 +139,14 @@ export const useNotification = () => {
             ])
           ])
         })
-      } else {
+        if (alarmRef.value && longitude && latitude) {
+          alarmRef.value.play()
+          // 声音设置
+          alarmRef.value.volume = 1
+          //警报闪烁
+          handleAlarmEvent(longitude, latitude, heading!)
+        }
+      } else if (data.errorType === 1) {
         messageBox.value = ElNotification({
           type: 'warning',
           title: t('jing-bao'),
@@ -156,14 +159,11 @@ export const useNotification = () => {
             ])
           ])
         })
-      }
-
-      if (alarmRef.value && longitude && latitude) {
-        alarmRef.value.play()
-        // 声音设置
-        alarmRef.value.volume = 1
-        //警报闪烁
-        handleAlarmEvent(longitude, latitude, heading!)
+        if (alarmRef.value) {
+          alarmRef.value.play()
+          // 声音设置
+          alarmRef.value.volume = 1
+        }
       }
     }
   }
