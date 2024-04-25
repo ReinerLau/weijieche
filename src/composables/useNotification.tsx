@@ -33,6 +33,7 @@ export interface websocketData {
   createTime?: string
   picPath?: string
   opencvRecordId?: number
+  errorType?: number
 }
 
 const notProcessData = ref<{
@@ -83,59 +84,79 @@ export const useNotification = () => {
     picPath: '',
     message: '',
     code: '',
-    type: ''
+    type: '',
+    errorType: 0
   })
 
   // 从 websocket 收到数据后
   function onMessage(e: any) {
     if (e.data !== 'heartbeat') {
+      console.log(e.data)
+
       const data: websocketData = JSON.parse(e.data)
-      const { message, longitude, latitude, heading } = data
+      const { message, longitude, latitude, heading, errorType } = data
       const btn = resolveComponent('el-button')
-      messageBox.value = ElNotification({
-        type: 'warning',
-        title: t('jing-bao'),
-        dangerouslyUseHTMLString: true,
-        duration: 300000,
-        onClose: () => {},
-        message: h('div', [
-          h('div', { style: 'display: flex; justify-content: space-between;' }, [
-            h('p', {}, message),
-            h(
-              btn,
-              {
-                style: 'color: #A0A0A0;cursor: pointer;',
-                onClick: () => {
-                  handleAlarmAll(data)
-                }
-              },
-              t('cha-kan-jing-bao-xiang-qing')
-            )
-          ]),
-          h('div', { style: 'display: flex; justify-content: space-around;' }, [
-            h(
-              btn,
-              {
-                style: 'color: #ff931e;cursor: pointer;width: 6rem',
-                onClick: () => {
-                  handleAlarmAction(data, Mode.PROCESS)
-                }
-              },
-              t('shou-dong-chu-li')
-            ),
-            h(
-              btn,
-              {
-                style: 'color: #409EFF;cursor: pointer;width: 6rem',
-                onClick: () => {
-                  handleAlarmAction(data, Mode.NOT_PROCESS)
-                }
-              },
-              t('bu-zuo-chu-li')
-            )
+      console.log(errorType)
+
+      if (errorType === 2) {
+        messageBox.value = ElNotification({
+          type: 'warning',
+          title: t('jing-bao'),
+          dangerouslyUseHTMLString: true,
+          duration: 300000,
+          onClose: () => {},
+          message: h('div', [
+            h('div', { style: 'display: flex; justify-content: space-between;' }, [
+              h('p', {}, message),
+              h(
+                btn,
+                {
+                  style: 'color: #A0A0A0;cursor: pointer;',
+                  onClick: () => {
+                    handleAlarmAll(data)
+                  }
+                },
+                t('cha-kan-jing-bao-xiang-qing')
+              )
+            ]),
+            h('div', { style: 'display: flex; justify-content: space-around;' }, [
+              h(
+                btn,
+                {
+                  style: 'color: #ff931e;cursor: pointer;width: 6rem',
+                  onClick: () => {
+                    handleAlarmAction(data, Mode.PROCESS)
+                  }
+                },
+                t('shou-dong-chu-li')
+              ),
+              h(
+                btn,
+                {
+                  style: 'color: #409EFF;cursor: pointer;width: 6rem',
+                  onClick: () => {
+                    handleAlarmAction(data, Mode.NOT_PROCESS)
+                  }
+                },
+                t('bu-zuo-chu-li')
+              )
+            ])
           ])
-        ])
-      })
+        })
+      } else {
+        messageBox.value = ElNotification({
+          type: 'warning',
+          title: t('jing-bao'),
+          dangerouslyUseHTMLString: true,
+          duration: 300000,
+          onClose: () => {},
+          message: h('div', [
+            h('div', { style: 'display: flex; justify-content: space-between;' }, [
+              h('p', {}, message)
+            ])
+          ])
+        })
+      }
 
       if (alarmRef.value && longitude && latitude) {
         alarmRef.value.play()
