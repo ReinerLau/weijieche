@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { websocketData } from '@/composables'
+import { handleAlarmAction } from '@/composables'
 import { alarmDialogVisible } from '@/shared/map/alarm'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { handleAlarmAction } from '@/composables'
-import type { websocketData } from '@/composables'
 
 const srcList: string[] = []
 const imgUrl = ref<string>('')
@@ -50,10 +50,12 @@ watch(
     align-center
     class="flex flex-col"
     draggable
+    :close-on-press-escape="false"
   >
     <template #default>
       <div class="flex items-center justify-around">
         <el-image
+          :close-on-press-escape="false"
           class="w-28 h-28"
           :src="imgUrl"
           fit="cover"
@@ -62,6 +64,7 @@ watch(
           :min-scale="0.2"
           :preview-src-list="srcList"
           :initial-index="0"
+          :z-index="99999"
         ></el-image>
       </div>
     </template>
