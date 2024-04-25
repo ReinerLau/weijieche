@@ -95,6 +95,7 @@ export const useNotification = () => {
       messageBox.value = ElNotification({
         type: 'warning',
         title: t('jing-bao'),
+        zIndex: 1,
         dangerouslyUseHTMLString: true,
         duration: 300000,
         onClose: () => {},
