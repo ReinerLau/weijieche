@@ -43,7 +43,10 @@ function onCurrentChange(val: TemplateData) {
 }
 // 删除模板
 async function handleDelete(id: number) {
-  await deleteTemplate(id)
+  const res: any = await deleteTemplate(id)
+  ElMessage.success({
+    message: res.message
+  })
   getList()
 }
 

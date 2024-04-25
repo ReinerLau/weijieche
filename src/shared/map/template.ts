@@ -16,9 +16,9 @@ export interface FormData {
 
 //搜索模板列表
 
-export let currentTemplate: TemplateData
+export let currentTemplate: TemplateData | null
 
-export const setCurrentTemplate = (val: TemplateData) => {
+export const setCurrentTemplate = (val: TemplateData | null) => {
   currentTemplate = val
 }
 
@@ -47,6 +47,7 @@ export const total = ref(0)
 // 获取列表数据
 export async function getList() {
   const res = await getTemplatePathList(params.value)
+
   list.value = res.data.list || []
   total.value = res.data ? res.data.total : 0
 }

@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils'
 import { ElButton, ElDialog, ElInput } from 'element-plus'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-describe('PointConfigDrawer.vue', () => {
+describe('TemplateDialog.vue', () => {
   let wrapper: any
   let testwrapper: any
   beforeEach(() => {
