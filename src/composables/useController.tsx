@@ -5,6 +5,7 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElDialog,
+  ElMessage,
   ElOption,
   ElScrollbar,
   ElSelect
@@ -67,7 +68,7 @@ export const useController = (currentCar: any) => {
   function onControllerOperation() {
     // 获取所有已连接的控制器
     const { gamepads } = useGamepad()
-    controllers.value = gamepads.value
+    controllers.value = gamepads.value as any
 
     // 匹配当前选择的控制器
     if (currentController.value && currentControllerType.value) {
@@ -238,6 +239,52 @@ export const useController = (currentCar: any) => {
     </ElDialog>
   )
 
+  async function connectControlPan() {
+    const port = await navigator.serial.requestPort()
+    let ref: number
+    port.ondisconnect = () => {
+      port.close()
+      cancelAnimationFrame(ref)
+    }
+
+    const serialOptions: SerialOptions = {
+      baudRate: 115200,
+      dataBits: 8,
+      stopBits: 1,
+      parity: 'none',
+      bufferSize: 1024,
+      flowControl: 'none'
+    }
+    try {
+      await port.open(serialOptions)
+      ElMessage.success('连接成功')
+      const onPort = async () => {
+        if (port.readable) {
+          const reader = port.readable.getReader()
+          try {
+            const { value, done } = await reader.read()
+            if (!done) {
+              console.clear()
+              console.log('方向摇杆x：', (value[2] << 8) | value[3])
+              console.log('方向摇杆y：', (value[4] << 8) | value[5])
+              console.log('云台摇杆x：', (value[6] << 8) | value[7])
+              console.log('云台摇杆y：', (value[8] << 8) | value[9])
+              console.log('油门摇杆y：', (value[12] << 8) | value[13])
+              console.log('低位按键：', value[16])
+              console.log('高位按键：', value[17])
+            }
+          } finally {
+            reader.releaseLock()
+          }
+        }
+        ref = requestAnimationFrame(onPort)
+      }
+      onPort()
+    } catch {
+      ElMessage.error('检测到已连接')
+    }
+  }
+
   onMounted(() => {
     onControllerOperation()
 
@@ -263,6 +310,7 @@ export const useController = (currentCar: any) => {
     gear,
     ControllerMapDialog,
     controllerMapDialogVisible,
-    direction
+    direction,
+    connectControlPan
   }
 }

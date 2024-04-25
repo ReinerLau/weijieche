@@ -70,7 +70,8 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     gear,
     ControllerMapDialog,
     controllerMapDialogVisible,
-    direction
+    direction,
+    connectControlPan
   } = useController(currentCar)
 
   // 监听前进后退的切换按键
@@ -142,6 +143,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
           <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>
             {t('she-zhi-ying-she')}
           </ElButton>
+          <ElButton onClick={connectControlPan}>连接中控台</ElButton>
         </div>
       )
     },
