@@ -1,75 +1,26 @@
 import { patrolingCruise, patrolingSetMode } from '@/api'
 import {
-  mode,
-  // baseModes,
   controllerTypes,
   currentCar,
   currentControllerType,
-  // modes,
+  haveCurrentCar,
+  mode,
   pressedButtons
 } from '@/shared'
-import { ElMenu, ElMenuItem, ElMessage, ElScrollbar } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { computed, ref, watch, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { haveCurrentCar } from '@/shared'
 export const carMode = ref('')
 // 顶部操控相关
 export const useControlSection = () => {
   // 国际化
   const { t } = useI18n()
 
-  // 顶部操控区域组件
-  const TopControl = () => (
-    <ElScrollbar always={true}>
-      <ElMenu mode="horizontal" ellipsis={false}>
-        <Menus />
-        {/* <Switchs /> */}
-      </ElMenu>
-    </ElScrollbar>
-  )
-
-  // 每个模式数据结构的类型声明
-  interface MenuItem {
-    title: string
-    event?: () => void
-  }
-
-  // 模式选项
-  const menuItems: ComputedRef<MenuItem[]> = computed(() => [
-    // {
-    //   title: t('mo-shi'),
-    //   subItems: [
-    {
-      title: t('shou-dong'),
-      event: () => setMode(modeKey.MANUAL)
-    },
-    {
-      title: t('zi-zhu'),
-      event: () => setMode(modeKey.AUTO)
-    },
-    {
-      title: t('ting-zhi'),
-      event: () => setMode(modeKey.STOP)
-    }
-    //   ]
-    // }
-  ])
-
-  // interface SwitchGroup {
-  //   title: string
-  //   ref: Ref<boolean>
-  //   disabled?: Ref<boolean> | boolean
-  //   event?: (value: any) => any
-  // }
-
   // 近灯是否开启
   const lowLight = ref(false)
 
   // 远灯是否开启
   const highLight = ref(false)
-
-  //自动灯是否开启
-  // const autoLight = ref(false)
 
   // 近远灯映射值
   const lightModes = {
@@ -92,35 +43,17 @@ export const useControlSection = () => {
     }
   }
 
-  // 语音是否开启
-  // const voice = ref(false)
-
-  // 切换语音开启
-  // function toggleVoice(value: boolean) {
-  //   if (haveCurrentCar()) {
-  //     const data = {
-  //       rid: currentCar.value,
-  //       type: value ? '0' : '1'
-  //     }
-  //     patrolingVoice(data)
-  //   }
-  // }
-
-  // 可选模式值
   const modeKey = {
     STOP: 'STOP' as const,
     AUTO: 'AUTO' as const,
     MANUAL: 'MANUAL' as const
   }
 
-  // 设置模式
   async function setMode(type: keyof typeof mode) {
     carMode.value = ''
     if (haveCurrentCar()) {
-      // const data = { baseMode: baseModes[type], customMode: modes[type] }
       await patrolingSetMode(currentCar.value, mode[type])
       ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })
-      //保存当前模式
       carMode.value = type
     }
   }
@@ -143,35 +76,6 @@ export const useControlSection = () => {
       disperseMode.value = false
     }
   }
-
-  // 模式切换组件
-  const Menus = () => (
-    <div class="flex w-full">
-      {menuItems.value.map((item) => (
-        <ElMenuItem class="flex-1 flex justify-center" index={item.title} onClick={item.event}>
-          {item.title}
-        </ElMenuItem>
-      ))}
-    </div>
-  )
-
-  // // 各种开关按钮组件
-  // const Switchs = () => (
-  //   <Fragment>
-  //     {switchGroup.value.map((item) => (
-  //       <ElMenuItem index={item.title}>
-  //         <div class="flex items-center w-full justify-between">
-  //           <span class="mr-2">{item.title}</span>
-  //           <ElSwitch
-  //             v-model={item.ref.value}
-  //             onChange={item.event}
-  //             disabled={Boolean(item.disabled)}
-  //           />
-  //         </div>
-  //       </ElMenuItem>
-  //     ))}
-  //   </Fragment>
-  // )
 
   // 开关按钮相关事件
   const switchEvent = {
@@ -219,6 +123,7 @@ export const useControlSection = () => {
   })
 
   return {
-    TopControl
+    setMode,
+    modeKey
   }
 }
