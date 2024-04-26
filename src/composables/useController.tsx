@@ -14,6 +14,9 @@ import { reactive, ref, watch, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { carMode } from './useControlSection'
+
+let oldPressedValue = 0
+
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
   const { t } = useI18n()
@@ -120,6 +123,12 @@ export const useController = (currentCar: any) => {
     return result
   }
 
+  function getPressedButton(newValue: number) {
+    const result = Math.abs(newValue - oldPressedValue)
+    oldPressedValue = newValue
+    return result
+  }
+
   // 获取转向
   function setDirection(axes: ReadonlyArray<number>): number {
     let newDirection = 0
@@ -178,6 +187,12 @@ export const useController = (currentCar: any) => {
       submitData()
     } else {
       return
+    }
+  })
+
+  watch(pressedButtons, (val) => {
+    if (val !== 0) {
+      console.log(val)
     }
   })
 
@@ -272,8 +287,10 @@ export const useController = (currentCar: any) => {
             if (!done) {
               if (value.length === 19) {
                 // console.clear()
+                // console.log(value)
                 direction.value = getJoyStickValue(value[2], value[3])
                 speed.value = getJoyStickValue(value[12], value[13])
+                pressedButtons.value = getPressedButton(value[16])
                 // console.log('云台摇杆x：', (value[6] << 8) | value[7])
                 // console.log('云台摇杆y：', (value[8] << 8) | value[9])
                 // console.log('低位按键：', value[16])
