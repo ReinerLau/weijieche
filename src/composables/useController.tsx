@@ -13,6 +13,7 @@ import {
 import type { Ref } from 'vue'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
 
 let oldPressedValue = 0
@@ -191,9 +192,11 @@ export const useController = (currentCar: any) => {
   })
 
   const { setMode, modeKey } = useControlSection()
+  const { controlLaser } = useBirdAway()
 
   const actionMap = new Map([
     [128, () => setMode(modeKey.MANUAL)],
+    [64, () => controlLaser()],
     [2, () => setMode(modeKey.AUTO)]
   ])
 
