@@ -114,6 +114,12 @@ export const useController = (currentCar: any) => {
     return gear.value ? newSpeed : -newSpeed
   }
 
+  function getJoyStickValue(value1: number, value2: number) {
+    let result = (value1 << 8) | value2
+    result = parseFloat(((result - 2048) / 4095).toFixed(1)) * 2000
+    return result
+  }
+
   // 获取转向
   function setDirection(axes: ReadonlyArray<number>): number {
     let newDirection = 0
@@ -264,14 +270,15 @@ export const useController = (currentCar: any) => {
           try {
             const { value, done } = await reader.read()
             if (!done) {
-              console.clear()
-              console.log('方向摇杆x：', (value[2] << 8) | value[3])
-              console.log('方向摇杆y：', (value[4] << 8) | value[5])
-              console.log('云台摇杆x：', (value[6] << 8) | value[7])
-              console.log('云台摇杆y：', (value[8] << 8) | value[9])
-              console.log('油门摇杆y：', (value[12] << 8) | value[13])
-              console.log('低位按键：', value[16])
-              console.log('高位按键：', value[17])
+              if (value.length === 19) {
+                // console.clear()
+                direction.value = getJoyStickValue(value[2], value[3])
+                speed.value = getJoyStickValue(value[12], value[13])
+                // console.log('云台摇杆x：', (value[6] << 8) | value[7])
+                // console.log('云台摇杆y：', (value[8] << 8) | value[9])
+                // console.log('低位按键：', value[16])
+                // console.log('高位按键：', value[17])
+              }
             }
           } finally {
             reader.releaseLock()

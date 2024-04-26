@@ -159,7 +159,8 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     //   )
     // },
     {
-      title: `${t('su-du')}: ${gear.value ? t('qian-jin') : t('hou-tui')}`,
+      // title: `${t('su-du')}: ${gear.value ? t('qian-jin') : t('hou-tui')}`,
+      title: t('su-du'),
       value: speed.value
     },
     {
