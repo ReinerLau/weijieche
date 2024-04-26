@@ -12,6 +12,13 @@ import { computed, ref, watch, type ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 export const carMode = ref('')
 // 顶部操控相关
+
+enum modeKey {
+  STOP = 'STOP',
+  AUTO = 'AUTO',
+  MANUAL = 'MANUAL'
+}
+
 export const useControlSection = () => {
   // 国际化
   const { t } = useI18n()
@@ -41,12 +48,6 @@ export const useControlSection = () => {
       }
       patrolingCruise(data)
     }
-  }
-
-  const modeKey = {
-    STOP: 'STOP' as const,
-    AUTO: 'AUTO' as const,
-    MANUAL: 'MANUAL' as const
   }
 
   async function setMode(type: keyof typeof mode) {
