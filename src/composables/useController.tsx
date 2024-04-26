@@ -192,10 +192,14 @@ export const useController = (currentCar: any) => {
 
   const { setMode, modeKey } = useControlSection()
 
-  const actionMap = new Map([[128, () => setMode(modeKey.STOP)]])
+  const actionMap = new Map([
+    [128, () => setMode(modeKey.MANUAL)],
+    [2, () => setMode(modeKey.AUTO)]
+  ])
 
   watch(pressedButtons, (val) => {
     if (val !== 0) {
+      console.log(val)
       const actionGetter = actionMap.get(val)
       actionGetter && actionGetter()
     }
