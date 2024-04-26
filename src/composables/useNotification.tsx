@@ -146,7 +146,7 @@ export const useNotification = () => {
           //警报闪烁
           handleAlarmEvent(longitude, latitude, heading!)
         }
-      } else if (data.errorType === 1) {
+      } else {
         messageBox.value = ElNotification({
           type: 'warning',
           title: t('jing-bao'),
