@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useControlSection } from '@/composables/useControlSection'
 import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useControlSection } from '../composables/useControlSection'
 
 const { t } = useI18n()
 

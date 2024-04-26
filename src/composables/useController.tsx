@@ -10,10 +10,10 @@ import {
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { reactive, ref, watch, onMounted } from 'vue'
 import type { Ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { carMode } from './useControlSection'
+import { carMode, useControlSection } from './useControlSection'
 
 let oldPressedValue = 0
 
@@ -190,9 +190,14 @@ export const useController = (currentCar: any) => {
     }
   })
 
+  const { setMode, modeKey } = useControlSection()
+
+  const actionMap = new Map([[128, () => setMode(modeKey.STOP)]])
+
   watch(pressedButtons, (val) => {
     if (val !== 0) {
-      console.log(val)
+      const actionGetter = actionMap.get(val)
+      actionGetter && actionGetter()
     }
   })
 
