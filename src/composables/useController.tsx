@@ -197,6 +197,7 @@ export const useController = (currentCar: any) => {
   const actionMap = new Map([
     [128, () => setMode(modeKey.MANUAL)],
     [64, () => controlLaser()],
+    [8, () => onClick('07')],
     [4, () => onClick('08')],
     [2, () => setMode(modeKey.AUTO)]
   ])
