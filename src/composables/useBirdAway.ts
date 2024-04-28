@@ -20,7 +20,7 @@ export const useBirdAway = () => {
     }
   }
 
-  async function onClick(value: string) {
+  async function onClickBirdAway(value: string) {
     if (haveCurrentCar()) {
       if (value === '9' || value === '10') {
         playAudioById(parseInt(value))
@@ -40,6 +40,6 @@ export const useBirdAway = () => {
   return {
     disperseMode,
     controlLaser,
-    onClick
+    onClickBirdAway
   }
 }

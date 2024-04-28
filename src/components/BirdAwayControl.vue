@@ -3,7 +3,7 @@
     <div class="mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
     <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full mb-4">
       <template v-for="item in buttonList" :key="item.value">
-        <el-button size="large" @click="() => onClick(item.value)">
+        <el-button size="large" @click="() => onClickBirdAway(item.value)">
           {{ item.content }}
         </el-button>
       </template>
@@ -34,7 +34,7 @@ import { haveCurrentCar } from '@/shared'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { controlLaser, disperseMode, onClick } = useBirdAway()
+const { controlLaser, disperseMode, onClickBirdAway } = useBirdAway()
 
 // 国际化
 const { t } = useI18n()
