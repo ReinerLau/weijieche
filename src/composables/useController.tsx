@@ -192,11 +192,12 @@ export const useController = (currentCar: any) => {
   })
 
   const { setMode, modeKey } = useControlSection()
-  const { controlLaser } = useBirdAway()
+  const { controlLaser, onClick } = useBirdAway()
 
   const actionMap = new Map([
     [128, () => setMode(modeKey.MANUAL)],
     [64, () => controlLaser()],
+    [4, () => onClick('08')],
     [2, () => setMode(modeKey.AUTO)]
   ])
 

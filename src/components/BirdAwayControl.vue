@@ -3,7 +3,7 @@
     <div class="mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
     <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full mb-4">
       <template v-for="item in buttonList" :key="item.value">
-        <el-button size="large" @click="onClick(item.value)">
+        <el-button size="large" @click="() => onClick(item.value)">
           {{ item.content }}
         </el-button>
       </template>
@@ -28,13 +28,13 @@
 
 <script setup lang="ts">
 // 驱鸟器控制
-import { patrolingCruise, playAudioById } from '@/api'
+import { playAudioById } from '@/api'
 import { useBirdAway } from '@/composables/useBirdAway'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { haveCurrentCar } from '@/shared'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { controlLaser, disperseMode } = useBirdAway()
+const { controlLaser, disperseMode, onClick } = useBirdAway()
 
 // 国际化
 const { t } = useI18n()
@@ -66,24 +66,6 @@ const buttonList = [
     content: t('dui-jiang')
   }
 ]
-
-// 点击按钮
-async function onClick(value: string) {
-  if (haveCurrentCar()) {
-    if (value === '9' || value === '10') {
-      playAudioById(parseInt(value))
-    } else {
-      const data = {
-        code: currentCar.value,
-        param1: '05',
-        param2: value,
-        param3: '0',
-        param4: '0'
-      }
-      patrolingCruise(data)
-    }
-  }
-}
 
 const audioValue = ref()
 

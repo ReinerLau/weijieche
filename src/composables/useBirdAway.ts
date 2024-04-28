@@ -1,4 +1,4 @@
-import { patrolingCruise } from '@/api'
+import { patrolingCruise, playAudioById } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ref } from 'vue'
 
@@ -20,8 +20,26 @@ export const useBirdAway = () => {
     }
   }
 
+  async function onClick(value: string) {
+    if (haveCurrentCar()) {
+      if (value === '9' || value === '10') {
+        playAudioById(parseInt(value))
+      } else {
+        const data = {
+          code: currentCar.value,
+          param1: '05',
+          param2: value,
+          param3: '0',
+          param4: '0'
+        }
+        patrolingCruise(data)
+      }
+    }
+  }
+
   return {
     disperseMode,
-    controlLaser
+    controlLaser,
+    onClick
   }
 }
