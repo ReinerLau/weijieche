@@ -199,6 +199,8 @@ export const useController = (currentCar: any) => {
   const actionMap = new Map([
     [128, () => setMode(modeKey.MANUAL)],
     [64, () => controlLaser()],
+    [32, () => onClickBirdAway('05')],
+    [16, () => onClickBirdAway('06')],
     [8, () => onClickBirdAway('07')],
     [4, () => onClickBirdAway('08')],
     [2, () => setMode(modeKey.AUTO)],
