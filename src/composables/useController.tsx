@@ -194,7 +194,7 @@ export const useController = (currentCar: any) => {
 
   const { setMode, modeKey } = useControlSection()
   const { controlLaser, onClickBirdAway } = useBirdAway()
-  const { onClickPantilt, keyMap, Type } = usePantilt()
+  const { onClickPantilt, keyMap, Type, pantiltX, pantiltY } = usePantilt()
 
   const actionMap = new Map([
     [128, () => setMode(modeKey.MANUAL)],
@@ -310,10 +310,8 @@ export const useController = (currentCar: any) => {
                 direction.value = getJoyStickValue(value[2], value[3])
                 speed.value = getJoyStickValue(value[12], value[13])
                 pressedButtons.value = getPressedButton(value[16])
-                // console.log('云台摇杆x：', (value[6] << 8) | value[7])
-                // console.log('云台摇杆y：', (value[8] << 8) | value[9])
-                // console.log('低位按键：', value[16])
-                // console.log('高位按键：', value[17])
+                pantiltX.value = (value[6] << 8) | value[7]
+                pantiltY.value = (value[8] << 8) | value[9]
               }
             }
           } finally {

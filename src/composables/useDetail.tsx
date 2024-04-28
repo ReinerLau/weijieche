@@ -8,8 +8,7 @@ import {
   currentController,
   currentControllerType,
   haveCurrentCar,
-  modes,
-  pressedButtons
+  modes
 } from '@/shared'
 import {
   ElButton,
@@ -67,25 +66,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     controllers,
     controllerTypes,
     speed,
-    gear,
     ControllerMapDialog,
     controllerMapDialogVisible,
     direction,
     connectControlPan
   } = useController(currentCar)
-
-  // 监听前进后退的切换按键
-  watch(pressedButtons, (val) => {
-    if (currentControllerType.value === controllerTypes.value.WHEEL) {
-      if (val === 6) {
-        gear.value = !gear.value
-      }
-    } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
-      if (val === 5) {
-        gear.value = !gear.value
-      }
-    }
-  })
 
   //设置默认车速
   // async function settingCarSpeed(speed: number) {
