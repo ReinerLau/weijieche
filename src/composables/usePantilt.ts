@@ -1,6 +1,5 @@
 import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
-import { throttle } from 'lodash'
 import { ref, watch } from 'vue'
 
 // 不同功能映射值
@@ -21,35 +20,39 @@ export const usePantilt = () => {
   const pantiltX = ref(2048)
   const pantiltY = ref(2048)
 
-  const updateLeft = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.LEFT), 500)
-  const updateRight = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.RIGHT), 500)
-  const updateUp = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.UP), 500)
-  const updateDown = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.DOWN), 500)
+  // const updateLeft = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.LEFT), 500)
+  // const updateRight = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.RIGHT), 500)
+  // const updateUp = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.UP), 500)
+  // const updateDown = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.DOWN), 500)
 
-  let raf: number
+  // let raf: number
 
   const startUpdateX = () => {
     if (pantiltX.value === 0) {
-      updateLeft()
+      // updateLeft()
+      onClickPantilt(Type.DIRECTION, keyMap.LEFT)
     } else if (pantiltX.value === 4095) {
-      updateRight()
+      // updateRight()
+      onClickPantilt(Type.DIRECTION, keyMap.RIGHT)
     } else {
-      cancelAnimationFrame(raf)
+      // cancelAnimationFrame(raf)
       return
     }
-    raf = requestAnimationFrame(startUpdateX)
+    // raf = requestAnimationFrame(startUpdateX)
   }
 
   const startUpdateY = () => {
     if (pantiltY.value === 0) {
-      updateDown()
+      // updateDown()
+      onClickPantilt(Type.DIRECTION, keyMap.DOWN)
     } else if (pantiltY.value === 4095) {
-      updateUp()
+      // updateUp()
+      onClickPantilt(Type.DIRECTION, keyMap.UP)
     } else {
-      cancelAnimationFrame(raf)
+      // cancelAnimationFrame(raf)
       return
     }
-    raf = requestAnimationFrame(startUpdateY)
+    // raf = requestAnimationFrame(startUpdateY)
   }
 
   watch(pantiltX, startUpdateX)
