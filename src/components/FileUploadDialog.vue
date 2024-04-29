@@ -4,7 +4,7 @@
     :title="t('shang-chuan-wen-jian')"
     width="50vw"
     align-center
-    @onClose="handleClose"
+    @close="handleClose"
   >
     <ElUpload
       ref="uploadRef"
@@ -18,7 +18,7 @@
       <ElButton type="primary">{{ t('xuan-ze-lu-xian-wen-jian') }}</ElButton>
     </ElUpload>
     <ElButton size="large" type="primary" class="w-full" @Click="submitUpload">
-      {t('shang-chuan-lu-xian')}
+      {{ t('shang-chuan-lu-xian') }}
     </ElButton>
   </ElDialog>
 </template>
@@ -27,7 +27,7 @@
 import { fileUploadDialogVisible } from '@/shared/map/file'
 import type { PointData } from '@/types'
 import { getToken } from '@/utils'
-import { ElMessage, type UploadInstance } from 'element-plus'
+import { ElButton, ElDialog, ElMessage, ElUpload, type UploadInstance } from 'element-plus'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -54,8 +54,7 @@ const beforeAvatarUpload = (rawFile: any) => {
     ElMessage.error(t('qing-shang-chuan-zheng-que-de-lu-xian-wen-jian'))
     return false
   }
-  ElMessage({
-    type: 'success',
+  ElMessage.success({
     message: t('shang-chuan-cheng-gong')
   })
   return true
@@ -66,6 +65,5 @@ const handleClose = () => {
   if (uploadRef.value) {
     uploadRef.value.clearFiles() // 清空上传的文件
   }
-  fileUploadDialogVisible.value = false // 关闭弹窗
 }
 </script>
