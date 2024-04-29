@@ -4,19 +4,19 @@ import {
   useConfig,
   useControlSection,
   useDetail,
+  useHistory,
   useInternational,
+  useLogout,
   useNotification,
   useResponsive,
-  useTheme,
-  useHistory,
-  useLogout
+  useTheme
 } from '@/composables'
 
-import { onMounted, watch } from 'vue'
-import { currentCar, cameraList } from '@/shared'
 import { getCameraListByCode } from '@/api'
 import MapContainer from '@/components/MapContainer'
-
+import { detailDrawerVisible } from '@/composables/carDetail'
+import { cameraList, currentCar } from '@/shared'
+import { onMounted, watch } from 'vue'
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
 const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
@@ -36,7 +36,7 @@ onMounted(() => {
 })
 
 // 视频流地址切换
-const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
+const { DetailSection } = useDetail({ isMobile })
 const { HistoryController } = useHistory()
 const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()
