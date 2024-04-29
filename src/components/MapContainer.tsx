@@ -13,13 +13,13 @@ import { initDrawTool } from '@/shared/map/drawTool'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initHomePath, initHomePathLayer } from '@/shared/map/home'
 import { initPathLayer } from '@/shared/map/path'
-import { handleConfirmPatrolTaskPath, initPatrolpathLayer } from '@/shared/map/patrolPath'
+import { initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import { handleConfirm } from '@/shared/map/template'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import IconMdiSignalOff from '~icons/mdi/signal-off'
 
-import FileUploadDialog from '@/components/FileUploadDialog'
+import FileUploadDialog from '@/components/FileUploadDialog.vue'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
@@ -116,7 +116,7 @@ export default defineComponent({
         <ScheduleDialog pointsdata={pathDataPoints} />
         <ScheduleSearchDialog />
         <PointSettingFormDialog />
-        <PatrolTaskDialog onConfirm={handleConfirmPatrolTaskPath} />
+        <PatrolTaskDialog />
         <FileUploadDialog onConfirm={handleConfirmFilePath} />
         <PointConfigDrawer />
         <ShowAlarmMessageDialog alarmMessage={alarmMessageData.value} />
