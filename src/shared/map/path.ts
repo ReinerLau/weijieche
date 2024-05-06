@@ -1,13 +1,13 @@
-import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { clearMenu, jumpToCoordinate, map } from './base'
-import { ref } from 'vue'
-import { entryPoint, handleCreateHomePath, setEntryPoint } from './home'
+import type { Coordinate, PointData } from '@/types'
 import { i18n } from '@/utils'
+import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { ref } from 'vue'
+import { getLineCoordinates, handleCreatePath } from '.'
+import { clearMenu, jumpToCoordinate, map } from './base'
+import { clearDrawTool } from './drawTool'
+import { entryPoint, handleCreateHomePath, setEntryPoint } from './home'
 import { configCarSpeed } from './pointConfig'
 import { endRecording, isRecord, isRecordPath } from './record'
-import { clearDrawTool } from './drawTool'
-import { getLineCoordinates, handleCreatePath } from '.'
-import type { Coordinate, PointData } from '@/types'
 import { handleTaskEvent, initTaskPoints } from './taskPoint'
 
 /**
@@ -188,16 +188,27 @@ export const getMarkerFill = (index: number, coordinates: Coordinate[]) => {
 }
 
 export const getPoints = (coordinates: PointData[]) => {
-  return coordinates.map((coordinate, index) => {
-    return new Marker([coordinate.y, coordinate.x], {
+  const pointMarkers = coordinates.map((coordinate, index) => {
+    const pointMarker = new Marker([coordinate.y, coordinate.x], {
       symbol: {
         markerType: index === 0 ? 'diamond' : 'ellipse',
         markerFill: getMarkerFill(index, coordinates),
         markerWidth: 15,
         markerHeight: 15
+      },
+      draggable: true
+    })
+    pointMarker.on('dragend', function (e) {
+      const newCoordinate = [e.target.getCoordinates().x, e.target.getCoordinates().y]
+      coordinates[index] = {
+        x: newCoordinate[1],
+        y: newCoordinate[0],
+        speed: coordinates[index].speed
       }
     })
+    return pointMarker
   })
+  return pointMarkers
 }
 
 export const initPath = (coordinates: PointData[]) => {
