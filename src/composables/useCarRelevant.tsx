@@ -1,6 +1,7 @@
 import { connectCar, controlAlarmLight, patrolingCruise } from '@/api'
-import { openCarWs, offCarWs } from '@/api/user'
+import { offCarWs, openCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
+import CarSelector from '@/components/CarSelector.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { carList, currentCar, haveCurrentCar } from '@/shared'
@@ -14,11 +15,10 @@ import {
   ElScrollbar,
   ElSwitch
 } from 'element-plus'
-import { computed, Fragment, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { Fragment, computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
-import CarSelector from '@/components/CarSelector.vue'
 
 // 选择车左边抽屉相关
 export const useCarRelevant = ({
@@ -233,7 +233,6 @@ export const useCarRelevant = ({
       v-model={carSettingDrawerVisible.value}
       direction="rtl"
       size="40%"
-      modal={false}
     >
       <ElScrollbar>
         <div class="w-full px-5">
