@@ -4,6 +4,7 @@ import { clearStatus } from '@/shared/map'
 import { showPath } from '@/shared/map/path'
 import { missionTemplateId, templateSearchDialogVisible } from '@/shared/map/template'
 import type { PointData, TemplateData } from '@/types'
+import { parseTime } from '@/utils/parseTime'
 import { ElMessage } from 'element-plus'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -84,6 +85,10 @@ watch(templateSearchDialogVisible, async (val) => {
     getList()
   }
 })
+
+function timeFormatter(row: any) {
+  return parseTime(row.createTime)
+}
 </script>
 
 <template>
@@ -109,7 +114,11 @@ watch(templateSearchDialogVisible, async (val) => {
         <el-table height="50vh" :data="list" highlight-current-row @currentChange="onCurrentChange">
           <el-table-column property="name" :label="t('ming-cheng')" />
           <el-table-column property="memo" :label="t('bei-zhu')" />
-          <el-table-column property="createTime" :label="t('chuang-jian-shi-jian')" />
+          <el-table-column
+            property="createTime"
+            :label="t('chuang-jian-shi-jian')"
+            :formatter="timeFormatter"
+          />
           <el-table-column :label="t('cao-zuo')">
             <template #default="{ row }">
               <el-button link @click="() => handleDelete(row.id)">
