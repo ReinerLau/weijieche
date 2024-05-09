@@ -3,7 +3,7 @@
     <div class="mb-7">{{ t('qu-niao-qi-kong-zhi') }}</div>
     <div class="grid gap-2 grid-cols-3 grid-rows-2 w-full mb-4">
       <template v-for="item in buttonList" :key="item.value">
-        <el-button size="large" @click="onClick(item.value)">
+        <el-button size="large" @click="() => onClickBirdAway(item.value)">
           {{ item.content }}
         </el-button>
       </template>
@@ -19,52 +19,32 @@
         </el-option>
       </el-select>
     </div>
-    <!-- <div class="flex justify-center items-center mb-2">
-      <span class="mr-5">{{ t('yin-liang') }}</span>
-      <el-slider
-        v-model="volume"
-        class="flex-1"
-        :step="1"
-        :min="1"
-        :max="30"
-        :show-input-controls="false"
-        @change="handleChange"
-      />
-    </div> -->
     <div class="flex justify-between items-center">
       <span>{{ t('ji-guang-fa-san-qi') }}</span>
-      <el-switch v-model="disperseMode" @change="controlLaser"></el-switch>
+      <el-switch :model-value="disperseMode" @change="controlLaser"></el-switch>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 // 驱鸟器控制
-import { patrolingCruise, playAudioById } from '@/api'
-import { controllerTypes, currentCar, currentControllerType, haveCurrentCar } from '@/shared'
-// import { debounce } from 'lodash'
-import { computed, ref, watch } from 'vue'
-import { pressedButtons } from '@/shared'
-import type { ComputedRef } from 'vue'
+import { playAudioById } from '@/api'
+import { useBirdAway } from '@/composables/useBirdAway'
+import { haveCurrentCar } from '@/shared'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const { controlLaser, disperseMode, onClickBirdAway } = useBirdAway()
 
 // 国际化
 const { t } = useI18n()
 
 // 按钮组合
 const buttonList = [
-  // {
-  //   value: '01',
-  //   content: t('qu-niao')
-  // },
   {
     value: '9',
     content: t('qu-niao')
   },
-  // {
-  //   value: '02',
-  //   content: t('qu-ren')
-  // },
   {
     value: '10',
     content: t('qu-ren')
@@ -86,118 +66,6 @@ const buttonList = [
     content: t('dui-jiang')
   }
 ]
-
-// 点击按钮
-async function onClick(value: string) {
-  if (haveCurrentCar()) {
-    if (value === '9' || value === '10') {
-      playAudioById(parseInt(value))
-    } else {
-      const data = {
-        code: currentCar.value,
-        param1: '05',
-        param2: value,
-        param3: '0',
-        param4: '0'
-      }
-      patrolingCruise(data)
-    }
-  }
-}
-
-// 音量值
-// const volume = ref(0)
-// 修改音量
-// const changeVolumn = debounce(async () => {
-//   if (haveCurrentCar()) {
-//     const data = {
-//       code: currentCar.value,
-//       param1: '05',
-//       param2: '04',
-//       param3: volume.value,
-//       param4: 'ff'
-//     }
-//     patrolingCruise(data)
-//   }
-// }, 500)
-
-// 驱鸟功能是否开启
-const playBirdAway = ref(false)
-// 驱人功能是否开启
-const playPersonAway = ref(false)
-
-// 切换按钮事件
-const switchEvent = {
-  PERSON: () => {
-    playPersonAway.value = !playPersonAway.value
-    if (playPersonAway.value) {
-      if (haveCurrentCar()) {
-        onClick('10')
-      }
-    } else {
-      onClick('08')
-    }
-  },
-  BIRD: () => {
-    playBirdAway.value = !playBirdAway.value
-    if (playPersonAway.value) {
-      if (haveCurrentCar()) {
-        onClick('9')
-      }
-    } else {
-      onClick('08')
-    }
-  }
-}
-
-// 不同控制器按钮对应的功能映射
-const actionMap: ComputedRef<any[]> = computed(() => {
-  const actions = new Array(20)
-  if (currentControllerType.value === controllerTypes.value.WHEEL) {
-    actions[0] = switchEvent.PERSON
-    actions[2] = switchEvent.BIRD
-    return actions
-  } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
-    actions[1] = switchEvent.BIRD
-    actions[2] = switchEvent.PERSON
-    return actions
-  } else {
-    return actions
-  }
-})
-
-// 监听控制器按钮触发功能
-watch(pressedButtons, (val) => {
-  if (val !== -1) {
-    console.log(val)
-    const actionGetter = actionMap.value[val]
-    actionGetter && actionGetter()
-  }
-})
-
-// // 修改音量
-// function handleChange() {
-//   changeVolumn()
-// }
-
-// 激光发散器是否开启
-const disperseMode = ref(false)
-
-// 切换激光发散器
-function controlLaser(value: boolean) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: '01',
-      param2: value ? '01' : '00',
-      param3: 255,
-      param4: 'ff'
-    }
-    patrolingCruise(data)
-  } else {
-    disperseMode.value = false
-  }
-}
 
 const audioValue = ref()
 

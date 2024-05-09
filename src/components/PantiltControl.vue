@@ -4,29 +4,45 @@
     <div class="flex justify-center mb-2">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.UP)">
+          <el-button size="large" class="w-full" @click="onClickPantilt(Type.DIRECTION, keyMap.UP)">
             <i-bxs-up-arrow />
           </el-button>
         </el-col>
         <el-row class="w-full">
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.LEFT)">
+            <el-button
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.LEFT)"
+            >
               <i-bxs-left-arrow />
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.STOP)">
+            <el-button
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.STOP)"
+            >
               <i-icomoon-free-switch />
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.RIGHT)">
+            <el-button
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.RIGHT)"
+            >
               <i-bxs-right-arrow />
             </el-button>
           </el-col>
         </el-row>
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.DOWN)">
+          <el-button
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(Type.DIRECTION, keyMap.DOWN)"
+          >
             <i-bxs-down-arrow />
           </el-button>
         </el-col>
@@ -35,9 +51,12 @@
     <div class="my-3">
       <el-row :gutter="8">
         <el-col :span="12">
-          <el-button size="large" class="w-full" @click="onClick(Type.RECALL, keyMap.RECALL)">{{
-            t('zhao-hui')
-          }}</el-button>
+          <el-button
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(Type.RECALL, keyMap.RECALL)"
+            >{{ t('zhao-hui') }}</el-button
+          >
         </el-col>
         <el-col :span="12">
           <el-button size="large" class="w-full" @click="handleCalibrate()">{{
@@ -77,13 +96,16 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { debounce } from 'lodash'
-import { ref } from 'vue'
-import { currentCar } from '../shared/index'
-import type { Ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { usePantilt } from '@/composables/usePantilt'
 import { haveCurrentCar } from '@/shared'
+import { debounce } from 'lodash'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { postCalibrate } from '../api/control'
+import { currentCar } from '../shared/index'
+
+const { onClickPantilt, keyMap, Type } = usePantilt()
 
 // 国际化
 const { t } = useI18n()
@@ -96,35 +118,6 @@ const verticalAngle = ref(0)
 const angleTypes = {
   HORIZON: 3,
   VERTICAL: 4
-}
-
-// 不同功能映射值
-enum keyMap {
-  UP = 8,
-  LEFT = 4,
-  STOP = 255,
-  RIGHT = 2,
-  DOWN = 16,
-  RECALL = 0
-}
-
-enum Type {
-  DIRECTION = 5,
-  RECALL = 6
-}
-
-// 点击触发不同个功能
-function onClick(param2: number, param3: keyMap) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 6,
-      param2,
-      param3,
-      param4: 0
-    }
-    patrolingCruise(data)
-  }
 }
 
 // 修改水平角度
