@@ -338,8 +338,10 @@ export const useController = (currentCar: any) => {
               if (value.length === 19) {
                 // console.clear()
                 // console.log(value)
+                if (value[15] === 32) {
+                  speed.value = getJoyStickValue(value[12], value[13])
+                }
                 direction.value = getJoyStickValue(value[2], value[3])
-                speed.value = getJoyStickValue(value[12], value[13])
                 pressedButtons.value = getPressedButton(value[16], 'bottom')
                 pressedTopButton.value = getPressedButton(value[17], 'top')
                 pantiltX.value = (value[6] << 8) | value[7]
