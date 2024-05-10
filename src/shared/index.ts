@@ -1,6 +1,6 @@
-import { ref, type Ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import { i18n } from '@/utils'
+import { ElMessage } from 'element-plus'
+import { ref, type Ref } from 'vue'
 
 export const carList = ref<
   { id: number; code: string; name: string; status: number; battery: number }[]
@@ -77,10 +77,8 @@ export const currentController = ref('')
  */
 export const currentControllerType = ref('')
 
-/**
- * 控制按过的按键
- */
 export const pressedButtons = ref(0)
+export const pressedTopButton = ref(0)
 
 /**
  * 所有控制器类型

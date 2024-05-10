@@ -1,5 +1,11 @@
 import { patrolingRemote } from '@/api/control'
-import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
+import {
+  controllerTypes,
+  currentController,
+  currentControllerType,
+  pressedButtons,
+  pressedTopButton
+} from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -17,7 +23,10 @@ import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
 import { usePantilt } from './usePantilt'
 
-let oldPressedValue = 0
+const oldPressedValue = {
+  top: 0,
+  bottom: 0
+}
 
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
@@ -125,9 +134,9 @@ export const useController = (currentCar: any) => {
     return result
   }
 
-  function getPressedButton(newValue: number) {
-    const result = Math.abs(newValue - oldPressedValue)
-    oldPressedValue = newValue
+  function getPressedButton(newValue: number, type: 'top' | 'bottom') {
+    const result = Math.abs(newValue - oldPressedValue[type])
+    oldPressedValue[type] = newValue
     return result
   }
 
@@ -207,10 +216,23 @@ export const useController = (currentCar: any) => {
     [1, () => onClickPantilt(Type.RECALL, keyMap.RECALL)]
   ])
 
+  const actionTopMap = new Map([
+    [32, () => onClickBirdAway('9')],
+    [16, () => onClickBirdAway('10')]
+  ])
+
   watch(pressedButtons, (val) => {
     if (val !== 0) {
       console.log(val)
       const actionGetter = actionMap.get(val)
+      actionGetter && actionGetter()
+    }
+  })
+
+  watch(pressedTopButton, (val) => {
+    if (val !== 0) {
+      console.log(val)
+      const actionGetter = actionTopMap.get(val)
       actionGetter && actionGetter()
     }
   })
@@ -309,7 +331,8 @@ export const useController = (currentCar: any) => {
                 // console.log(value)
                 direction.value = getJoyStickValue(value[2], value[3])
                 speed.value = getJoyStickValue(value[12], value[13])
-                pressedButtons.value = getPressedButton(value[16])
+                pressedButtons.value = getPressedButton(value[16], 'bottom')
+                pressedTopButton.value = getPressedButton(value[17], 'top')
                 pantiltX.value = (value[6] << 8) | value[7]
                 pantiltY.value = (value[8] << 8) | value[9]
               }
