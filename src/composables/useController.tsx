@@ -193,7 +193,7 @@ export const useController = (currentCar: any) => {
   }
 
   watch([speed, direction], () => {
-    if (carMode.value === 'MANUAL') {
+    if (carMode.value === modeKey.MANUAL) {
       clearTimeout(st)
       submitData()
     } else {
@@ -206,13 +206,22 @@ export const useController = (currentCar: any) => {
   const { onClickPantilt, keyMap, Type, pantiltX, pantiltY } = usePantilt()
 
   const actionMap = new Map([
-    [128, () => setMode(modeKey.MANUAL)],
+    [
+      128,
+      () => {
+        if (carMode.value === modeKey.STOP) {
+          setMode(modeKey.AUTO)
+        } else if (carMode.value === modeKey.AUTO) {
+          setMode(modeKey.STOP)
+        }
+      }
+    ],
     [64, () => controlLaser()],
     [32, () => onClickBirdAway('05')],
     [16, () => onClickBirdAway('06')],
     [8, () => onClickBirdAway('07')],
     [4, () => onClickBirdAway('08')],
-    [2, () => setMode(modeKey.AUTO)],
+    [2, () => setMode(modeKey.MANUAL)],
     [1, () => onClickPantilt(Type.RECALL, keyMap.RECALL)]
   ])
 
