@@ -1,4 +1,4 @@
-import { connectCar, controlAlarmLight, patrolingCruise } from '@/api'
+import { connectCar } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import CarSelector from '@/components/CarSelector.vue'
@@ -19,6 +19,15 @@ import type { Ref } from 'vue'
 import { Fragment, computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
+import {
+  alarmLight,
+  autoLight,
+  controlLight,
+  handleAlarmLight,
+  highLight,
+  lightModes,
+  lowLight
+} from './usePantiltControl'
 
 // 选择车左边抽屉相关
 export const useCarRelevant = ({
@@ -89,39 +98,6 @@ export const useCarRelevant = ({
     event?: (value: any) => any
   }
 
-  // 近灯是否开启
-  const lowLight = ref(false)
-
-  // 远灯是否开启
-  const highLight = ref(false)
-
-  //自动灯是否开启
-  const autoLight = ref(false)
-
-  //警告灯是否开启
-  const alarmLight = ref(false)
-
-  // 切换近远灯相关事件
-  function toggleLight(value: boolean, mode: string) {
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: '07',
-        param2: value ? mode : '00',
-        param3: 255,
-        param4: 255
-      }
-      patrolingCruise(data)
-    }
-  }
-
-  // 近远灯映射值
-  const lightModes = {
-    HIGHBEAM: '01',
-    LOWBEAM: '02',
-    AUTOBEAM: '03'
-  }
-
   // 激光发散器是否开启
   // const disperseMode = ref(false)
 
@@ -147,11 +123,7 @@ export const useCarRelevant = ({
       title: t('jin-guang-deng'),
       ref: lowLight,
       event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.LOWBEAM)
-        } else {
-          lowLight.value = false
-        }
+        controlLight(value, lightModes.LOWBEAM)
       },
       disabled: highLight.value || autoLight.value ? true : false
     },
@@ -159,11 +131,7 @@ export const useCarRelevant = ({
       title: t('yuan-guang-deng'),
       ref: highLight,
       event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.HIGHBEAM)
-        } else {
-          highLight.value = false
-        }
+        controlLight(value, lightModes.HIGHBEAM)
       },
       disabled: lowLight.value || autoLight.value ? true : false
     },
@@ -171,28 +139,14 @@ export const useCarRelevant = ({
       title: t('zi-dong-yuan-guang-deng'),
       ref: autoLight,
       event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          toggleLight(value, lightModes.AUTOBEAM)
-        } else {
-          autoLight.value = false
-        }
+        controlLight(value, lightModes.AUTOBEAM)
       },
       disabled: lowLight.value || highLight.value ? true : false
     },
     {
       title: t('jing-bao-deng'),
       ref: alarmLight,
-      event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          const data = {
-            code: currentCar.value,
-            type: value ? '1' : '0'
-          }
-          controlAlarmLight(data)
-        } else {
-          alarmLight.value = false
-        }
-      }
+      event: handleAlarmLight
     }
     // {
     //   title: t('ji-guang-fa-san-qi'),

@@ -1,4 +1,4 @@
-import { patrolingCruise } from '@/api'
+import { controlAlarmLight, patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
 import { ref, type Ref } from 'vue'
@@ -64,5 +64,66 @@ export function handleChangeAngle(type: number) {
     changeHorizonAngle()
   } else if (type === angleTypes.VERTICAL) {
     changeVerticalAngle()
+  }
+}
+
+// 近远灯映射值
+export const lightModes = {
+  HIGHBEAM: '01',
+  LOWBEAM: '02',
+  AUTOBEAM: '03'
+}
+
+// 近灯是否开启
+export const lowLight = ref(false)
+
+// 远灯是否开启
+export const highLight = ref(false)
+
+//自动灯是否开启
+export const autoLight = ref(false)
+
+//警告灯是否开启
+export const alarmLight = ref(false)
+
+export function controlLight(value: boolean, type: string) {
+  if (haveCurrentCar()) {
+    toggleLight(value, type)
+  } else {
+    if (type === lightModes.LOWBEAM) {
+      lowLight.value = false
+    }
+    if (type === lightModes.HIGHBEAM) {
+      highLight.value = false
+    }
+    if (type === lightModes.AUTOBEAM) {
+      autoLight.value = false
+    }
+  }
+}
+
+// 切换近远灯相关事件
+export function toggleLight(value: boolean, mode: string) {
+  if (haveCurrentCar()) {
+    const data = {
+      code: currentCar.value,
+      param1: '07',
+      param2: value ? mode : '00',
+      param3: 255,
+      param4: 255
+    }
+    patrolingCruise(data)
+  }
+}
+
+export function handleAlarmLight(value: boolean) {
+  if (haveCurrentCar()) {
+    const data = {
+      code: currentCar.value,
+      type: value ? '1' : '0'
+    }
+    controlAlarmLight(data)
+  } else {
+    alarmLight.value = false
   }
 }

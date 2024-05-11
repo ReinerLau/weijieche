@@ -1,9 +1,16 @@
-import { patrolingCruise, postCalibrate } from '@/api/control'
+import { controlAlarmLight, patrolingCruise, postCalibrate } from '@/api/control'
 import PantiltControl from '@/components/PantiltControl.vue'
 import {
+  alarmLight,
   angleTypes,
+  autoLight,
+  controlLight,
+  handleAlarmLight,
   handleChangeAngle,
+  highLight,
   horizonAngle,
+  lightModes,
+  lowLight,
   verticalAngle
 } from '@/composables/usePantiltControl'
 import { currentCar } from '@/shared'
@@ -32,6 +39,7 @@ describe('PantiltControl.vue', () => {
   it('云台校准', async () => {
     vi.mocked(postCalibrate as any).mockImplementation(async () => mockingData)
     wrapper.findAllComponents(ElButton)[6].trigger('click')
+    await flushPromises()
     expect(postCalibrate).toHaveBeenCalled()
   })
 
@@ -44,5 +52,28 @@ describe('PantiltControl.vue', () => {
     wrapper.findAllComponents(ElSlider)[1].vm.$emit('update:modelValue', 10)
     expect(verticalAngle.value).toBe(10)
     handleChangeAngle(angleTypes.VERTICAL)
+  })
+  it('灯光控制', async () => {
+    controlLight(true, lightModes.LOWBEAM)
+    await flushPromises()
+    expect(patrolingCruise).toHaveBeenCalled()
+    currentCar.value = ''
+    controlLight(true, lightModes.LOWBEAM)
+    expect(lowLight.value).toBe(false)
+    controlLight(true, lightModes.HIGHBEAM)
+    expect(highLight.value).toBe(false)
+    controlLight(true, lightModes.AUTOBEAM)
+    expect(autoLight.value).toBe(false)
+  })
+
+  it('警报灯控制', async () => {
+    vi.mocked(controlAlarmLight as any).mockImplementation(async () => mockingData)
+    currentCar.value = '003'
+    handleAlarmLight(true)
+    await flushPromises()
+    expect(controlAlarmLight).toHaveBeenCalled()
+    currentCar.value = ''
+    handleAlarmLight(true)
+    expect(alarmLight.value).toBe(false)
   })
 })
