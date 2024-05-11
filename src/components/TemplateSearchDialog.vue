@@ -15,6 +15,7 @@ import {
   total
 } from '@/shared/map/template'
 import type { PointData, TemplateData } from '@/types'
+import { parseTime } from '@/utils/parseTime'
 import {
   ElButton,
   ElDialog,
@@ -76,6 +77,10 @@ watch(templateSearchDialogVisible, async (val) => {
     handleReset()
   }
 })
+
+function timeFormatter(row: any) {
+  return parseTime(row.createTime)
+}
 </script>
 
 <template>
@@ -101,7 +106,11 @@ watch(templateSearchDialogVisible, async (val) => {
         <ElTable height="50vh" :data="list" highlight-current-row @currentChange="onCurrentChange">
           <ElTableColumn property="name" :label="t('ming-cheng')" />
           <ElTableColumn property="memo" :label="t('bei-zhu')" />
-          <ElTableColumn property="createTime" :label="t('chuang-jian-shi-jian')" />
+          <ElTableColumn
+            property="createTime"
+            :label="t('chuang-jian-shi-jian')"
+            :formatter="timeFormatter"
+          />
           <ElTableColumn :label="t('cao-zuo')">
             <template #default="{ row }">
               <ElButton link @click="() => handleDelete(row.id)">

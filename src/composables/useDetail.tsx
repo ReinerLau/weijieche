@@ -6,8 +6,7 @@ import {
   currentCar,
   currentController,
   currentControllerType,
-  modes,
-  pressedButtons
+  modes
 } from '@/shared'
 import {
   ElButton,
@@ -62,24 +61,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     controllers,
     controllerTypes,
     speed,
-    gear,
     ControllerMapDialog,
     controllerMapDialogVisible,
-    direction
+    direction,
+    connectControlPan
   } = useController(currentCar)
-
-  // 监听前进后退的切换按键
-  watch(pressedButtons, (val) => {
-    if (currentControllerType.value === controllerTypes.value.WHEEL) {
-      if (val === 6) {
-        gear.value = !gear.value
-      }
-    } else if (currentControllerType.value === controllerTypes.value.GAMEPAD) {
-      if (val === 5) {
-        gear.value = !gear.value
-      }
-    }
-  })
 
   //设置默认车速
   // async function settingCarSpeed(speed: number) {
@@ -137,6 +123,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
           <ElButton onClick={() => (controllerMapDialogVisible.value = true)}>
             {t('she-zhi-ying-she')}
           </ElButton>
+          <ElButton onClick={connectControlPan}>连接中控台</ElButton>
         </div>
       )
     },
@@ -152,7 +139,8 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     //   )
     // },
     {
-      title: `${t('su-du')}: ${gear.value ? t('qian-jin') : t('hou-tui')}`,
+      // title: `${t('su-du')}: ${gear.value ? t('qian-jin') : t('hou-tui')}`,
+      title: t('su-du'),
       value: speed.value
     },
     {

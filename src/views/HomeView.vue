@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { getCameraListByCode } from '@/api'
+import MapContainer from '@/components/MapContainer'
+import TopControl from '@/components/TopControl.vue'
 import {
   useCarRelevant,
   useConfig,
-  useControlSection,
   useDetail,
   useHistory,
   useInternational,
@@ -11,9 +13,6 @@ import {
   useResponsive,
   useTheme
 } from '@/composables'
-
-import { getCameraListByCode } from '@/api'
-import MapContainer from '@/components/MapContainer'
 import { detailDrawerVisible } from '@/composables/carDetail'
 import { cameraList, currentCar } from '@/shared'
 import { onMounted, watch } from 'vue'
@@ -25,7 +24,6 @@ const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
   configTypes
 })
 
-const { TopControl } = useControlSection()
 const { checkIsMobile, mainRef, isMobile } = useResponsive()
 
 window.onresize = () => {

@@ -82,7 +82,7 @@ export const currentControllerType = ref('')
 /**
  * 控制按过的按键
  */
-export const pressedButtons = ref(-1)
+export const pressedButtons = ref(0)
 
 /**
  * 所有控制器类型

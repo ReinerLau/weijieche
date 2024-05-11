@@ -201,16 +201,27 @@ export const getMarkerFill = (index: number, coordinates: Coordinate[]) => {
 }
 
 export const getPoints = (coordinates: PointData[]) => {
-  return coordinates.map((coordinate, index) => {
-    return new Marker([coordinate.y, coordinate.x], {
+  const pointMarkers = coordinates.map((coordinate, index) => {
+    const pointMarker = new Marker([coordinate.y, coordinate.x], {
       symbol: {
         markerType: index === 0 ? 'diamond' : 'ellipse',
         markerFill: getMarkerFill(index, coordinates),
         markerWidth: 15,
         markerHeight: 15
+      },
+      draggable: true
+    })
+    pointMarker.on('dragend', function (e) {
+      const newCoordinate = [e.target.getCoordinates().x, e.target.getCoordinates().y]
+      coordinates[index] = {
+        x: newCoordinate[1],
+        y: newCoordinate[0],
+        speed: coordinates[index].speed
       }
     })
+    return pointMarker
   })
+  return pointMarkers
 }
 
 export const initPath = (coordinates: PointData[]) => {

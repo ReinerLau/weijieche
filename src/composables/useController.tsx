@@ -5,14 +5,20 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElDialog,
+  ElMessage,
   ElOption,
   ElScrollbar,
   ElSelect
 } from 'element-plus'
-import { reactive, ref, watch, onMounted } from 'vue'
 import type { Ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { carMode } from './useControlSection'
+import { useBirdAway } from './useBirdAway'
+import { carMode, useControlSection } from './useControlSection'
+import { usePantilt } from './usePantilt'
+
+let oldPressedValue = 0
+
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
   const { t } = useI18n()
@@ -67,7 +73,7 @@ export const useController = (currentCar: any) => {
   function onControllerOperation() {
     // 获取所有已连接的控制器
     const { gamepads } = useGamepad()
-    controllers.value = gamepads.value
+    controllers.value = gamepads.value as any
 
     // 匹配当前选择的控制器
     if (currentController.value && currentControllerType.value) {
@@ -111,6 +117,18 @@ export const useController = (currentCar: any) => {
     }
 
     return gear.value ? newSpeed : -newSpeed
+  }
+
+  function getJoyStickValue(value1: number, value2: number) {
+    let result = (value1 << 8) | value2
+    result = parseFloat(((result - 2048) / 4095).toFixed(1)) * 2000
+    return result
+  }
+
+  function getPressedButton(newValue: number) {
+    const result = Math.abs(newValue - oldPressedValue)
+    oldPressedValue = newValue
+    return result
   }
 
   // 获取转向
@@ -171,6 +189,29 @@ export const useController = (currentCar: any) => {
       submitData()
     } else {
       return
+    }
+  })
+
+  const { setMode, modeKey } = useControlSection()
+  const { controlLaser, onClickBirdAway } = useBirdAway()
+  const { onClickPantilt, keyMap, Type, pantiltX, pantiltY } = usePantilt()
+
+  const actionMap = new Map([
+    [128, () => setMode(modeKey.MANUAL)],
+    [64, () => controlLaser()],
+    [32, () => onClickBirdAway('05')],
+    [16, () => onClickBirdAway('06')],
+    [8, () => onClickBirdAway('07')],
+    [4, () => onClickBirdAway('08')],
+    [2, () => setMode(modeKey.AUTO)],
+    [1, () => onClickPantilt(Type.RECALL, keyMap.RECALL)]
+  ])
+
+  watch(pressedButtons, (val) => {
+    if (val !== 0) {
+      console.log(val)
+      const actionGetter = actionMap.get(val)
+      actionGetter && actionGetter()
     }
   })
 
@@ -238,6 +279,53 @@ export const useController = (currentCar: any) => {
     </ElDialog>
   )
 
+  async function connectControlPan() {
+    const port = await navigator.serial.requestPort()
+    let ref: number
+    port.ondisconnect = () => {
+      port.close()
+      cancelAnimationFrame(ref)
+    }
+
+    const serialOptions: SerialOptions = {
+      baudRate: 115200,
+      dataBits: 8,
+      stopBits: 1,
+      parity: 'none',
+      bufferSize: 1024,
+      flowControl: 'none'
+    }
+    try {
+      await port.open(serialOptions)
+      ElMessage.success('连接成功')
+      const onPort = async () => {
+        if (port.readable) {
+          const reader = port.readable.getReader()
+          try {
+            const { value, done } = await reader.read()
+            if (!done) {
+              if (value.length === 19) {
+                // console.clear()
+                // console.log(value)
+                direction.value = getJoyStickValue(value[2], value[3])
+                speed.value = getJoyStickValue(value[12], value[13])
+                pressedButtons.value = getPressedButton(value[16])
+                pantiltX.value = (value[6] << 8) | value[7]
+                pantiltY.value = (value[8] << 8) | value[9]
+              }
+            }
+          } finally {
+            reader.releaseLock()
+          }
+        }
+        ref = requestAnimationFrame(onPort)
+      }
+      onPort()
+    } catch {
+      ElMessage.error('检测到已连接')
+    }
+  }
+
   onMounted(() => {
     onControllerOperation()
 
@@ -263,6 +351,7 @@ export const useController = (currentCar: any) => {
     gear,
     ControllerMapDialog,
     controllerMapDialogVisible,
-    direction
+    direction,
+    connectControlPan
   }
 }
