@@ -1,0 +1,48 @@
+import { patrolingCruise, postCalibrate } from '@/api/control'
+import PantiltControl from '@/components/PantiltControl.vue'
+import {
+  angleTypes,
+  handleChangeAngle,
+  horizonAngle,
+  verticalAngle
+} from '@/composables/usePantiltControl'
+import { currentCar } from '@/shared'
+import { flushPromises, mount } from '@vue/test-utils'
+import { ElButton, ElSlider } from 'element-plus'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+vi.mock('@/api/control')
+const mockingData = {
+  code: 200,
+  data: true,
+  message: '操作成功'
+}
+describe('PantiltControl.vue', () => {
+  let wrapper: any
+  beforeEach(() => {
+    vi.mocked(patrolingCruise as any).mockImplementation(async () => mockingData)
+    wrapper = mount(PantiltControl)
+    currentCar.value = '003'
+  })
+  it('云台控制', async () => {
+    wrapper.findAllComponents(ElButton)[0].trigger('click')
+    await flushPromises()
+    expect(patrolingCruise).toHaveBeenCalled()
+  })
+
+  it('云台校准', async () => {
+    vi.mocked(postCalibrate as any).mockImplementation(async () => mockingData)
+    wrapper.findAllComponents(ElButton)[6].trigger('click')
+    expect(postCalibrate).toHaveBeenCalled()
+  })
+
+  it('修改水平角度', async () => {
+    wrapper.findAllComponents(ElSlider)[0].vm.$emit('update:modelValue', 10)
+    expect(horizonAngle.value).toBe(10)
+    handleChangeAngle(angleTypes.HORIZON)
+  })
+  it('修改垂直角度', async () => {
+    wrapper.findAllComponents(ElSlider)[1].vm.$emit('update:modelValue', 10)
+    expect(verticalAngle.value).toBe(10)
+    handleChangeAngle(angleTypes.VERTICAL)
+  })
+})

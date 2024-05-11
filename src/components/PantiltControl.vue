@@ -2,54 +2,73 @@
   <div>
     <div>{{ t('yun-tai-kong-zhi') }}</div>
     <div class="flex justify-center mb-2">
-      <el-row class="w-48">
-        <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.UP)">
+      <ElRow class="w-48">
+        <ElCol :span="8" :offset="8">
+          <ElButton size="large" class="w-full" @click="onClickPantilt(Type.DIRECTION, keyMap.UP)">
             <i-bxs-up-arrow />
-          </el-button>
-        </el-col>
-        <el-row class="w-full">
-          <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.LEFT)">
+          </ElButton>
+        </ElCol>
+        <ElRow class="w-full">
+          <ElCol :span="8">
+            <ElButton
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.LEFT)"
+            >
               <i-bxs-left-arrow />
-            </el-button>
-          </el-col>
-          <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.STOP)">
+            </ElButton>
+          </ElCol>
+          <ElCol :span="8">
+            <ElButton
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.STOP)"
+            >
               <i-icomoon-free-switch />
-            </el-button>
-          </el-col>
-          <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.RIGHT)">
+            </ElButton>
+          </ElCol>
+          <ElCol :span="8">
+            <ElButton
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(Type.DIRECTION, keyMap.RIGHT)"
+            >
               <i-bxs-right-arrow />
-            </el-button>
-          </el-col>
-        </el-row>
-        <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClick(Type.DIRECTION, keyMap.DOWN)">
+            </ElButton>
+          </ElCol>
+        </ElRow>
+        <ElCol :span="8" :offset="8">
+          <ElButton
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(Type.DIRECTION, keyMap.DOWN)"
+          >
             <i-bxs-down-arrow />
-          </el-button>
-        </el-col>
-      </el-row>
+          </ElButton>
+        </ElCol>
+      </ElRow>
     </div>
     <div class="my-3">
-      <el-row :gutter="8">
-        <el-col :span="12">
-          <el-button size="large" class="w-full" @click="onClick(Type.RECALL, keyMap.RECALL)">{{
-            t('zhao-hui')
-          }}</el-button>
-        </el-col>
-        <el-col :span="12">
-          <el-button size="large" class="w-full" @click="handleCalibrate()">{{
+      <ElRow :gutter="8">
+        <ElCol :span="12">
+          <ElButton
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(Type.RECALL, keyMap.RECALL)"
+            >{{ t('zhao-hui') }}</ElButton
+          >
+        </ElCol>
+        <ElCol :span="12">
+          <ElButton size="large" class="w-full" @click="handleCalibrate()">{{
             t('xiao-zhun')
-          }}</el-button>
-        </el-col>
-      </el-row>
+          }}</ElButton>
+        </ElCol>
+      </ElRow>
     </div>
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex items-center">
         <span class="mr-2">{{ t('shui-ping-jiao-du') }}</span>
-        <el-slider
+        <ElSlider
           v-model="horizonAngle"
           class="flex-1"
           :step="1"
@@ -61,7 +80,7 @@
       </div>
       <div class="flex items-center">
         <span class="mr-2">{{ t('chui-zhi-jiao-du') }}</span>
-        <el-slider
+        <ElSlider
           v-model="verticalAngle"
           class="flex-1"
           :step="1"
@@ -76,86 +95,25 @@
 </template>
 
 <script setup lang="ts">
-import { patrolingCruise } from '@/api'
-import { debounce } from 'lodash'
-import { ref } from 'vue'
-import { currentCar } from '../shared/index'
-import type { Ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import {
+  angleTypes,
+  handleChangeAngle,
+  horizonAngle,
+  keyMap,
+  onClickPantilt,
+  verticalAngle
+} from '@/composables/usePantiltControl'
 import { haveCurrentCar } from '@/shared'
+import { ElButton, ElCol, ElRow, ElSlider } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { postCalibrate } from '../api/control'
-
+import { currentCar } from '../shared/index'
 // 国际化
 const { t } = useI18n()
-
-// 水平角度
-const horizonAngle = ref(0)
-// 垂直角度
-const verticalAngle = ref(0)
-
-const angleTypes = {
-  HORIZON: 3,
-  VERTICAL: 4
-}
-
-// 不同功能映射值
-enum keyMap {
-  UP = 8,
-  LEFT = 4,
-  STOP = 255,
-  RIGHT = 2,
-  DOWN = 16,
-  RECALL = 0
-}
 
 enum Type {
   DIRECTION = 5,
   RECALL = 6
-}
-
-// 点击触发不同个功能
-function onClick(param2: number, param3: keyMap) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 6,
-      param2,
-      param3,
-      param4: 0
-    }
-    patrolingCruise(data)
-  }
-}
-
-// 修改水平角度
-const changeHorizonAngle = createDebouce(angleTypes.HORIZON, horizonAngle)
-
-// 修改垂直角度
-const changeVerticalAngle = createDebouce(angleTypes.VERTICAL, verticalAngle)
-
-// 转换成防抖函数，防止过多调度
-function createDebouce(param2: number, ref: Ref<number>) {
-  return debounce(async () => {
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: 6,
-        param2,
-        param3: ref.value,
-        param4: 0
-      }
-      patrolingCruise(data)
-    }
-  }, 500)
-}
-
-// 修改角度
-function handleChangeAngle(type: number) {
-  if (type === angleTypes.HORIZON) {
-    changeHorizonAngle()
-  } else if (type === angleTypes.VERTICAL) {
-    changeVerticalAngle()
-  }
 }
 
 const handleCalibrate = () => {
