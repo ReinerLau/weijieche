@@ -1,8 +1,11 @@
-import { connectCar, controlAlarmLight, patrolingCruise } from '@/api'
+import { connectCar, patrolingCruise } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
+import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import CarSelector from '@/components/CarSelector.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
+import LightControl from '@/components/LightControl.vue'
+import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { carList, currentCar, haveCurrentCar } from '@/shared'
 import {
@@ -98,15 +101,12 @@ export const useCarRelevant = ({
   //自动灯是否开启
   const autoLight = ref(false)
 
-  //警告灯是否开启
-  const alarmLight = ref(false)
-
   // 切换近远灯相关事件
   function toggleLight(value: boolean, mode: string) {
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
-        param1: '07',
+        param1: 1,
         param2: value ? mode : '00',
         param3: 255,
         param4: 255
@@ -121,25 +121,6 @@ export const useCarRelevant = ({
     LOWBEAM: '02',
     AUTOBEAM: '03'
   }
-
-  // 激光发散器是否开启
-  // const disperseMode = ref(false)
-
-  // 切换激光发散器
-  // function controlLaser(value: boolean) {
-  //   if (haveCurrentCar()) {
-  //     const data = {
-  //       code: currentCar.value,
-  //       param1: '01',
-  //       param2: value ? '01' : '00',
-  //       param3: 255,
-  //       param4: 'ff'
-  //     }
-  //     patrolingCruise(data)
-  //   } else {
-  //     disperseMode.value = false
-  //   }
-  // }
 
   // 切换按钮组
   const switchGroup = computed<SwitchGroup[]>(() => [
@@ -178,27 +159,7 @@ export const useCarRelevant = ({
         }
       },
       disabled: lowLight.value || highLight.value ? true : false
-    },
-    {
-      title: t('jing-bao-deng'),
-      ref: alarmLight,
-      event: (value: boolean) => {
-        if (haveCurrentCar()) {
-          const data = {
-            code: currentCar.value,
-            type: value ? '1' : '0'
-          }
-          controlAlarmLight(data)
-        } else {
-          alarmLight.value = false
-        }
-      }
     }
-    // {
-    //   title: t('ji-guang-fa-san-qi'),
-    //   ref: disperseMode,
-    //   event: controlLaser
-    // }
   ])
 
   /**
@@ -206,7 +167,7 @@ export const useCarRelevant = ({
    */
   const Switchs = () => (
     <Fragment>
-      <div class="mb-7">{t('deng-guang-kong-zhi')}</div>
+      <div class="mb-7">{t('che-deng-kong-zhi')}</div>
       <ElRow gutter={24} class="w-full">
         {switchGroup.value.map((item) => (
           <ElCol xs={24} sm={12}>
@@ -238,11 +199,17 @@ export const useCarRelevant = ({
         <div class="w-full px-5">
           <Switchs />
           <ElDivider />
+          <FrameSwitchOver />
+          <ElDivider />
           <PantiltControl />
+          <ElDivider />
+          <MusicControl />
           <ElDivider />
           <BirdAwayControl />
           <ElDivider />
-          <FrameSwitchOver />
+          <LightControl />
+          <ElDivider />
+          <AlarmLightControl />
         </div>
       </ElScrollbar>
     </ElDrawer>
