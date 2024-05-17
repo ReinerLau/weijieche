@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-7">{{ t('quan-ping-hua-mian-qie-huan') }}</div>
+  <div class="mb-7">{{ t('quan-jing-kong-zhi') }}</div>
   <div class="flex justify-center mb-2">
     <el-row class="w-48">
       <el-col :span="8" :offset="8">
