@@ -338,5 +338,10 @@
   "zi-dong-jia-shi-zhi-dong-kong-zhi-xin-hao-zhuang-tai": "État du signal de commande de frein de conduite automatique",
   "zi-dong-jia-shi-zhu-che-kong-zhi-xin-hao": "Signal de contrôle de stationnement pour conduite autonome",
   "zi-dong-jia-shi-zhuan-xiang-kong-zhi-xin-hao-zhuang-tai": "État du signal de commande de direction pour conduite autonome",
-  "zuo-zhuan": "Tourner à gauche"
+  "zuo-zhuan": "Tourner à gauche",
+  "che-liang-mo-shi-zhuang-tai": "état du mode véhicule",
+  "dai-ji-mo-shi": "mode veille",
+  "ji-ting-chu-fa": "Déclencheur d'arrêt d'urgence",
+  "yao-kong-jia-shi-mo-shi": "Mode de conduite télécommandé",
+  "zi-dong-jia-shi-mo-shi": "Mode pilote automatique"
 }

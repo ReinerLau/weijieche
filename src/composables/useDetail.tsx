@@ -231,19 +231,21 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('zhuan-xiang-kong-zhi-fang-shi'),
-      value: statusData.value.vehicleModeState
-        ? statusData.value.vehicleModeState === 1
-          ? t('qian-hou-zhuan-xiang-yi-xiang')
-          : t('qian-hou-zhuan-xiang-tong-xiang-mo-shi')
-        : t('qian-zhuan-xiang-mo-shi')
-    },
-    {
-      title: t('zhuan-xiang-kong-zhi-fang-shi'),
       value: statusData.value.steerModeStatus
         ? statusData.value.steerModeStatus === 1
           ? t('qian-hou-zhuan-xiang-yi-xiang')
           : t('qian-hou-zhuan-xiang-tong-xiang-mo-shi')
         : t('qian-zhuan-xiang-mo-shi')
+    },
+    {
+      title: t('che-liang-mo-shi-zhuang-tai'),
+      value: statusData.value.vehicleModeState
+        ? statusData.value.vehicleModeState === 1
+          ? t('zi-dong-jia-shi-mo-shi')
+          : statusData.value.vehicleModeState === 2
+          ? t('ji-ting-chu-fa')
+          : t('dai-ji-mo-shi')
+        : t('yao-kong-jia-shi-mo-shi')
     },
     {
       title: t('zhu-che-mo-shi'),

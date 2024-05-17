@@ -338,5 +338,10 @@
   "zi-dong-jia-shi-zhi-dong-kong-zhi-xin-hao-zhuang-tai": "Automatic driving brake control signal status",
   "zi-dong-jia-shi-zhu-che-kong-zhi-xin-hao": "Autonomous driving parking control signal",
   "zi-dong-jia-shi-zhuan-xiang-kong-zhi-xin-hao-zhuang-tai": "Autonomous driving steering control signal status",
-  "zuo-zhuan": "Turn left"
+  "zuo-zhuan": "Turn left",
+  "che-liang-mo-shi-zhuang-tai": "vehicle mode status",
+  "dai-ji-mo-shi": "standby mode",
+  "ji-ting-chu-fa": "Emergency stop trigger",
+  "yao-kong-jia-shi-mo-shi": "Remote control driving mode",
+  "zi-dong-jia-shi-mo-shi": "Autopilot mode"
 }

@@ -338,5 +338,10 @@
   "hou-zuo-lun-su": "后左轮速",
   "hou-you-lun-su": "后右轮速",
   "di-pan-gu-zhang-zhuang-tai": "底盘故障状态",
-  "wu-xian-han-hua": "无线喊话"
+  "wu-xian-han-hua": "无线喊话",
+  "zi-dong-jia-shi-mo-shi": "自动驾驶模式",
+  "ji-ting-chu-fa": "急停触发",
+  "dai-ji-mo-shi": "待机模式",
+  "yao-kong-jia-shi-mo-shi": "遥控驾驶模式",
+  "che-liang-mo-shi-zhuang-tai": "车辆模式状态"
 }
