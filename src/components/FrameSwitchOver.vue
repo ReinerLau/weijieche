@@ -74,7 +74,7 @@ async function onClick(value: string | number) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
-      param1: 8,
+      param1: 2,
       param2: value,
       param3: 0,
       param4: 0
