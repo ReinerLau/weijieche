@@ -1,5 +1,11 @@
 import { patrolingRemote } from '@/api/control'
-import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
+import {
+  controllerTypes,
+  currentController,
+  currentControllerType,
+  pressedButtons,
+  pressedTopButton
+} from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -17,7 +23,10 @@ import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
 import { usePantilt } from './usePantilt'
 
-let oldPressedValue = 0
+const oldPressedValue = {
+  top: 0,
+  bottom: 0
+}
 
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
@@ -125,9 +134,9 @@ export const useController = (currentCar: any) => {
     return result
   }
 
-  function getPressedButton(newValue: number) {
-    const result = Math.abs(newValue - oldPressedValue)
-    oldPressedValue = newValue
+  function getPressedButton(newValue: number, type: 'top' | 'bottom') {
+    const result = Math.abs(newValue - oldPressedValue[type])
+    oldPressedValue[type] = newValue
     return result
   }
 
@@ -184,7 +193,7 @@ export const useController = (currentCar: any) => {
   }
 
   watch([speed, direction], () => {
-    if (carMode.value === 'MANUAL') {
+    if (carMode.value === modeKey.MANUAL) {
       clearTimeout(st)
       submitData()
     } else {
@@ -197,20 +206,42 @@ export const useController = (currentCar: any) => {
   const { onClickPantilt, keyMap, Type, pantiltX, pantiltY } = usePantilt()
 
   const actionMap = new Map([
-    [128, () => setMode(modeKey.MANUAL)],
+    [
+      128,
+      () => {
+        if (carMode.value === modeKey.STOP) {
+          setMode(modeKey.AUTO)
+        } else if (carMode.value === modeKey.AUTO) {
+          setMode(modeKey.STOP)
+        }
+      }
+    ],
     [64, () => controlLaser()],
     [32, () => onClickBirdAway('05')],
     [16, () => onClickBirdAway('06')],
     [8, () => onClickBirdAway('07')],
     [4, () => onClickBirdAway('08')],
-    [2, () => setMode(modeKey.AUTO)],
+    [2, () => setMode(modeKey.MANUAL)],
     [1, () => onClickPantilt(Type.RECALL, keyMap.RECALL)]
+  ])
+
+  const actionTopMap = new Map([
+    [32, () => onClickBirdAway('9')],
+    [16, () => onClickBirdAway('10')]
   ])
 
   watch(pressedButtons, (val) => {
     if (val !== 0) {
       console.log(val)
       const actionGetter = actionMap.get(val)
+      actionGetter && actionGetter()
+    }
+  })
+
+  watch(pressedTopButton, (val) => {
+    if (val !== 0) {
+      console.log(val)
+      const actionGetter = actionTopMap.get(val)
       actionGetter && actionGetter()
     }
   })
@@ -307,9 +338,12 @@ export const useController = (currentCar: any) => {
               if (value.length === 19) {
                 // console.clear()
                 // console.log(value)
+                if (value[15] === 32) {
+                  speed.value = getJoyStickValue(value[12], value[13])
+                }
                 direction.value = getJoyStickValue(value[2], value[3])
-                speed.value = getJoyStickValue(value[12], value[13])
-                pressedButtons.value = getPressedButton(value[16])
+                pressedButtons.value = getPressedButton(value[16], 'bottom')
+                pressedTopButton.value = getPressedButton(value[17], 'top')
                 pantiltX.value = (value[6] << 8) | value[7]
                 pantiltY.value = (value[8] << 8) | value[9]
               }
