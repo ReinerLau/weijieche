@@ -203,7 +203,7 @@ export const useController = (currentCar: any) => {
 
   const { setMode, modeKey } = useControlSection()
   const { controlLaser, onClickBirdAway } = useBirdAway()
-  const { onClickPantilt, keyMap, Type, pantiltX, pantiltY } = usePantilt()
+  const { onClickPantilt, Type, pantiltX, pantiltY } = usePantilt()
 
   const actionMap = new Map([
     [
@@ -217,17 +217,17 @@ export const useController = (currentCar: any) => {
       }
     ],
     [64, () => controlLaser()],
-    [32, () => onClickBirdAway('05')],
-    [16, () => onClickBirdAway('06')],
-    [8, () => onClickBirdAway('07')],
-    [4, () => onClickBirdAway('08')],
+    [32, () => onClickBirdAway(5)],
+    [16, () => onClickBirdAway(6)],
+    [8, () => onClickBirdAway(7)],
+    [4, () => onClickBirdAway(8)],
     [2, () => setMode(modeKey.MANUAL)],
-    [1, () => onClickPantilt(Type.RECALL, keyMap.RECALL)]
+    [1, () => onClickPantilt(Type.RECALL)]
   ])
 
   const actionTopMap = new Map([
-    [32, () => onClickBirdAway('9')],
-    [16, () => onClickBirdAway('10')]
+    [32, () => onClickBirdAway(9)],
+    [16, () => onClickBirdAway(10)]
   ])
 
   watch(pressedButtons, (val) => {

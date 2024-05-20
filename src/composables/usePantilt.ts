@@ -64,7 +64,7 @@ export const usePantilt = () => {
 
   watch(pantiltY, startUpdateY)
 
-  function onClickPantilt(param2: number, param3: string | number) {
+  function onClickPantilt(param2: number, param3?: string | number) {
     if (haveCurrentCar()) {
       if (param2 === Type.RESET) {
         horizonAngle.value = 0
