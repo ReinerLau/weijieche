@@ -153,8 +153,175 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
       value: direction.value
     },
     {
+      title: t('dang-qian-che-su'),
+      value: `${statusData.value.currentSpeed}m/s`
+    },
+    {
       title: t('dian-liang'),
       value: `${statusData.value.battery || 0}%`
+    },
+    {
+      title: t('yun-tai-shui-ping-jiao-du'),
+      value: `${
+        statusData.value.ptzAngleHorizontal === -3
+          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
+          : `${statusData.value.ptzAngleHorizontal || 0}°`
+      }`
+    },
+    {
+      title: t('yun-tai-chui-zhi-jiao-du'),
+      value: `${
+        statusData.value.ptzAngleVertical === -3
+          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
+          : ` ${statusData.value.ptzAngleVertical || 0}°`
+      }`
+    },
+    {
+      title: t('dang-wei'),
+      value: statusData.value.gearTarget
+        ? statusData.value.gearTarget === 1
+          ? 'N'
+          : statusData.value.gearTarget === 2
+          ? 'R'
+          : statusData.value.gearTarget === 3
+          ? 'N'
+          : 'D'
+        : t('wu-xiao')
+    },
+    {
+      title: t('zhi-dong-deng'),
+      value: statusData.value.brakeLightActual ? t('kai-qi') : t('guan-bi')
+    },
+    {
+      title: t('qian-zhao-deng'),
+      value: statusData.value.headlightActual ? t('kai-qi') : t('guan-bi')
+    },
+
+    {
+      title: t('qian-zuo-lun-su'),
+      value: statusData.value.wheelSpeedFL
+    },
+    {
+      title: t('qian-you-lun-su'),
+      value: statusData.value.wheelSpeedFR
+    },
+    {
+      title: t('qu-niao'),
+      value: statusData.value.drivingBird ? t('kai-qi') : t('wu')
+    },
+    {
+      title: t('hou-zuo-lun-su'),
+      value: statusData.value.wheelSpeedRL
+    },
+    {
+      title: t('hou-you-lun-su'),
+      value: statusData.value.wheelSpeedRR
+    },
+
+    {
+      title: t('fang-xiang-pan-zhuan-jiao-kong-zhi'),
+      value: statusData.value.steerAngleTarget
+    },
+
+    {
+      title: t('qu-dong-fang-shi'),
+      value: statusData.value.driveModeStatus
+        ? t('su-du-kong-zhi-mo-shi')
+        : t('you-men-ta-ban-mo-shi')
+    },
+    {
+      title: t('zhuan-xiang-kong-zhi-fang-shi'),
+      value: statusData.value.steerModeStatus
+        ? statusData.value.steerModeStatus === 1
+          ? t('qian-hou-zhuan-xiang-yi-xiang')
+          : t('qian-hou-zhuan-xiang-tong-xiang-mo-shi')
+        : t('qian-zhuan-xiang-mo-shi')
+    },
+    {
+      title: t('che-liang-mo-shi-zhuang-tai'),
+      value: statusData.value.vehicleModeState
+        ? statusData.value.vehicleModeState === 1
+          ? t('zi-dong-jia-shi-mo-shi')
+          : statusData.value.vehicleModeState === 2
+          ? t('ji-ting-chu-fa')
+          : t('dai-ji-mo-shi')
+        : t('yao-kong-jia-shi-mo-shi')
+    },
+    {
+      title: t('zhu-che-mo-shi'),
+      value: statusData.value.parkTarget ? t('song-kai-zhu-che') : t('zhu-che')
+    },
+    {
+      title: t('zhi-dong-zhi-fan-kui'),
+      value: `${statusData.value.brakePedalActual}%`
+    },
+    {
+      title: t('ta-ban-qing-qiu-zhi-fan-kui'),
+      value: `${statusData.value.driveThrottlePedalActual}%`
+    },
+    {
+      title: t('zi-dong-jia-shi-zhi-dong-kong-zhi-xin-hao-zhuang-tai'),
+      value: statusData.value.brakeFlt2 ? t('kong-zhi-ming-ling-duan-kai') : t('zheng-chang')
+    },
+    {
+      title: t('zi-dong-jia-shi-zhuan-xiang-kong-zhi-xin-hao-zhuang-tai'),
+      value: statusData.value.steerFlt2 ? t('kong-zhi-ming-ling-duan-kai') : t('zheng-chang')
+    },
+    {
+      title: t('di-pan-gu-zhang-zhuang-tai'),
+      value: statusData.value.vehicleErrorCode
+    },
+    {
+      title: t('zhuan-xiang-deng-zhuang-tai'),
+      value: statusData.value.turnLightActual
+        ? statusData.value.turnLightActual === 1
+          ? t('zuo-zhuan')
+          : statusData.value.turnLightActual === 2
+          ? t('you-zhuan')
+          : t('shuang-shan')
+        : t('guan-bi')
+    },
+    {
+      title: t('zhi-dong-xi-tong-ying-jian-gu-zhang'),
+      value: statusData.value.brakeFlt1 ? t('you-gu-zhang') : t('wu-gu-zhang')
+    },
+    {
+      title: t('qu-dong-xi-tong-ying-jian-gu-zhang'),
+      value: statusData.value.driveFlt1 ? t('you-gu-zhang') : t('wu-gu-zhang')
+    },
+    {
+      title: t('dang-wei-gu-zhang'),
+      value: statusData.value.gearFlt1
+        ? t('zi-dong-jia-shi-dang-wei-kong-zhi-xin-hao-diu-shi-huo-huan-dang-shi-bai')
+        : t('wu-gu-zhang')
+    },
+    {
+      title: t('zhu-che-gu-zhang'),
+      value: statusData.value.gearFlt2
+        ? t('zi-dong-jia-shi-zhu-che-kong-zhi-xin-hao')
+        : t('wu-gu-zhang')
+    },
+
+    {
+      title: t('zhuan-xiang-xi-tong-ying-jian-gu-zhang'),
+      value: statusData.value.steerFlt1 ? t('you-gu-zhang') : t('wu-gu-zhang')
+    },
+    {
+      title: t('zi-dong-jia-shi-qu-dong-kong-zhi-tong-xun-duan-kai'),
+      value: statusData.value.driveFlt2 ? t('kong-zhi-ming-ling-duan-kai') : t('zheng-chang')
+    },
+    {
+      title: t('gen-sui'),
+      value: statusData.value.isFollow ? t('gen-sui') : t('wu')
+    },
+    {
+      title: t('xun-luo'),
+      value: statusData.value.isPatrol ? t('xun-luo') : t('wu')
+    },
+
+    {
+      title: t('wu-xian-han-hua'),
+      value: statusData.value.wirelessShouting ? t('kai-qi') : t('wu')
     },
     {
       title: t('wen-du'),
@@ -203,22 +370,6 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     {
       title: t('yu-liang-ji'),
       value: `${statusData.value.rainfallNum || 0}ppm`
-    },
-    {
-      title: t('yun-tai-shui-ping-jiao-du'),
-      value: `${
-        statusData.value.ptzAngleHorizontal === -3
-          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
-          : `${statusData.value.ptzAngleHorizontal || 0}°`
-      }`
-    },
-    {
-      title: t('yun-tai-chui-zhi-jiao-du'),
-      value: `${
-        statusData.value.ptzAngleVertical === -3
-          ? t('wei-fa-xian-yun-tai-huo-sun-huai')
-          : ` ${statusData.value.ptzAngleVertical || 0}°`
-      }`
     }
   ])
 
