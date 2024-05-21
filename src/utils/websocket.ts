@@ -16,7 +16,7 @@ export function initWebSocket(
   }
 ) {
   const token = getToken()
-  const websocket = new WebSocket(`ws://${window.location.host}${url}`, [token!])
+  const websocket = new WebSocket(`wss://${window.location.host}${url}`, [token!])
   websocket.onmessage = onmessage
   websocket.onopen = onopen || null
   websocket.onclose = onclose || null
