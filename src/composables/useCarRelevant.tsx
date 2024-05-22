@@ -1,5 +1,6 @@
 import { connectCar, patrolingCruise } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
+import ActionScanning from '@/components/ActionScanning.vue'
 import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import CarSelector from '@/components/CarSelector.vue'
@@ -210,6 +211,8 @@ export const useCarRelevant = ({
           <LightControl />
           <ElDivider />
           <AlarmLightControl />
+          <ElDivider />
+          <ActionScanning />
         </div>
       </ElScrollbar>
     </ElDrawer>

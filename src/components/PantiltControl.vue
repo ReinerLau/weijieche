@@ -110,14 +110,19 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { usePantilt } from '@/composables/usePantilt'
+import {
+  horizonAngle,
+  horizonSpeed,
+  usePantilt,
+  verticalAngle,
+  verticalSpeed
+} from '@/composables/usePantilt'
 import { haveCurrentCar } from '@/shared'
 import { debounce } from 'lodash'
 import { useI18n } from 'vue-i18n'
 import { currentCar } from '../shared/index'
 
-const { onClickPantilt, Type, horizonSpeed, verticalSpeed, horizonAngle, verticalAngle } =
-  usePantilt()
+const { onClickPantilt, Type } = usePantilt()
 
 // 国际化
 const { t } = useI18n()
