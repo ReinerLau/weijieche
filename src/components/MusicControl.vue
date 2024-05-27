@@ -24,12 +24,25 @@
     <div class="flex justify-start flex-col mb-4">
       <el-button @click="onClickMusicList" class="mb-2">{{ t('yin-le-lie-biao') }}</el-button>
       <el-row :gutter="24" class="w-full">
-        <el-col :xs="24" :sm="24">当前歌曲总数：{{ musicListNumber }}</el-col>
+        <el-col :xs="24" :sm="24">当前歌曲总数：{{ musicList.length }}</el-col>
       </el-row>
     </div>
-    <div class="flex items-center justify-between">
-      <div>{{ t('xuan-ze-di') }}{{ musicNum }}{{ t('shou-yin-le') }}</div>
-      <el-input-number v-model="musicNum" :min="1" @change="changeMusic" />
+    <div class="flex items-center justify-between" v-if="musicList.length > 0">
+      <div>{{ t('xuan-ze-di') }}{{ Number(musicNum) + 1 }}{{ t('shou-yin-le') }}</div>
+      <el-select
+        size="large"
+        v-model="musicNum"
+        :placeholder="t('xuan-ze-yin-pin')"
+        @change="changeMusic"
+      >
+        <el-option
+          :label="item.name"
+          :value="item.index"
+          v-for="item in musicList"
+          :key="item.index"
+        >
+        </el-option>
+      </el-select>
     </div>
   </div>
 </template>
@@ -42,7 +55,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 // 国际化
 const { t } = useI18n()
-const musicNum = ref(1)
+
 // 按钮组合
 const buttonList = [
   {
@@ -103,13 +116,7 @@ watch(musicMessage, () => {
   }
 })
 
-const musicListNumber = ref(0)
-
-watch(musicList, () => {
-  if (musicList.value) {
-    musicListNumber.value = musicList.value[0]['total']
-  }
-})
+const musicListNumber: any = ref([])
 
 async function onClickStatus() {
   if (haveCurrentCar()) {
@@ -142,8 +149,8 @@ async function onClickMusicList() {
       param4: 255
     }
     await patrolingCruise(data)
-    if (musicList.value) {
-      musicListNumber.value = musicList.value[0]['total']
+    if (musicList.value.length > 0) {
+      musicListNumber.value = musicList.value
     }
   }
 }
@@ -161,16 +168,18 @@ async function onClickMusic(value: number) {
   }
 }
 
-async function changeMusic() {
+const musicNum = ref('')
+async function changeMusic(val: string) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
       param1: 4,
       param2: 5,
-      param3: musicNum.value,
+      param3: Number(val) + 1,
       param4: 255
     }
     patrolingCruise(data)
+    musicNum.value = val
   }
 }
 </script>
