@@ -361,5 +361,12 @@
   "ji-ting-chu-fa": "急停触发",
   "dai-ji-mo-shi": "待机模式",
   "yao-kong-jia-shi-mo-shi": "遥控驾驶模式",
-  "che-liang-mo-shi-zhuang-tai": "车辆模式状态"
+  "che-liang-mo-shi-zhuang-tai": "车辆模式状态",
+  "qiang-zhi-jie-shu": "强制结束",
+  "dong-zuo-sao-miao": "动作扫描",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cheng-gong": "监听一体机数据连接成功",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-duan-kai": "监听一体机数据连接断开",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cuo-wu": "监听一体机数据连接错误",
+  "dang-qian-yin-le-zhuang-tai": "当前音乐状态",
+  "yin-le-lie-biao": "音乐列表"
 }

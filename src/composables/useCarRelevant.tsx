@@ -1,5 +1,6 @@
 import { connectCar, patrolingCruise } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
+import ActionScanning from '@/components/ActionScanning.vue'
 import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import CarSelector from '@/components/CarSelector.vue'
@@ -22,7 +23,9 @@ import type { Ref } from 'vue'
 import { Fragment, computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
-
+import { birStatus, lightStatus, musicList, musicMessage, useUpperControl } from './useUpperControl'
+// 抽屉是否可见
+export const carSettingDrawerVisible = ref(false)
 // 选择车左边抽屉相关
 export const useCarRelevant = ({
   isConfig,
@@ -38,10 +41,7 @@ export const useCarRelevant = ({
 }) => {
   // 国际化
   const { t } = useI18n()
-
-  // 抽屉是否可见
-  const carSettingDrawerVisible = ref(false)
-
+  const { isOpenFeedback } = useUpperControl()
   // 当前车辆状态
   const currentCarStatus = () => {
     return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
@@ -194,10 +194,13 @@ export const useCarRelevant = ({
       v-model={carSettingDrawerVisible.value}
       direction="rtl"
       size="40%"
+      onClose={closeDrawer}
     >
       <ElScrollbar>
         <div class="w-full px-5">
           <Switchs />
+          <ElDivider />
+          <AlarmLightControl />
           <ElDivider />
           <FrameSwitchOver />
           <ElDivider />
@@ -209,12 +212,19 @@ export const useCarRelevant = ({
           <ElDivider />
           <LightControl />
           <ElDivider />
-          <AlarmLightControl />
+          <ActionScanning />
         </div>
       </ElScrollbar>
     </ElDrawer>
   )
 
+  function closeDrawer() {
+    isOpenFeedback.value = false
+    musicMessage.value = {}
+    musicList.value = []
+    birStatus.value = ''
+    lightStatus.value = ''
+  }
   // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
     <div class="flex items-center">
@@ -236,6 +246,7 @@ export const useCarRelevant = ({
         size="small"
         onClick={() => {
           carSettingDrawerVisible.value = true
+          isOpenFeedback.value = true
         }}
       >
         {t('shang-zhuang-kong-zhi')}
@@ -266,6 +277,7 @@ export const useCarRelevant = ({
 
   return {
     CarRelevantDrawer,
-    CarRelevantController
+    CarRelevantController,
+    carSettingDrawerVisible
   }
 }

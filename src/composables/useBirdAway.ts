@@ -1,6 +1,7 @@
 import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ref } from 'vue'
+import { birStatus } from './useUpperControl'
 
 const disperseMode = ref(false)
 const talkBack = ref(false)
@@ -50,11 +51,26 @@ export const useBirdAway = () => {
     }
   }
 
+  async function onClickBirdStatus() {
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: 6,
+        param2: 4,
+        param3: 255,
+        param4: 255
+      }
+      await patrolingCruise(data)
+      console.log(birStatus.value)
+    }
+  }
+
   return {
     disperseMode,
     controlLaser,
     onClickBirdAway,
     handleTalkBack,
-    talkBack
+    talkBack,
+    onClickBirdStatus
   }
 }

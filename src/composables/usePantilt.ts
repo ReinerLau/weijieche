@@ -13,15 +13,14 @@ enum Type {
   RECALL = 7,
   INITIAL = 9
 }
+export const horizonSpeed = ref(5)
 
+export const verticalSpeed = ref(5)
+// 水平角度
+export const horizonAngle = ref(0)
+// 垂直角度
+export const verticalAngle = ref(0)
 export const usePantilt = () => {
-  const horizonSpeed = ref(0)
-
-  const verticalSpeed = ref(0)
-  // 水平角度
-  const horizonAngle = ref(0)
-  // 垂直角度
-  const verticalAngle = ref(0)
   const pantiltX = ref(2048)
   const pantiltY = ref(2048)
 
