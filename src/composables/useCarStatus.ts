@@ -1,17 +1,19 @@
-import { onBeforeUnmount, ref, watch } from 'vue'
 import { currentCar } from '@/shared'
 import { initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-export const useCarStatus = (status: any, battery: any) => {
+export const useCarStatus = (status: any) => {
   // 国际化
   const { t } = useI18n()
 
   const NewCurrentCarStatus = ref(status)
 
   //电量
-  const NewCurrentCarBattery = ref(battery)
+  const NewCurrentCarBattery = ref()
+
+  const NewCurrentCarSpeed = ref()
 
   // 标记是否已经连接 websocket
   const isConnectedWS = ref(false)
@@ -55,9 +57,11 @@ export const useCarStatus = (status: any, battery: any) => {
           const data = JSON.parse(event.data)
           const status = data.status
           const battery = data.battery
+          const speed = data.currentSpeed
           // 更新currentCarStatus NewCurrentCarBattery的值
           NewCurrentCarStatus.value = status === 1 ? '✅' : '🚫'
           NewCurrentCarBattery.value = battery
+          NewCurrentCarSpeed.value = speed
         }
       },
       onopen: () => {
@@ -105,6 +109,7 @@ export const useCarStatus = (status: any, battery: any) => {
 
   return {
     NewCurrentCarStatus,
-    NewCurrentCarBattery
+    NewCurrentCarBattery,
+    NewCurrentCarSpeed
   }
 }
