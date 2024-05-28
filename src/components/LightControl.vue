@@ -8,9 +8,13 @@
         </el-button>
       </template>
     </div>
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mb-4">
       <span>{{ t('ji-guang-zhi-shi') }}</span>
       <el-switch :model-value="disperseMode" @change="controlLaser"></el-switch>
+    </div>
+    <div class="flex justify-start flex-col">
+      <el-button @click="onClickLightStatus" class="mb-2">{{ t('cha-xun-zhuang-tai') }}</el-button>
+      <div>{{ lightStatus }}</div>
     </div>
   </div>
 </template>
@@ -18,9 +22,11 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api/control'
 import { useBirdAway } from '@/composables/useBirdAway'
+import { lightStatus } from '@/composables/useUpperControl'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { useI18n } from 'vue-i18n'
 const { disperseMode, controlLaser } = useBirdAway()
+
 // 国际化
 const { t } = useI18n()
 
@@ -52,7 +58,7 @@ const buttonList = [
   }
   // {
   //   param: 4,
-  //   value: '4',
+  //   value: 4,
   //   content: t('cha-xun')
   // }
 ]
@@ -64,6 +70,19 @@ async function onClickLight(value: number) {
       param1: 7,
       param2: 1,
       param3: value,
+      param4: 255
+    }
+    patrolingCruise(data)
+  }
+}
+
+async function onClickLightStatus() {
+  if (haveCurrentCar()) {
+    const data = {
+      code: currentCar.value,
+      param1: 7,
+      param2: 4,
+      param3: 4,
       param4: 255
     }
     patrolingCruise(data)

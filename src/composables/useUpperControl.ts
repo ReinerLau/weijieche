@@ -1,9 +1,11 @@
 import { initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { onBeforeUnmount, ref, watch, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-export const musicMessage = ref()
-export const musicList = ref([])
+export const musicMessage: Ref<Record<string, any>> = ref({})
+export const musicList: any = ref([])
+export const birStatus = ref('')
+export const lightStatus = ref('')
 export const useUpperControl = () => {
   // 国际化
   const { t } = useI18n()
@@ -13,9 +15,6 @@ export const useUpperControl = () => {
 
   const isOpenFeedback = ref(false)
   let ws: WebSocket | undefined
-
-  const birStatus = ref('')
-  const lightStatus = ref('')
 
   //断开重连定时器
   let reconnectInterval: number | NodeJS.Timer | null = null
@@ -57,7 +56,18 @@ export const useUpperControl = () => {
           if (data.code === 'ADAS') {
             musicMessage.value = data.message
           } else if (data.code === 'ADAG') {
+            console.log(musicList.value)
+
             musicList.value = data.message
+          } else {
+            musicMessage.value = {
+              volumeValue: '',
+              index: '',
+              mode: '',
+              name: '',
+              status: ''
+            }
+            musicList.value.length = 0
           }
         } else if (data.type === 6) {
           birStatus.value = data.message
@@ -110,8 +120,6 @@ export const useUpperControl = () => {
   }
 
   return {
-    birStatus,
-    lightStatus,
     isOpenFeedback
   }
 }

@@ -13,9 +13,9 @@ enum Type {
   RECALL = 7,
   INITIAL = 9
 }
-export const horizonSpeed = ref(0)
+export const horizonSpeed = ref(5)
 
-export const verticalSpeed = ref(0)
+export const verticalSpeed = ref(5)
 // 水平角度
 export const horizonAngle = ref(0)
 // 垂直角度
