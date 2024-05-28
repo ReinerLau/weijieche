@@ -44,13 +44,19 @@ export const useCarRelevant = ({
   const { isOpenFeedback } = useUpperControl()
   // 当前车辆状态
   const currentCarStatus = () => {
-    return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
+    return carList.value.find((item) => item.code === currentCar.value)?.status === '1'
+      ? '✅'
+      : '🚫'
   }
 
   // 当前车辆电量
-  const currentCarBattery = () => {
-    return carList.value.find((item) => item.code === currentCar.value)?.battery
-  }
+  // const currentCarBattery = () => {
+  //   return carList.value.find((item) => item.code === currentCar.value)?.battery
+  // }
+
+  // const currentCarSpeed = () => {
+  //   return carList.value.find((item) => item.code === currentCar.value)?.speed
+  // }
 
   //是否断开连接
   const isConnection = ref(false)
@@ -75,9 +81,8 @@ export const useCarRelevant = ({
     }
   })
 
-  const { NewCurrentCarStatus, NewCurrentCarBattery } = useCarStatus(
-    currentCarStatus(),
-    currentCarBattery()
+  const { NewCurrentCarStatus, NewCurrentCarBattery, NewCurrentCarSpeed } = useCarStatus(
+    currentCarStatus()
   )
 
   // 监听切换车辆后重新激活车辆
@@ -240,6 +245,9 @@ export const useCarRelevant = ({
       />
       <span class="text-sm mr-4">
         {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
+      </span>
+      <span class="text-sm mr-4">
+        {t('che-su')}: {NewCurrentCarSpeed.value || 0}m/s
       </span>
       <ElButton
         class="mr-4"
