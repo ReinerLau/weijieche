@@ -1,12 +1,11 @@
-import { ConnectorLine, LineString, Marker } from 'maptalks'
-import { VectorLayer } from 'maptalks'
-import { clearMenu, map } from './base'
 import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { ConnectorLine, LineString, Marker, VectorLayer } from 'maptalks'
+import { currentCar, haveCurrentCar } from '..'
+import { clearMenu, map } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
 import { endRecording } from './record'
-import { currentCar, haveCurrentCar } from '..'
 
 /**
  * 当前鼠标点击的入口点
@@ -161,6 +160,9 @@ export const handleSaveHomePath = async () => {
  * 开始新建返航路线
  */
 export const handleCreateHomePath = (firstPoint?: Marker) => {
+  if (homePathDrawLayer) {
+    clearDrawingHomePath()
+  }
   initHomePathDrawLayer()
   drawTool.setMode('Point')
   drawTool.setSymbol({
