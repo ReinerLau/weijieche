@@ -154,7 +154,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('dang-qian-che-su'),
-      value: `${statusData.value.currentSpeed}m/s`
+      value: `${statusData.value.currentSpeed || 0}m/s`
     },
     {
       title: t('dian-liang'),
@@ -199,11 +199,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
 
     {
       title: t('qian-zuo-lun-su'),
-      value: statusData.value.wheelSpeedFL
+      value: statusData.value.wheelSpeedFL || 0
     },
     {
       title: t('qian-you-lun-su'),
-      value: statusData.value.wheelSpeedFR
+      value: statusData.value.wheelSpeedFR || 0
     },
     {
       title: t('qu-niao'),
@@ -211,16 +211,16 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('hou-zuo-lun-su'),
-      value: statusData.value.wheelSpeedRL
+      value: statusData.value.wheelSpeedRL || 0
     },
     {
       title: t('hou-you-lun-su'),
-      value: statusData.value.wheelSpeedRR
+      value: statusData.value.wheelSpeedRR || 0
     },
 
     {
       title: t('fang-xiang-pan-zhuan-jiao-kong-zhi'),
-      value: statusData.value.steerAngleTarget
+      value: statusData.value.steerAngleTarget || 0
     },
 
     {
@@ -253,11 +253,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('zhi-dong-zhi-fan-kui'),
-      value: `${statusData.value.brakePedalActual}%`
+      value: `${statusData.value.brakePedalActual || 0}%`
     },
     {
       title: t('ta-ban-qing-qiu-zhi-fan-kui'),
-      value: `${statusData.value.driveThrottlePedalActual}%`
+      value: `${statusData.value.driveThrottlePedalActual || 0}%`
     },
     {
       title: t('zi-dong-jia-shi-zhi-dong-kong-zhi-xin-hao-zhuang-tai'),
@@ -269,7 +269,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('di-pan-gu-zhang-zhuang-tai'),
-      value: statusData.value.vehicleErrorCode
+      value: statusData.value.vehicleErrorCode || 0
     },
     {
       title: t('zhuan-xiang-deng-zhuang-tai'),
@@ -325,7 +325,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     },
     {
       title: t('wen-du'),
-      value: statusData.value.temperature || 0
+      value: ` ${statusData.value.temperature || 0}°`
     },
     {
       title: t('shi-du'),
