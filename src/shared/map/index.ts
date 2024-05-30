@@ -17,6 +17,7 @@ import {
 } from './path'
 import { assignTaskToolbarEvent, clearPathToolbarEvent, taskListToolbarEvent } from './patrolPath'
 import { recordPathPoints, recordPathToolbarEvent } from './record'
+import { roadnetPathSaveEvent, roadnetPathToolbarEvent } from './roadnet'
 import { taskPointToolbarEvent } from './taskPoint'
 import { missionTemplateId, saveTemplateToolbarEvent, searchTemplateToolbarEvent } from './template'
 // import { carSpeed } from '@/composables'
@@ -109,6 +110,19 @@ export const toolbarItems = [
   {
     title: i18n.global.t('qing-kong'),
     event: () => clearToolbarEvent()
+  },
+  {
+    title: i18n.global.t('lu-wang'),
+    subItems: [
+      {
+        title: i18n.global.t('xuan-ze-lu-xian'),
+        event: () => roadnetPathToolbarEvent()
+      },
+      {
+        title: i18n.global.t('bao-cun-lu-wang'),
+        event: () => roadnetPathSaveEvent()
+      }
+    ]
   },
   {
     title: i18n.global.t('che-liang-fan-hang'),
