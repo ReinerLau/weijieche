@@ -24,6 +24,5 @@ const { t } = useI18n()
 async function getList() {
   const { data } = await getCarList('patroling')
   carList.value = data || []
-  console.log(carList.value)
 }
 </script>

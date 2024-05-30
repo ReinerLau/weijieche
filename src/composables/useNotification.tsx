@@ -52,6 +52,7 @@ const messageBox = ref<any>(null)
 
 export const handleAlarmAction = async (data: websocketData, mode: Mode) => {
   let type
+  alarmMarkerLayer.clear()
   if (data.message === '人员入侵') {
     type = Type.PERSON
   } else if (data.message === '铁丝网破孔') {
@@ -100,7 +101,9 @@ export const useNotification = () => {
           title: t('jing-bao'),
           dangerouslyUseHTMLString: true,
           duration: 300000,
-          onClose: () => {},
+          onClose: () => {
+            alarmMarkerLayer.clear()
+          },
           message: h('div', [
             h('div', { style: 'display: flex; justify-content: space-between;' }, [
               h('p', {}, message),
