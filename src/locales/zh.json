@@ -370,5 +370,9 @@
   "jian-ting-yi-ti-ji-shu-ju-lian-jie-cuo-wu": "监听一体机数据连接错误",
   "dang-qian-yin-le-zhuang-tai": "当前音乐状态",
   "yin-le-lie-biao": "音乐列表",
-  "che-su": "车速"
+  "che-su": "车速",
+  "lu-wang": "路网",
+  "xuan-ze-lu-xian": "选择路线",
+  "xuan-ze-lu-wang": "选择路网",
+  "bao-cun-lu-wang": "保存路网"
 }
