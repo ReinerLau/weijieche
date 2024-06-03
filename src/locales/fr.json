@@ -364,5 +364,15 @@
   "zi-dong-jia-shi-mo-shi": "Mode pilote automatique",
   "qu-niao": "Conduire les oiseaux",
   "dong-zuo-sao-miao": "analyse de mouvement",
-  "qiang-zhi-jie-shu": "Fin forcée"
+  "qiang-zhi-jie-shu": "Fin forcée",
+  "bao-cun-lu-wang": "Sauver le réseau routier",
+  "che-su": "vitesse",
+  "dang-qian-yin-le-zhuang-tai": "Statut actuel de la musique",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cheng-gong": "La connexion de données de la machine de surveillance tout-en-un est réussie",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cuo-wu": "Erreur de connexion aux données de la machine de surveillance",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-duan-kai": "La connexion de données de la machine de surveillance est déconnectée",
+  "lu-wang": "Réseau routier",
+  "xuan-ze-lu-wang": "Sélectionnez un réseau routier",
+  "xuan-ze-lu-xian": "Choisissez un itinéraire",
+  "yin-le-lie-biao": "liste de musique"
 }

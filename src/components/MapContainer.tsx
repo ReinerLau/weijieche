@@ -21,6 +21,7 @@ import IconMdiSignalOff from '~icons/mdi/signal-off'
 
 import FileUploadDialog from '@/components/FileUploadDialog'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
+import RoadnetPathTableDialog from '@/components/RoadnetPathTableDialog.vue'
 import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import TemplateDialog from '@/components/TemplateDialog.vue'
@@ -37,6 +38,7 @@ import {
 } from '@/shared/map/carMarker'
 import { onMapDBClick } from '@/shared/map/debug'
 import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
+import { initRoadnetPathLayer } from '@/shared/map/roadnet'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
 import ShowAlarmMessageDialog from './ShowAlarmMessageDialog'
 
@@ -65,6 +67,7 @@ export default defineComponent({
       initMakerLayer()
       initAlarmMarkerLayer()
       initPathLayer()
+      initRoadnetPathLayer()
       initPatrolpathLayer()
       initAlarmPointLayer()
       initTaskPointLayer()
@@ -113,6 +116,7 @@ export default defineComponent({
         <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
         <TemplateDialog onConfirm={handleConfirm} />
         <TemplateSearchDialog />
+        <RoadnetPathTableDialog />
         <ScheduleDialog pointsdata={pathDataPoints} />
         <ScheduleSearchDialog />
         <PointSettingFormDialog />

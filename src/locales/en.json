@@ -364,5 +364,15 @@
   "zi-dong-jia-shi-mo-shi": "Autopilot mode",
   "qu-niao": "Drive birds",
   "dong-zuo-sao-miao": "motion scan",
-  "qiang-zhi-jie-shu": "Forced end"
+  "qiang-zhi-jie-shu": "Forced end",
+  "bao-cun-lu-wang": "Save road network",
+  "che-su": "speed",
+  "dang-qian-yin-le-zhuang-tai": "Current music status",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cheng-gong": "The data connection of the monitoring all-in-one machine is successful",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-cuo-wu": "Monitoring machine data connection error",
+  "jian-ting-yi-ti-ji-shu-ju-lian-jie-duan-kai": "The data connection of the monitoring machine is disconnected",
+  "lu-wang": "Road Network",
+  "xuan-ze-lu-wang": "Select a road network",
+  "xuan-ze-lu-xian": "Choose a route",
+  "yin-le-lie-biao": "music list"
 }
