@@ -70,11 +70,12 @@ export default defineComponent({
       initRoadnetPathLayer()
       initPatrolpathLayer()
       initAlarmPointLayer()
+      initTaskpathLayer()
       initTaskPointLayer()
       initDrawTool()
       initHomePath()
       initTaskPoints()
-      initTaskpathLayer()
+
       onMapDBClick()
     })
 
