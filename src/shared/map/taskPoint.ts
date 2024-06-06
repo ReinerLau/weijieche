@@ -104,8 +104,8 @@ export const initTaskPoints = async () => {
           // textName: index + 1,
           markerType: 'ellipse',
           markerFill: '#138C46',
-          markerWidth: 13,
-          markerHeight: 13
+          markerWidth: 15,
+          markerHeight: 15
         }
       })
         .on('click', (e: { target: Marker }) => {
@@ -126,8 +126,8 @@ export const taskPointDrawEndEvent = (e: { geometry: Marker }) => {
   taskPoint.setSymbol({
     markerType: 'ellipse',
     markerFill: '#138C46',
-    markerWidth: 13,
-    markerHeight: 13
+    markerWidth: 15,
+    markerHeight: 15
   })
   const pointCoordinates = {
     x: taskPoint.getCoordinates().y,

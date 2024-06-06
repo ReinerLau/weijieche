@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { templatePathPoints } from '@/shared/map/path'
 import {
+  currentSelectedPointIndex,
   handleConfirmPointCarConfig,
   pointConfigDrawerVisible,
-  pointSpeed,
-  pointCoordinates
+  pointCoordinates,
+  pointSpeed
 } from '@/shared/map/pointConfig'
 import { useI18n } from 'vue-i18n'
 
@@ -15,6 +17,11 @@ const { t } = useI18n()
 const handleConfirm = () => {
   handleConfirmPointCarConfig(pointSpeed.value)
   pointConfigDrawerVisible.value = false
+  if (templatePathPoints.value) {
+    templatePathPoints.value[currentSelectedPointIndex.value].updateSymbol({
+      textName: pointSpeed.value
+    })
+  }
 }
 </script>
 
