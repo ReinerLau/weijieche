@@ -87,8 +87,9 @@ export const pathPointDrawendEvent = (e: { geometry: Marker }) => {
       textName: pathPoints.length + 1,
       markerType: 'ellipse',
       markerFill: '#ff930e',
-      markerWidth: 13,
-      markerHeight: 13
+      markerWidth: 15,
+      markerHeight: 15,
+      textSize: 9
     })
     .on('click', (e: { target: Marker }) => {
       setEntryPoint(e.target)
@@ -191,10 +192,12 @@ export const getPoints = (coordinates: PointData[]) => {
   const pointMarkers = coordinates.map((coordinate, index) => {
     const pointMarker = new Marker([coordinate.y, coordinate.x], {
       symbol: {
+        textName: coordinate.speed,
         markerType: index === 0 ? 'diamond' : 'ellipse',
         markerFill: getMarkerFill(index, coordinates),
         markerWidth: 15,
-        markerHeight: 15
+        markerHeight: 15,
+        textSize: 9
       },
       draggable: true
     })
@@ -211,9 +214,10 @@ export const getPoints = (coordinates: PointData[]) => {
   return pointMarkers
 }
 
+export const templatePathPoints = ref<Marker[] | undefined>()
 export const initPath = (coordinates: PointData[]) => {
-  const pathPoints = getPoints(coordinates)
-  pathPoints.forEach((pathPoint) => {
+  templatePathPoints.value = getPoints(coordinates)
+  templatePathPoints.value.forEach((pathPoint) => {
     addPathPointToLayer(pathPoint)
   })
   setPointMenu()

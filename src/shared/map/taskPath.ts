@@ -47,19 +47,21 @@ export const taskPathPointArray: { x: number; y: number }[] = []
  * 任务开始后显示路线在地图上
  * @param route 路线数据
  */
-export const handleConfirmPatrolTaskPath = (route: { x: number; y: number }[]) => {
+export const handleConfirmPatrolTaskPath = (route: { x: number; y: number; speed: number }[]) => {
   taskPathPointArray.length = 0
   clearDrawTool()
   clearPathLayer()
   clearMenu()
-  const coordinates: number[][] = route.map((item) => [item.y, item.x])
+  const coordinates: number[][] = route.map((item) => [item.y, item.x, item.speed])
   coordinates.forEach((coordinate) => {
     const pathPoint = new Marker(coordinate, {
       symbol: {
+        textName: coordinate[2] ? coordinate[2] : '',
         markerType: 'ellipse',
         markerFill: '#F096BC',
-        markerWidth: 13,
-        markerHeight: 13
+        markerWidth: 15,
+        markerHeight: 15,
+        testSize: 9
       }
     })
 
