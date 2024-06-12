@@ -1,7 +1,7 @@
-import { useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
 import { ElButton, ElTooltip } from 'element-plus'
-import MdiHistory from '~icons/mdi/history'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 // 首页分析相关
 export const useHistory = () => {
@@ -17,7 +17,7 @@ export const useHistory = () => {
   const HistoryController = () => (
     <ElTooltip content={t('shou-ye-fen-xi')}>
       <ElButton link onClick={() => jumpHistory()} class="mx-3">
-        <MdiHistory />
+        <Icon icon="mdi:history"></Icon>
       </ElButton>
     </ElTooltip>
   )

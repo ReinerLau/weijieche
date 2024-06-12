@@ -4,9 +4,7 @@ import { ref, type Ref } from 'vue'
 import { initMap } from './map/base'
 import { initDrawTool } from './map/drawTool'
 
-export const carList = ref<
-  { id: number; code: string; name: string; status: number; battery: number }[]
->([])
+export const carList = ref<{ id: number; code: string; name: string; status: string }[]>([])
 
 /**
  * 当前选择的车辆编号
@@ -79,10 +77,8 @@ export const currentController = ref('')
  */
 export const currentControllerType = ref('')
 
-/**
- * 控制按过的按键
- */
 export const pressedButtons = ref(0)
+export const pressedTopButton = ref(0)
 
 /**
  * 所有控制器类型

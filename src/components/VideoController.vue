@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { cameraList, cameraUrl } from '@/shared'
-import { useI18n } from 'vue-i18n'
-import CamerPlayer from '@/components/CameraPlayer.vue'
-import { ref, watch } from 'vue'
 import { openStream } from '@/api'
+import CamerPlayer from '@/components/CameraPlayer.vue'
+import { cameraList, cameraUrl } from '@/shared'
 import type { CameraPlayerInstance } from '@/types/components'
+import { Icon } from '@iconify/vue'
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 /**
  * 已选择的 rstp 地址
@@ -59,7 +60,7 @@ const cameraRef = ref<CameraPlayerInstance>()
           />
         </el-select>
         <el-button size="large" @click="onRefresh">
-          <i-vaadin-time-backward />
+          <Icon icon="vaadin:time-backward"></Icon>
         </el-button>
       </div>
       <CamerPlayer ref="cameraRef" :url="cameraUrl"></CamerPlayer>

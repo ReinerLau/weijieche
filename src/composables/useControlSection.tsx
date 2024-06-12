@@ -3,14 +3,14 @@ import { currentCar, haveCurrentCar, mode } from '@/shared'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-export const carMode = ref('')
-// 顶部操控相关
 
 enum modeKey {
   STOP = 'STOP',
   AUTO = 'AUTO',
   MANUAL = 'MANUAL'
 }
+
+export const carMode = ref<modeKey>(modeKey.STOP)
 
 export const useControlSection = () => {
   // 国际化
@@ -43,8 +43,8 @@ export const useControlSection = () => {
   //   }
   // }
 
-  async function setMode(type: keyof typeof mode) {
-    carMode.value = ''
+  async function setMode(type: modeKey) {
+    carMode.value = modeKey.STOP
     if (haveCurrentCar()) {
       await patrolingSetMode(currentCar.value, mode[type])
       ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })

@@ -169,6 +169,9 @@ export const handleSaveHomePath = async () => {
  * 开始新建返航路线
  */
 export const handleCreateHomePath = (firstPoint?: Marker) => {
+  if (homePathDrawLayer) {
+    clearDrawingHomePath()
+  }
   initHomePathDrawLayer()
   drawTool.setMode('Point')
   drawTool.setSymbol({

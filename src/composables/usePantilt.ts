@@ -3,19 +3,23 @@ import { currentCar, haveCurrentCar } from '@/shared'
 import { ref, watch } from 'vue'
 
 // 不同功能映射值
-enum keyMap {
-  UP = 8,
-  LEFT = 4,
-  STOP = 255,
-  RIGHT = 2,
-  DOWN = 16,
-  RECALL = 0
-}
 enum Type {
-  DIRECTION = 5,
-  RECALL = 6
+  STOP = 0,
+  UP = 3,
+  LEFT = 2,
+  RIGHT = 1,
+  DOWN = 4,
+  RESET = 6,
+  RECALL = 7,
+  INITIAL = 9
 }
+export const horizonSpeed = ref(5)
 
+export const verticalSpeed = ref(5)
+// 水平角度
+export const horizonAngle = ref(0)
+// 垂直角度
+export const verticalAngle = ref(0)
 export const usePantilt = () => {
   const pantiltX = ref(2048)
   const pantiltY = ref(2048)
@@ -30,10 +34,10 @@ export const usePantilt = () => {
   const startUpdateX = () => {
     if (pantiltX.value === 0) {
       // updateLeft()
-      onClickPantilt(Type.DIRECTION, keyMap.LEFT)
+      onClickPantilt(Type.LEFT, horizonSpeed.value)
     } else if (pantiltX.value === 4095) {
       // updateRight()
-      onClickPantilt(Type.DIRECTION, keyMap.RIGHT)
+      onClickPantilt(Type.RIGHT, horizonSpeed.value)
     } else {
       // cancelAnimationFrame(raf)
       return
@@ -44,10 +48,10 @@ export const usePantilt = () => {
   const startUpdateY = () => {
     if (pantiltY.value === 0) {
       // updateDown()
-      onClickPantilt(Type.DIRECTION, keyMap.DOWN)
+      onClickPantilt(Type.DOWN, verticalSpeed.value)
     } else if (pantiltY.value === 4095) {
       // updateUp()
-      onClickPantilt(Type.DIRECTION, keyMap.UP)
+      onClickPantilt(Type.UP, verticalSpeed.value)
     } else {
       // cancelAnimationFrame(raf)
       return
@@ -59,14 +63,21 @@ export const usePantilt = () => {
 
   watch(pantiltY, startUpdateY)
 
-  function onClickPantilt(param2: number, param3: keyMap) {
+  function onClickPantilt(param2: number, param3?: string | number) {
     if (haveCurrentCar()) {
+      if (param2 === Type.RESET) {
+        horizonAngle.value = 0
+        verticalAngle.value = -20
+      } else if (param2 === Type.RECALL) {
+        horizonAngle.value = 0
+        verticalAngle.value = 0
+      }
       const data = {
         code: currentCar.value,
-        param1: 6,
+        param1: 3,
         param2,
         param3,
-        param4: 0
+        param4: 255
       }
       patrolingCruise(data)
     }
@@ -74,9 +85,12 @@ export const usePantilt = () => {
 
   return {
     onClickPantilt,
-    keyMap,
     Type,
     pantiltX,
-    pantiltY
+    pantiltY,
+    horizonSpeed,
+    verticalSpeed,
+    horizonAngle,
+    verticalAngle
   }
 }

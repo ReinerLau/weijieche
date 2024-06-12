@@ -1,8 +1,8 @@
-import { useRouter } from 'vue-router'
-import { ElButton, ElTooltip } from 'element-plus'
-import ExitFill from '~icons/mingcute/exit-fill'
-import { useI18n } from 'vue-i18n'
 import { setCookie, setToken } from '@/utils'
+import { Icon } from '@iconify/vue'
+import { ElButton, ElTooltip } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 // 首页分析相关
 export const useLogout = () => {
@@ -23,7 +23,7 @@ export const useLogout = () => {
   const LogoutController = () => (
     <ElTooltip content={t('tui-chu-deng-lu')}>
       <ElButton link onClick={() => handleLogout()}>
-        <ExitFill />
+        <Icon icon="mingcute:exit-full"></Icon>
       </ElButton>
     </ElTooltip>
   )

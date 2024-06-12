@@ -1,16 +1,16 @@
 <template>
-  <div class="mb-7">{{ t('quan-ping-hua-mian-qie-huan') }}</div>
+  <div class="mb-7">{{ t('quan-jing-kong-zhi') }}</div>
   <div class="flex justify-center mb-2">
     <el-row class="w-48">
       <el-col :span="8" :offset="8">
         <el-button size="large" class="w-full" @click="onClick(keyMap.UP)">
-          <i-bxs-up-arrow />
+          <Icon icon="bxs:up-arrow"></Icon>
         </el-button>
       </el-col>
       <el-row class="w-full">
         <el-col :span="8">
           <el-button size="large" class="w-full" @click="onClick(keyMap.LEFT)">
-            <i-bxs-left-arrow />
+            <Icon icon="bxs:left-arrow"></Icon>
           </el-button>
         </el-col>
         <el-col :span="8">
@@ -20,13 +20,13 @@
         </el-col>
         <el-col :span="8">
           <el-button size="large" class="w-full" @click="onClick(keyMap.RIGHT)">
-            <i-bxs-right-arrow />
+            <Icon icon="bxs:right-arrow"></Icon>
           </el-button>
         </el-col>
       </el-row>
       <el-col :span="8" :offset="8">
         <el-button size="large" class="w-full" @click="onClick(keyMap.DOWN)">
-          <i-bxs-down-arrow />
+          <Icon icon="bxs:down-arrow"></Icon>
         </el-button>
       </el-col>
     </el-row>
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
+import { Icon } from '@iconify/vue'
 import { useI18n } from 'vue-i18n'
 
 // 国际化
@@ -74,7 +75,7 @@ async function onClick(value: string | number) {
   if (haveCurrentCar()) {
     const data = {
       code: currentCar.value,
-      param1: 8,
+      param1: 2,
       param2: value,
       param3: 0,
       param4: 0

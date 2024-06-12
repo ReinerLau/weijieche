@@ -17,10 +17,10 @@ import { initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import { handleConfirm } from '@/shared/map/template'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import IconMdiSignalOff from '~icons/mdi/signal-off'
 
 import FileUploadDialog from '@/components/FileUploadDialog.vue'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
+import RoadnetPathTableDialog from '@/components/RoadnetPathTableDialog.vue'
 import ScheduleDialog from '@/components/ScheduleDialog'
 import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import TemplateDialog from '@/components/TemplateDialog.vue'
@@ -37,7 +37,9 @@ import {
 } from '@/shared/map/carMarker'
 import { onMapDBClick } from '@/shared/map/debug'
 import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
+import { initRoadnetPathLayer } from '@/shared/map/roadnet'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
+import { Icon } from '@iconify/vue'
 import ShowAlarmMessageDialog from './ShowAlarmMessageDialog'
 
 export default defineComponent({
@@ -65,13 +67,15 @@ export default defineComponent({
       initMakerLayer()
       initAlarmMarkerLayer()
       initPathLayer()
+      initRoadnetPathLayer()
       initPatrolpathLayer()
       initAlarmPointLayer()
+      initTaskpathLayer()
       initTaskPointLayer()
       initDrawTool()
       initHomePath()
       initTaskPoints()
-      initTaskpathLayer()
+
       onMapDBClick()
     })
 
@@ -107,12 +111,13 @@ export default defineComponent({
         <RecordPointCount class="absolute top-24 right-5 z-10"></RecordPointCount>
         <DebugController class="absolute bottom-5 right-5 z-10" />
         {!isConnectedWS.value && (
-          <IconMdiSignalOff class="absolute left-5 top-5 z-10 text-red-600" />
+          <Icon icon="mdi:signal-off" class="absolute left-5 top-5 z-10 text-red-600" />
         )}
         <div class="h-full" ref={mapRef}></div>
         <VideoController class="absolute top-5 left-1 z-10" isMobile={props.isMobile} />
         <TemplateDialog onConfirm={handleConfirm} />
         <TemplateSearchDialog />
+        <RoadnetPathTableDialog />
         <ScheduleDialog pointsdata={pathDataPoints} />
         <ScheduleSearchDialog />
         <PointSettingFormDialog />

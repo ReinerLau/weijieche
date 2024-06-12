@@ -55,7 +55,7 @@ export default defineComponent({
             <ElUpload
               ref={uploadRef}
               headers={{ Authorization: getToken() }}
-              action={`http://${window.location.host}/api/vehicle-task/v1/plan/parse`}
+              action={`https://${window.location.host}/api/vehicle-task/v1/plan/parse`}
               limit={1}
               auto-upload={false}
               on-success={handleSuccess}

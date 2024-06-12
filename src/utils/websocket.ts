@@ -16,7 +16,8 @@ export function initWebSocket(
   }
 ) {
   const token = getToken()
-  const websocket = new WebSocket(`ws://${window.location.host}${url}`, [token!])
+  const wsurl = import.meta.env.MODE === 'production' ? 'wss' : 'ws'
+  const websocket = new WebSocket(`${wsurl}://${window.location.host}${url}`, [token!])
   websocket.onmessage = onmessage
   websocket.onopen = onopen || null
   websocket.onclose = onclose || null

@@ -1,18 +1,20 @@
-import { patrolingCruise, playAudioById } from '@/api'
+import { patrolingCruise } from '@/api'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { ref } from 'vue'
+import { birStatus } from './useUpperControl'
 
 const disperseMode = ref(false)
+const talkBack = ref(false)
 export const useBirdAway = () => {
   function controlLaser() {
     disperseMode.value = !disperseMode.value
     if (haveCurrentCar()) {
       const data = {
         code: currentCar.value,
-        param1: '01',
-        param2: disperseMode.value ? '01' : '00',
-        param3: 255,
-        param4: 'ff'
+        param1: 7,
+        param2: 1,
+        param3: disperseMode.value ? 6 : 7,
+        param4: 255
       }
       patrolingCruise(data)
     } else {
@@ -20,26 +22,55 @@ export const useBirdAway = () => {
     }
   }
 
-  async function onClickBirdAway(value: string) {
+  function handleTalkBack() {
+    talkBack.value = !talkBack.value
     if (haveCurrentCar()) {
-      if (value === '9' || value === '10') {
-        playAudioById(parseInt(value))
-      } else {
-        const data = {
-          code: currentCar.value,
-          param1: '05',
-          param2: value,
-          param3: '0',
-          param4: '0'
-        }
-        patrolingCruise(data)
+      const data = {
+        code: currentCar.value,
+        param1: 5,
+        param2: talkBack.value ? 1 : 2,
+        param3: 255,
+        param4: 255
       }
+      patrolingCruise(data)
+    } else {
+      disperseMode.value = false
+    }
+  }
+
+  async function onClickBirdAway(value: number) {
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: 6,
+        param2: value,
+        param3: 255,
+        param4: 255
+      }
+      patrolingCruise(data)
+    }
+  }
+
+  async function onClickBirdStatus() {
+    if (haveCurrentCar()) {
+      const data = {
+        code: currentCar.value,
+        param1: 6,
+        param2: 4,
+        param3: 255,
+        param4: 255
+      }
+      await patrolingCruise(data)
+      console.log(birStatus.value)
     }
   }
 
   return {
     disperseMode,
     controlLaser,
-    onClickBirdAway
+    onClickBirdAway,
+    handleTalkBack,
+    talkBack,
+    onClickBirdStatus
   }
 }

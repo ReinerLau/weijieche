@@ -1,8 +1,12 @@
 import { connectCar } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
+import ActionScanning from '@/components/ActionScanning.vue'
+import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
 import CarSelector from '@/components/CarSelector.vue'
 import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
+import LightControl from '@/components/LightControl.vue'
+import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
 import { carList, currentCar, haveCurrentCar } from '@/shared'
 import {
@@ -19,16 +23,10 @@ import type { Ref } from 'vue'
 import { Fragment, computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCarStatus } from './useCarStatus'
-import {
-  alarmLight,
-  autoLight,
-  controlLight,
-  handleAlarmLight,
-  highLight,
-  lightModes,
-  lowLight
-} from './usePantiltControl'
-
+import { alarmLight, controlLight, handleAlarmLight } from './usePantiltControl'
+import { birStatus, lightStatus, musicList, musicMessage, useUpperControl } from './useUpperControl'
+// 抽屉是否可见
+export const carSettingDrawerVisible = ref(false)
 // 选择车左边抽屉相关
 export const useCarRelevant = ({
   isConfig,
@@ -44,19 +42,22 @@ export const useCarRelevant = ({
 }) => {
   // 国际化
   const { t } = useI18n()
-
-  // 抽屉是否可见
-  const carSettingDrawerVisible = ref(false)
-
+  const { isOpenFeedback } = useUpperControl()
   // 当前车辆状态
   const currentCarStatus = () => {
-    return carList.value.find((item) => item.code === currentCar.value)?.status === 1 ? '✅' : '🚫'
+    return carList.value.find((item) => item.code === currentCar.value)?.status === '1'
+      ? '✅'
+      : '🚫'
   }
 
   // 当前车辆电量
-  const currentCarBattery = () => {
-    return carList.value.find((item) => item.code === currentCar.value)?.battery
-  }
+  // const currentCarBattery = () => {
+  //   return carList.value.find((item) => item.code === currentCar.value)?.battery
+  // }
+
+  // const currentCarSpeed = () => {
+  //   return carList.value.find((item) => item.code === currentCar.value)?.speed
+  // }
 
   //是否断开连接
   const isConnection = ref(false)
@@ -81,9 +82,8 @@ export const useCarRelevant = ({
     }
   })
 
-  const { NewCurrentCarStatus, NewCurrentCarBattery } = useCarStatus(
-    currentCarStatus(),
-    currentCarBattery()
+  const { NewCurrentCarStatus, NewCurrentCarBattery, NewCurrentCarSpeed } = useCarStatus(
+    currentCarStatus()
   )
 
   // 监听切换车辆后重新激活车辆
@@ -98,24 +98,21 @@ export const useCarRelevant = ({
     event?: (value: any) => any
   }
 
-  // 激光发散器是否开启
-  // const disperseMode = ref(false)
+  // 近灯是否开启
+  const lowLight = ref(false)
 
-  // 切换激光发散器
-  // function controlLaser(value: boolean) {
-  //   if (haveCurrentCar()) {
-  //     const data = {
-  //       code: currentCar.value,
-  //       param1: '01',
-  //       param2: value ? '01' : '00',
-  //       param3: 255,
-  //       param4: 'ff'
-  //     }
-  //     patrolingCruise(data)
-  //   } else {
-  //     disperseMode.value = false
-  //   }
-  // }
+  // 远灯是否开启
+  const highLight = ref(false)
+
+  //自动灯是否开启
+  const autoLight = ref(false)
+
+  // 近远灯映射值
+  const lightModes = {
+    HIGHBEAM: '01',
+    LOWBEAM: '02',
+    AUTOBEAM: '03'
+  }
 
   // 切换按钮组
   const switchGroup = computed<SwitchGroup[]>(() => [
@@ -160,7 +157,7 @@ export const useCarRelevant = ({
    */
   const Switchs = () => (
     <Fragment>
-      <div class="mb-7">{t('deng-guang-kong-zhi')}</div>
+      <div class="mb-7">{t('che-deng-kong-zhi')}</div>
       <ElRow gutter={24} class="w-full">
         {switchGroup.value.map((item) => (
           <ElCol xs={24} sm={12}>
@@ -187,21 +184,37 @@ export const useCarRelevant = ({
       v-model={carSettingDrawerVisible.value}
       direction="rtl"
       size="40%"
+      onClose={closeDrawer}
     >
       <ElScrollbar>
         <div class="w-full px-5">
           <Switchs />
           <ElDivider />
+          <AlarmLightControl />
+          <ElDivider />
+          <FrameSwitchOver />
+          <ElDivider />
           <PantiltControl />
+          <ElDivider />
+          <MusicControl />
           <ElDivider />
           <BirdAwayControl />
           <ElDivider />
-          <FrameSwitchOver />
+          <LightControl />
+          <ElDivider />
+          <ActionScanning />
         </div>
       </ElScrollbar>
     </ElDrawer>
   )
 
+  function closeDrawer() {
+    isOpenFeedback.value = false
+    musicMessage.value = {}
+    musicList.value = []
+    birStatus.value = ''
+    lightStatus.value = ''
+  }
   // 车辆抽屉是否可见组件
   const CarRelevantController = () => (
     <div class="flex items-center">
@@ -218,11 +231,15 @@ export const useCarRelevant = ({
       <span class="text-sm mr-4">
         {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
       </span>
+      <span class="text-sm mr-4">
+        {t('che-su')}: {NewCurrentCarSpeed.value || 0}m/s
+      </span>
       <ElButton
         class="mr-4"
         size="small"
         onClick={() => {
           carSettingDrawerVisible.value = true
+          isOpenFeedback.value = true
         }}
       >
         {t('shang-zhuang-kong-zhi')}
@@ -253,6 +270,7 @@ export const useCarRelevant = ({
 
   return {
     CarRelevantDrawer,
-    CarRelevantController
+    CarRelevantController,
+    carSettingDrawerVisible
   }
 }

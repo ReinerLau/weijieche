@@ -3,6 +3,7 @@ import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import { i18n, initWebSocket } from '@/utils'
+import { Icon } from '@iconify/vue'
 import { useVirtualList } from '@vueuse/core'
 import type { TabPaneName } from 'element-plus'
 import {
@@ -20,7 +21,6 @@ import { Marker } from 'maptalks'
 import type { Ref } from 'vue'
 import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconMdiBellOutline from '~icons/mdi/bell-outline'
 
 export interface websocketData {
   id?: string
@@ -52,6 +52,7 @@ const messageBox = ref<any>(null)
 
 export const handleAlarmAction = async (data: websocketData, mode: Mode) => {
   let type
+  alarmMarkerLayer.clear()
   if (data.message === '人员入侵') {
     type = Type.PERSON
   } else if (data.message === '铁丝网破孔') {
@@ -100,7 +101,9 @@ export const useNotification = () => {
           title: t('jing-bao'),
           dangerouslyUseHTMLString: true,
           duration: 300000,
-          onClose: () => {},
+          onClose: () => {
+            alarmMarkerLayer.clear()
+          },
           message: h('div', [
             h('div', { style: 'display: flex; justify-content: space-between;' }, [
               h('p', {}, message),
@@ -369,7 +372,7 @@ export const useNotification = () => {
     <Fragment>
       <ElTooltip content={t('tong-zhi')}>
         <ElButton link onClick={() => (notificationDrawerVisible.value = true)} class="ml-3">
-          <IconMdiBellOutline />
+          <Icon icon="mdi:bell-outline" />
         </ElButton>
       </ElTooltip>
 
