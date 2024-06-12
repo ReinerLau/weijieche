@@ -12,4 +12,13 @@ describe('当前车辆', () => {
 
     expect(carStore.currentCar).toBeNull()
   })
+
+  it('切换车辆', () => {
+    const newCarCode = '123'
+    const carStore = useCarStore()
+
+    carStore.setCurrentCar(newCarCode)
+
+    expect(carStore.currentCar).toBe(newCarCode)
+  })
 })
