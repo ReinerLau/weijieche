@@ -36,7 +36,7 @@ export const addTaskPointToLayer = (taskPoint: Marker) => {
  */
 export const pointSettingDialogVisible = ref(false)
 
-export const taskPoint = ref<(() => void) | null>(null)
+export const taskPointVoid = ref<(() => void) | null>(null)
 
 export const pointCoordinates: Ref<string> = ref('')
 
@@ -48,7 +48,6 @@ export const getList = async () => {
 //处理添加/编辑
 export const handleTaskEvent = (c: any, callback: () => void) => {
   pointCoordinates.value = ''
-  taskPoint.value = () => {}
   pointSettingDialogVisible.value = true
   if (c.id) {
     pointCoordinates.value = c.gps
@@ -62,7 +61,7 @@ export const handleTaskEvent = (c: any, callback: () => void) => {
   } else {
     pointCoordinates.value = c
   }
-  taskPoint.value = callback
+  taskPointVoid.value = callback
 }
 
 //删除

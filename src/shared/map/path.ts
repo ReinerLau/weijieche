@@ -108,69 +108,82 @@ export const drawPathToolbarEvent = () => {
   }
 }
 
-const setDrawPathMenu = () => {
-  clearMenu()
-  map.setMenuItems([
-    {
-      item: i18n.global.t('jie-shu'),
-      click: () => {
-        clearDrawTool()
-        pathPointsData.value = getLineCoordinates(pathPoints)
-        if (pathPoints.length > 0) {
-          setDrawEndMenu()
-        } else {
-          clearMenu()
-        }
-        setPointMenu()
-      }
-    }
-  ])
+export const endDrawPath = () => {
+  clearDrawTool()
+  pathPointsData.value = getLineCoordinates(pathPoints)
+  if (pathPoints.length > 0) {
+    setDrawEndMenu()
+  } else {
+    clearMenu()
+  }
+  setPointMenu()
 }
 
+export const pathMenu = [
+  {
+    item: i18n.global.t('jie-shu'),
+    click: endDrawPath
+  }
+]
+
+const setDrawPathMenu = () => {
+  clearMenu()
+  map.setMenuItems(pathMenu)
+}
+
+const addTaskPoint = (pathPoint: any) => {
+  const pointCoordinates = {
+    x: pathPoint.getCoordinates().y,
+    y: pathPoint.getCoordinates().x
+  }
+  handleTaskEvent(JSON.stringify(pointCoordinates), () => {
+    pathLayer.addGeometry(pathPoint)
+    clearDrawTool()
+    initTaskPoints()
+  })
+}
+
+export const getPointMenuItems = (pathPoint: Marker, index: number) => {
+  return [
+    {
+      item: i18n.global.t('xin-zeng-ren-wu-dian'),
+      click: () => {
+        addTaskPoint(pathPoint)
+      }
+    },
+    {
+      item: i18n.global.t('tian-jia-fan-hang-dian'),
+      click: () => {
+        handleCreateHomePath(pathPoint)
+      }
+    },
+    {
+      item: i18n.global.t('bian-ji-che-su'),
+      click: () => {
+        configCarSpeed(pathPoint, index)
+      }
+    }
+  ]
+}
 export const setPointMenu = () => {
   pathPoints.forEach((pathPoint, index) => {
-    const pointMenuItems = [
-      {
-        item: i18n.global.t('xin-zeng-ren-wu-dian'),
-        click: () => {
-          const pointCoordinates = {
-            x: pathPoint.getCoordinates().y,
-            y: pathPoint.getCoordinates().x
-          }
-          handleTaskEvent(JSON.stringify(pointCoordinates), () => {
-            pathLayer.addGeometry(pathPoint)
-            clearDrawTool()
-            initTaskPoints()
-          })
-        }
-      },
-      {
-        item: i18n.global.t('tian-jia-fan-hang-dian'),
-        click: () => {
-          handleCreateHomePath(pathPoint)
-        }
-      },
-      {
-        item: i18n.global.t('bian-ji-che-su'),
-        click: () => {
-          configCarSpeed(pathPoint, index)
-        }
-      }
-    ]
+    const pointMenuItems = getPointMenuItems(pathPoint, index)
     pathPoint.setMenuItems(pointMenuItems)
   })
 }
 
+export const clearPath = () => {
+  clearPathLayer()
+  clearMenu()
+}
+export const clearPathMenu = [
+  {
+    item: i18n.global.t('qing-kong'),
+    click: clearPath
+  }
+]
 export const setDrawEndMenu = () => {
-  map.setMenuItems([
-    {
-      item: i18n.global.t('qing-kong'),
-      click: () => {
-        clearPathLayer()
-        clearMenu()
-      }
-    }
-  ])
+  map.setMenuItems(clearPathMenu)
 }
 
 export const clearToolbarEvent = () => {

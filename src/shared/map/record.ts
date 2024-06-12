@@ -55,42 +55,49 @@ export const recordPathToolbarEvent = () => {
   }
 }
 
+const endRecordPath = () => {
+  clearMenu()
+  if (recordPathPoints.length > 1) {
+    clearStatus()
+    isRecord.value = false
+    ElMessage({
+      type: 'success',
+      message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
+    })
+    isRecordPath.value = true
+    templateDialogVisible.value = true
+  } else {
+    ElMessage({
+      type: 'warning',
+      message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
+    })
+    clearStatus()
+    isRecord.value = false
+    isRecordPath.value = false
+  }
+}
+
+export const recordMenu = [
+  {
+    item: i18n.global.t('jie-shu-lu-zhi'),
+    click: endRecordPath
+  }
+]
 export const allRecordSum = ref(0)
 
 const setRecordMenu = () => {
   clearMenu()
   map.setMenu({
     width: 'auto',
-    items: [
-      {
-        item: i18n.global.t('jie-shu-lu-zhi'),
-        click: () => {
-          clearMenu()
-          if (recordPathPoints.length > 1) {
-            clearStatus()
-            isRecord.value = false
-            ElMessage({
-              type: 'success',
-              message: i18n.global.t('yi-jie-shu-lu-zhi-qing-bao-cun-lu-xian')
-            })
-            isRecordPath.value = true
-            templateDialogVisible.value = true
-          } else {
-            ElMessage({
-              type: 'warning',
-              message: i18n.global.t('yi-jie-shu-lu-zhi-wei-cun-zai-lu-xian')
-            })
-            clearStatus()
-            isRecord.value = false
-            isRecordPath.value = false
-          }
-        }
-      }
-    ]
+    items: recordMenu
   })
 }
 
-let recordData: any = null
+export let recordData: any = null
+
+export const setRecordDataValue = (val: any) => {
+  recordData = val
+}
 
 export const initRecordPath = (data: CarInfo) => {
   allRecordSum.value++
@@ -117,8 +124,8 @@ export const filterRecordSum = computed(() => {
   return recordPath.value.length
 })
 
-const recordPath = ref<[number, number][]>([])
-function drawRecordPath(data: CarInfo) {
+export const recordPath = ref<[number, number][]>([])
+export function drawRecordPath(data: CarInfo) {
   if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])

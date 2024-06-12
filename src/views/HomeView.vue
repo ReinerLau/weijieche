@@ -13,10 +13,10 @@ import {
   useResponsive,
   useTheme
 } from '@/composables'
+import { detailDrawerVisible } from '@/composables/carDetail'
 import { cameraList, currentCar } from '@/shared'
 import { Icon } from '@iconify/vue'
 import { onMounted, watch } from 'vue'
-
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
 const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
@@ -35,7 +35,7 @@ onMounted(() => {
 })
 
 // 视频流地址切换
-const { DetailSection, detailDrawerVisible } = useDetail({ isMobile })
+const { DetailSection } = useDetail({ isMobile })
 const { HistoryController } = useHistory()
 const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()

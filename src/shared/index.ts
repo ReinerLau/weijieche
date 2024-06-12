@@ -1,6 +1,8 @@
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ref, type Ref } from 'vue'
+import { initMap } from './map/base'
+import { initDrawTool } from './map/drawTool'
 
 export const carList = ref<{ id: number; code: string; name: string; status: string }[]>([])
 
@@ -92,3 +94,10 @@ export const controllerTypes = ref({
  * 当前播放的视频拉流地址
  */
 export const cameraUrl = ref('')
+
+// 初始化测试（地图相关）
+export const initMapLayerTool = () => {
+  const mapEl = document.createElement('div')
+  initMap(mapEl)
+  initDrawTool()
+}

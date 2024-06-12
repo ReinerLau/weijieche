@@ -1,4 +1,3 @@
-import { getCarInfo } from '@/api'
 import CameraPlayer from '@/components/CameraPlayer.vue'
 import {
   baseModes,
@@ -7,7 +6,6 @@ import {
   currentCar,
   currentController,
   currentControllerType,
-  haveCurrentCar,
   modes
 } from '@/shared'
 import {
@@ -20,10 +18,10 @@ import {
   ElSelect
 } from 'element-plus'
 import type { Ref } from 'vue'
-import { Fragment, computed, ref, watch } from 'vue'
+import { Fragment, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { detailDrawerVisible, getDetailDrawer, statusData } from './carDetail'
 import { useController } from './useController'
-
 //默认车速变量
 // export const carSpeed = ref(0)
 
@@ -31,9 +29,6 @@ import { useController } from './useController'
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
   // 国际化
   const { t } = useI18n()
-
-  // 底部抽屉是否可见
-  const detailDrawerVisible = ref(false)
 
   // 车辆模式文字映射
   const modeText = {
@@ -373,33 +368,11 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     }
   ])
 
-  // 状态数据
-  const statusData: Ref<Record<string, any>> = ref({})
-  let intervalId: any
   // 每次打开底部抽屉重新获取数据
-  watch(detailDrawerVisible, async (value: boolean) => {
-    if (haveCurrentCar()) {
-      clearInterval(intervalId)
-      intervalId = null
-      updateData()
-      intervalId = setInterval(async () => {
-        updateData()
-      }, 1000)
-    }
-    if (!value) {
-      if (intervalId) {
-        // 抽屉关闭时停止定时获取数据
-        clearInterval(intervalId)
-        intervalId = null
-      }
-      return
-    }
+  watch(detailDrawerVisible, (value: boolean) => {
+    getDetailDrawer(value)
   })
 
-  async function updateData() {
-    const res = await getCarInfo(currentCar.value)
-    statusData.value = res.data
-  }
   // 视频监控区域组件
   const CameraSection = () =>
     cameraList.value.length === 0 ? null : (
@@ -453,7 +426,6 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     </ElDrawer>
   )
   return {
-    DetailSection,
-    detailDrawerVisible
+    DetailSection
   }
 }

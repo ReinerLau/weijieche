@@ -58,7 +58,7 @@
     <div class="flex-1 flex flex-col justify-around">
       <div class="flex items-center">
         <span class="mr-2">{{ t('shui-ping-jiao-du') }}</span>
-        <el-slider
+        <ElSlider
           v-model="horizonAngle"
           class="flex-1"
           :step="1"
@@ -70,7 +70,7 @@
       </div>
       <div class="flex items-center">
         <span class="mr-2">{{ t('chui-zhi-jiao-du') }}</span>
-        <el-slider
+        <ElSlider
           v-model="verticalAngle"
           class="flex-1"
           :step="1"

@@ -1,5 +1,5 @@
-import { ref } from 'vue'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { ref } from 'vue'
 import { map } from './base'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 
@@ -42,7 +42,5 @@ export const initRealPath = (data: CarInfo) => {
 
       realPathLayer.addGeometry(connectLine)
     }
-  } else {
-    return
   }
 }

@@ -7,8 +7,8 @@ import {
   pointCoordinates,
   pointSpeed
 } from '@/shared/map/pointConfig'
+import { ElButton, ElDrawer, ElForm, ElFormItem, ElInput, ElInputNumber } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-
 const { t } = useI18n()
 
 /**
@@ -26,26 +26,26 @@ const handleConfirm = () => {
 </script>
 
 <template>
-  <el-drawer
+  <ElDrawer
     :title="t('lu-xian-dian-gong-neng-she-zhi')"
     class="select-none"
     v-model="pointConfigDrawerVisible"
     size="50%"
   >
     <template #default>
-      <el-form :label-width="100">
-        <el-form-item :label="t('lu-xian-dian-zuo-biao')">
-          <el-input v-model="pointCoordinates" disabled />
-        </el-form-item>
-        <el-form-item :label="t('che-liang-su-du-ms')">
-          <el-input-number :min="0" v-model="pointSpeed" clearable />
-        </el-form-item>
-      </el-form>
+      <ElForm :label-width="100">
+        <ElFormItem :label="t('lu-xian-dian-zuo-biao')">
+          <ElInput v-model="pointCoordinates" disabled />
+        </ElFormItem>
+        <ElFormItem :label="t('che-liang-su-du-ms')">
+          <ElInputNumber :min="0" v-model="pointSpeed" clearable />
+        </ElFormItem>
+      </ElForm>
     </template>
     <template #footer>
-      <el-button size="large" type="primary" class="w-full" @click="handleConfirm">{{
+      <ElButton size="large" type="primary" class="w-full" @click="handleConfirm">{{
         t('que-ding')
-      }}</el-button>
+      }}</ElButton>
     </template>
-  </el-drawer>
+  </ElDrawer>
 </template>

@@ -3,7 +3,7 @@ import {
   form,
   pointCoordinates,
   pointSettingDialogVisible,
-  taskPoint
+  taskPointVoid
 } from '@/shared/map/taskPoint'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
@@ -153,8 +153,8 @@ export default defineComponent({
               res = await createPointTask(cameraAngleData)
             }
             //更新数据
-            if (typeof taskPoint.value === 'function') {
-              taskPoint.value()
+            if (typeof taskPointVoid.value === 'function') {
+              taskPointVoid.value()
             }
             ElMessage({ type: 'success', message: res.message })
             handleCancel()

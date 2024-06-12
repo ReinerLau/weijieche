@@ -2,6 +2,7 @@ import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ConnectorLine, LineString, Marker, VectorLayer } from 'maptalks'
+import { ref } from 'vue'
 import { currentCar, haveCurrentCar } from '..'
 import { clearMenu, map } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
@@ -36,12 +37,12 @@ export const initHomePathLayer = () => {
 /**
  * 绘制返航路线图层实例
  */
-let homePathDrawLayer: VectorLayer
+export let homePathDrawLayer: VectorLayer
 
 /**
  * 初始化绘制返航路线图层
  */
-const initHomePathDrawLayer = () => {
+export const initHomePathDrawLayer = () => {
   homePathDrawLayer = new VectorLayer('home-line')
   homePathDrawLayer.addTo(map)
 }
@@ -76,21 +77,28 @@ export const clearPreviewHomePath = () => {
   previewHomePath = null
 }
 
+export const homePaths = ref<{ id: number; enterGps: string; gps: string; mission: string }[]>([])
+
 /**
  * 初始化所有返航路线
  */
+export const setDelet = async (id: number) => {
+  await deleteHomePath(id)
+  ElMessage({ type: 'success', message: i18n.global.t('cao-zuo-cheng-gong') })
+  initHomePath()
+}
 export const initHomePath = async () => {
   homePathLayer.clear()
   const res = await getHomePath({ limit: 99999 })
-  const homePaths = res.data.list || []
-  homePaths.forEach((item: any) => {
+  homePaths.value = res.data.list || []
+
+  homePaths.value.forEach((item: any) => {
     const menuOptions = {
       items: [
         {
           item: i18n.global.t('shan-chu'),
-          click: async () => {
-            await deleteHomePath(item.id)
-            initHomePath()
+          click: () => {
+            setDelet(item.id)
           }
         }
       ]
@@ -146,6 +154,7 @@ export const handleSaveHomePath = async () => {
     }
     const res: any = await createHomePath(data)
     ElMessage({ type: 'success', message: res.message })
+
     clearDrawingHomePath()
     initHomePath()
   } else {
@@ -188,7 +197,7 @@ export const handleCreateHomePath = (firstPoint?: Marker) => {
   }
 }
 
-const homePathPoints: Marker[] = []
+export const homePathPoints: Marker[] = []
 
 /**
  * 返航路线绘制结束事件
@@ -237,27 +246,34 @@ export const startHomeToolbarEvent = async () => {
   }
 }
 
-export const setHomePathDrawingMenu = () => {
-  map.setMenuItems([
-    {
-      item: i18n.global.t('jie-shu'),
-      click: () => {
-        clearDrawTool()
-        setHomePathDrawendMenu()
-      }
+export const homePathDrawingMenu = [
+  {
+    item: i18n.global.t('jie-shu'),
+    click: () => {
+      clearDrawTool()
+      setHomePathDrawendMenu()
     }
-  ])
+  }
+]
+export const homePathDrawingMenuEvent = () => {
+  return homePathDrawingMenu
 }
 
+export const setHomePathDrawingMenu = () => {
+  map.setMenuItems(homePathDrawingMenu)
+}
+
+export const homePathDrawendMenu = [
+  {
+    item: i18n.global.t('qing-kong'),
+    click: clearDrawingHomePath
+  },
+  {
+    item: i18n.global.t('bao-cun-fan-hang-lu-xian'),
+    click: handleSaveHomePath
+  }
+]
+
 export const setHomePathDrawendMenu = () => {
-  map.setMenuItems([
-    {
-      item: i18n.global.t('qing-kong'),
-      click: clearDrawingHomePath
-    },
-    {
-      item: i18n.global.t('bao-cun-fan-hang-lu-xian'),
-      click: handleSaveHomePath
-    }
-  ])
+  map.setMenuItems(homePathDrawendMenu)
 }
