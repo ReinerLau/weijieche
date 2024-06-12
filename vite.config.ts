@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vitejs.dev/configk/
 export default defineConfig({
@@ -12,7 +13,8 @@ export default defineConfig({
       failOnWarning: true
     }),
     vue(),
-    vueJsx()
+    vueJsx(),
+    vueDevTools()
   ],
   resolve: {
     alias: {
