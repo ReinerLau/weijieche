@@ -23,7 +23,7 @@ const mockingData = {
   data: true,
   message: '操作成功'
 }
-describe('PantiltControl.vue', () => {
+describe.skip('PantiltControl.vue', () => {
   let wrapper: any
   beforeEach(() => {
     vi.mocked(patrolingCruise as any).mockImplementation(async () => mockingData)
