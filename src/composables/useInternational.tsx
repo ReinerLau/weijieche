@@ -2,7 +2,7 @@ import { setCookie } from '@/utils'
 import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElTooltip } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 // 图标查看 docs/图标引入.md
-import IconHeroiconsLanguage from '~icons/heroicons/language'
+import { Icon } from '@iconify/vue'
 
 // 国际化相关
 export const useInternational = () => {
@@ -21,7 +21,7 @@ export const useInternational = () => {
     <ElTooltip content={t('yu-yan')}>
       <ElDropdown onCommand={handleChange}>
         {{
-          default: () => <IconHeroiconsLanguage />,
+          default: () => <Icon icon="heroicons:language" />,
           dropdown: () => (
             <ElDropdownMenu>
               <ElDropdownItem

@@ -14,6 +14,7 @@ import {
   useTheme
 } from '@/composables'
 import { cameraList, currentCar } from '@/shared'
+import { Icon } from '@iconify/vue'
 import { onMounted, watch } from 'vue'
 
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
@@ -76,7 +77,7 @@ watch(currentCar, async () => {
               <MapContainer :isMobile="isMobile" />
             </div>
             <el-button class="w-full" size="large" @click="detailDrawerVisible = true">
-              <i-mdi-arrow-drop-up class="text-3xl" />
+              <Icon icon="mdi:arrow-drop-up" class="text-3xl" />
             </el-button>
           </div>
         </div>
