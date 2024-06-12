@@ -3,6 +3,7 @@ import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
 import { currentCar, haveCurrentCar } from '@/shared'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import { i18n, initWebSocket } from '@/utils'
+import { Icon } from '@iconify/vue'
 import { useVirtualList } from '@vueuse/core'
 import type { TabPaneName } from 'element-plus'
 import {
@@ -20,7 +21,6 @@ import { Marker } from 'maptalks'
 import type { Ref } from 'vue'
 import { Fragment, h, onBeforeUnmount, onMounted, ref, resolveComponent, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import IconMdiBellOutline from '~icons/mdi/bell-outline'
 
 export interface websocketData {
   id?: string
@@ -372,7 +372,7 @@ export const useNotification = () => {
     <Fragment>
       <ElTooltip content={t('tong-zhi')}>
         <ElButton link onClick={() => (notificationDrawerVisible.value = true)} class="ml-3">
-          <IconMdiBellOutline />
+          <Icon icon="mdi:bell-outline" />
         </ElButton>
       </ElTooltip>
 
