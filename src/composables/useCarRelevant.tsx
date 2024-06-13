@@ -8,7 +8,8 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import LightControl from '@/components/LightControl.vue'
 import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { carList, currentCar, haveCurrentCar } from '@/shared'
+import { currentCar, haveCurrentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import {
   ElButton,
   ElCol,
@@ -43,9 +44,10 @@ export const useCarRelevant = ({
   // 国际化
   const { t } = useI18n()
   const { isOpenFeedback } = useUpperControl()
+  const carStore = useCarStore()
   // 当前车辆状态
   const currentCarStatus = () => {
-    return carList.value.find((item) => item.code === currentCar.value)?.status === '1'
+    return carStore.carList.find((item) => item.code === currentCar.value)?.status === '1'
       ? '✅'
       : '🚫'
   }
