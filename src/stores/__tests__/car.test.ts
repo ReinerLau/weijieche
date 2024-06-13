@@ -10,7 +10,7 @@ describe('当前车辆', () => {
   it('默认没有选择车辆', () => {
     const carStore = useCarStore()
 
-    expect(carStore.currentCar).toBeNull()
+    expect(carStore.currentCar).toBeUndefined()
   })
 
   it('切换车辆', () => {

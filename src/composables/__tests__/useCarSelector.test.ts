@@ -1,0 +1,48 @@
+import { carList, currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
+import { createPinia, setActivePinia } from 'pinia'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { useCarSelector } from '../useCarSelector'
+
+describe('选择车辆', () => {
+  const getCarList = vi.hoisted(() => vi.fn())
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.mock('@/api/list', () => ({
+      getCarList
+    }))
+  })
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
+  it('切换车辆', () => {
+    const carCode = '123'
+    const { changeCar } = useCarSelector()
+    const carStore = useCarStore()
+
+    changeCar(carCode)
+
+    expect(carStore.currentCar).toBe(carCode)
+    expect(currentCar.value).toBe(carCode)
+  })
+
+  it('点开下拉框重新查询车辆列表', async () => {
+    const mockedData = [
+      {
+        id: 1,
+        code: '123',
+        name: 'test',
+        status: '0'
+      }
+    ]
+    getCarList.mockResolvedValue({
+      data: mockedData
+    })
+    const { visibleChange } = useCarSelector()
+
+    await visibleChange(true)
+
+    expect(carList.value).toEqual(mockedData)
+  })
+})
