@@ -1,5 +1,5 @@
 import { getCarList } from '@/api/list'
-import { carList, currentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
 
 export const useCarSelector = () => {
@@ -13,7 +13,6 @@ export const useCarSelector = () => {
   const visibleChange = async (visible: boolean) => {
     if (visible) {
       const { data } = await getCarList('patroling')
-      carList.value = data || []
       carStore.setCarList(data || [])
     }
   }

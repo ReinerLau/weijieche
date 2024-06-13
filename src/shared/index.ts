@@ -4,8 +4,6 @@ import { ref, type Ref } from 'vue'
 import { initMap } from './map/base'
 import { initDrawTool } from './map/drawTool'
 
-export const carList = ref<{ id: number; code: string; name: string; status: string }[]>([])
-
 /**
  * 当前选择的车辆编号
  */

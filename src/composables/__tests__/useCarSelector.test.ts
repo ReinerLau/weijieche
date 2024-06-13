@@ -1,4 +1,4 @@
-import { carList, currentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -45,6 +45,5 @@ describe('选择车辆', () => {
     await visibleChange(true)
 
     expect(carStore.carList).toEqual(mockedData)
-    expect(carList.value).toEqual(mockedData)
   })
 })
