@@ -1,5 +1,4 @@
-import { i18n } from '@/utils'
-import { ElMessage } from 'element-plus'
+import { useCarStore } from '@/stores/car'
 import { ref, type Ref } from 'vue'
 import { initMap } from './map/base'
 import { initDrawTool } from './map/drawTool'
@@ -14,12 +13,8 @@ export const currentCar = ref('')
  * @returns {boolean} true - 已选择车辆，false - 未选择车辆
  */
 export function haveCurrentCar(): boolean {
-  if (currentCar.value) {
-    return true
-  } else {
-    ElMessage({ type: 'error', message: i18n.global.t('qing-xuan-ze-che-liang') })
-    return false
-  }
+  const carStore = useCarStore()
+  return carStore.haveCurrentCar()
 }
 
 /**

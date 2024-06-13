@@ -1,13 +1,11 @@
 import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
-import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCarSelector } from '../useCarSelector'
 
 describe('选择车辆', () => {
   const getCarList = vi.hoisted(() => vi.fn())
   beforeEach(() => {
-    setActivePinia(createPinia())
     vi.mock('@/api/list', () => ({
       getCarList
     }))
