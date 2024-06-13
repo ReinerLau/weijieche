@@ -18,3 +18,10 @@ export interface Coordinate {
 export interface PointData extends Coordinate {
   speed: number
 }
+
+export interface Car {
+  id: number
+  code: string
+  name: string
+  status: string
+}

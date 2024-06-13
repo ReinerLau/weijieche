@@ -7,7 +7,7 @@
     class="mr-2"
     @change="changeCar"
   >
-    <ElOption v-for="item in carList" :key="item.id" :value="item.code">
+    <ElOption v-for="item in carStore.carList" :key="item.id" :value="item.code">
       <span>{{ item.name }}</span>
       <span>{{ item.status === '1' ? '✅' : '🚫' }}</span>
     </ElOption>
@@ -16,7 +16,6 @@
 
 <script setup lang="ts">
 import { useCarSelector } from '@/composables/useCarSelector'
-import { carList } from '@/shared'
 import { useCarStore } from '@/stores/car'
 import { ElOption, ElSelect } from 'element-plus'
 import { useI18n } from 'vue-i18n'

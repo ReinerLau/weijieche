@@ -21,4 +21,20 @@ describe('当前车辆', () => {
 
     expect(carStore.currentCar).toBe(newCarCode)
   })
+
+  it('获取车辆列表', () => {
+    const newCarList = [
+      {
+        id: 1,
+        code: '123',
+        name: 'test',
+        status: '0'
+      }
+    ]
+    const carStore = useCarStore()
+
+    carStore.setCarList(newCarList)
+
+    expect(carStore.carList).toEqual(newCarList)
+  })
 })

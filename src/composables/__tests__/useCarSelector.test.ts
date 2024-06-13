@@ -40,9 +40,11 @@ describe('选择车辆', () => {
       data: mockedData
     })
     const { visibleChange } = useCarSelector()
+    const carStore = useCarStore()
 
     await visibleChange(true)
 
+    expect(carStore.carList).toEqual(mockedData)
     expect(carList.value).toEqual(mockedData)
   })
 })

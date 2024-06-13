@@ -14,6 +14,7 @@ export const useCarSelector = () => {
     if (visible) {
       const { data } = await getCarList('patroling')
       carList.value = data || []
+      carStore.setCarList(data || [])
     }
   }
 
