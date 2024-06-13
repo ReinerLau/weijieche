@@ -1,3 +1,9 @@
-import CamerPlayer from '@/components/CameraPlayer.vue'
+import { ElDialog } from 'element-plus'
+import TestComponent from './components/TestComponent.vue'
 
-export type CameraPlayerInstance = InstanceType<typeof CamerPlayer>
+declare module '@vue/runtime-core' {
+  export interface GlobalComponents {
+    ElDialog: typeof ElDialog
+    TestComponent: typeof TestComponent
+  }
+}
