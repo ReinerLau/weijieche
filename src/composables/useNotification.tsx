@@ -1,6 +1,6 @@
 import { Mode, Type, fetchNotProcessAlarm, fetchTimeoutAlarm, postAlarmHandling } from '@/api'
 import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
 import { i18n, initWebSocket } from '@/utils'
 import { Icon } from '@iconify/vue'
@@ -278,15 +278,13 @@ export const useNotification = () => {
   }
 
   const activeNoProcessAlarm = async () => {
-    if (haveCurrentCar()) {
-      await postAlarmHandling({
-        code: currentCar.value,
-        mode: Mode.ACTIVE,
-        type: 1,
-        opencvRecordId: notProcessData.value?.id
-      })
-      getNotProcessAlarm()
-    }
+    await postAlarmHandling({
+      code: currentCar.value,
+      mode: Mode.ACTIVE,
+      type: 1,
+      opencvRecordId: notProcessData.value?.id
+    })
+    getNotProcessAlarm()
   }
 
   // 警报抽屉组件

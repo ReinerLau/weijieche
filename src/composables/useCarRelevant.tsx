@@ -8,7 +8,7 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import LightControl from '@/components/LightControl.vue'
 import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
 import {
   ElButton,
@@ -65,22 +65,18 @@ export const useCarRelevant = ({
   const isConnection = ref(false)
 
   watch(isConnection, async () => {
-    if (haveCurrentCar()) {
-      if (isConnection.value) {
-        await openCarWs(currentCar.value)
-        ElMessage({
-          type: 'success',
-          message: t('yi-lian-jie')
-        })
-      } else {
-        await offCarWs(currentCar.value)
-        ElMessage({
-          type: 'success',
-          message: t('yi-duan-kai-lian-jie')
-        })
-      }
+    if (isConnection.value) {
+      await openCarWs(currentCar.value)
+      ElMessage({
+        type: 'success',
+        message: t('yi-lian-jie')
+      })
     } else {
-      isConnection.value = false
+      await offCarWs(currentCar.value)
+      ElMessage({
+        type: 'success',
+        message: t('yi-duan-kai-lian-jie')
+      })
     }
   })
 

@@ -1,5 +1,5 @@
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { ref, watch } from 'vue'
 
 // 不同功能映射值
@@ -64,23 +64,21 @@ export const usePantilt = () => {
   watch(pantiltY, startUpdateY)
 
   function onClickPantilt(param2: number, param3?: string | number) {
-    if (haveCurrentCar()) {
-      if (param2 === Type.RESET) {
-        horizonAngle.value = 0
-        verticalAngle.value = -20
-      } else if (param2 === Type.RECALL) {
-        horizonAngle.value = 0
-        verticalAngle.value = 0
-      }
-      const data = {
-        code: currentCar.value,
-        param1: 3,
-        param2,
-        param3,
-        param4: 255
-      }
-      patrolingCruise(data)
+    if (param2 === Type.RESET) {
+      horizonAngle.value = 0
+      verticalAngle.value = -20
+    } else if (param2 === Type.RECALL) {
+      horizonAngle.value = 0
+      verticalAngle.value = 0
     }
+    const data = {
+      code: currentCar.value,
+      param1: 3,
+      param2,
+      param3,
+      param4: 255
+    }
+    patrolingCruise(data)
   }
 
   return {

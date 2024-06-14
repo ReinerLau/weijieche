@@ -32,12 +32,8 @@
 </template>
 
 <script setup lang="ts">
-// 驱鸟器控制
-// import { patrolingCruise } from '@/api/control'
 import { useBirdAway } from '@/composables/useBirdAway'
 import { birStatus } from '@/composables/useUpperControl'
-// import { isWsOpen } from '@/composables/useCarRelevant'
-// import { currentCar, haveCurrentCar } from '@/shared'
 import { useI18n } from 'vue-i18n'
 const { onClickBirdAway, handleTalkBack, talkBack, onClickBirdStatus } = useBirdAway()
 
@@ -62,36 +58,5 @@ const buttonList = [
     value: 5,
     content: t('bo-fang-yu-yin')
   }
-  // {
-  //   value: 4,
-  //   content: t('cha-xun-zhuang-tai')
-  // }
 ]
-
-// async function onClickStatus() {
-//   isWsOpen.value = false
-//   console.log(isWsOpen.value)
-//   if (haveCurrentCar()) {
-//     isWsOpen.value = true
-//     console.log(isWsOpen.value)
-
-//     const data = {
-//       code: currentCar.value,
-//       param1: 4,
-//       param2: 4,
-//       param3: 255,
-//       param4: 255
-//     }
-//     await patrolingCruise(data)
-//   }
-// }
-//指定音频播放
-// const audioValue = ref()
-
-// function changeAudio(val: number) {
-//   if (haveCurrentCar()) {
-//     playAudioById(val)
-//     audioValue.value = val
-//   }
-// }
 </script>

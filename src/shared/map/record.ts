@@ -4,7 +4,6 @@ import { ElMessage } from 'element-plus'
 import { LineString, Marker, VectorLayer } from 'maptalks'
 import { computed, ref, watch } from 'vue'
 import { clearStatus } from '.'
-import { haveCurrentCar } from '..'
 import { clearMenu, map } from './base'
 import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 import { clearDrawTool } from './drawTool'
@@ -37,7 +36,7 @@ export const recordPathToolbarEvent = () => {
   clearPathLayer()
   clearDrawTool()
 
-  if (haveCurrentCar() && !isRecord.value) {
+  if (!isRecord.value) {
     recordPathPoints.length = 0
     recordPath.value.length = 0
     allRecordSum.value = 0

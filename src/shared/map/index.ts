@@ -3,7 +3,7 @@ import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import type { Marker } from 'maptalks'
 import { ref } from 'vue'
-import { currentCar, haveCurrentCar } from '..'
+import { currentCar } from '..'
 import { backToCenter } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
 import { fileUploadToolbarEvent } from './file'
@@ -45,7 +45,7 @@ export const havePath = () => {
 }
 // 下发任务
 export const handleCreatePlan = async () => {
-  if (haveCurrentCar() && havePath()) {
+  if (havePath()) {
     try {
       let res: any
       if (pathPointsData.value.length !== 0) {

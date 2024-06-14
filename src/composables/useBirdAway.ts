@@ -1,5 +1,5 @@
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { ref } from 'vue'
 import { birStatus } from './useUpperControl'
 
@@ -8,61 +8,49 @@ const talkBack = ref(false)
 export const useBirdAway = () => {
   function controlLaser() {
     disperseMode.value = !disperseMode.value
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: 7,
-        param2: 1,
-        param3: disperseMode.value ? 6 : 7,
-        param4: 255
-      }
-      patrolingCruise(data)
-    } else {
-      disperseMode.value = false
+    const data = {
+      code: currentCar.value,
+      param1: 7,
+      param2: 1,
+      param3: disperseMode.value ? 6 : 7,
+      param4: 255
     }
+    patrolingCruise(data)
   }
 
   function handleTalkBack() {
     talkBack.value = !talkBack.value
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: 5,
-        param2: talkBack.value ? 1 : 2,
-        param3: 255,
-        param4: 255
-      }
-      patrolingCruise(data)
-    } else {
-      disperseMode.value = false
+    const data = {
+      code: currentCar.value,
+      param1: 5,
+      param2: talkBack.value ? 1 : 2,
+      param3: 255,
+      param4: 255
     }
+    patrolingCruise(data)
   }
 
   async function onClickBirdAway(value: number) {
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: 6,
-        param2: value,
-        param3: 255,
-        param4: 255
-      }
-      patrolingCruise(data)
+    const data = {
+      code: currentCar.value,
+      param1: 6,
+      param2: value,
+      param3: 255,
+      param4: 255
     }
+    patrolingCruise(data)
   }
 
   async function onClickBirdStatus() {
-    if (haveCurrentCar()) {
-      const data = {
-        code: currentCar.value,
-        param1: 6,
-        param2: 4,
-        param3: 255,
-        param4: 255
-      }
-      await patrolingCruise(data)
-      console.log(birStatus.value)
+    const data = {
+      code: currentCar.value,
+      param1: 6,
+      param2: 4,
+      param3: 255,
+      param4: 255
     }
+    await patrolingCruise(data)
+    console.log(birStatus.value)
   }
 
   return {

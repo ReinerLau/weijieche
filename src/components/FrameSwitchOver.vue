@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { Icon } from '@iconify/vue'
 import { useI18n } from 'vue-i18n'
 
@@ -72,15 +72,13 @@ const keyMap = {
 
 // 开启功能
 async function onClick(value: string | number) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 2,
-      param2: value,
-      param3: 0,
-      param4: 0
-    }
-    patrolingCruise(data)
+  const data = {
+    code: currentCar.value,
+    param1: 2,
+    param2: value,
+    param3: 0,
+    param4: 0
   }
+  patrolingCruise(data)
 }
 </script>

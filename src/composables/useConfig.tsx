@@ -1,31 +1,35 @@
 import {
+  bindCamera,
+  createCamera,
+  createDevice,
+  deleteCamera,
+  deleteDevice,
+  getCameraList,
+  getDeviceListByCode,
+  getDeviceTypeList,
+  updateCamera,
+  updateDevice
+} from '@/api'
+import { currentCar } from '@/shared'
+import type { FormInstance, FormRules } from 'element-plus'
+import {
   ElButton,
   ElDialog,
   ElDivider,
-  ElNotification,
   ElForm,
   ElFormItem,
   ElInput,
   ElMessage,
-  ElPageHeader,
-  ElTable,
-  ElTableColumn,
+  ElNotification,
   ElOption,
+  ElPageHeader,
   ElSelect,
-  ElSwitch
+  ElSwitch,
+  ElTable,
+  ElTableColumn
 } from 'element-plus'
-import { computed, ref, toRaw, watch, Fragment } from 'vue'
-import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
-import {
-  createDevice,
-  deleteDevice,
-  getDeviceListByCode,
-  updateDevice,
-  getDeviceTypeList
-} from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
-import type { Ref, ComputedRef } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { ComputedRef, Ref } from 'vue'
+import { computed, Fragment, ref, toRaw, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 配置监控、配置外设相关
@@ -400,16 +404,14 @@ export const useConfig = () => {
 
   // 关联摄像头
   async function handleConnect(id: string, rid: string) {
-    if (haveCurrentCar()) {
-      const data = {
-        id,
-        rid: rid === currentCar.value ? '' : currentCar.value,
-        rtype: 'patroling'
-      }
-      const res: any = await bindCamera(data)
-      ElMessage({ type: 'success', message: res.message })
-      getList()
+    const data = {
+      id,
+      rid: rid === currentCar.value ? '' : currentCar.value,
+      rtype: 'patroling'
     }
+    const res: any = await bindCamera(data)
+    ElMessage({ type: 'success', message: res.message })
+    getList()
   }
 
   // 表单弹窗组件

@@ -1,5 +1,5 @@
 import { getCarInfo } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { ref, type Ref } from 'vue'
 
 export let intervalId: any
@@ -9,12 +9,10 @@ export const detailDrawerVisible = ref(false)
 // 状态数据
 export const statusData: Ref<Record<string, any>> = ref({})
 export const getDetailDrawer = async (value: boolean) => {
-  if (haveCurrentCar()) {
-    clearInterval(intervalId)
-    intervalId = null
-    updateData()
-    intervalId = setInterval(updateData, 1000)
-  }
+  clearInterval(intervalId)
+  intervalId = null
+  updateData()
+  intervalId = setInterval(updateData, 1000)
   if (!value) {
     if (intervalId) {
       // 抽屉关闭时停止定时获取数据

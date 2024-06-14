@@ -1,5 +1,5 @@
 import { createTimingTask, getTemplateList } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 import { handleCreatePlan } from '@/shared/map'
 import { scheduleDialogVisible } from '@/shared/map/patrolPath'
 import {
@@ -69,22 +69,20 @@ export default defineComponent({
 
     // 保存
     async function handleConfirm() {
-      if (haveCurrentCar()) {
-        if (isChange.value) {
-          const data: any = { ...toRaw(formData.value) }
-          data.conditions = formData.value.conditions.join(',')
-          data.code = currentCar.value
-          const res: any = await createTimingTask(data)
-          ElMessage({
-            type: 'success',
-            message: res.message
-          })
-        } else {
-          handleCreatePlan()
-        }
-        scheduleDialogVisible.value = false
-        formData.value = cloneDeep(defaultFormData)
+      if (isChange.value) {
+        const data: any = { ...toRaw(formData.value) }
+        data.conditions = formData.value.conditions.join(',')
+        data.code = currentCar.value
+        const res: any = await createTimingTask(data)
+        ElMessage({
+          type: 'success',
+          message: res.message
+        })
+      } else {
+        handleCreatePlan()
       }
+      scheduleDialogVisible.value = false
+      formData.value = cloneDeep(defaultFormData)
     }
 
     // 按天、单次情况下需要禁用周选择

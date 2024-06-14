@@ -1,7 +1,6 @@
-import { TileLayer, Map, Coordinate } from 'maptalks'
-import { haveCurrentCar } from '..'
 import { getCarInfo } from '@/api'
 import { currentCar } from '@/shared'
+import { Coordinate, Map, TileLayer } from 'maptalks'
 
 /**
  * 底图图层
@@ -68,12 +67,10 @@ export const jumpToCoordinate = (x: number, y: number) => {
  * 回到地图中心
  */
 export const backToCenter = async () => {
-  if (haveCurrentCar()) {
-    const res = await getCarInfo(currentCar.value)
-    const x = res.data.longitude
-    const y = res.data.latitude
-    jumpToCoordinate(x, y)
-  }
+  const res = await getCarInfo(currentCar.value)
+  const x = res.data.longitude
+  const y = res.data.latitude
+  jumpToCoordinate(x, y)
 }
 
 export const clearMenu = () => {

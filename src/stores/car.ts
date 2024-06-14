@@ -1,6 +1,4 @@
 import type { Car } from '@/types'
-import { i18n } from '@/utils'
-import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -16,14 +14,5 @@ export const useCarStore = defineStore('car', () => {
     carList.value = list
   }
 
-  const haveCurrentCar = () => {
-    if (currentCar.value) {
-      return true
-    } else {
-      ElMessage({ type: 'error', message: i18n.global.t('qing-xuan-ze-che-liang') })
-      return false
-    }
-  }
-
-  return { currentCar, setCurrentCar, carList, setCarList, haveCurrentCar }
+  return { currentCar, setCurrentCar, carList, setCarList }
 })

@@ -1,5 +1,4 @@
-import { ElMessage } from 'element-plus'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { useCarStore } from '../car'
 
 describe('当前车辆', () => {
@@ -32,26 +31,5 @@ describe('当前车辆', () => {
     carStore.setCarList(newCarList)
 
     expect(carStore.carList).toEqual(newCarList)
-  })
-
-  describe('校验是否已选择车辆', () => {
-    afterEach(() => {
-      vi.clearAllMocks()
-    })
-    it('已选择车辆', () => {
-      const carStore = useCarStore()
-
-      carStore.haveCurrentCar()
-
-      expect(ElMessage).toHaveBeenCalled()
-    })
-    it('未选择车辆', () => {
-      const carStore = useCarStore()
-
-      carStore.setCurrentCar('123')
-      carStore.haveCurrentCar()
-
-      expect(ElMessage).not.toHaveBeenCalled()
-    })
   })
 })
