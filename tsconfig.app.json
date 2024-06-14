@@ -5,7 +5,6 @@
     "src/**/*",
     "src/**/*.vue",
     "src/**/*.json",
-    "node_modules/unplugin-icons/types/vue.d.ts",
     "__tests__",
     "vitest.setup.ts"
   ],
@@ -14,7 +13,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "types": ["./node_modules/element-plus/global"]
+    }
   }
 }
