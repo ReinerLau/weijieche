@@ -340,6 +340,8 @@ export const useController = (currentCar: any) => {
                 // console.log(value)
                 if (value[15] === 32) {
                   speed.value = getJoyStickValue(value[12], value[13])
+                } else {
+                  speed.value = 0
                 }
                 direction.value = getJoyStickValue(value[2], value[3])
                 pressedButtons.value = getPressedButton(value[16], 'bottom')
