@@ -1,9 +1,10 @@
-import { ElDialog } from 'element-plus'
-import TestComponent from './components/TestComponent.vue'
+import { ElButton, ElDialog, ElOption, ElSelect } from 'element-plus'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElDialog: typeof ElDialog
-    TestComponent: typeof TestComponent
+    ElButton: typeof ElButton
+    ElSelect: typeof ElSelect
+    ElOption: typeof ElOption
   }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getCameraListByCode } from '@/api'
+import CarDialog from '@/components/CarDialog.vue'
 import MapContainer from '@/components/MapContainer'
 import TopControl from '@/components/TopControl.vue'
 import {
@@ -17,6 +18,7 @@ import { detailDrawerVisible } from '@/composables/carDetail'
 import { cameraList, currentCar } from '@/shared'
 import { Icon } from '@iconify/vue'
 import { onMounted, watch } from 'vue'
+
 const { ConfigSection, isConfig, configType, configTypes } = useConfig()
 
 const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
@@ -87,6 +89,7 @@ watch(currentCar, async () => {
   <DetailSection />
   <CarRelevantDrawer />
   <NotificationDrawer />
+  <CarDialog />
 </template>
 
 <style scoped lang="scss">
