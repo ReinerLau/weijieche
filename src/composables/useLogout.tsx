@@ -23,7 +23,7 @@ export const useLogout = () => {
   const LogoutController = () => (
     <ElTooltip content={t('tui-chu-deng-lu')}>
       <ElButton link onClick={() => handleLogout()}>
-        <Icon icon="mingcute:exit-full"></Icon>
+        <Icon icon="mingcute:exit-fill"></Icon>
       </ElButton>
     </ElTooltip>
   )
