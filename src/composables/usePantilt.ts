@@ -33,30 +33,26 @@ export const usePantilt = () => {
 
   const startUpdateX = () => {
     if (pantiltX.value === 0) {
-      // updateLeft()
       onClickPantilt(Type.LEFT, horizonSpeed.value)
     } else if (pantiltX.value === 4095) {
-      // updateRight()
       onClickPantilt(Type.RIGHT, horizonSpeed.value)
+    } else if (pantiltX.value === 2048) {
+      onClickPantilt(Type.STOP, 255)
     } else {
-      // cancelAnimationFrame(raf)
       return
     }
-    // raf = requestAnimationFrame(startUpdateX)
   }
 
   const startUpdateY = () => {
     if (pantiltY.value === 0) {
-      // updateDown()
       onClickPantilt(Type.DOWN, verticalSpeed.value)
     } else if (pantiltY.value === 4095) {
-      // updateUp()
       onClickPantilt(Type.UP, verticalSpeed.value)
+    } else if (pantiltY.value === 2048) {
+      onClickPantilt(Type.STOP, 255)
     } else {
-      // cancelAnimationFrame(raf)
       return
     }
-    // raf = requestAnimationFrame(startUpdateY)
   }
 
   watch(pantiltX, startUpdateX)
