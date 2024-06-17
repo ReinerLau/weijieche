@@ -222,7 +222,7 @@ export const useController = (currentCar: any) => {
     [8, () => onClickBirdAway(7)],
     [4, () => onClickBirdAway(8)],
     [2, () => setMode(modeKey.MANUAL)],
-    [1, () => onClickPantilt(Type.RECALL)]
+    [1, () => onClickPantilt(Type.RESET, 255)]
   ])
 
   const actionTopMap = new Map([
