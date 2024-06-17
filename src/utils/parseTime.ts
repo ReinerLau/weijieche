@@ -1,9 +1,9 @@
 export function parseTime(
   time: string | number | Date | null | undefined,
   cFormat?: string
-): string | null {
+): string {
   if (!time) {
-    return null
+    return ''
   }
   const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
   const date = new Date(time)
