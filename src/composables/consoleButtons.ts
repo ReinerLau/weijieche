@@ -22,8 +22,9 @@ export const useConsoleButton = () => {
     if (newValue !== oldValue) {
       oldValue = newValue
       const newButtonSet = newValue.toString(2).split('')
+      const newLength = newButtonSet.length
       if (newButtonSet.length < 8) {
-        for (let i = 0; i <= 8 - newButtonSet.length; i++) {
+        for (let i = 0; i < 8 - newLength; i++) {
           newButtonSet.unshift('0') // 左补 0
         }
       }

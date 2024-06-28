@@ -192,7 +192,7 @@ export const useController = (currentCar: any) => {
 
   const { setMode, modeKey } = useControlSection()
   const { onClickBirdAway } = useBirdAway()
-  const { onClickPantilt, Type, pantiltX, pantiltY } = usePantilt()
+  const { onClickPantilt, PantiltMode, pantiltX, pantiltY } = usePantilt()
 
   const BottomButtonActionMap = new Map<BottomButtons, (status: number) => void>([
     [BottomButtons.MANUAL, (status: number) => status && setMode(modeKey.MANUAL)],
@@ -202,7 +202,10 @@ export const useController = (currentCar: any) => {
     [BottomButtons.VOICE, (status: number) => status && onClickBirdAway(7)],
     [BottomButtons.END_AUDIO, (status: number) => status && onClickBirdAway(8)],
     [BottomButtons.AUTO, (status: number) => status && setMode(modeKey.AUTO)],
-    [BottomButtons.PANTILT_RESET, (status: number) => status && onClickPantilt(Type.RESET, 255)]
+    [
+      BottomButtons.PANTILT_RESET,
+      (status: number) => status && onClickPantilt(PantiltMode.RECALL, 255)
+    ]
   ])
 
   const TopButtonActionMap = new Map<TopButtons, (status: number) => void>([
