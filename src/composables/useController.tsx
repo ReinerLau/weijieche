@@ -197,13 +197,31 @@ export const useController = (currentCar: any) => {
   const { onClickPantilt, PantiltMode, pantiltX, pantiltY } = usePantilt()
 
   const BottomButtonActionMap = new Map<BottomButtons, (status: number) => void>([
-    [BottomButtons.MANUAL, (status: number) => status && setMode(modeKey.MANUAL)],
+    [
+      BottomButtons.MANUAL,
+      (status: number) => {
+        if (status) {
+          setMode(modeKey.MANUAL)
+        } else {
+          setMode(modeKey.STOP)
+        }
+      }
+    ],
     [BottomButtons.STRONG_LIGHT, (status: number) => status && openFloodingLight()],
     [BottomButtons.AMPLIFIER_OPEN, (status: number) => toggleDisperse(status ? true : false)],
     [BottomButtons.AMPLIFIER_CLOSE, (status: number) => toggleAlarmLight(status ? true : false)],
     [BottomButtons.VOICE, (status: number) => status && onClickBirdAway(7)],
     [BottomButtons.END_AUDIO, (status: number) => status && onClickBirdAway(8)],
-    [BottomButtons.AUTO, (status: number) => status && setMode(modeKey.AUTO)],
+    [
+      BottomButtons.AUTO,
+      (status: number) => {
+        if (status) {
+          setMode(modeKey.AUTO)
+        } else {
+          setMode(modeKey.STOP)
+        }
+      }
+    ],
     [
       BottomButtons.PANTILT_RESET,
       (status: number) => status && onClickPantilt(PantiltMode.RECALL, 255)
