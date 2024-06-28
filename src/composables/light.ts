@@ -1,5 +1,5 @@
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 
 export const useLight = () => {
   const openFloodingLight = () => {
@@ -10,9 +10,7 @@ export const useLight = () => {
       param3: 3,
       param4: 255
     }
-    if (haveCurrentCar()) {
-      patrolingCruise(data)
-    }
+    patrolingCruise(data)
     return data
   }
 
@@ -24,9 +22,7 @@ export const useLight = () => {
       param3: 255,
       param4: 255
     }
-    if (haveCurrentCar()) {
-      patrolingCruise(data)
-    }
+    patrolingCruise(data)
     return data
   }
 

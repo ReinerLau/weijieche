@@ -3,8 +3,7 @@ import { useDisperse } from '../disperse'
 
 describe('驱散控制', () => {
   vi.mock('@/shared', () => ({
-    currentCar: { value: 'test' },
-    haveCurrentCar: vi.fn(() => true)
+    currentCar: { value: 'test' }
   }))
   vi.mock('@/api', () => ({
     patrolingCruise: vi.fn()

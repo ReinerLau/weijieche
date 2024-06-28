@@ -1,5 +1,5 @@
 import { patrolingCruise } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { currentCar } from '@/shared'
 
 export const useDisperse = () => {
   const toggleDisperse = (isOpen: boolean) => {
@@ -10,9 +10,7 @@ export const useDisperse = () => {
       param3: 255,
       param4: 255
     }
-    if (haveCurrentCar()) {
-      patrolingCruise(data)
-    }
+    patrolingCruise(data)
     return data
   }
 
