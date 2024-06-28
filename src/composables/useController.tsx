@@ -14,6 +14,7 @@ import type { Ref } from 'vue'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BottomButtons, TopButtons, useConsoleButton } from './consoleButtons'
+import { useDisperse } from './disperse'
 import { useLight } from './light'
 import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
@@ -25,6 +26,7 @@ export const useController = (currentCar: any) => {
   const { onButtonDown: onBottomButtonDown } = useConsoleButton()
   const { onButtonDown: onTopButtonDown } = useConsoleButton()
   const { openFloodingLight } = useLight()
+  const { toggleDisperse } = useDisperse()
 
   // 已连接的控制器
   const controllers: Ref<Gamepad[]> = ref([])
@@ -197,7 +199,7 @@ export const useController = (currentCar: any) => {
   const BottomButtonActionMap = new Map<BottomButtons, (status: number) => void>([
     [BottomButtons.MANUAL, (status: number) => status && setMode(modeKey.MANUAL)],
     [BottomButtons.STRONG_LIGHT, (status: number) => status && openFloodingLight()],
-    [BottomButtons.AMPLIFIER_OPEN, (status: number) => status && onClickBirdAway(5)],
+    [BottomButtons.AMPLIFIER_OPEN, (status: number) => toggleDisperse(status ? true : false)],
     [BottomButtons.AMPLIFIER_CLOSE, (status: number) => status && onClickBirdAway(6)],
     [BottomButtons.VOICE, (status: number) => status && onClickBirdAway(7)],
     [BottomButtons.END_AUDIO, (status: number) => status && onClickBirdAway(8)],
