@@ -9,7 +9,7 @@ describe('中控台按下按钮', () => {
 
     expect(changedButton).toEqual({
       index: 1,
-      buttonStatus: '1'
+      buttonStatus: 1
     })
   })
 
@@ -21,7 +21,7 @@ describe('中控台按下按钮', () => {
 
     expect(changedButton).toEqual({
       index: 1,
-      buttonStatus: '0'
+      buttonStatus: 0
     })
   })
 
@@ -32,7 +32,7 @@ describe('中控台按下按钮', () => {
 
     expect(changedButton).toEqual({
       index: 2,
-      buttonStatus: '1'
+      buttonStatus: 1
     })
   })
 
@@ -43,7 +43,7 @@ describe('中控台按下按钮', () => {
 
     expect(changedButton).toEqual({
       index: 0,
-      buttonStatus: '1'
+      buttonStatus: 1
     })
   })
 })

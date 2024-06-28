@@ -34,7 +34,7 @@ export const useConsoleButton = () => {
 
       return {
         index: changedButtonIndex,
-        buttonStatus: newButtonSet[changedButtonIndex]
+        buttonStatus: parseInt(newButtonSet[changedButtonIndex])
       }
     }
   }

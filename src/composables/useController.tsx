@@ -16,6 +16,7 @@ import { useI18n } from 'vue-i18n'
 import { BottomButtons, TopButtons, useConsoleButton } from './consoleButtons'
 import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
+import { useLight } from './useLight'
 import { usePantilt } from './usePantilt'
 
 // 手柄、方向盘相关逻辑
@@ -23,6 +24,7 @@ export const useController = (currentCar: any) => {
   const { t } = useI18n()
   const { onButtonDown: onBottomButtonDown } = useConsoleButton()
   const { onButtonDown: onTopButtonDown } = useConsoleButton()
+  const { openFloodingLight } = useLight()
 
   // 已连接的控制器
   const controllers: Ref<Gamepad[]> = ref([])
@@ -189,32 +191,23 @@ export const useController = (currentCar: any) => {
   })
 
   const { setMode, modeKey } = useControlSection()
-  const { controlLaser, onClickBirdAway } = useBirdAway()
+  const { onClickBirdAway } = useBirdAway()
   const { onClickPantilt, Type, pantiltX, pantiltY } = usePantilt()
 
-  const BottomButtonActionMap = new Map([
-    [
-      BottomButtons.MANUAL,
-      () => {
-        if (carMode.value === modeKey.STOP) {
-          setMode(modeKey.AUTO)
-        } else if (carMode.value === modeKey.AUTO) {
-          setMode(modeKey.STOP)
-        }
-      }
-    ],
-    [BottomButtons.STRONG_LIGHT, () => controlLaser()],
-    [BottomButtons.AMPLIFIER_OPEN, () => onClickBirdAway(5)],
-    [BottomButtons.AMPLIFIER_CLOSE, () => onClickBirdAway(6)],
-    [BottomButtons.VOICE, () => onClickBirdAway(7)],
-    [BottomButtons.END_AUDIO, () => onClickBirdAway(8)],
-    [BottomButtons.AUTO, () => setMode(modeKey.MANUAL)],
-    [BottomButtons.PANTILT_RESET, () => onClickPantilt(Type.RESET, 255)]
+  const BottomButtonActionMap = new Map<BottomButtons, (status: number) => void>([
+    [BottomButtons.MANUAL, (status: number) => status && setMode(modeKey.MANUAL)],
+    [BottomButtons.STRONG_LIGHT, (status: number) => status && openFloodingLight()],
+    [BottomButtons.AMPLIFIER_OPEN, (status: number) => status && onClickBirdAway(5)],
+    [BottomButtons.AMPLIFIER_CLOSE, (status: number) => status && onClickBirdAway(6)],
+    [BottomButtons.VOICE, (status: number) => status && onClickBirdAway(7)],
+    [BottomButtons.END_AUDIO, (status: number) => status && onClickBirdAway(8)],
+    [BottomButtons.AUTO, (status: number) => status && setMode(modeKey.AUTO)],
+    [BottomButtons.PANTILT_RESET, (status: number) => status && onClickPantilt(Type.RESET, 255)]
   ])
 
-  const TopButtonActionMap = new Map([
-    [TopButtons.AUDIO_1, () => onClickBirdAway(9)],
-    [TopButtons.AUDIO_2, () => onClickBirdAway(10)]
+  const TopButtonActionMap = new Map<TopButtons, (status: number) => void>([
+    [TopButtons.AUDIO_1, (status: number) => status && onClickBirdAway(9)],
+    [TopButtons.AUDIO_2, (status: number) => status && onClickBirdAway(10)]
   ])
 
   // 设置映射的弹窗组件
@@ -338,15 +331,15 @@ export const useController = (currentCar: any) => {
     const bottomButton = onBottomButtonDown(value)
     if (bottomButton) {
       const actionGetter = BottomButtonActionMap.get(bottomButton.index)
-      actionGetter && actionGetter()
+      actionGetter && actionGetter(bottomButton.buttonStatus)
     }
   }
 
   const onTopButton = (value: number) => {
-    const topButton = onTopButtonDown(value)
-    if (topButton) {
-      const actionGetter = TopButtonActionMap.get(topButton.index)
-      actionGetter && actionGetter()
+    const pressedButton = onTopButtonDown(value)
+    if (pressedButton) {
+      const actionGetter = TopButtonActionMap.get(pressedButton.index)
+      actionGetter && actionGetter(pressedButton.buttonStatus)
     }
   }
 
