@@ -24,4 +24,26 @@ describe('中控台按下按钮', () => {
       buttonStatus: '0'
     })
   })
+
+  it('按下音频1按钮', () => {
+    const { onButtonDown } = useConsoleButton()
+
+    const changedButton = onButtonDown(32)
+
+    expect(changedButton).toEqual({
+      index: 2,
+      buttonStatus: '1'
+    })
+  })
+
+  it('按下手动模式按钮', () => {
+    const { onButtonDown } = useConsoleButton()
+
+    const changedButton = onButtonDown(128)
+
+    expect(changedButton).toEqual({
+      index: 0,
+      buttonStatus: '1'
+    })
+  })
 })

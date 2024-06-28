@@ -1,11 +1,5 @@
 import { patrolingRemote } from '@/api/control'
-import {
-  controllerTypes,
-  currentController,
-  currentControllerType,
-  pressedButtons,
-  pressedTopButton
-} from '@/shared'
+import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -19,20 +13,16 @@ import {
 import type { Ref } from 'vue'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { BottomButton, useConsoleButton } from './consoleButtons'
+import { BottomButtons, TopButtons, useConsoleButton } from './consoleButtons'
 import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
 import { usePantilt } from './usePantilt'
 
-const oldPressedValue = {
-  top: 0,
-  bottom: 0
-}
-
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
   const { t } = useI18n()
-  const { onButtonDown } = useConsoleButton()
+  const { onButtonDown: onBottomButtonDown } = useConsoleButton()
+  const { onButtonDown: onTopButtonDown } = useConsoleButton()
 
   // 已连接的控制器
   const controllers: Ref<Gamepad[]> = ref([])
@@ -137,12 +127,6 @@ export const useController = (currentCar: any) => {
     return result
   }
 
-  function getPressedButton(newValue: number, type: 'top' | 'bottom') {
-    const result = Math.abs(newValue - oldPressedValue[type])
-    oldPressedValue[type] = newValue
-    return result
-  }
-
   // 获取转向
   function setDirection(axes: ReadonlyArray<number>): number {
     let newDirection = 0
@@ -210,7 +194,7 @@ export const useController = (currentCar: any) => {
 
   const BottomButtonActionMap = new Map([
     [
-      BottomButton.MANUAL,
+      BottomButtons.MANUAL,
       () => {
         if (carMode.value === modeKey.STOP) {
           setMode(modeKey.AUTO)
@@ -219,27 +203,19 @@ export const useController = (currentCar: any) => {
         }
       }
     ],
-    [BottomButton.STRONG_LIGHT, () => controlLaser()],
-    [BottomButton.AMPLIFIER_OPEN, () => onClickBirdAway(5)],
-    [BottomButton.AMPLIFIER_CLOSE, () => onClickBirdAway(6)],
-    [BottomButton.VOICE, () => onClickBirdAway(7)],
-    [BottomButton.END_AUDIO, () => onClickBirdAway(8)],
-    [BottomButton.AUTO, () => setMode(modeKey.MANUAL)],
-    [BottomButton.PANTILT_RESET, () => onClickPantilt(Type.RESET, 255)]
+    [BottomButtons.STRONG_LIGHT, () => controlLaser()],
+    [BottomButtons.AMPLIFIER_OPEN, () => onClickBirdAway(5)],
+    [BottomButtons.AMPLIFIER_CLOSE, () => onClickBirdAway(6)],
+    [BottomButtons.VOICE, () => onClickBirdAway(7)],
+    [BottomButtons.END_AUDIO, () => onClickBirdAway(8)],
+    [BottomButtons.AUTO, () => setMode(modeKey.MANUAL)],
+    [BottomButtons.PANTILT_RESET, () => onClickPantilt(Type.RESET, 255)]
   ])
 
-  const actionTopMap = new Map([
-    [32, () => onClickBirdAway(9)],
-    [16, () => onClickBirdAway(10)]
+  const TopButtonActionMap = new Map([
+    [TopButtons.AUDIO_1, () => onClickBirdAway(9)],
+    [TopButtons.AUDIO_2, () => onClickBirdAway(10)]
   ])
-
-  watch(pressedTopButton, (val) => {
-    if (val !== 0) {
-      console.log(val)
-      const actionGetter = actionTopMap.get(val)
-      actionGetter && actionGetter()
-    }
-  })
 
   // 设置映射的弹窗组件
   const ControllerMapDialog = () => (
@@ -341,7 +317,7 @@ export const useController = (currentCar: any) => {
                 }
                 direction.value = getJoyStickValue(value[2], value[3])
                 onBottomButton(value[16])
-                pressedTopButton.value = getPressedButton(value[17], 'top')
+                onTopButton(value[17])
                 pantiltX.value = (value[6] << 8) | value[7]
                 pantiltY.value = (value[8] << 8) | value[9]
               }
@@ -359,9 +335,19 @@ export const useController = (currentCar: any) => {
   }
 
   const onBottomButton = (value: number) => {
-    const bottomButton = onButtonDown(value)
-    const actionGetter = BottomButtonActionMap.get(bottomButton.index)
-    actionGetter && actionGetter()
+    const bottomButton = onBottomButtonDown(value)
+    if (bottomButton) {
+      const actionGetter = BottomButtonActionMap.get(bottomButton.index)
+      actionGetter && actionGetter()
+    }
+  }
+
+  const onTopButton = (value: number) => {
+    const topButton = onTopButtonDown(value)
+    if (topButton) {
+      const actionGetter = TopButtonActionMap.get(topButton.index)
+      actionGetter && actionGetter()
+    }
   }
 
   onMounted(() => {
