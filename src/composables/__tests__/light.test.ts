@@ -23,4 +23,32 @@ describe('灯光控制', () => {
       param4: 255
     })
   })
+
+  it('打开警报灯', () => {
+    const { toggleAlarmLight } = useLight()
+
+    const data = toggleAlarmLight(true)
+
+    expect(data).toEqual({
+      code: 'test',
+      param1: 8,
+      param2: 1,
+      param3: 255,
+      param4: 255
+    })
+  })
+
+  it('关闭警报灯', () => {
+    const { toggleAlarmLight } = useLight()
+
+    const data = toggleAlarmLight(false)
+
+    expect(data).toEqual({
+      code: 'test',
+      param1: 8,
+      param2: 0,
+      param3: 255,
+      param4: 255
+    })
+  })
 })

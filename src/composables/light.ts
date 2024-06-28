@@ -16,7 +16,22 @@ export const useLight = () => {
     return data
   }
 
+  const toggleAlarmLight = (isOpen: boolean) => {
+    const data = {
+      code: currentCar.value,
+      param1: 8,
+      param2: isOpen ? 1 : 0,
+      param3: 255,
+      param4: 255
+    }
+    if (haveCurrentCar()) {
+      patrolingCruise(data)
+    }
+    return data
+  }
+
   return {
-    openFloodingLight
+    openFloodingLight,
+    toggleAlarmLight
   }
 }
