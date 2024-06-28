@@ -5,7 +5,6 @@ import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import RecordPointCount from '@/components/RecordPointCount.vue'
 import ToolbarController from '@/components/ToolbarController.vue'
 import VideoController from '@/components/VideoController.vue'
-import { currentCar } from '@/shared'
 import { pathDataPoints, toolbarItems } from '@/shared/map'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
 import { initMap, jumpToCoordinate } from '@/shared/map/base'
@@ -39,6 +38,7 @@ import { onMapDBClick } from '@/shared/map/debug'
 import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
 import { initRoadnetPathLayer } from '@/shared/map/roadnet'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
+import { useCarStore } from '@/stores/car'
 import { Icon } from '@iconify/vue'
 import ShowAlarmMessageDialog from './ShowAlarmMessageDialog'
 
@@ -52,14 +52,18 @@ export default defineComponent({
   },
   setup(props) {
     const mapRef = ref<HTMLDivElement>()
+    const carStore = useCarStore()
 
     // 监听到当前车辆切换之后地图中心跳转到车辆位置
-    watch(currentCar, async (code: string) => {
-      const res = await getCarInfo(code)
-      const x = res.data.longitude
-      const y = res.data.latitude
-      jumpToCoordinate(x, y)
-    })
+    watch(
+      () => carStore.currentCar,
+      async (code: string) => {
+        const res = await getCarInfo(code)
+        const x = res.data.longitude
+        const y = res.data.latitude
+        jumpToCoordinate(x, y)
+      }
+    )
 
     onMounted(() => {
       initMap(mapRef.value!)
@@ -80,12 +84,15 @@ export default defineComponent({
     })
 
     // 监听到选择车辆后连接 websocket
-    watch(currentCar, (code: string) => {
-      recordPathPoints.length = 0
-      addMarker(code)
-      tryCloseWS()
-      onCarPoisition()
-    })
+    watch(
+      () => carStore.currentCar,
+      (code: string) => {
+        recordPathPoints.length = 0
+        addMarker(code)
+        tryCloseWS()
+        onCarPoisition()
+      }
+    )
 
     // 关闭页面前先关闭 websocket
     onBeforeUnmount(tryCloseWS)

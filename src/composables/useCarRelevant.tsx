@@ -8,7 +8,6 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import LightControl from '@/components/LightControl.vue'
 import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
 import {
   ElButton,
@@ -85,10 +84,13 @@ export const useCarRelevant = ({
   )
 
   // 监听切换车辆后重新激活车辆
-  watch(currentCar, (code: string) => {
-    connectCar(code)
-    isConnection.value = false
-  })
+  watch(
+    () => carStore.currentCar,
+    (code: string) => {
+      connectCar(code)
+      isConnection.value = false
+    }
+  )
   interface SwitchGroup {
     title: string
     ref: Ref<boolean>

@@ -1,4 +1,4 @@
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { onBeforeUnmount, ref, watch } from 'vue'
@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 export const useCarStatus = (status: any) => {
   // 国际化
   const { t } = useI18n()
+  const carStore = useCarStore()
 
   const NewCurrentCarStatus = ref(status)
 
@@ -24,10 +25,13 @@ export const useCarStatus = (status: any) => {
   let reconnectInterval: number | NodeJS.Timer | null = null
 
   // 监听到选择车辆后连接 websocket
-  watch(currentCar, () => {
-    tryCloseWS()
-    connectWebSocket()
-  })
+  watch(
+    () => carStore.currentCar,
+    () => {
+      tryCloseWS()
+      connectWebSocket()
+    }
+  )
 
   // 关闭页面前先关闭 websocket
   onBeforeUnmount(tryCloseWS)

@@ -10,7 +10,6 @@ import {
   updateCamera,
   updateDevice
 } from '@/api'
-import { currentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
@@ -53,7 +52,10 @@ export const useConfig = () => {
   // 每次进入配置模式重新获取配置数据
   watch(configType, () => getList())
   watch(isConfig, () => getList())
-  watch(currentCar, () => (isConfig.value = false))
+  watch(
+    () => carStore.currentCar,
+    () => (isConfig.value = false)
+  )
 
   // 设备类型数据
   const deviceTypeList = ref([])

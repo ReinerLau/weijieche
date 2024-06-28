@@ -1,4 +1,4 @@
-import { currentCar, initMapLayerTool } from '@/shared'
+import { initMapLayerTool } from '@/shared'
 import { map } from '@/shared/map/base'
 import { initPathLayer } from '@/shared/map/path'
 import {
@@ -18,9 +18,10 @@ import {
   setRecordDataValue
 } from '@/shared/map/record'
 import { templateDialogVisible } from '@/shared/map/template'
+import { useCarStore } from '@/stores/car'
 import * as el from 'element-plus'
 import { LineString, Marker } from 'maptalks'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('element-plus')
 
 const elSpy = vi.spyOn(el, 'ElMessage')
@@ -43,6 +44,11 @@ const testData1 = {
 }
 
 describe('record', () => {
+  beforeEach(() => {
+    const carStore = useCarStore()
+    carStore.setCurrentCar('003')
+  })
+
   it('录制路线图层', () => {
     initMapLayerTool()
     initPathLayer()
@@ -53,7 +59,6 @@ describe('record', () => {
   it('开始录制', () => {
     recordPathPoints.push(new Marker([113, 22]))
     expect(recordPathPoints.length).toBe(1)
-    currentCar.value = '003'
     recordPathToolbarEvent()
     expect(recordPathPoints.length).toBe(0)
     expect(recordPath.value.length).toBe(0)
@@ -102,7 +107,6 @@ describe('record', () => {
 
   it('drawRecordPath', () => {
     recordPathPoints.length = 0
-    currentCar.value = '003'
     isRecord.value = true
     drawRecordPath(testData)
     expect(recordPath.value.length).toBe(1)

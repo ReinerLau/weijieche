@@ -15,7 +15,8 @@ import {
   useTheme
 } from '@/composables'
 import { detailDrawerVisible } from '@/composables/carDetail'
-import { cameraList, currentCar } from '@/shared'
+import { cameraList } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { Icon } from '@iconify/vue'
 import { onMounted, watch } from 'vue'
 
@@ -28,6 +29,8 @@ const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
 })
 
 const { checkIsMobile, mainRef, isMobile } = useResponsive()
+
+const carStore = useCarStore()
 
 window.onresize = () => {
   checkIsMobile()
@@ -45,10 +48,13 @@ const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
 
 // 每次切换车辆都要重新获取对应的摄像头数据
-watch(currentCar, async () => {
-  const res = await getCameraListByCode(currentCar.value, 'patroling')
-  cameraList.value = res.data
-})
+watch(
+  () => carStore.currentCar,
+  async () => {
+    const res = await getCameraListByCode(carStore.currentCar, 'patroling')
+    cameraList.value = res.data
+  }
+)
 </script>
 
 <template>

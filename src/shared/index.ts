@@ -3,11 +3,6 @@ import { initMap } from './map/base'
 import { initDrawTool } from './map/drawTool'
 
 /**
- * 当前选择的车辆编号
- */
-export const currentCar = ref('')
-
-/**
  * 车辆绑定的摄像头数据
  */
 export const cameraList: Ref<{ id: number; name: string; rtsp: string }[]> = ref([])

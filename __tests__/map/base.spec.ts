@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
-import { initMap, map, jumpToCoordinate, clearMenu, backToCenter } from '@/shared/map/base'
 import { getCarInfo } from '@/api'
-import { currentCar } from '@/shared'
+import { backToCenter, clearMenu, initMap, jumpToCoordinate, map } from '@/shared/map/base'
+import { useCarStore } from '@/stores/car'
+import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/api')
 
@@ -54,9 +54,9 @@ describe('base', () => {
   })
 
   it('回到中心', async () => {
+    const carStore = useCarStore()
+    carStore.setCurrentCar('003')
     jumpToCoordinate(100, 100)
-
-    currentCar.value = 'test'
 
     await backToCenter()
 
