@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "vite --host",
-    "build": "run-s type-check test:unit build-only",
+    "build": "run-s type-check test:once build-only",
     "preview": " vite preview",
     "test:unit": "vitest",
+    "test:once": "vitest run",
     "test": "vitest --ui",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
