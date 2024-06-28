@@ -5,7 +5,7 @@ describe('当前车辆', () => {
   it('默认没有选择车辆', () => {
     const carStore = useCarStore()
 
-    expect(carStore.currentCar).toBeUndefined()
+    expect(carStore.currentCar).toBe('')
   })
 
   it('切换车辆', () => {

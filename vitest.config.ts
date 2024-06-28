@@ -11,7 +11,7 @@ export default mergeConfig(
       root: fileURLToPath(new URL('./', import.meta.url)),
       coverage: {
         include: ['src/**/*.?(ts|tsx)'],
-        exclude: ['src/router', 'src/stores', 'src/types'],
+        exclude: ['src/router', 'src/types'],
         enabled: true
       },
       setupFiles: ['vitest.setup.ts']
