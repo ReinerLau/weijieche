@@ -1,7 +1,6 @@
 import { controlAlarmLight, patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
-import { debounce } from 'lodash'
-import { ref, type Ref } from 'vue'
+import { useCarStore } from '@/stores/car'
+import { ref } from 'vue'
 
 // 不同功能映射值
 export enum keyMap {
@@ -14,8 +13,9 @@ export enum keyMap {
 }
 // 点击触发不同个功能
 export function onClickPantilt(param2: number, param3: keyMap) {
+  const carStore = useCarStore()
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 6,
     param2,
     param3,
@@ -32,35 +32,6 @@ export const verticalAngle = ref(0)
 export const angleTypes = {
   HORIZON: 3,
   VERTICAL: 4
-}
-
-// 修改水平角度
-export const changeHorizonAngle = createDebouce(angleTypes.HORIZON, horizonAngle)
-
-// 修改垂直角度
-export const changeVerticalAngle = createDebouce(angleTypes.VERTICAL, verticalAngle)
-
-// 转换成防抖函数，防止过多调度
-export function createDebouce(param2: number, ref: Ref<number>) {
-  return debounce(async () => {
-    const data = {
-      code: currentCar.value,
-      param1: 6,
-      param2,
-      param3: ref.value,
-      param4: 0
-    }
-    patrolingCruise(data)
-  }, 500)
-}
-
-// 修改角度
-export function handleChangeAngle(type: number) {
-  if (type === angleTypes.HORIZON) {
-    changeHorizonAngle()
-  } else if (type === angleTypes.VERTICAL) {
-    changeVerticalAngle()
-  }
 }
 
 // 近远灯映射值
@@ -88,8 +59,9 @@ export function controlLight(value: boolean, type: string) {
 
 // 切换近远灯相关事件
 export function toggleLight(value: boolean, mode: string) {
+  const carStore = useCarStore()
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: '07',
     param2: value ? mode : '00',
     param3: 255,
@@ -99,8 +71,9 @@ export function toggleLight(value: boolean, mode: string) {
 }
 
 export function handleAlarmLight(value: boolean) {
+  const carStore = useCarStore()
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     type: value ? '1' : '0'
   }
   controlAlarmLight(data)

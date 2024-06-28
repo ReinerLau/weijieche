@@ -47,7 +47,7 @@ export const useCarRelevant = ({
   const carStore = useCarStore()
   // 当前车辆状态
   const currentCarStatus = () => {
-    return carStore.carList.find((item) => item.code === currentCar.value)?.status === '1'
+    return carStore.carList.find((item) => item.code === carStore.currentCar)?.status === '1'
       ? '✅'
       : '🚫'
   }
@@ -66,13 +66,13 @@ export const useCarRelevant = ({
 
   watch(isConnection, async () => {
     if (isConnection.value) {
-      await openCarWs(currentCar.value)
+      await openCarWs(carStore.currentCar)
       ElMessage({
         type: 'success',
         message: t('yi-lian-jie')
       })
     } else {
-      await offCarWs(currentCar.value)
+      await offCarWs(carStore.currentCar)
       ElMessage({
         type: 'success',
         message: t('yi-duan-kai-lian-jie')

@@ -1,7 +1,7 @@
 import { createTimingTask, getTemplateList } from '@/api'
-import { currentCar } from '@/shared'
 import { handleCreatePlan } from '@/shared/map'
 import { scheduleDialogVisible } from '@/shared/map/patrolPath'
+import { useCarStore } from '@/stores/car'
 import {
   ElButton,
   ElCheckbox,
@@ -41,6 +41,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n()
+    const carStore = useCarStore()
     // 表单数据
     const formData = ref<{
       loopConditions: string
@@ -72,7 +73,7 @@ export default defineComponent({
       if (isChange.value) {
         const data: any = { ...toRaw(formData.value) }
         data.conditions = formData.value.conditions.join(',')
-        data.code = currentCar.value
+        data.code = carStore.currentCar
         const res: any = await createTimingTask(data)
         ElMessage({
           type: 'success',

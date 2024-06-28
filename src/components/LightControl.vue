@@ -23,12 +23,12 @@
 import { patrolingCruise } from '@/api/control'
 import { useBirdAway } from '@/composables/useBirdAway'
 import { lightStatus } from '@/composables/useUpperControl'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { useI18n } from 'vue-i18n'
 const { disperseMode, controlLaser } = useBirdAway()
 
-// 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 // 按钮组合
 const buttonList = [
@@ -65,7 +65,7 @@ const buttonList = [
 
 async function onClickLight(value: number) {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 7,
     param2: 1,
     param3: value,
@@ -76,7 +76,7 @@ async function onClickLight(value: number) {
 
 async function onClickLightStatus() {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 7,
     param2: 4,
     param3: 4,

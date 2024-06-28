@@ -47,12 +47,12 @@
 
 <script setup lang="ts">
 import { patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { Icon } from '@iconify/vue'
 import { useI18n } from 'vue-i18n'
 
-// 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 // 不同功能对应映射值
 const keyMap = {
@@ -73,7 +73,7 @@ const keyMap = {
 // 开启功能
 async function onClick(value: string | number) {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 2,
     param2: value,
     param3: 0,

@@ -1,5 +1,5 @@
 import { getCarInfo } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { Coordinate, Map, TileLayer } from 'maptalks'
 
 /**
@@ -67,7 +67,8 @@ export const jumpToCoordinate = (x: number, y: number) => {
  * 回到地图中心
  */
 export const backToCenter = async () => {
-  const res = await getCarInfo(currentCar.value)
+  const carStore = useCarStore()
+  const res = await getCarInfo(carStore.currentCar)
   const x = res.data.longitude
   const y = res.data.latitude
   jumpToCoordinate(x, y)

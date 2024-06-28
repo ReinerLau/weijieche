@@ -1,7 +1,7 @@
 import { Mode, Type, fetchNotProcessAlarm, fetchTimeoutAlarm, postAlarmHandling } from '@/api'
 import TemplateAlarmDialog from '@/components/TemplateAlarmDialog.vue'
-import { currentCar } from '@/shared'
 import { alarmDialogVisible, alarmMarkerLayer } from '@/shared/map/alarm'
+import { useCarStore } from '@/stores/car'
 import { i18n, initWebSocket } from '@/utils'
 import { Icon } from '@iconify/vue'
 import { useVirtualList } from '@vueuse/core'
@@ -77,6 +77,8 @@ export const useNotification = () => {
 
   // 国际化
   const { t } = useI18n()
+
+  const carStore = useCarStore()
 
   // 警报音频 dom 元素
   const alarmRef: Ref<HTMLMediaElement | undefined> = ref()
@@ -279,7 +281,7 @@ export const useNotification = () => {
 
   const activeNoProcessAlarm = async () => {
     await postAlarmHandling({
-      code: currentCar.value,
+      code: carStore.currentCar,
       mode: Mode.ACTIVE,
       type: 1,
       opencvRecordId: notProcessData.value?.id

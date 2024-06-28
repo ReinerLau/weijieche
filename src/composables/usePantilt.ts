@@ -1,5 +1,5 @@
 import { patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref, watch } from 'vue'
 
 // 不同功能映射值
@@ -23,6 +23,8 @@ export const verticalAngle = ref(0)
 export const usePantilt = () => {
   const pantiltX = ref(2048)
   const pantiltY = ref(2048)
+
+  const carStore = useCarStore()
 
   // const updateLeft = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.LEFT), 500)
   // const updateRight = throttle(() => onClickPantilt(Type.DIRECTION, keyMap.RIGHT), 500)
@@ -68,7 +70,7 @@ export const usePantilt = () => {
       verticalAngle.value = 0
     }
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 3,
       param2,
       param3,

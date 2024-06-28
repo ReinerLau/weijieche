@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useCarStore = defineStore('car', () => {
-  const currentCar = ref<string | undefined>()
+  const currentCar = ref<string>('')
   const carList = ref<Car[]>([])
 
   const setCurrentCar = (code: string) => {

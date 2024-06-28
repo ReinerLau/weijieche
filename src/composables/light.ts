@@ -1,10 +1,11 @@
 import { patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 
 export const useLight = () => {
+  const carStore = useCarStore()
   const openFloodingLight = () => {
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 7,
       param2: 1,
       param3: 3,
@@ -16,7 +17,7 @@ export const useLight = () => {
 
   const toggleAlarmLight = (isOpen: boolean) => {
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 8,
       param2: isOpen ? 1 : 0,
       param3: 255,

@@ -11,17 +11,19 @@
 
 <script setup lang="ts">
 import { controlAlarmLight } from '@/api/control'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-// 国际化
+
 const { t } = useI18n()
+const carStore = useCarStore()
+
 //警告灯是否开启
 const alarmLight = ref(false)
 async function handleAlarmLight(value: boolean) {
   alarmLight.value = !alarmLight.value
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     type: value ? 1 : 0
   }
   await controlAlarmLight(data)

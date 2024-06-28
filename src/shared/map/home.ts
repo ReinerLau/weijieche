@@ -1,9 +1,9 @@
 import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api'
+import { useCarStore } from '@/stores/car'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { ConnectorLine, LineString, Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
-import { currentCar } from '..'
 import { clearMenu, map } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
 import { endRecording } from './record'
@@ -237,8 +237,9 @@ export const createHomePathToolbarEvent = () => {
 }
 
 export const startHomeToolbarEvent = async () => {
+  const carStore = useCarStore()
   if (endRecording()) {
-    const res: any = await goHome(currentCar.value)
+    const res: any = await goHome(carStore.currentCar)
     ElMessage({
       type: 'success',
       message: res.message

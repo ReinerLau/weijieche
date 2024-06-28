@@ -1,15 +1,16 @@
 import { patrolingCruise } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref } from 'vue'
 import { birStatus } from './useUpperControl'
 
 const disperseMode = ref(false)
 const talkBack = ref(false)
 export const useBirdAway = () => {
+  const carStore = useCarStore()
   function controlLaser() {
     disperseMode.value = !disperseMode.value
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 7,
       param2: 1,
       param3: disperseMode.value ? 6 : 7,
@@ -21,7 +22,7 @@ export const useBirdAway = () => {
   function handleTalkBack() {
     talkBack.value = !talkBack.value
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 5,
       param2: talkBack.value ? 1 : 2,
       param3: 255,
@@ -32,7 +33,7 @@ export const useBirdAway = () => {
 
   async function onClickBirdAway(value: number) {
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 6,
       param2: value,
       param3: 255,
@@ -43,7 +44,7 @@ export const useBirdAway = () => {
 
   async function onClickBirdStatus() {
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 6,
       param2: 4,
       param3: 255,

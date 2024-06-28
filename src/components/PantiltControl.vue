@@ -129,15 +129,15 @@ import {
   verticalAngle,
   verticalSpeed
 } from '@/composables/usePantilt'
+import { useCarStore } from '@/stores/car'
 import { Icon } from '@iconify/vue'
 import { debounce } from 'lodash'
 import { useI18n } from 'vue-i18n'
-import { currentCar } from '../shared/index'
 
 const { onClickPantilt, PantiltMode } = usePantilt()
 
-// 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 const Types = {
   ANGLE: 5,
@@ -161,7 +161,7 @@ function createDebouce(param2: number) {
       array.push(verticalAngle.value)
     }
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 3,
       param2,
       param3: array.join(','),

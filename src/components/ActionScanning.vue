@@ -18,12 +18,14 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api/control'
 import { horizonAngle, verticalAngle } from '@/composables/usePantilt'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ElInputNumber } from 'element-plus'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-// 国际化
+
 const { t } = useI18n()
+const carStore = useCarStore()
+
 // 按钮组合
 const buttonList = [
   {
@@ -39,14 +41,12 @@ const buttonList = [
 const stopTime = ref(0)
 async function onClick(value: number) {
   if (value === 1) {
-    console.log(horizonAngle.value)
-
     let array: any = []
     array.push(horizonAngle.value)
     array.push(verticalAngle.value)
     array.push(stopTime.value)
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 9,
       param2: value,
       param3: array.join(','),
@@ -55,7 +55,7 @@ async function onClick(value: number) {
     patrolingCruise(data)
   } else if (value === 2) {
     const data = {
-      code: currentCar.value,
+      code: carStore.currentCar,
       param1: 9,
       param2: value,
       param3: 255,

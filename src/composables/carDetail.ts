@@ -1,5 +1,5 @@
 import { getCarInfo } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref, type Ref } from 'vue'
 
 export let intervalId: any
@@ -24,6 +24,7 @@ export const getDetailDrawer = async (value: boolean) => {
 }
 
 export async function updateData() {
-  const res = await getCarInfo(currentCar.value)
+  const carStore = useCarStore()
+  const res = await getCarInfo(carStore.currentCar!)
   statusData.value = res.data
 }

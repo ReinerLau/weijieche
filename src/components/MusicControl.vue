@@ -50,11 +50,12 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api/control'
 import { musicList, musicMessage } from '@/composables/useUpperControl'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 // 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 // 按钮组合
 const buttonList = [
@@ -120,7 +121,7 @@ const musicListNumber: any = ref([])
 
 async function onClickStatus() {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 4,
     param2: 11,
     param3: 255,
@@ -139,7 +140,7 @@ async function onClickStatus() {
 
 async function onClickMusicList() {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 4,
     param2: 12,
     param3: 255,
@@ -153,7 +154,7 @@ async function onClickMusicList() {
 
 async function onClickMusic(value: number) {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 4,
     param2: value,
     param3: 255,
@@ -165,7 +166,7 @@ async function onClickMusic(value: number) {
 const musicNum = ref('')
 async function changeMusic(val: string) {
   const data = {
-    code: currentCar.value,
+    code: carStore.currentCar,
     param1: 4,
     param2: 5,
     param3: Number(val) + 1,
