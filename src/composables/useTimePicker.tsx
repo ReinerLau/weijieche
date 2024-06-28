@@ -1,24 +1,22 @@
 import {
   dayjs,
-  type DateModelType,
-  type DateOrDates,
-  ElSelect,
-  ElOption,
-  ElDatePicker,
   ElButton,
+  ElDatePicker,
+  ElOption,
+  ElScrollbar,
+  ElSelect,
   ElTooltip,
-  ElScrollbar
+  type DateModelType,
+  type DateOrDates
 } from 'element-plus'
 import { ref, type FunctionalComponent, type Ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 
-import ExitFill from '~icons/mingcute/exit-fill'
-import HomePage from '~icons/dashicons/admin-site'
-
-import { useRouter } from 'vue-router'
+import { useInternational, useTheme } from '@/composables'
 import { setCookie, setToken } from '@/utils'
-import { useTheme, useInternational } from '@/composables'
+import { Icon } from '@iconify/vue'
+import { useRouter } from 'vue-router'
 
 interface QueryTimeItem {
   label: string
@@ -143,7 +141,7 @@ export const useTimePicker = () => {
             <div class="mr-3">
               <ElTooltip content={t('cao-kong-duan')}>
                 <ElButton link onClick={() => jumpHome()}>
-                  <HomePage />
+                  <Icon icon="dashicons:admin-site"></Icon>
                 </ElButton>
               </ElTooltip>
             </div>
@@ -153,7 +151,7 @@ export const useTimePicker = () => {
             </div>
             <ElTooltip content={t('tui-chu-deng-lu')}>
               <ElButton link onClick={() => exitHome()}>
-                <ExitFill />
+                <Icon icon="mingcute:exit-fill"></Icon>
               </ElButton>
             </ElTooltip>
           </div>

@@ -4,18 +4,26 @@
     <div class="flex justify-center mb-2">
       <el-row class="w-48">
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClickPantilt(Type.UP, verticalSpeed)">
+          <el-button
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(PantiltMode.UP, verticalSpeed)"
+          >
             <Icon icon="bxs:up-arrow"></Icon>
           </el-button>
         </el-col>
         <el-row class="w-full">
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClickPantilt(Type.LEFT, horizonSpeed)">
+            <el-button
+              size="large"
+              class="w-full"
+              @click="onClickPantilt(PantiltMode.LEFT, horizonSpeed)"
+            >
               <Icon icon="bxs:left-arrow"></Icon>
             </el-button>
           </el-col>
           <el-col :span="8">
-            <el-button size="large" class="w-full" @click="onClickPantilt(Type.STOP, 255)">
+            <el-button size="large" class="w-full" @click="onClickPantilt(PantiltMode.STOP, 255)">
               <Icon icon="icomoon-free:switch"></Icon>
             </el-button>
           </el-col>
@@ -23,14 +31,18 @@
             <el-button
               size="large"
               class="w-full"
-              @click="onClickPantilt(Type.RIGHT, horizonSpeed)"
+              @click="onClickPantilt(PantiltMode.RIGHT, horizonSpeed)"
             >
               <Icon icon="bxs:right-arrow"></Icon>
             </el-button>
           </el-col>
         </el-row>
         <el-col :span="8" :offset="8">
-          <el-button size="large" class="w-full" @click="onClickPantilt(Type.DOWN, verticalSpeed)">
+          <el-button
+            size="large"
+            class="w-full"
+            @click="onClickPantilt(PantiltMode.DOWN, verticalSpeed)"
+          >
             <Icon icon="bxs:down-arrow"></Icon>
           </el-button>
         </el-col>
@@ -39,17 +51,17 @@
     <div class="my-3">
       <el-row :gutter="8">
         <el-col :span="8">
-          <el-button size="large" class="w-full" @click="onClickPantilt(Type.RESET, 255)">{{
+          <el-button size="large" class="w-full" @click="onClickPantilt(PantiltMode.RESET, 255)">{{
             t('fu-wei')
           }}</el-button>
         </el-col>
         <el-col :span="8">
-          <el-button size="large" class="w-full" @click="onClickPantilt(Type.RECALL, 255)">{{
+          <el-button size="large" class="w-full" @click="onClickPantilt(PantiltMode.RECALL, 255)">{{
             t('che-shou')
           }}</el-button>
         </el-col>
         <el-col :span="8">
-          <el-button size="large" class="w-full" @click="onClickPantilt(Type.INITIAL, 255)">
+          <el-button size="large" class="w-full" @click="onClickPantilt(PantiltMode.INITIAL, 255)">
             {{ t('chu-shi-hua') }}
           </el-button>
         </el-col>
@@ -122,7 +134,7 @@ import { debounce } from 'lodash'
 import { useI18n } from 'vue-i18n'
 import { currentCar } from '../shared/index'
 
-const { onClickPantilt, Type } = usePantilt()
+const { onClickPantilt, PantiltMode } = usePantilt()
 
 // 国际化
 const { t } = useI18n()
