@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { useLight } from '../useLight'
+import { useLight } from '../light'
 
 describe('灯光控制', () => {
   vi.mock('@/shared', () => ({

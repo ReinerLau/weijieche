@@ -14,9 +14,9 @@ import type { Ref } from 'vue'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BottomButtons, TopButtons, useConsoleButton } from './consoleButtons'
+import { useLight } from './light'
 import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
-import { useLight } from './useLight'
 import { usePantilt } from './usePantilt'
 
 // 手柄、方向盘相关逻辑
