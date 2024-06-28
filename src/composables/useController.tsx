@@ -1,11 +1,5 @@
 import { patrolingRemote } from '@/api/control'
-import {
-  controllerTypes,
-  currentController,
-  currentControllerType,
-  pressedButtons,
-  pressedTopButton
-} from '@/shared'
+import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -19,18 +13,20 @@ import {
 import type { Ref } from 'vue'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { BottomButtons, TopButtons, useConsoleButton } from './consoleButtons'
+import { useDisperse } from './disperse'
+import { useLight } from './light'
 import { useBirdAway } from './useBirdAway'
 import { carMode, useControlSection } from './useControlSection'
 import { usePantilt } from './usePantilt'
 
-const oldPressedValue = {
-  top: 0,
-  bottom: 0
-}
-
 // 手柄、方向盘相关逻辑
 export const useController = (currentCar: any) => {
   const { t } = useI18n()
+  const { onButtonDown: onBottomButtonDown } = useConsoleButton()
+  const { onButtonDown: onTopButtonDown } = useConsoleButton()
+  const { openFloodingLight, toggleAlarmLight } = useLight()
+  const { toggleDisperse } = useDisperse()
 
   // 已连接的控制器
   const controllers: Ref<Gamepad[]> = ref([])
@@ -129,14 +125,9 @@ export const useController = (currentCar: any) => {
   }
 
   function getJoyStickValue(value1: number, value2: number) {
+    // 十进制向左移动 8 位并进行逻辑与操作
     let result = (value1 << 8) | value2
     result = parseFloat(((result - 2048) / 4095).toFixed(1)) * 2000
-    return result
-  }
-
-  function getPressedButton(newValue: number, type: 'top' | 'bottom') {
-    const result = Math.abs(newValue - oldPressedValue[type])
-    oldPressedValue[type] = newValue
     return result
   }
 
@@ -202,49 +193,45 @@ export const useController = (currentCar: any) => {
   })
 
   const { setMode, modeKey } = useControlSection()
-  const { controlLaser, onClickBirdAway } = useBirdAway()
-  const { onClickPantilt, Type, pantiltX, pantiltY } = usePantilt()
+  const { onClickBirdAway } = useBirdAway()
+  const { onClickPantilt, PantiltMode, pantiltX, pantiltY } = usePantilt()
 
-  const actionMap = new Map([
+  const BottomButtonActionMap = new Map<BottomButtons, (status: number) => void>([
     [
-      128,
-      () => {
-        if (carMode.value === modeKey.STOP) {
-          setMode(modeKey.AUTO)
-        } else if (carMode.value === modeKey.AUTO) {
+      BottomButtons.MANUAL,
+      (status: number) => {
+        if (status) {
+          setMode(modeKey.MANUAL)
+        } else {
           setMode(modeKey.STOP)
         }
       }
     ],
-    [64, () => controlLaser()],
-    [32, () => onClickBirdAway(5)],
-    [16, () => onClickBirdAway(6)],
-    [8, () => onClickBirdAway(7)],
-    [4, () => onClickBirdAway(8)],
-    [2, () => setMode(modeKey.MANUAL)],
-    [1, () => onClickPantilt(Type.RESET, 255)]
+    [BottomButtons.STRONG_LIGHT, (status: number) => status && openFloodingLight()],
+    [BottomButtons.AMPLIFIER_OPEN, (status: number) => toggleDisperse(status ? true : false)],
+    [BottomButtons.AMPLIFIER_CLOSE, (status: number) => toggleAlarmLight(status ? true : false)],
+    [BottomButtons.VOICE, (status: number) => status && onClickBirdAway(7)],
+    [BottomButtons.END_AUDIO, (status: number) => status && onClickBirdAway(8)],
+    [
+      BottomButtons.AUTO,
+      (status: number) => {
+        if (status) {
+          setMode(modeKey.AUTO)
+        } else {
+          setMode(modeKey.STOP)
+        }
+      }
+    ],
+    [
+      BottomButtons.PANTILT_RESET,
+      (status: number) => status && onClickPantilt(PantiltMode.RECALL, 255)
+    ]
   ])
 
-  const actionTopMap = new Map([
-    [32, () => onClickBirdAway(9)],
-    [16, () => onClickBirdAway(10)]
+  const TopButtonActionMap = new Map<TopButtons, (status: number) => void>([
+    [TopButtons.AUDIO_1, (status: number) => status && onClickBirdAway(9)],
+    [TopButtons.AUDIO_2, (status: number) => status && onClickBirdAway(10)]
   ])
-
-  watch(pressedButtons, (val) => {
-    if (val !== 0) {
-      console.log(val)
-      const actionGetter = actionMap.get(val)
-      actionGetter && actionGetter()
-    }
-  })
-
-  watch(pressedTopButton, (val) => {
-    if (val !== 0) {
-      console.log(val)
-      const actionGetter = actionTopMap.get(val)
-      actionGetter && actionGetter()
-    }
-  })
 
   // 设置映射的弹窗组件
   const ControllerMapDialog = () => (
@@ -338,14 +325,15 @@ export const useController = (currentCar: any) => {
               if (value.length === 19) {
                 // console.clear()
                 // console.log(value)
+                // 只有按住油门摇杆上方红色才能修改速度
                 if (value[15] === 32) {
                   speed.value = getJoyStickValue(value[12], value[13])
                 } else {
                   speed.value = 0
                 }
                 direction.value = getJoyStickValue(value[2], value[3])
-                pressedButtons.value = getPressedButton(value[16], 'bottom')
-                pressedTopButton.value = getPressedButton(value[17], 'top')
+                onBottomButton(value[16])
+                onTopButton(value[17])
                 pantiltX.value = (value[6] << 8) | value[7]
                 pantiltY.value = (value[8] << 8) | value[9]
               }
@@ -359,6 +347,22 @@ export const useController = (currentCar: any) => {
       onPort()
     } catch {
       ElMessage.error('检测到已连接')
+    }
+  }
+
+  const onBottomButton = (value: number) => {
+    const bottomButton = onBottomButtonDown(value)
+    if (bottomButton) {
+      const actionGetter = BottomButtonActionMap.get(bottomButton.index)
+      actionGetter && actionGetter(bottomButton.buttonStatus)
+    }
+  }
+
+  const onTopButton = (value: number) => {
+    const pressedButton = onTopButtonDown(value)
+    if (pressedButton) {
+      const actionGetter = TopButtonActionMap.get(pressedButton.index)
+      actionGetter && actionGetter(pressedButton.buttonStatus)
     }
   }
 
