@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getCameraListByCode } from '@/api'
 import CarDialog from '@/components/CarDialog.vue'
 import MapContainer from '@/components/MapContainer'
 import TopControl from '@/components/TopControl.vue'
@@ -15,22 +14,19 @@ import {
   useTheme
 } from '@/composables'
 import { detailDrawerVisible } from '@/composables/carDetail'
-import { cameraList } from '@/shared'
-import { useCarStore } from '@/stores/car'
+import { useConfigStore } from '@/stores/config'
 import { Icon } from '@iconify/vue'
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 
-const { ConfigSection, isConfig, configType, configTypes } = useConfig()
+const { ConfigSection, configType, configTypes } = useConfig()
 
 const { CarRelevantDrawer, CarRelevantController } = useCarRelevant({
-  isConfig,
   configType,
   configTypes
 })
 
 const { checkIsMobile, mainRef, isMobile } = useResponsive()
-
-const carStore = useCarStore()
+const configStore = useConfigStore()
 
 window.onresize = () => {
   checkIsMobile()
@@ -46,15 +42,6 @@ const { LogoutController } = useLogout()
 const { NotificationDrawer, NotificationController } = useNotification()
 const { ThemeController } = useTheme()
 const { InternationalController } = useInternational()
-
-// 每次切换车辆都要重新获取对应的摄像头数据
-watch(
-  () => carStore.currentCar,
-  async () => {
-    const res = await getCameraListByCode(carStore.currentCar, 'patroling')
-    cameraList.value = res.data
-  }
-)
 </script>
 
 <template>
@@ -71,10 +58,10 @@ watch(
         </div>
       </div>
     </el-header>
-    <el-main v-if="isConfig" id="main" class="h-0">
+    <el-main v-if="configStore.isConfig" id="main" class="h-0">
       <ConfigSection />
     </el-main>
-    <el-container v-show="!isConfig">
+    <el-container v-show="!configStore.isConfig">
       <el-header>
         <TopControl />
       </el-header>

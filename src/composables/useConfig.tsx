@@ -11,6 +11,7 @@ import {
   updateDevice
 } from '@/api'
 import { useCarStore } from '@/stores/car'
+import { useConfigStore } from '@/stores/config'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
   ElButton,
@@ -36,6 +37,7 @@ import { useI18n } from 'vue-i18n'
 export const useConfig = () => {
   const { t } = useI18n()
   const carStore = useCarStore()
+  const configStore = useConfigStore()
 
   // 不同的配置类型
   const configTypes = {
@@ -43,18 +45,15 @@ export const useConfig = () => {
     DEVICE: 'DEVICE'
   }
 
-  // 当前是否处于配置模式下
-  const isConfig = ref(false)
   // 当前类型
   const configType = ref('')
   // 当前配置数据
   const configData: Ref<any[]> = ref([])
   // 每次进入配置模式重新获取配置数据
   watch(configType, () => getList())
-  watch(isConfig, () => getList())
   watch(
-    () => carStore.currentCar,
-    () => (isConfig.value = false)
+    () => configStore.isConfig,
+    () => getList()
   )
 
   // 设备类型数据
@@ -453,7 +452,7 @@ export const useConfig = () => {
   // 配置表格区域
   const ConfigSection = () => (
     <Fragment>
-      <ElPageHeader onBack={() => (isConfig.value = false)}>
+      <ElPageHeader onBack={() => configStore.setIsConfig(false)}>
         {{
           title: () => t('fan-hui')
         }}
@@ -477,7 +476,6 @@ export const useConfig = () => {
   )
   return {
     ConfigSection,
-    isConfig,
     configType,
     configTypes
   }

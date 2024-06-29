@@ -3,6 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCarSelector } from '../useCarSelector'
 
 describe('选择车辆', () => {
+  vi.mock('@/business/afterChangeCar', () => ({
+    default: vi.fn()
+  }))
+
   const getCarList = vi.hoisted(() => vi.fn())
   beforeEach(() => {
     vi.mock('@/api/list', () => ({
