@@ -129,16 +129,15 @@ import {
   verticalAngle,
   verticalSpeed
 } from '@/composables/usePantilt'
-import { haveCurrentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { Icon } from '@iconify/vue'
 import { debounce } from 'lodash'
 import { useI18n } from 'vue-i18n'
-import { currentCar } from '../shared/index'
 
 const { onClickPantilt, PantiltMode } = usePantilt()
 
-// 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 const Types = {
   ANGLE: 5,
@@ -154,23 +153,21 @@ const changeSpeed = createDebouce(Types.SPEED)
 // 转换成防抖函数，防止过多调度
 function createDebouce(param2: number) {
   return debounce(async () => {
-    if (haveCurrentCar()) {
-      let array = []
-      array.push(horizonSpeed.value)
-      array.push(verticalSpeed.value)
-      if (param2 === Types.ANGLE) {
-        array.push(horizonAngle.value)
-        array.push(verticalAngle.value)
-      }
-      const data = {
-        code: currentCar.value,
-        param1: 3,
-        param2,
-        param3: array.join(','),
-        param4: 255
-      }
-      patrolingCruise(data)
+    let array = []
+    array.push(horizonSpeed.value)
+    array.push(verticalSpeed.value)
+    if (param2 === Types.ANGLE) {
+      array.push(horizonAngle.value)
+      array.push(verticalAngle.value)
     }
+    const data = {
+      code: carStore.currentCar,
+      param1: 3,
+      param2,
+      param3: array.join(','),
+      param4: 255
+    }
+    patrolingCruise(data)
   }, 500)
 }
 

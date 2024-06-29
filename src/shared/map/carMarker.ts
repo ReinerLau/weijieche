@@ -1,5 +1,5 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
-import { currentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { Marker, VectorLayer } from 'maptalks'
@@ -37,10 +37,11 @@ export const hasCoordinate = (data: CarInfo) => {
 }
 
 export const isTheCar = (data: CarInfo) => {
+  const carStore = useCarStore()
   return (
-    data.rid === currentCar.value ||
-    data.robotid === currentCar.value ||
-    data.robotCode === currentCar.value
+    data.rid === carStore.currentCar ||
+    data.robotid === carStore.currentCar ||
+    data.robotCode === carStore.currentCar
   )
 }
 // 关闭 websocket

@@ -1,7 +1,7 @@
 import { createTimingTask, getTemplateList } from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
 import { handleCreatePlan } from '@/shared/map'
 import { scheduleDialogVisible } from '@/shared/map/patrolPath'
+import { useCarStore } from '@/stores/car'
 import {
   ElButton,
   ElCheckbox,
@@ -41,6 +41,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n()
+    const carStore = useCarStore()
     // 表单数据
     const formData = ref<{
       loopConditions: string
@@ -69,22 +70,20 @@ export default defineComponent({
 
     // 保存
     async function handleConfirm() {
-      if (haveCurrentCar()) {
-        if (isChange.value) {
-          const data: any = { ...toRaw(formData.value) }
-          data.conditions = formData.value.conditions.join(',')
-          data.code = currentCar.value
-          const res: any = await createTimingTask(data)
-          ElMessage({
-            type: 'success',
-            message: res.message
-          })
-        } else {
-          handleCreatePlan()
-        }
-        scheduleDialogVisible.value = false
-        formData.value = cloneDeep(defaultFormData)
+      if (isChange.value) {
+        const data: any = { ...toRaw(formData.value) }
+        data.conditions = formData.value.conditions.join(',')
+        data.code = carStore.currentCar
+        const res: any = await createTimingTask(data)
+        ElMessage({
+          type: 'success',
+          message: res.message
+        })
+      } else {
+        handleCreatePlan()
       }
+      scheduleDialogVisible.value = false
+      formData.value = cloneDeep(defaultFormData)
     }
 
     // 按天、单次情况下需要禁用周选择

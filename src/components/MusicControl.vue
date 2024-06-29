@@ -50,11 +50,12 @@
 <script setup lang="ts">
 import { patrolingCruise } from '@/api/control'
 import { musicList, musicMessage } from '@/composables/useUpperControl'
-import { currentCar, haveCurrentCar } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 // 国际化
 const { t } = useI18n()
+const carStore = useCarStore()
 
 // 按钮组合
 const buttonList = [
@@ -119,67 +120,59 @@ watch(musicMessage, () => {
 const musicListNumber: any = ref([])
 
 async function onClickStatus() {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 4,
-      param2: 11,
-      param3: 255,
-      param4: 255
-    }
-    await patrolingCruise(data)
-    if (musicMessage.value) {
-      const { volumeValue, index, mode, name, status } = musicMessage.value
-      musicVolumeValue.value = volumeValue
-      musicIndex.value = index
-      musicMode.value = mode
-      musicName.value = name
-      musicStatus.value = status
-    }
+  const data = {
+    code: carStore.currentCar,
+    param1: 4,
+    param2: 11,
+    param3: 255,
+    param4: 255
+  }
+  await patrolingCruise(data)
+  if (musicMessage.value) {
+    const { volumeValue, index, mode, name, status } = musicMessage.value
+    musicVolumeValue.value = volumeValue
+    musicIndex.value = index
+    musicMode.value = mode
+    musicName.value = name
+    musicStatus.value = status
   }
 }
 
 async function onClickMusicList() {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 4,
-      param2: 12,
-      param3: 255,
-      param4: 255
-    }
-    await patrolingCruise(data)
-    if (musicList.value.length > 0) {
-      musicListNumber.value = musicList.value
-    }
+  const data = {
+    code: carStore.currentCar,
+    param1: 4,
+    param2: 12,
+    param3: 255,
+    param4: 255
+  }
+  await patrolingCruise(data)
+  if (musicList.value.length > 0) {
+    musicListNumber.value = musicList.value
   }
 }
 
 async function onClickMusic(value: number) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 4,
-      param2: value,
-      param3: 255,
-      param4: 255
-    }
-    patrolingCruise(data)
+  const data = {
+    code: carStore.currentCar,
+    param1: 4,
+    param2: value,
+    param3: 255,
+    param4: 255
   }
+  patrolingCruise(data)
 }
 
 const musicNum = ref('')
 async function changeMusic(val: string) {
-  if (haveCurrentCar()) {
-    const data = {
-      code: currentCar.value,
-      param1: 4,
-      param2: 5,
-      param3: Number(val) + 1,
-      param4: 255
-    }
-    patrolingCruise(data)
-    musicNum.value = val
+  const data = {
+    code: carStore.currentCar,
+    param1: 4,
+    param2: 5,
+    param3: Number(val) + 1,
+    param4: 255
   }
+  patrolingCruise(data)
+  musicNum.value = val
 }
 </script>

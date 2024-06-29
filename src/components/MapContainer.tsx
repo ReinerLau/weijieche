@@ -1,14 +1,12 @@
-import { getCarInfo } from '@/api'
 import DebugController from '@/components/DebugController.vue'
 import PointConfigDrawer from '@/components/PointConfigDrawer.vue'
 import PointSettingFormDialog from '@/components/PointSettingFormDialog'
 import RecordPointCount from '@/components/RecordPointCount.vue'
 import ToolbarController from '@/components/ToolbarController.vue'
 import VideoController from '@/components/VideoController.vue'
-import { currentCar } from '@/shared'
 import { pathDataPoints, toolbarItems } from '@/shared/map'
 import { initAlarmMarkerLayer } from '@/shared/map/alarm'
-import { initMap, jumpToCoordinate } from '@/shared/map/base'
+import { initMap } from '@/shared/map/base'
 import { initDrawTool } from '@/shared/map/drawTool'
 import { handleConfirmFilePath } from '@/shared/map/file'
 import { initHomePath, initHomePathLayer } from '@/shared/map/home'
@@ -27,16 +25,14 @@ import TemplateDialog from '@/components/TemplateDialog.vue'
 import TemplateSearchDialog from '@/components/TemplateSearchDialog.vue'
 import { alarmMessageData, initAlarmPointLayer } from '@/shared/map/alarmPoint'
 import {
-  addMarker,
   initMakerLayer,
   initMarker,
   isConnectedWS,
   newCarData,
-  onCarPoisition,
   tryCloseWS
 } from '@/shared/map/carMarker'
 import { onMapDBClick } from '@/shared/map/debug'
-import { isRecord, isRecordPath, recordPathLayer, recordPathPoints } from '@/shared/map/record'
+import { isRecord, isRecordPath, recordPathLayer } from '@/shared/map/record'
 import { initRoadnetPathLayer } from '@/shared/map/roadnet'
 import { initTaskpathLayer } from '@/shared/map/taskPath'
 import { Icon } from '@iconify/vue'
@@ -52,14 +48,6 @@ export default defineComponent({
   },
   setup(props) {
     const mapRef = ref<HTMLDivElement>()
-
-    // 监听到当前车辆切换之后地图中心跳转到车辆位置
-    watch(currentCar, async (code: string) => {
-      const res = await getCarInfo(code)
-      const x = res.data.longitude
-      const y = res.data.latitude
-      jumpToCoordinate(x, y)
-    })
 
     onMounted(() => {
       initMap(mapRef.value!)
@@ -77,14 +65,6 @@ export default defineComponent({
       initTaskPoints()
 
       onMapDBClick()
-    })
-
-    // 监听到选择车辆后连接 websocket
-    watch(currentCar, (code: string) => {
-      recordPathPoints.length = 0
-      addMarker(code)
-      tryCloseWS()
-      onCarPoisition()
     })
 
     // 关闭页面前先关闭 websocket

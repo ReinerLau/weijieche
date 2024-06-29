@@ -1,5 +1,5 @@
-import { connectCar } from '@/api'
 import { offCarWs, openCarWs } from '@/api/user'
+import carStatus from '@/business/carStatus'
 import ActionScanning from '@/components/ActionScanning.vue'
 import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'
@@ -8,8 +8,8 @@ import FrameSwitchOver from '@/components/FrameSwitchOver.vue'
 import LightControl from '@/components/LightControl.vue'
 import MusicControl from '@/components/MusicControl.vue'
 import PantiltControl from '@/components/PantiltControl.vue'
-import { currentCar, haveCurrentCar } from '@/shared'
 import { useCarStore } from '@/stores/car'
+import { useConfigStore } from '@/stores/config'
 import {
   ElButton,
   ElCol,
@@ -21,20 +21,15 @@ import {
   ElSwitch
 } from 'element-plus'
 import type { Ref } from 'vue'
-import { Fragment, computed, ref, watch } from 'vue'
+import { Fragment, computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCarStatus } from './useCarStatus'
 import { alarmLight, controlLight, handleAlarmLight } from './usePantiltControl'
 import { birStatus, lightStatus, musicList, musicMessage, useUpperControl } from './useUpperControl'
-// 抽屉是否可见
 export const carSettingDrawerVisible = ref(false)
-// 选择车左边抽屉相关
 export const useCarRelevant = ({
-  isConfig,
   configType,
   configTypes
 }: {
-  isConfig: Ref<boolean>
   configType: Ref<string>
   configTypes: {
     CAMERA: string
@@ -45,54 +40,29 @@ export const useCarRelevant = ({
   const { t } = useI18n()
   const { isOpenFeedback } = useUpperControl()
   const carStore = useCarStore()
-  // 当前车辆状态
-  const currentCarStatus = () => {
-    return carStore.carList.find((item) => item.code === currentCar.value)?.status === '1'
-      ? '✅'
-      : '🚫'
-  }
+  const configStore = useConfigStore()
 
-  // 当前车辆电量
-  // const currentCarBattery = () => {
-  //   return carList.value.find((item) => item.code === currentCar.value)?.battery
-  // }
-
-  // const currentCarSpeed = () => {
-  //   return carList.value.find((item) => item.code === currentCar.value)?.speed
-  // }
+  onBeforeUnmount(carStatus.tryCloseWS)
 
   //是否断开连接
   const isConnection = ref(false)
 
   watch(isConnection, async () => {
-    if (haveCurrentCar()) {
-      if (isConnection.value) {
-        await openCarWs(currentCar.value)
-        ElMessage({
-          type: 'success',
-          message: t('yi-lian-jie')
-        })
-      } else {
-        await offCarWs(currentCar.value)
-        ElMessage({
-          type: 'success',
-          message: t('yi-duan-kai-lian-jie')
-        })
-      }
+    if (isConnection.value) {
+      await openCarWs(carStore.currentCar)
+      ElMessage({
+        type: 'success',
+        message: t('yi-lian-jie')
+      })
     } else {
-      isConnection.value = false
+      await offCarWs(carStore.currentCar)
+      ElMessage({
+        type: 'success',
+        message: t('yi-duan-kai-lian-jie')
+      })
     }
   })
 
-  const { NewCurrentCarStatus, NewCurrentCarBattery, NewCurrentCarSpeed } = useCarStatus(
-    currentCarStatus()
-  )
-
-  // 监听切换车辆后重新激活车辆
-  watch(currentCar, (code: string) => {
-    connectCar(code)
-    isConnection.value = false
-  })
   interface SwitchGroup {
     title: string
     ref: Ref<boolean>
@@ -221,7 +191,7 @@ export const useCarRelevant = ({
   const CarRelevantController = () => (
     <div class="flex items-center">
       <CarSelector></CarSelector>
-      <span class="mr-4">{NewCurrentCarStatus.value}</span>
+      <span class="mr-4">{carStatus.NewCurrentCarStatus}</span>
       <ElSwitch
         class="mr-4"
         v-model={isConnection.value}
@@ -231,10 +201,10 @@ export const useCarRelevant = ({
         size="small"
       />
       <span class="text-sm mr-4">
-        {t('dian-liang')}: {NewCurrentCarBattery.value || 0}%
+        {t('dian-liang')}: {carStatus.NewCurrentCarBattery.value || 0}%
       </span>
       <span class="text-sm mr-4">
-        {t('che-su')}: {NewCurrentCarSpeed.value || 0}m/s
+        {t('che-su')}: {carStatus.NewCurrentCarSpeed.value || 0}m/s
       </span>
       <ElButton
         class="mr-4"
@@ -250,7 +220,7 @@ export const useCarRelevant = ({
         class="mr-4"
         size="small"
         onClick={() => {
-          isConfig.value = true
+          configStore.setIsConfig(true)
           configType.value = configTypes.CAMERA
           carSettingDrawerVisible.value = false
         }}
@@ -260,7 +230,7 @@ export const useCarRelevant = ({
       <ElButton
         size="small"
         onClick={() => {
-          isConfig.value = true
+          configStore.setIsConfig(true)
           configType.value = configTypes.DEVICE
           carSettingDrawerVisible.value = false
         }}

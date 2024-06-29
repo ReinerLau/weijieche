@@ -1,5 +1,5 @@
 import { getCarList } from '@/api/list'
-import { currentCar } from '@/shared'
+import afterChangeCar from '@/business/afterChangeCar'
 import { useCarStore } from '@/stores/car'
 
 export const useCarSelector = () => {
@@ -7,7 +7,7 @@ export const useCarSelector = () => {
 
   const changeCar = (carCode: string) => {
     carStore.setCurrentCar(carCode)
-    currentCar.value = carCode
+    afterChangeCar(carCode)
   }
 
   const visibleChange = async (visible: boolean) => {

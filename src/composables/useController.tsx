@@ -1,5 +1,6 @@
 import { patrolingRemote } from '@/api/control'
 import { controllerTypes, currentController, currentControllerType, pressedButtons } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { useGamepad } from '@vueuse/core'
 import {
   ElDescriptions,
@@ -21,8 +22,9 @@ import { carMode, useControlSection } from './useControlSection'
 import { usePantilt } from './usePantilt'
 
 // 手柄、方向盘相关逻辑
-export const useController = (currentCar: any) => {
+export const useController = () => {
   const { t } = useI18n()
+  const carStore = useCarStore()
   const { onButtonDown: onBottomButtonDown } = useConsoleButton()
   const { onButtonDown: onTopButtonDown } = useConsoleButton()
   const { openFloodingLight, toggleAlarmLight } = useLight()
@@ -171,7 +173,7 @@ export const useController = (currentCar: any) => {
   function submitData() {
     const data = { x: speed.value, y: direction.value, seq }
 
-    patrolingRemote(currentCar.value, data).then(() => {
+    patrolingRemote(carStore.currentCar, data).then(() => {
       seq++
       if (seq > 254) {
         seq = 0

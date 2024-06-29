@@ -1,5 +1,5 @@
 import { createHomePath, deleteHomePath, getHomePath, goHome } from '@/api/home'
-import { currentCar, initMapLayerTool } from '@/shared'
+import { initMapLayerTool } from '@/shared'
 import { map } from '@/shared/map/base'
 import {
   clearDrawingHomePath,
@@ -21,6 +21,7 @@ import {
   startHomeToolbarEvent
 } from '@/shared/map/home'
 import { isRecord } from '@/shared/map/record'
+import { useCarStore } from '@/stores/car'
 import { flushPromises } from '@vue/test-utils'
 import * as el from 'element-plus'
 import { ConnectorLine, LineString, Marker } from 'maptalks'
@@ -49,6 +50,8 @@ describe('record', () => {
   beforeEach(() => {
     initMapLayerTool()
     initHomePathLayer()
+    const carStore = useCarStore()
+    carStore.setCurrentCar('003')
   })
 
   it('返航路线图层', () => {
@@ -190,7 +193,6 @@ describe('record', () => {
         message: ''
       }
     })
-    currentCar.value = '003'
     isRecord.value = false
     startHomeToolbarEvent()
     expect(goHome).toHaveBeenCalled()

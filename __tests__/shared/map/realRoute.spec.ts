@@ -1,4 +1,4 @@
-import { currentCar, initMapLayerTool } from '@/shared'
+import { initMapLayerTool } from '@/shared'
 import {
   initRealPath,
   initRealPathLayer,
@@ -6,6 +6,7 @@ import {
   realPathLayer,
   realPathPoints
 } from '@/shared/map/realRoute'
+import { useCarStore } from '@/stores/car'
 import { ConnectorLine, Marker } from 'maptalks'
 import { beforeEach, describe, expect, it } from 'vitest'
 
@@ -31,6 +32,8 @@ describe('巡逻路线展示', () => {
   beforeEach(() => {
     initMapLayerTool()
     initRealPathLayer()
+    const carStore = useCarStore()
+    carStore.setCurrentCar('003')
   })
 
   it('新建路线图层', () => {
@@ -39,7 +42,6 @@ describe('巡逻路线展示', () => {
 
   it('initRealPath', () => {
     isReal.value = true
-    currentCar.value = '003'
     initRealPath(testData)
     expect(realPathLayer.getGeometries()[0]).instanceOf(Marker)
     expect(realPathPoints.length).toBe(1)

@@ -3,7 +3,6 @@ import {
   baseModes,
   cameraList,
   cameraUrl,
-  currentCar,
   currentController,
   currentControllerType,
   modes
@@ -22,8 +21,6 @@ import { Fragment, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { detailDrawerVisible, getDetailDrawer, statusData } from './carDetail'
 import { useController } from './useController'
-//默认车速变量
-// export const carSpeed = ref(0)
 
 // 底部状态相关
 export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
@@ -65,29 +62,7 @@ export const useDetail = ({ isMobile }: { isMobile: Ref<boolean> }) => {
     controllerMapDialogVisible,
     direction,
     connectControlPan
-  } = useController(currentCar)
-
-  //设置默认车速
-  // async function settingCarSpeed(speed: number) {
-  //   carSpeed.value = speed
-  //   try {
-  //     const res: any = await updateCarSpeed({ code: currentCar.value, speed: carSpeed.value })
-  //     ElMessage({
-  //       type: 'success',
-  //       message: res.message
-  //     })
-  //   } catch {
-  //     ElMessage({
-  //       type: 'error',
-  //       message: t('che-su-xiu-gai-shi-bai')
-  //     })
-  //   }
-  // }
-
-  //默认速度改变，路线默认速度重置
-  // watch(carSpeed, () => {
-  //   pathPointsData.value = getLineCoordinates(pathPoints)
-  // })
+  } = useController()
 
   // 所有状态值
   const status = computed(() => [

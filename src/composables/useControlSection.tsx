@@ -1,5 +1,6 @@
 import { patrolingSetMode } from '@/api'
-import { currentCar, haveCurrentCar, mode } from '@/shared'
+import { mode } from '@/shared'
+import { useCarStore } from '@/stores/car'
 import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -14,14 +15,13 @@ export const carMode = ref<modeKey>(modeKey.STOP)
 
 export const useControlSection = () => {
   const { t } = useI18n()
+  const carStore = useCarStore()
 
   async function setMode(type: modeKey) {
     carMode.value = modeKey.STOP
-    if (haveCurrentCar()) {
-      await patrolingSetMode(currentCar.value, mode[type])
-      ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })
-      carMode.value = type
-    }
+    await patrolingSetMode(carStore.currentCar, mode[type])
+    ElMessage({ type: 'success', message: t('qie-huan-cheng-gong') })
+    carMode.value = type
   }
 
   return {

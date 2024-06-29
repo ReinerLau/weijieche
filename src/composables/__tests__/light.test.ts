@@ -1,14 +1,18 @@
-import { describe, expect, it, vi } from 'vitest'
+import { useCarStore } from '@/stores/car'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLight } from '../light'
 
 describe('灯光控制', () => {
-  vi.mock('@/shared', () => ({
-    currentCar: { value: 'test' },
-    haveCurrentCar: vi.fn(() => true)
-  }))
-  vi.mock('@/api', () => ({
-    patrolingCruise: vi.fn()
-  }))
+  beforeAll(() => {
+    vi.mock('@/api', () => ({
+      patrolingCruise: vi.fn()
+    }))
+  })
+
+  beforeEach(() => {
+    const carStore = useCarStore()
+    carStore.setCurrentCar('test')
+  })
 
   it('打开泛长光', () => {
     const { openFloodingLight } = useLight()

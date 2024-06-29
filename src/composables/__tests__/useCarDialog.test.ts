@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { useCarDialog } from '../useCarDialog'
 import { useCarSelector } from '../useCarSelector'
 
 describe('选择车辆弹窗', () => {
+  vi.mock('@/business/afterChangeCar', () => ({
+    default: vi.fn()
+  }))
+
   it('主页加载后弹出选择弹窗', () => {
     const { visible } = useCarDialog()
 

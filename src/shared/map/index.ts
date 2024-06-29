@@ -1,9 +1,9 @@
 import { sendMavlinkMission } from '@/api'
+import { useCarStore } from '@/stores/car'
 import { i18n } from '@/utils'
 import { ElMessage } from 'element-plus'
 import type { Marker } from 'maptalks'
 import { ref } from 'vue'
-import { currentCar, haveCurrentCar } from '..'
 import { backToCenter } from './base'
 import { clearDrawTool, drawTool } from './drawTool'
 import { fileUploadToolbarEvent } from './file'
@@ -45,7 +45,8 @@ export const havePath = () => {
 }
 // 下发任务
 export const handleCreatePlan = async () => {
-  if (haveCurrentCar() && havePath()) {
+  const carStore = useCarStore()
+  if (havePath()) {
     try {
       let res: any
       if (pathPointsData.value.length !== 0) {
@@ -54,7 +55,7 @@ export const handleCreatePlan = async () => {
               missionTemplateId: missionTemplateId.value
             }
           : {}
-        res = await sendMavlinkMission(pathPointsData.value, currentCar.value, params)
+        res = await sendMavlinkMission(pathPointsData.value, carStore.currentCar, params)
         ElMessage.success({
           message: res.message
         })

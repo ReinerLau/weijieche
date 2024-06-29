@@ -1,37 +1,43 @@
 import {
+  bindCamera,
+  createCamera,
+  createDevice,
+  deleteCamera,
+  deleteDevice,
+  getCameraList,
+  getDeviceListByCode,
+  getDeviceTypeList,
+  updateCamera,
+  updateDevice
+} from '@/api'
+import { useCarStore } from '@/stores/car'
+import { useConfigStore } from '@/stores/config'
+import type { FormInstance, FormRules } from 'element-plus'
+import {
   ElButton,
   ElDialog,
   ElDivider,
-  ElNotification,
   ElForm,
   ElFormItem,
   ElInput,
   ElMessage,
-  ElPageHeader,
-  ElTable,
-  ElTableColumn,
+  ElNotification,
   ElOption,
+  ElPageHeader,
   ElSelect,
-  ElSwitch
+  ElSwitch,
+  ElTable,
+  ElTableColumn
 } from 'element-plus'
-import { computed, ref, toRaw, watch, Fragment } from 'vue'
-import { bindCamera, createCamera, deleteCamera, getCameraList, updateCamera } from '@/api'
-import {
-  createDevice,
-  deleteDevice,
-  getDeviceListByCode,
-  updateDevice,
-  getDeviceTypeList
-} from '@/api'
-import { currentCar, haveCurrentCar } from '@/shared'
-import type { Ref, ComputedRef } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { ComputedRef, Ref } from 'vue'
+import { computed, Fragment, ref, toRaw, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 配置监控、配置外设相关
 export const useConfig = () => {
-  // 国际化
   const { t } = useI18n()
+  const carStore = useCarStore()
+  const configStore = useConfigStore()
 
   // 不同的配置类型
   const configTypes = {
@@ -39,16 +45,16 @@ export const useConfig = () => {
     DEVICE: 'DEVICE'
   }
 
-  // 当前是否处于配置模式下
-  const isConfig = ref(false)
   // 当前类型
   const configType = ref('')
   // 当前配置数据
   const configData: Ref<any[]> = ref([])
   // 每次进入配置模式重新获取配置数据
   watch(configType, () => getList())
-  watch(isConfig, () => getList())
-  watch(currentCar, () => (isConfig.value = false))
+  watch(
+    () => configStore.isConfig,
+    () => getList()
+  )
 
   // 设备类型数据
   const deviceTypeList = ref([])
@@ -57,10 +63,10 @@ export const useConfig = () => {
   async function getList() {
     let data: any[] = []
     if (configType.value === configTypes.CAMERA) {
-      const res = await getCameraList(currentCar.value, 'patroling')
+      const res = await getCameraList(carStore.currentCar, 'patroling')
       data = res.data.list || res.data
     } else if (configType.value === configTypes.DEVICE) {
-      const res = await getDeviceListByCode(currentCar.value, 'patroling')
+      const res = await getDeviceListByCode(carStore.currentCar, 'patroling')
       data = res.data || []
       const r = await getDeviceTypeList()
       deviceTypeList.value = r.data || []
@@ -88,7 +94,7 @@ export const useConfig = () => {
           label: t('guan-lian-zhuang-tai'),
           prop: 'rid',
           slot: (row: any) =>
-            currentCar.value && row.rid === currentCar.value ? t('yi-guan-lian') : ''
+            carStore.currentCar && row.rid === carStore.currentCar ? t('yi-guan-lian') : ''
         },
         {
           label: t('cao-zuo'),
@@ -101,7 +107,7 @@ export const useConfig = () => {
                 {t('bian-ji')}
               </ElButton>
               <ElButton link onClick={() => handleConnect(row.id, row.rid)}>
-                {currentCar.value && row.rid === currentCar.value
+                {carStore.currentCar && row.rid === carStore.currentCar
                   ? t('qu-xiao-guan-lian')
                   : t('guan-lian')}
               </ElButton>
@@ -264,7 +270,7 @@ export const useConfig = () => {
         {
           prop: 'rid',
           title: t('che-liang-bian-hao'),
-          slot: () => <ElInput v-model={currentCar.value} disabled></ElInput>
+          slot: () => <ElInput v-model={carStore.currentCar} disabled></ElInput>
         },
         {
           prop: 'name',
@@ -332,7 +338,7 @@ export const useConfig = () => {
 
   // 打开新增/编辑弹窗
   function handleVisible() {
-    if (!currentCar.value) {
+    if (!carStore.currentCar) {
       ElNotification({
         title: t('ti-shi'),
         message: t('qing-xuan-ze-che-liang')
@@ -375,7 +381,7 @@ export const useConfig = () => {
               res = await updateDevice(form.value)
             } else {
               form.value.isDel = 0
-              form.value.rid = currentCar.value
+              form.value.rid = carStore.currentCar
               form.value.rtype = 'patroling'
               form.value.status = Number(form.value.status)
               res = await createDevice(form.value)
@@ -400,16 +406,14 @@ export const useConfig = () => {
 
   // 关联摄像头
   async function handleConnect(id: string, rid: string) {
-    if (haveCurrentCar()) {
-      const data = {
-        id,
-        rid: rid === currentCar.value ? '' : currentCar.value,
-        rtype: 'patroling'
-      }
-      const res: any = await bindCamera(data)
-      ElMessage({ type: 'success', message: res.message })
-      getList()
+    const data = {
+      id,
+      rid: rid === carStore.currentCar,
+      rtype: 'patroling'
     }
+    const res: any = await bindCamera(data)
+    ElMessage({ type: 'success', message: res.message })
+    getList()
   }
 
   // 表单弹窗组件
@@ -448,7 +452,7 @@ export const useConfig = () => {
   // 配置表格区域
   const ConfigSection = () => (
     <Fragment>
-      <ElPageHeader onBack={() => (isConfig.value = false)}>
+      <ElPageHeader onBack={() => configStore.setIsConfig(false)}>
         {{
           title: () => t('fan-hui')
         }}
@@ -472,7 +476,6 @@ export const useConfig = () => {
   )
   return {
     ConfigSection,
-    isConfig,
     configType,
     configTypes
   }

@@ -1,21 +1,6 @@
-import { useCarStore } from '@/stores/car'
 import { ref, type Ref } from 'vue'
 import { initMap } from './map/base'
 import { initDrawTool } from './map/drawTool'
-
-/**
- * 当前选择的车辆编号
- */
-export const currentCar = ref('')
-
-/**
- * 校验是否已经选择车辆
- * @returns {boolean} true - 已选择车辆，false - 未选择车辆
- */
-export function haveCurrentCar(): boolean {
-  const carStore = useCarStore()
-  return carStore.haveCurrentCar()
-}
 
 /**
  * 车辆绑定的摄像头数据
