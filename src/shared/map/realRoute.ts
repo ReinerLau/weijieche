@@ -1,7 +1,8 @@
+import type { CarInfo } from '@/business/carMarker'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
 import { map } from './base'
-import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
+import { hasCoordinate, isTheCar } from './carMarker'
 
 export const isReal = ref(false)
 //实时路线图层实例

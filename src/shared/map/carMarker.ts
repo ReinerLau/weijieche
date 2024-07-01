@@ -1,4 +1,5 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
+import { type CarInfo } from '@/business/carMarker'
 import { useCarStore } from '@/stores/car'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
@@ -20,15 +21,6 @@ export const initCarMarkerLayer = () => {
 
 export const setWS = (val: WebSocket) => {
   ws = val
-}
-
-export interface CarInfo {
-  robotid?: string
-  rid?: string
-  longitude: number
-  latitude: number
-  heading?: number | string
-  robotCode?: string
 }
 
 // 校验车辆是否有经纬度坐标
