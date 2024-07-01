@@ -1,5 +1,5 @@
 import { offCarWs, openCarWs } from '@/api/user'
-import carStatus from '@/business/carStatus'
+import { carStatus } from '@/business/carStatus'
 import ActionScanning from '@/components/ActionScanning.vue'
 import AlarmLightControl from '@/components/AlarmLightControl.vue'
 import BirdAwayControl from '@/components/BirdAwayControl.vue'

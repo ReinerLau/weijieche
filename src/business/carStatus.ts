@@ -79,7 +79,7 @@ const startReconnectInterval = () => {
   }
 }
 
-export default {
+export const carStatus = {
   tryCloseWS,
   connectWebSocket,
   NewCurrentCarStatus,

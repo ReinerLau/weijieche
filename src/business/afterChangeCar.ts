@@ -4,7 +4,7 @@ import { jumpToCoordinate } from '@/shared/map/base'
 import { addMarker, onCarPoisition, tryCloseWS } from '@/shared/map/carMarker'
 import { recordPathPoints } from '@/shared/map/record'
 import { useConfigStore } from '@/stores/config'
-import carStatus from './carStatus'
+import { carStatus } from './carStatus'
 
 const jumpToCar = async (code: string) => {
   const res = await getCarInfo(code)
