@@ -1,5 +1,5 @@
 import { useCarStore } from '@/stores/car'
-import type { CarInfo } from './carMarker'
+import type { CarInfo } from '@/types'
 
 export const hasCoordinate = (data: CarInfo) => {
   return data.longitude && data.latitude

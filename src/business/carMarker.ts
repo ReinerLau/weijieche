@@ -1,4 +1,5 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
+import type { CarInfo } from '@/types'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { Marker, VectorLayer } from 'maptalks'
@@ -19,15 +20,6 @@ import {
 } from '../shared/map/record'
 import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from '../shared/map/taskPath'
 import { hasCoordinate, isTheSameCar } from './common'
-
-export interface CarInfo {
-  robotid?: string
-  rid?: string
-  longitude: number
-  latitude: number
-  heading?: number | string
-  robotCode?: string
-}
 
 let carMarkerLayer: VectorLayer
 let ws: WebSocket | undefined

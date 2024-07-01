@@ -1,5 +1,5 @@
-import type { CarInfo } from '@/business/carMarker'
 import { hasCoordinate, isTheSameCar } from '@/business/common'
+import type { CarInfo } from '@/types'
 import { i18n } from '@/utils'
 import { length, lineString } from '@turf/turf'
 import { ElMessage } from 'element-plus'

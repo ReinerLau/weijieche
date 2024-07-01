@@ -1,5 +1,5 @@
-import type { CarInfo } from '@/business/carMarker'
 import { hasCoordinate, isTheSameCar } from '@/business/common'
+import type { CarInfo } from '@/types'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
 import { map } from './base'
