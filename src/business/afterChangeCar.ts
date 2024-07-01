@@ -1,9 +1,9 @@
 import { connectCar, getCameraListByCode, getCarInfo } from '@/api'
 import { cameraList } from '@/shared'
 import { jumpToCoordinate } from '@/shared/map/base'
-import { addMarker, onCarPoisition, tryCloseWS } from '@/shared/map/carMarker'
 import { recordPathPoints } from '@/shared/map/record'
 import { useConfigStore } from '@/stores/config'
+import * as carMarker from './carMarker'
 import * as carStatus from './carStatus'
 
 const jumpToCar = async (code: string) => {
@@ -29,9 +29,9 @@ const handleConfig = () => {
 }
 
 const handleCarPoisition = (code: string) => {
-  addMarker(code)
-  tryCloseWS()
-  onCarPoisition()
+  carMarker.addMarker(code)
+  carMarker.tryCloseWS()
+  carMarker.onCarPoisition()
 }
 
 const clearRecordPathPoints = () => {

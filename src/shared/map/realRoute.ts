@@ -1,8 +1,8 @@
 import type { CarInfo } from '@/business/carMarker'
+import * as carMarker from '@/business/carMarker'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
 import { map } from './base'
-import { hasCoordinate, isTheCar } from './carMarker'
 
 export const isReal = ref(false)
 //实时路线图层实例
@@ -16,7 +16,7 @@ export const initRealPathLayer = () => {
 export const realPathPoints: Marker[] = []
 
 export const initRealPath = (data: CarInfo) => {
-  if (hasCoordinate(data) && isTheCar(data) && isReal.value) {
+  if (carMarker.hasCoordinate(data) && carMarker.isTheCar(data) && isReal.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
       symbol: {
         // markerType: 'ellipse',
