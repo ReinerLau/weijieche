@@ -14,7 +14,7 @@ import { initPathLayer } from '@/shared/map/path'
 import { initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import { handleConfirm } from '@/shared/map/template'
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import * as carMarker from '@/business/carMarker'
 import FileUploadDialog from '@/components/FileUploadDialog.vue'
@@ -61,21 +61,16 @@ export default defineComponent({
       onMapDBClick()
     })
 
-    // 关闭页面前先关闭 websocket
-    onBeforeUnmount(carMarker.tryCloseWS)
-
     // 监听是否处于录制状态
     watch(isRecordPath, () => {
       if (!isRecord.value && !isRecordPath.value) {
         recordPathLayer.clear()
-        carMarker.initMarker(carMarker.newCarData.value)
       }
     })
 
     watch(isRecord, () => {
       if (!isRecord.value) {
         recordPathLayer.clear()
-        carMarker.initMarker(carMarker.newCarData.value)
       }
     })
 

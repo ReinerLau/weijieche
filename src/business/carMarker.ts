@@ -25,22 +25,21 @@ let carMarkerLayer: VectorLayer
 let ws: WebSocket | undefined
 export const isConnectedWS = ref(false)
 
-const initCarMarkerLayer = () => {
+function initCarMarkerLayer() {
   carMarkerLayer = new VectorLayer('marker')
   carMarkerLayer.addTo(map)
 }
 
-// 关闭 websocket
-export const tryCloseWS = () => {
+function tryCloseWS() {
   if (ws) {
     ws.close()
   }
 }
 
-export const initMarker = (data: CarInfo) => {
+export function initMarker(data: CarInfo) {
   carMarkerLayer.clear()
   if (hasCoordinate(data) && isTheSameCar(data)) {
-    const point = new Marker([data.longitude as number, data.latitude as number], {
+    const point = new Marker([data.longitude, data.latitude], {
       symbol: {
         markerType: 'triangle',
         markerFill: 'red',
@@ -53,74 +52,58 @@ export const initMarker = (data: CarInfo) => {
   }
 }
 
-export const newCarData = ref()
-
-const updateMarker = async (e: MessageEvent<any>) => {
+function updateMarker(e: MessageEvent<any>) {
   if (e.data !== 'heartbeat') {
-    const data = JSON.parse(e.data)
-    if (data.latitude && data.longitude) {
-      //保存车最新数据
-      newCarData.value = data
-    }
+    const data: CarInfo = JSON.parse(e.data)
 
     initMarker(data)
 
-    // 判断是否开启录制
-    if (isRecord.value) {
-      initRecordPath(data)
-    }
-
-    if (data.taskStatus === 'start') {
-      clearRealPathLayer()
-      initMarker(newCarData.value)
-      isReal.value = true
-      ElMessage.success({
-        message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
-      })
-      const route = ref<any[]>([])
-      const res = await getPatrolTaskById(data.taskID)
-      route.value = res.data?.route || []
-      handleConfirmPatrolTaskPath(route.value)
-    }
-    if (data.taskStatus === 'end') {
-      isReal.value = false
-      clearRealPathLayer()
-      ElMessage.success({
-        message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
-      })
-      initMarker(newCarData.value)
-    }
-
-    if (isReal.value) {
-      initRealPath(data)
-    }
+    if (isRecord.value) initRecordPath(data)
+    if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
+    if (data.taskStatus === 'end') onTaskStatusEnd()
+    if (isReal.value) initRealPath(data)
   }
 }
 
-export const clearRealPathLayer = () => {
+async function onTaskStatusStart(taskID: number) {
+  clearRealPathLayer()
+  isReal.value = true
+  ElMessage.success({
+    message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
+  })
+  const res = await getPatrolTaskById(taskID)
+  const route = res.data?.route || []
+  handleConfirmPatrolTaskPath(route.value)
+}
+
+function onTaskStatusEnd() {
+  isReal.value = false
+  clearRealPathLayer()
+  ElMessage.success({
+    message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
+  })
+}
+
+function clearRealPathLayer() {
   realPathLayer.clear()
   taskPathLayer.clear()
   taskpathPoints.length = 0
   realPathPoints.length = 0
 }
 
-export const carList = ref<
-  { robotid: string; longitude: number; latitude: number; heading: number }[]
->([])
-
-export const initCar = async () => {
+async function initCar() {
   carMarkerLayer.clear()
   const { data } = await getCarLog()
-  carList.value = data?.list || []
-  for (const { longitude, latitude, heading } of carList.value) {
-    if (longitude && latitude) {
-      const point = new Marker([longitude as number, latitude as number], {
+  const carList: CarInfo[] = data?.list || []
+  for (const data of carList) {
+    if (data.longitude && data.latitude) {
+      const point = new Marker([data.longitude, data.latitude], {
         symbol: {
           markerType: 'triangle',
           markerFill: 'yellow',
           markerWidth: 14,
           markerHeight: 16,
-          markerRotation: -Number(heading)
+          markerRotation: -Number(data.heading)
         }
       })
       carMarkerLayer.addGeometry(point)
@@ -128,50 +111,52 @@ export const initCar = async () => {
   }
 }
 
-// 根据车辆编号获取车辆坐标
-export const addMarker = async (code: string) => {
-  const res: any = await getCarInfo(code)
-  const data = res.data || {}
-  //获取车速
-  // carSpeed.value = data.speed
+export async function addMarker(code: string) {
+  const { data } = await getCarInfo(code)
   isRecord.value = false
   isReal.value = false
   clearRealPathLayer()
   recordPathLayer.clear()
-  newCarData.value = data
   initMarker(data)
 }
-// 初始化车辆标记图层
-export const initMakerLayer = () => {
+
+export function initMakerLayer() {
   initCarMarkerLayer()
   initRecordPathLayer()
   initRealPathLayer()
   initCar()
 }
 
-export const onCarPoisition = () => {
+export function onCarPoisition() {
+  tryCloseWS()
   ws = initWebSocket('/websocket/patroling/location', {
     onmessage: updateMarker,
-    onopen: () => {
-      isConnectedWS.value = true
-      ElMessage({
-        type: 'success',
-        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cheng-gong')
-      })
-    },
-    onclose: () => {
-      isConnectedWS.value = false
-      ElMessage({
-        type: 'warning',
-        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-duan-kai')
-      })
-    },
-    onerror: () => {
-      isConnectedWS.value = false
-      ElMessage({
-        type: 'error',
-        message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cuo-wu')
-      })
-    }
+    onopen: onOpen,
+    onclose: onClose,
+    onerror: onError
+  })
+}
+
+function onOpen() {
+  isConnectedWS.value = true
+  ElMessage({
+    type: 'success',
+    message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cheng-gong')
+  })
+}
+
+function onClose() {
+  isConnectedWS.value = false
+  ElMessage({
+    type: 'warning',
+    message: i18n.global.t('jian-ting-wei-zhi-lian-jie-duan-kai')
+  })
+}
+
+function onError() {
+  isConnectedWS.value = false
+  ElMessage({
+    type: 'error',
+    message: i18n.global.t('jian-ting-wei-zhi-lian-jie-cuo-wu')
   })
 }

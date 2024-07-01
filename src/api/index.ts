@@ -1,18 +1,18 @@
 import { request } from '@/utils'
 
+export * from './alarm'
 export * from './camera'
 export * from './control'
+export * from './device'
 export * from './home'
+export * from './log'
+export * from './pointTask'
 export * from './schedule'
 export * from './template'
 export * from './user'
-export * from './log'
-export * from './device'
-export * from './pointTask'
-export * from './alarm'
 
 export function getCarInfo(code: string) {
-  return request<{ longitude: number; latitude: number }>({
+  return request({
     url: `/robot-vehicle-log/v1/getone/${code}`,
     method: 'get'
   })

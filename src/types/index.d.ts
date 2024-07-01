@@ -33,4 +33,6 @@ export interface CarInfo {
   latitude: number
   heading?: number | string
   robotCode?: string
+  taskStatus?: 'start' | 'end'
+  taskID?: number
 }

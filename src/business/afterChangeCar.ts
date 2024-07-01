@@ -30,7 +30,6 @@ const handleConfig = () => {
 
 const handleCarPoisition = (code: string) => {
   carMarker.addMarker(code)
-  carMarker.tryCloseWS()
   carMarker.onCarPoisition()
 }
 
