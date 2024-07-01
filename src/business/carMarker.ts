@@ -19,6 +19,7 @@ import {
   recordPathLayer
 } from '../shared/map/record'
 import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from '../shared/map/taskPath'
+import { hasCoordinate } from './common'
 
 export interface CarInfo {
   robotid?: string
@@ -36,11 +37,6 @@ export const isConnectedWS = ref(false)
 const initCarMarkerLayer = () => {
   carMarkerLayer = new VectorLayer('marker')
   carMarkerLayer.addTo(map)
-}
-
-// 校验车辆是否有经纬度坐标
-export const hasCoordinate = (data: CarInfo) => {
-  return data.longitude && data.latitude
 }
 
 export const isTheCar = (data: CarInfo) => {
