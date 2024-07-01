@@ -29,16 +29,13 @@ export interface CarInfo {
   robotCode?: string
 }
 
-export let carMarkerLayer: VectorLayer
-export let ws: WebSocket | undefined
+let carMarkerLayer: VectorLayer
+let ws: WebSocket | undefined
+export const isConnectedWS = ref(false)
 
-export const initCarMarkerLayer = () => {
+const initCarMarkerLayer = () => {
   carMarkerLayer = new VectorLayer('marker')
   carMarkerLayer.addTo(map)
-}
-
-export const setWS = (val: WebSocket) => {
-  ws = val
 }
 
 // 校验车辆是否有经纬度坐标
@@ -61,9 +58,6 @@ export const tryCloseWS = () => {
   }
 }
 
-// 标记是否已经连接 websocket
-export const isConnectedWS = ref(false)
-
 export const initMarker = (data: CarInfo) => {
   carMarkerLayer.clear()
   if (hasCoordinate(data) && isTheCar(data)) {
@@ -82,7 +76,7 @@ export const initMarker = (data: CarInfo) => {
 
 export const newCarData = ref()
 
-export const updateMarker = async (e: MessageEvent<any>) => {
+const updateMarker = async (e: MessageEvent<any>) => {
   if (e.data !== 'heartbeat') {
     const data = JSON.parse(e.data)
     if (data.latitude && data.longitude) {
