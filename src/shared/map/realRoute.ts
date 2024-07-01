@@ -1,6 +1,5 @@
 import type { CarInfo } from '@/business/carMarker'
-import * as carMarker from '@/business/carMarker'
-import { hasCoordinate } from '@/business/common'
+import { hasCoordinate, isTheSameCar } from '@/business/common'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
 import { map } from './base'
@@ -17,7 +16,7 @@ export const initRealPathLayer = () => {
 export const realPathPoints: Marker[] = []
 
 export const initRealPath = (data: CarInfo) => {
-  if (hasCoordinate(data) && carMarker.isTheCar(data) && isReal.value) {
+  if (hasCoordinate(data) && isTheSameCar(data) && isReal.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number], {
       symbol: {
         // markerType: 'ellipse',

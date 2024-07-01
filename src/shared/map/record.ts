@@ -1,6 +1,5 @@
 import type { CarInfo } from '@/business/carMarker'
-import * as carMarker from '@/business/carMarker'
-import { hasCoordinate } from '@/business/common'
+import { hasCoordinate, isTheSameCar } from '@/business/common'
 import { i18n } from '@/utils'
 import { length, lineString } from '@turf/turf'
 import { ElMessage } from 'element-plus'
@@ -127,7 +126,7 @@ export const filterRecordSum = computed(() => {
 
 export const recordPath = ref<[number, number][]>([])
 export function drawRecordPath(data: CarInfo) {
-  if (hasCoordinate(data) && carMarker.isTheCar(data) && isRecord.value) {
+  if (hasCoordinate(data) && isTheSameCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])
     recordPathPoints.push(pathPoint)

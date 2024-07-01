@@ -1,5 +1,4 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
-import { useCarStore } from '@/stores/car'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { Marker, VectorLayer } from 'maptalks'
@@ -19,7 +18,7 @@ import {
   recordPathLayer
 } from '../shared/map/record'
 import { handleConfirmPatrolTaskPath, taskPathLayer, taskpathPoints } from '../shared/map/taskPath'
-import { hasCoordinate } from './common'
+import { hasCoordinate, isTheSameCar } from './common'
 
 export interface CarInfo {
   robotid?: string
@@ -39,14 +38,6 @@ const initCarMarkerLayer = () => {
   carMarkerLayer.addTo(map)
 }
 
-export const isTheCar = (data: CarInfo) => {
-  const carStore = useCarStore()
-  return (
-    data.rid === carStore.currentCar ||
-    data.robotid === carStore.currentCar ||
-    data.robotCode === carStore.currentCar
-  )
-}
 // 关闭 websocket
 export const tryCloseWS = () => {
   if (ws) {
@@ -56,7 +47,7 @@ export const tryCloseWS = () => {
 
 export const initMarker = (data: CarInfo) => {
   carMarkerLayer.clear()
-  if (hasCoordinate(data) && isTheCar(data)) {
+  if (hasCoordinate(data) && isTheSameCar(data)) {
     const point = new Marker([data.longitude as number, data.latitude as number], {
       symbol: {
         markerType: 'triangle',
