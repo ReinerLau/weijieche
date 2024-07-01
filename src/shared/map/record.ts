@@ -1,3 +1,5 @@
+import { hasCoordinate, isTheSameCar } from '@/business/common'
+import type { CarInfo } from '@/types'
 import { i18n } from '@/utils'
 import { length, lineString } from '@turf/turf'
 import { ElMessage } from 'element-plus'
@@ -5,7 +7,6 @@ import { LineString, Marker, VectorLayer } from 'maptalks'
 import { computed, ref, watch } from 'vue'
 import { clearStatus } from '.'
 import { clearMenu, map } from './base'
-import { hasCoordinate, isTheCar, type CarInfo } from './carMarker'
 import { clearDrawTool } from './drawTool'
 import { clearPathLayer } from './path'
 import { templateDialogVisible } from './template'
@@ -125,7 +126,7 @@ export const filterRecordSum = computed(() => {
 
 export const recordPath = ref<[number, number][]>([])
 export function drawRecordPath(data: CarInfo) {
-  if (hasCoordinate(data) && isTheCar(data) && isRecord.value) {
+  if (hasCoordinate(data) && isTheSameCar(data) && isRecord.value) {
     const pathPoint = new Marker([data.longitude as number, data.latitude as number])
     recordPath.value.push([Number(data.longitude), Number(data.latitude)])
     recordPathPoints.push(pathPoint)

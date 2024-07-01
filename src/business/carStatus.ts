@@ -5,11 +5,11 @@ import { ref } from 'vue'
 let ws: WebSocket | undefined
 let reconnectInterval: number | NodeJS.Timer | null = null
 const isConnectedWS = ref(false)
-const NewCurrentCarStatus = ref('🚫')
-const NewCurrentCarBattery = ref()
-const NewCurrentCarSpeed = ref()
+export const NewCurrentCarStatus = ref('🚫')
+export const NewCurrentCarBattery = ref()
+export const NewCurrentCarSpeed = ref()
 
-const tryCloseWS = () => {
+export const tryCloseWS = () => {
   if (ws) {
     ws.close()
     ws = undefined
@@ -24,7 +24,7 @@ const clearReconnectInterval = () => {
   }
 }
 
-const connectWebSocket = () => {
+export const connectWebSocket = () => {
   ws = initWebSocket('/websocket/patroling/status', {
     onmessage: (event: MessageEvent<any>) => {
       if (event.data !== 'heartbeat') {
@@ -77,12 +77,4 @@ const startReconnectInterval = () => {
       connectWebSocket()
     }, 5000) // 每隔5秒重新连接
   }
-}
-
-export default {
-  tryCloseWS,
-  connectWebSocket,
-  NewCurrentCarStatus,
-  NewCurrentCarBattery,
-  NewCurrentCarSpeed
 }

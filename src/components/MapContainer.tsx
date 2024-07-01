@@ -14,8 +14,9 @@ import { initPathLayer } from '@/shared/map/path'
 import { initPatrolpathLayer } from '@/shared/map/patrolPath'
 import { initTaskPointLayer, initTaskPoints } from '@/shared/map/taskPoint'
 import { handleConfirm } from '@/shared/map/template'
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 
+import * as carMarker from '@/business/carMarker'
 import FileUploadDialog from '@/components/FileUploadDialog.vue'
 import PatrolTaskDialog from '@/components/PatrolTaskDialog'
 import RoadnetPathTableDialog from '@/components/RoadnetPathTableDialog.vue'
@@ -24,13 +25,6 @@ import ScheduleSearchDialog from '@/components/ScheduleSearchDialog'
 import TemplateDialog from '@/components/TemplateDialog.vue'
 import TemplateSearchDialog from '@/components/TemplateSearchDialog.vue'
 import { alarmMessageData, initAlarmPointLayer } from '@/shared/map/alarmPoint'
-import {
-  initMakerLayer,
-  initMarker,
-  isConnectedWS,
-  newCarData,
-  tryCloseWS
-} from '@/shared/map/carMarker'
 import { onMapDBClick } from '@/shared/map/debug'
 import { isRecord, isRecordPath, recordPathLayer } from '@/shared/map/record'
 import { initRoadnetPathLayer } from '@/shared/map/roadnet'
@@ -52,7 +46,7 @@ export default defineComponent({
     onMounted(() => {
       initMap(mapRef.value!)
       initHomePathLayer()
-      initMakerLayer()
+      carMarker.initMakerLayer()
       initAlarmMarkerLayer()
       initPathLayer()
       initRoadnetPathLayer()
@@ -67,21 +61,16 @@ export default defineComponent({
       onMapDBClick()
     })
 
-    // 关闭页面前先关闭 websocket
-    onBeforeUnmount(tryCloseWS)
-
     // 监听是否处于录制状态
     watch(isRecordPath, () => {
       if (!isRecord.value && !isRecordPath.value) {
         recordPathLayer.clear()
-        initMarker(newCarData.value)
       }
     })
 
     watch(isRecord, () => {
       if (!isRecord.value) {
         recordPathLayer.clear()
-        initMarker(newCarData.value)
       }
     })
 
@@ -90,7 +79,7 @@ export default defineComponent({
         <ToolbarController class="absolute top-5 right-5 z-10" items={toolbarItems} />
         <RecordPointCount class="absolute top-24 right-5 z-10"></RecordPointCount>
         <DebugController class="absolute bottom-5 right-5 z-10" />
-        {!isConnectedWS.value && (
+        {!carMarker.isConnectedWS.value && (
           <Icon icon="mdi:signal-off" class="absolute left-5 top-5 z-10 text-red-600" />
         )}
         <div class="h-full" ref={mapRef}></div>
