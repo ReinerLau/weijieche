@@ -7,7 +7,7 @@ let isRealRouteMode = false
 let realRouteLayer: VectorLayer
 const realRoutePoints: Marker[] = []
 
-const initRealRouteLayer = () => {
+function initRealRouteLayer() {
   if (!realRouteLayer) {
     realRouteLayer = new VectorLayer('real-point')
     realRouteLayer.addTo(map)
@@ -38,18 +38,22 @@ export const newRealRoutePoint = (data: CarInfo) => {
 
     realRoutePoints.push(pathPoint)
 
-    if (realRoutePoints.length >= 2) {
-      const lastTwoPoints = realRoutePoints.slice(-2)
-      const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
-        showOn: 'always',
-        symbol: {
-          lineColor: 'yellow',
-          lineWidth: 2
-        },
-        zIndex: -1
-      })
+    connectNewPoint()
+  }
+}
 
-      realRouteLayer.addGeometry(connectLine)
-    }
+function connectNewPoint() {
+  if (realRoutePoints.length >= 2) {
+    const lastTwoPoints = realRoutePoints.slice(-2)
+    const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+      showOn: 'always',
+      symbol: {
+        lineColor: 'yellow',
+        lineWidth: 2
+      },
+      zIndex: -1
+    })
+
+    realRouteLayer.addGeometry(connectLine)
   }
 }
