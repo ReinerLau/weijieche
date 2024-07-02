@@ -1,9 +1,18 @@
 import { hasCoordinate, isTheSameCar } from '@/business/common'
 import type { CarInfo } from '@/types'
-import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
+import { ConnectorLine, Map, Marker, VectorLayer } from 'maptalks'
 import { map } from '../shared/map/base'
 
-let isRealRouteMode = false
+export const layerId = 'real-route'
+
+export class RealRoute {
+  private _realRouteLayer: VectorLayer = new VectorLayer(layerId)
+  initRealRouteLayer(map: Map) {
+    map.addLayer(this._realRouteLayer)
+  }
+}
+
+let realRouteMode = false
 let realRouteLayer: VectorLayer
 const realRoutePoints: Marker[] = []
 
@@ -21,17 +30,29 @@ function clearRealRoute() {
 
 export function openRealRouteMode() {
   initRealRouteLayer()
-  isRealRouteMode = true
+  realRouteMode = true
   clearRealRoute()
+
+  return {
+    realRouteMode,
+    layerGeometriesCount: realRouteLayer.getGeometries().length,
+    pointCount: realRoutePoints.length
+  }
 }
 
 export function closeRealRouteMode() {
-  isRealRouteMode = false
+  realRouteMode = false
   clearRealRoute()
+
+  return {
+    realRouteMode,
+    layerGeometriesCount: realRouteLayer.getGeometries().length,
+    pointCount: realRoutePoints.length
+  }
 }
 
 export const newRealRoutePoint = (data: CarInfo) => {
-  if (hasCoordinate(data) && isTheSameCar(data) && isRealRouteMode) {
+  if (hasCoordinate(data) && isTheSameCar(data) && realRouteMode) {
     const pathPoint = new Marker([data.longitude, data.latitude])
 
     realRouteLayer.addGeometry(pathPoint)
