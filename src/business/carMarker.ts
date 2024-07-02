@@ -1,17 +1,11 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
+import { realRoute } from '@/business/realRoute'
 import type { CarInfo } from '@/types'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { Marker, VectorLayer } from 'maptalks'
 import { ref } from 'vue'
 import { map } from '../shared/map/base'
-import {
-  initRealPath,
-  initRealPathLayer,
-  isReal,
-  realPathLayer,
-  realPathPoints
-} from '../shared/map/realRoute'
 import {
   initRecordPath,
   initRecordPathLayer,
@@ -61,13 +55,13 @@ function updateMarker(e: MessageEvent<any>) {
     if (isRecord.value) initRecordPath(data)
     if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
     if (data.taskStatus === 'end') onTaskStatusEnd()
-    if (isReal.value) initRealPath(data)
+    realRoute.newPoint(data)
   }
 }
 
 async function onTaskStatusStart(taskID: number) {
-  clearRealPathLayer()
-  isReal.value = true
+  realRoute.openMode(map)
+  clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
   })
@@ -77,18 +71,16 @@ async function onTaskStatusStart(taskID: number) {
 }
 
 function onTaskStatusEnd() {
-  isReal.value = false
-  clearRealPathLayer()
+  realRoute.closeMode()
+  clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
   })
 }
 
-function clearRealPathLayer() {
-  realPathLayer.clear()
+function clearTaskPathLayer() {
   taskPathLayer.clear()
   taskpathPoints.length = 0
-  realPathPoints.length = 0
 }
 
 async function initCar() {
@@ -114,8 +106,8 @@ async function initCar() {
 export async function addMarker(code: string) {
   const { data } = await getCarInfo(code)
   isRecord.value = false
-  isReal.value = false
-  clearRealPathLayer()
+  realRoute.closeMode()
+  clearTaskPathLayer()
   recordPathLayer.clear()
   initMarker(data)
 }
@@ -123,7 +115,6 @@ export async function addMarker(code: string) {
 export function initMakerLayer() {
   initCarMarkerLayer()
   initRecordPathLayer()
-  initRealPathLayer()
   initCar()
 }
 
