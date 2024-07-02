@@ -3,40 +3,43 @@ import type { CarInfo } from '@/types'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
 import { map } from '../shared/map/base'
 
-let isRealMode = false
-let realPathLayer: VectorLayer
-const realPathPoints: Marker[] = []
+let isRealRouteMode = false
+let realRouteLayer: VectorLayer
+const realRoutePoints: Marker[] = []
 
-export const initRealPathLayer = () => {
-  realPathLayer = new VectorLayer('real-point')
-  realPathLayer.addTo(map)
+const initRealRouteLayer = () => {
+  if (!realRouteLayer) {
+    realRouteLayer = new VectorLayer('real-point')
+    realRouteLayer.addTo(map)
+  }
 }
 
 function clearRealRoute() {
-  realPathLayer.clear()
-  realPathPoints.length = 0
+  realRouteLayer.clear()
+  realRoutePoints.length = 0
 }
 
 export function openRealRouteMode() {
-  isRealMode = true
+  initRealRouteLayer()
+  isRealRouteMode = true
   clearRealRoute()
 }
 
 export function closeRealRouteMode() {
-  isRealMode = false
+  isRealRouteMode = false
   clearRealRoute()
 }
 
-export const initRealPath = (data: CarInfo) => {
-  if (hasCoordinate(data) && isTheSameCar(data) && isRealMode) {
+export const newRealRoutePoint = (data: CarInfo) => {
+  if (hasCoordinate(data) && isTheSameCar(data) && isRealRouteMode) {
     const pathPoint = new Marker([data.longitude, data.latitude])
 
-    realPathLayer.addGeometry(pathPoint)
+    realRouteLayer.addGeometry(pathPoint)
 
-    realPathPoints.push(pathPoint)
+    realRoutePoints.push(pathPoint)
 
-    if (realPathPoints.length >= 2) {
-      const lastTwoPoints = realPathPoints.slice(-2)
+    if (realRoutePoints.length >= 2) {
+      const lastTwoPoints = realRoutePoints.slice(-2)
       const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
         showOn: 'always',
         symbol: {
@@ -46,7 +49,7 @@ export const initRealPath = (data: CarInfo) => {
         zIndex: -1
       })
 
-      realPathLayer.addGeometry(connectLine)
+      realRouteLayer.addGeometry(connectLine)
     }
   }
 }

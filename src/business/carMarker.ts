@@ -55,7 +55,7 @@ function updateMarker(e: MessageEvent<any>) {
     if (isRecord.value) initRecordPath(data)
     if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
     if (data.taskStatus === 'end') onTaskStatusEnd()
-    realRoute.initRealPath(data)
+    realRoute.newRealRoutePoint(data)
   }
 }
 
@@ -115,7 +115,6 @@ export async function addMarker(code: string) {
 export function initMakerLayer() {
   initCarMarkerLayer()
   initRecordPathLayer()
-  realRoute.initRealPathLayer()
   initCar()
 }
 
