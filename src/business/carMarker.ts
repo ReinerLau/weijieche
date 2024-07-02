@@ -1,11 +1,5 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
-import {
-  initRealPath,
-  initRealPathLayer,
-  isReal,
-  realPathLayer,
-  realPathPoints
-} from '@/business/realRoute'
+import * as realRoute from '@/business/realRoute'
 import type { CarInfo } from '@/types'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
@@ -61,13 +55,13 @@ function updateMarker(e: MessageEvent<any>) {
     if (isRecord.value) initRecordPath(data)
     if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
     if (data.taskStatus === 'end') onTaskStatusEnd()
-    if (isReal.value) initRealPath(data)
+    if (realRoute.isReal.value) realRoute.initRealPath(data)
   }
 }
 
 async function onTaskStatusStart(taskID: number) {
   clearRealPathLayer()
-  isReal.value = true
+  realRoute.isReal.value = true
   ElMessage.success({
     message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
   })
@@ -77,7 +71,7 @@ async function onTaskStatusStart(taskID: number) {
 }
 
 function onTaskStatusEnd() {
-  isReal.value = false
+  realRoute.isReal.value = false
   clearRealPathLayer()
   ElMessage.success({
     message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
@@ -85,10 +79,10 @@ function onTaskStatusEnd() {
 }
 
 function clearRealPathLayer() {
-  realPathLayer.clear()
+  realRoute.realPathLayer.clear()
   taskPathLayer.clear()
   taskpathPoints.length = 0
-  realPathPoints.length = 0
+  realRoute.realPathPoints.length = 0
 }
 
 async function initCar() {
@@ -114,7 +108,7 @@ async function initCar() {
 export async function addMarker(code: string) {
   const { data } = await getCarInfo(code)
   isRecord.value = false
-  isReal.value = false
+  realRoute.isReal.value = false
   clearRealPathLayer()
   recordPathLayer.clear()
   initMarker(data)
@@ -123,7 +117,7 @@ export async function addMarker(code: string) {
 export function initMakerLayer() {
   initCarMarkerLayer()
   initRecordPathLayer()
-  initRealPathLayer()
+  realRoute.initRealPathLayer()
   initCar()
 }
 
