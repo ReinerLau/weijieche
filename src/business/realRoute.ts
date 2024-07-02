@@ -1,10 +1,9 @@
 import { hasCoordinate, isTheSameCar } from '@/business/common'
 import type { CarInfo } from '@/types'
 import { ConnectorLine, Marker, VectorLayer } from 'maptalks'
-import { ref } from 'vue'
 import { map } from '../shared/map/base'
 
-export const isReal = ref(false)
+let isRealMode = false
 let realPathLayer: VectorLayer
 const realPathPoints: Marker[] = []
 
@@ -13,13 +12,23 @@ export const initRealPathLayer = () => {
   realPathLayer.addTo(map)
 }
 
-export function clearRealRoute() {
+function clearRealRoute() {
   realPathLayer.clear()
   realPathPoints.length = 0
 }
 
+export function openRealRouteMode() {
+  isRealMode = true
+  clearRealRoute()
+}
+
+export function closeRealRouteMode() {
+  isRealMode = false
+  clearRealRoute()
+}
+
 export const initRealPath = (data: CarInfo) => {
-  if (hasCoordinate(data) && isTheSameCar(data) && isReal.value) {
+  if (hasCoordinate(data) && isTheSameCar(data) && isRealMode) {
     const pathPoint = new Marker([data.longitude, data.latitude])
 
     realPathLayer.addGeometry(pathPoint)

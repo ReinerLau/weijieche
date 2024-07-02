@@ -55,13 +55,13 @@ function updateMarker(e: MessageEvent<any>) {
     if (isRecord.value) initRecordPath(data)
     if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
     if (data.taskStatus === 'end') onTaskStatusEnd()
-    if (realRoute.isReal.value) realRoute.initRealPath(data)
+    realRoute.initRealPath(data)
   }
 }
 
 async function onTaskStatusStart(taskID: number) {
-  clearRealPathLayer()
-  realRoute.isReal.value = true
+  realRoute.openRealRouteMode()
+  clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
   })
@@ -71,15 +71,14 @@ async function onTaskStatusStart(taskID: number) {
 }
 
 function onTaskStatusEnd() {
-  realRoute.isReal.value = false
-  clearRealPathLayer()
+  realRoute.closeRealRouteMode()
+  clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
   })
 }
 
-function clearRealPathLayer() {
-  realRoute.clearRealRoute()
+function clearTaskPathLayer() {
   taskPathLayer.clear()
   taskpathPoints.length = 0
 }
@@ -107,8 +106,8 @@ async function initCar() {
 export async function addMarker(code: string) {
   const { data } = await getCarInfo(code)
   isRecord.value = false
-  realRoute.isReal.value = false
-  clearRealPathLayer()
+  realRoute.closeRealRouteMode()
+  clearTaskPathLayer()
   recordPathLayer.clear()
   initMarker(data)
 }
