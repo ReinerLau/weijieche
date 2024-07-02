@@ -79,10 +79,9 @@ function onTaskStatusEnd() {
 }
 
 function clearRealPathLayer() {
-  realRoute.realPathLayer.clear()
+  realRoute.clearRealRoute()
   taskPathLayer.clear()
   taskpathPoints.length = 0
-  realRoute.realPathPoints.length = 0
 }
 
 async function initCar() {

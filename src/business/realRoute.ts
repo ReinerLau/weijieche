@@ -5,15 +5,18 @@ import { ref } from 'vue'
 import { map } from '../shared/map/base'
 
 export const isReal = ref(false)
-//实时路线图层实例
-export let realPathLayer: VectorLayer
+let realPathLayer: VectorLayer
+const realPathPoints: Marker[] = []
 
 export const initRealPathLayer = () => {
   realPathLayer = new VectorLayer('real-point')
   realPathLayer.addTo(map)
 }
 
-export const realPathPoints: Marker[] = []
+export function clearRealRoute() {
+  realPathLayer.clear()
+  realPathPoints.length = 0
+}
 
 export const initRealPath = (data: CarInfo) => {
   if (hasCoordinate(data) && isTheSameCar(data) && isReal.value) {
