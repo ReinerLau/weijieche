@@ -1,5 +1,5 @@
 import { getCarInfo, getCarLog, getPatrolTaskById } from '@/api'
-import * as realRoute from '@/business/realRoute'
+import { realRoute } from '@/business/realRoute'
 import type { CarInfo } from '@/types'
 import { i18n, initWebSocket } from '@/utils'
 import { ElMessage } from 'element-plus'
@@ -55,12 +55,12 @@ function updateMarker(e: MessageEvent<any>) {
     if (isRecord.value) initRecordPath(data)
     if (data.taskStatus === 'start') onTaskStatusStart(data.taskID!)
     if (data.taskStatus === 'end') onTaskStatusEnd()
-    realRoute.newRealRoutePoint(data)
+    realRoute.newPoint(data)
   }
 }
 
 async function onTaskStatusStart(taskID: number) {
-  realRoute.openRealRouteMode()
+  realRoute.openMode(map)
   clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('kai-shi-zhi-hang-ren-wu')
@@ -71,7 +71,7 @@ async function onTaskStatusStart(taskID: number) {
 }
 
 function onTaskStatusEnd() {
-  realRoute.closeRealRouteMode()
+  realRoute.closeMode()
   clearTaskPathLayer()
   ElMessage.success({
     message: i18n.global.t('ren-wu-zhi-hang-jie-shu')
@@ -106,7 +106,7 @@ async function initCar() {
 export async function addMarker(code: string) {
   const { data } = await getCarInfo(code)
   isRecord.value = false
-  realRoute.closeRealRouteMode()
+  realRoute.closeMode()
   clearTaskPathLayer()
   recordPathLayer.clear()
   initMarker(data)

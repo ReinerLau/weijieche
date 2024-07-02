@@ -1,80 +1,63 @@
-import { hasCoordinate, isTheSameCar } from '@/business/common'
+import { hasCoordinate } from '@/business/common'
 import type { CarInfo } from '@/types'
 import { ConnectorLine, Map, Marker, VectorLayer } from 'maptalks'
-import { map } from '../shared/map/base'
 
 export const layerId = 'real-route'
 
 export class RealRoute {
-  private _realRouteLayer: VectorLayer = new VectorLayer(layerId)
-  initRealRouteLayer(map: Map) {
-    map.addLayer(this._realRouteLayer)
+  private _mode = false
+  private _layer: VectorLayer = new VectorLayer(layerId)
+  private _points: Marker[] = []
+  initLayer(map: Map) {
+    if (!map.getLayer(layerId)) {
+      map.addLayer(this._layer)
+    }
+  }
+  openMode(map: Map) {
+    this._mode = true
+    this.initLayer(map)
+  }
+  closeMode() {
+    this._mode = false
+    this.clear()
+  }
+  clear() {
+    this._layer.clear()
+    this._points.length = 0
+  }
+  newPoint(data: CarInfo) {
+    if (hasCoordinate(data) && this._mode) {
+      const pathPoint = new Marker([data.longitude, data.latitude])
+      this._layer.addGeometry(pathPoint)
+      this._points.push(pathPoint)
+      this.connectPoint()
+    }
+  }
+  connectPoint() {
+    if (this._points.length >= 2) {
+      const lastTwoPoints = this._points.slice(-2)
+      const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
+        showOn: 'always',
+        symbol: {
+          lineColor: 'yellow',
+          lineWidth: 2
+        },
+        zIndex: -1
+      })
+
+      this._layer.addGeometry(connectLine)
+    }
+  }
+  get mode() {
+    return this._mode
+  }
+  get pointCount() {
+    return this._points.length
+  }
+
+  get layerGeometriesCount() {
+    return this._layer.getGeometries().length
   }
 }
 
-let realRouteMode = false
-let realRouteLayer: VectorLayer
-const realRoutePoints: Marker[] = []
-
-function initRealRouteLayer() {
-  if (!realRouteLayer) {
-    realRouteLayer = new VectorLayer('real-point')
-    realRouteLayer.addTo(map)
-  }
-}
-
-function clearRealRoute() {
-  realRouteLayer.clear()
-  realRoutePoints.length = 0
-}
-
-export function openRealRouteMode() {
-  initRealRouteLayer()
-  realRouteMode = true
-  clearRealRoute()
-
-  return {
-    realRouteMode,
-    layerGeometriesCount: realRouteLayer.getGeometries().length,
-    pointCount: realRoutePoints.length
-  }
-}
-
-export function closeRealRouteMode() {
-  realRouteMode = false
-  clearRealRoute()
-
-  return {
-    realRouteMode,
-    layerGeometriesCount: realRouteLayer.getGeometries().length,
-    pointCount: realRoutePoints.length
-  }
-}
-
-export const newRealRoutePoint = (data: CarInfo) => {
-  if (hasCoordinate(data) && isTheSameCar(data) && realRouteMode) {
-    const pathPoint = new Marker([data.longitude, data.latitude])
-
-    realRouteLayer.addGeometry(pathPoint)
-
-    realRoutePoints.push(pathPoint)
-
-    connectNewPoint()
-  }
-}
-
-function connectNewPoint() {
-  if (realRoutePoints.length >= 2) {
-    const lastTwoPoints = realRoutePoints.slice(-2)
-    const connectLine = new ConnectorLine(lastTwoPoints[0], lastTwoPoints[1], {
-      showOn: 'always',
-      symbol: {
-        lineColor: 'yellow',
-        lineWidth: 2
-      },
-      zIndex: -1
-    })
-
-    realRouteLayer.addGeometry(connectLine)
-  }
-}
+export const realRoute = new RealRoute()
